@@ -1,0 +1,1247 @@
+<!doctype html><html lang="fr"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="GRÜN"><meta name="theme-color" content="#0B3B36">
+<link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-180.png"><link rel="icon" href="icon-192.png">
+<style>/* GRÜN — styles communs injectés dans chaque module (barre des pôles en bas, éléments partagés).
+   Les modules gardent leurs jetons (--bg, --panel, --ink, --mute, --line, --soft) au style Veille. */
+:root{--grun:#0F766E;--grun-ink:#0B3B36;--nav-h:62px}
+body.grun-has-nav{padding-bottom:calc(var(--nav-h) + env(safe-area-inset-bottom,0px))}
+#grun-nav{position:fixed;left:0;right:0;bottom:0;z-index:50;display:flex;justify-content:space-around;align-items:stretch;
+  background:var(--panel,#fff);border-top:1px solid var(--line,#D9DDE3);padding-bottom:env(safe-area-inset-bottom,0px);
+  box-shadow:0 -4px 18px rgba(0,0,0,.05)}
+#grun-nav a{flex:1;max-width:140px;min-height:var(--nav-h);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
+  text-decoration:none;color:var(--mute,#5D6675);font:600 11.5px/1.1 var(--ui,system-ui,sans-serif);letter-spacing:.01em}
+#grun-nav svg{width:23px;height:23px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+#grun-nav a.on{color:var(--ink,#16202E)}
+#grun-nav a.on svg{stroke:var(--grun)}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) #grun-nav{box-shadow:none}}
+@media print{#grun-nav{display:none}body.grun-has-nav{padding-bottom:0}}
+/* fil « poupée russe » : bandeau de retour vers le module appelant */
+.grun-relais{position:sticky;top:0;z-index:40;display:flex;gap:10px;align-items:center;justify-content:space-between;
+  background:var(--grun);color:#fff;padding:8px 16px;font:600 14px/1.3 var(--ui,system-ui,sans-serif)}
+.grun-relais a,.grun-relais button{color:#fff;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.35);border-radius:8px;
+  min-height:36px;padding:0 12px;display:inline-flex;align-items:center;text-decoration:none;font:inherit;white-space:nowrap}
+.grun-mod #back{visibility:visible!important}
+</style>
+<script src="grun.js?v=1"></script>
+<meta name="grun-module" content="accueil"></head><body><title>GRÜN</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Barlow:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
+<style>
+/* GRÜN · accueil + Individualisation. Style de la Veille : barre fixe (retour, marque, recherche, réglages), cartes, listes, sections dépliables.
+   Tailles en rem : la taille du texte des réglages agit sur html{font-size}. */
+:root{
+  --bg:#F4F5F7; --panel:#FFFFFF; --ink:#16202E; --mute:#5D6675; --line:#D9DDE3; --soft:#ECEFF3; --mark:#FFE58A;
+  --ind:#0F766E; --create:#C2410C; --res:#1D4ED8; --tests:#6D3FC0;
+  --pp:#C2410C; --ge:#1D4ED8; --de:#0F766E;
+  --ok:#15803D; --warn:#B45309; --bad:#B91C1C; --low:#475569;
+  --n1:#B91C1C; --n2:#B45309; --n3:#15803D; --n4:#6D3FC0;
+  --acc:var(--ind);
+  --ui:"Barlow",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --display:"Barlow Condensed","Arial Narrow",system-ui,sans-serif;
+  --read:"Source Serif 4",Georgia,"Times New Roman",serif;
+  --z:1;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#10141B; --panel:#181E28; --ink:#E6EAF0; --mute:#9AA4B3; --line:#2B3442; --soft:#212938; --mark:#6B5A12;
+  --ind:#2DD4BF; --create:#F08A4B; --res:#86A8FF; --tests:#B49BF0;
+  --pp:#F08A4B; --ge:#86A8FF; --de:#2DD4BF;
+  --ok:#4ADE80; --warn:#FBBF24; --bad:#F87171; --low:#94A3B8;
+  --n1:#F87171; --n2:#FBBF24; --n3:#4ADE80; --n4:#B49BF0; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#10141B; --panel:#181E28; --ink:#E6EAF0; --mute:#9AA4B3; --line:#2B3442; --soft:#212938; --mark:#6B5A12;
+  --ind:#2DD4BF; --create:#F08A4B; --res:#86A8FF; --tests:#B49BF0;
+  --pp:#F08A4B; --ge:#86A8FF; --de:#2DD4BF;
+  --ok:#4ADE80; --warn:#FBBF24; --bad:#F87171; --low:#94A3B8;
+  --n1:#F87171; --n2:#FBBF24; --n3:#4ADE80; --n4:#B49BF0; color-scheme:dark}
+html{font-size:calc(15px * var(--z))}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:var(--bg);color:var(--ink);font-family:var(--ui);font-size:1rem;line-height:1.45;margin:0;-webkit-tap-highlight-color:transparent;overflow-x:hidden}
+a{color:inherit}
+button,input,select,textarea{font:inherit;color:var(--ink)}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+/* barre du haut */
+.top{position:sticky;top:0;z-index:5;background:var(--bg);border-bottom:1px solid var(--line);padding-top:env(safe-area-inset-top,0px)}
+.topin{max-width:1100px;margin:0 auto;padding:8px 16px;display:flex;gap:8px;align-items:center}
+.ib{min-width:40px;min-height:40px;border:1px solid var(--line);background:var(--panel);border-radius:9px;display:inline-flex;align-items:center;justify-content:center;gap:6px;font-weight:600;padding:0 12px;white-space:nowrap;text-decoration:none;font-size:.95rem}
+.ib svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.ib.sm{min-height:34px;min-width:34px;padding:0 10px;font-size:.88rem;border-radius:8px}
+.ib.dang{color:var(--bad)}
+.ib[aria-pressed=true]{border-color:var(--acc);color:var(--acc);box-shadow:inset 0 0 0 1px var(--acc)}
+.brand{font-family:var(--display);font-weight:700;font-size:1.45rem;letter-spacing:.06em;white-space:nowrap;text-decoration:none;color:var(--ink)}
+.brand i{font-style:normal;color:var(--ind)}
+.sbox{flex:1;min-width:0;position:relative}
+.sbox input{width:100%;min-height:40px;border:1px solid var(--line);border-radius:9px;background:var(--panel);padding:0 12px 0 34px;font-size:1rem}
+.sbox svg{position:absolute;left:10px;top:11px;width:18px;height:18px;stroke:var(--mute);fill:none}
+.sp{flex:1}
+main{max-width:1100px;margin:0 auto;padding:16px 16px 40px}
+h1{font-family:var(--display);font-weight:700;font-size:2rem;line-height:1.1;margin:0;text-wrap:balance}
+h1 small{display:block;font-family:var(--ui);font-weight:500;font-size:.95rem;color:var(--mute);margin-top:4px;letter-spacing:0}
+.lead{color:var(--mute);margin:4px 0 0}
+.crumb{font-size:.87rem;color:var(--mute);display:flex;flex-wrap:wrap;gap:4px 6px;align-items:center;margin-bottom:4px}
+.crumb a{text-decoration:none;color:var(--acc);font-weight:600}
+.sec{margin-top:22px}
+.sec>h2,.h2{font-family:var(--display);font-size:1.4rem;font-weight:700;margin:0 0 8px;display:flex;gap:8px;align-items:baseline;justify-content:space-between}
+.h2 a,.sec>h2 a{font-family:var(--ui);font-size:.88rem;font-weight:600;color:var(--acc);text-decoration:none;white-space:nowrap}
+.cols{display:grid;grid-template-columns:minmax(0,1fr);gap:0 18px}
+@media (min-width:860px){.cols{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.cols>.sec:first-child,.cols>.sec:nth-child(2){margin-top:22px}}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+.card+.card{margin-top:10px}
+.list{display:flex;flex-direction:column;background:var(--panel);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.li{display:grid;grid-template-columns:62px minmax(0,1fr) auto;gap:10px;padding:10px 14px;text-decoration:none;border-top:1px solid var(--line);align-items:center;min-height:48px}
+.li:first-child{border-top:none}
+.li .code{font-variant-numeric:tabular-nums;color:var(--mute);font-size:.87rem;line-height:1.2}
+.li .tt{font-size:1rem;min-width:0;overflow-wrap:anywhere}
+.li .tt small{display:block;color:var(--mute);font-size:.84rem;margin-top:1px}
+.li .end{display:flex;gap:6px;align-items:center;color:var(--mute);font-size:.84rem}
+.li.n2c{grid-template-columns:minmax(0,1fr) auto}
+a.li:active,a.card:active{background:var(--soft)}
+.empty{color:var(--mute);padding:14px;background:var(--panel);border:1px dashed var(--line);border-radius:12px}
+.msg{font-size:.9rem;color:var(--mute)}
+.msg.ok{color:var(--ok)}
+.tools{display:flex;flex-wrap:wrap;gap:8px}
+.go{min-height:40px;border-radius:9px;border:none;background:var(--ink);color:var(--bg);font-weight:600;padding:0 16px;display:inline-flex;align-items:center;justify-content:center;gap:6px;text-decoration:none;white-space:nowrap}
+.go.acc{background:var(--acc);color:#fff}
+:root[data-theme="dark"] .go.acc{color:#0B1117}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .go.acc{color:#0B1117}}
+.load{padding:40px 0;color:var(--mute)}
+/* formulaires */
+.form{display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end}
+.f{display:flex;flex-direction:column;gap:3px;min-width:0}
+.f.w{flex:1;min-width:180px}
+.f.full{flex-basis:100%}
+.f>label,.lab{font-size:.74rem;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--mute)}
+.inp,.f select,.f input:not([type=range]):not([type=checkbox]),.f textarea{min-height:40px;border:1px solid var(--line);border-radius:8px;background:var(--panel);padding:0 10px;max-width:100%;width:100%;font-size:1rem}
+.f input[type=date]{min-width:150px}
+.f input[type=number]{width:96px}
+.f textarea{padding:8px 10px;min-height:76px;resize:vertical;font-size:.98rem}
+.chk{display:flex;gap:8px;align-items:center;min-height:40px}
+.chk input{width:20px;height:20px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.tg{min-height:34px;border:1px solid var(--line);background:var(--panel);border-radius:999px;padding:0 12px;font-size:.9rem;font-weight:600;color:var(--mute)}
+.tg[aria-pressed=true]{background:var(--acc);border-color:var(--acc);color:#fff}
+:root[data-theme="dark"] .tg[aria-pressed=true]{color:#0B1117}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .tg[aria-pressed=true]{color:#0B1117}}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:9px;overflow:hidden;background:var(--panel)}
+.seg button{border:none;background:none;min-height:38px;padding:0 14px;font-weight:600;color:var(--mute)}
+.seg button+button{border-left:1px solid var(--line)}
+.seg button[aria-pressed=true]{background:var(--ink);color:var(--bg)}
+.rng{display:grid;grid-template-columns:minmax(0,1fr);gap:2px}
+.rng .rh{display:flex;justify-content:space-between;gap:8px;font-weight:600;font-size:.95rem}
+.rng .rh output{font-variant-numeric:tabular-nums;color:var(--acc)}
+.rng input{width:100%;accent-color:var(--acc);min-height:30px}
+.rng .rl{display:flex;justify-content:space-between;font-size:.78rem;color:var(--mute)}
+.grid2{display:grid;grid-template-columns:minmax(0,1fr);gap:12px}
+@media (min-width:600px){.grid2{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}}
+/* accueil */
+.hero{display:flex;flex-wrap:wrap;justify-content:space-between;gap:6px 16px;align-items:flex-end}
+.word{font-family:var(--display);font-weight:700;font-size:3rem;line-height:.95;letter-spacing:.08em;margin:0}
+.word i{font-style:normal;color:var(--ind)}
+.poles{display:grid;grid-template-columns:minmax(0,1fr);gap:12px}
+@media (min-width:640px){.poles{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.pole{display:flex;flex-direction:column;gap:6px;text-decoration:none;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px;border-top:5px solid var(--pc);min-height:128px}
+.pole b{font-family:var(--display);font-size:1.75rem;color:var(--pc);line-height:1.05}
+.pole span{color:var(--mute);font-size:.95rem}
+.pole small{color:var(--mute);font-size:.84rem;margin-top:auto}
+.day{background:var(--panel);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.day+.day{margin-top:8px}
+.day>h3{margin:0;padding:8px 14px;font-size:.8rem;letter-spacing:.07em;text-transform:uppercase;color:var(--mute);background:var(--soft);display:flex;justify-content:space-between}
+.day>h3.auj{color:var(--acc)}
+.ev{display:grid;grid-template-columns:10px minmax(0,1fr) auto;gap:10px;padding:9px 14px;border-top:1px solid var(--line);text-decoration:none;align-items:center}
+.day>h3+.ev{border-top:none}
+.ev .dot{width:10px;height:10px;border-radius:50%;background:var(--ec,var(--mute))}
+.ev .tt small{display:block;color:var(--mute);font-size:.84rem}
+.ev .end{font-size:.82rem;color:var(--mute);text-align:right}
+.al{display:grid;grid-template-columns:auto minmax(0,1fr);gap:10px;align-items:start;padding:10px 14px;border-top:1px solid var(--line);text-decoration:none}
+.al:first-child{border-top:none}
+.badge{display:inline-flex;align-items:center;min-height:22px;padding:0 8px;border-radius:999px;font-size:.76rem;font-weight:700;letter-spacing:.03em;white-space:nowrap;border:1px solid currentColor}
+.b-haute{color:var(--bad)}.b-attention{color:var(--warn)}.b-info{color:var(--low)}.b-ok{color:var(--ok)}.b-basse{color:var(--low)}
+/* cartes joueurs */
+.pgrid{display:grid;grid-template-columns:minmax(0,1fr);gap:10px}
+@media (min-width:640px){.pgrid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (min-width:1000px){.pgrid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.pc{display:flex;flex-direction:column;gap:6px;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px 14px;text-decoration:none;border-left:4px solid var(--ind)}
+.pc .nm{font-family:var(--display);font-size:1.35rem;font-weight:700;line-height:1.1;display:flex;justify-content:space-between;gap:8px;align-items:baseline}
+.pc .meta{color:var(--mute);font-size:.88rem}
+.moys{display:flex;gap:6px;flex-wrap:wrap}
+.mo{display:inline-flex;gap:5px;align-items:baseline;font-size:.85rem;border-radius:7px;background:var(--soft);padding:2px 8px}
+.mo b{font-variant-numeric:tabular-nums;font-size:.98rem}
+.mo.pp b{color:var(--pp)}.mo.ge b{color:var(--ge)}.mo.de b{color:var(--de)}
+/* dossier */
+.head{display:flex;flex-wrap:wrap;gap:12px;justify-content:space-between;align-items:flex-start}
+.facts{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.fact{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:6px 10px;min-width:96px}
+.fact .lab{display:block;font-size:.68rem}
+.fact b{font-size:1.02rem;font-variant-numeric:tabular-nums}
+.fact b small{font-weight:500;color:var(--mute);font-size:.82rem}
+.acts{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.dos{display:grid;grid-template-columns:minmax(0,1fr);gap:10px;margin-top:18px;align-items:start}
+@media (min-width:900px){.dos{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}}
+.dcol{display:flex;flex-direction:column;gap:10px;min-width:0}
+details.sx{background:var(--panel);border:1px solid var(--line);border-radius:12px;border-left:4px solid var(--sc,var(--acc))}
+details.sx>summary{list-style:none;cursor:pointer;display:flex;gap:10px;align-items:baseline;padding:12px 14px;min-height:48px}
+details.sx>summary::-webkit-details-marker{display:none}
+details.sx>summary::before{content:"+";width:1em;color:var(--sc,var(--acc));font-weight:700;font-size:1.1rem}
+details.sx[open]>summary::before{content:"–"}
+details.sx>summary b{font-family:var(--display);font-size:1.3rem;line-height:1.1}
+details.sx>summary span{color:var(--mute);font-size:.86rem;margin-left:auto;text-align:right}
+.sxb{padding:0 14px 14px;display:flex;flex-direction:column;gap:12px}
+.sub{font-size:.76rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--mute);margin:4px 0 -4px}
+.inner{border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.inner .li{padding:8px 12px;min-height:44px}
+.rads{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.rad{text-align:center;min-width:0}
+.rad svg{width:100%;height:auto;max-width:190px;display:block;margin:0 auto}
+.rad .rt{font-weight:700;font-size:.86rem}
+.rad .rv{font-variant-numeric:tabular-nums;font-size:1.25rem;font-weight:700}
+.rad .rd{font-size:.8rem;color:var(--mute)}
+.lv{display:inline-flex;align-items:center;justify-content:center;min-width:26px;height:22px;border-radius:6px;font-weight:700;font-size:.82rem;color:#fff;padding:0 5px;font-variant-numeric:tabular-nums}
+.lv.n1{background:var(--n1)}.lv.n2{background:var(--n2)}.lv.n3{background:var(--n3)}.lv.n4{background:var(--n4)}
+:root[data-theme="dark"] .lv{color:#0B1117}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .lv{color:#0B1117}}
+.lc{font-size:.75rem;font-weight:700;border-radius:5px;padding:1px 5px;background:var(--soft)}
+.lc.pp{color:var(--pp)}.lc.ge{color:var(--ge)}.lc.de{color:var(--de)}
+.tw{overflow-x:auto;border:1px solid var(--line);border-radius:10px;background:var(--panel)}
+table.cmp{border-collapse:collapse;width:100%;font-size:.9rem;min-width:520px}
+.cmp th,.cmp td{border-bottom:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:middle;white-space:nowrap}
+.cmp th{background:var(--soft);font-weight:600;font-size:.78rem;letter-spacing:.05em;text-transform:uppercase;color:var(--mute)}
+.cmp td.n{font-variant-numeric:tabular-nums;text-align:center}
+.cmp tr:last-child td{border-bottom:none}
+.chart svg{width:100%;height:auto;display:block}
+.kpi{display:flex;flex-wrap:wrap;gap:8px}
+.kpi>div{background:var(--soft);border-radius:10px;padding:6px 10px}
+.kpi .lab{display:block;font-size:.68rem}
+.kpi b{font-variant-numeric:tabular-nums;font-size:1.1rem}
+.note{font-family:var(--read);font-size:.98rem;line-height:1.55;color:var(--ink)}
+.res{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:10px 14px;text-decoration:none;display:block}
+.res+.res{margin-top:8px}
+.res .t{font-weight:600}
+.res .w{color:var(--mute);font-size:.84rem}
+.res .s{font-family:var(--read);font-size:.95rem;margin-top:3px}
+mark{background:var(--mark);color:inherit;border-radius:2px}
+.rgrp{margin-top:18px}
+.rgrp>h2{font-family:var(--display);font-size:1.3rem;margin:0 0 8px;color:var(--rc,var(--ink));display:flex;justify-content:space-between;align-items:baseline}
+.rgrp>h2 small{font-family:var(--ui);font-size:.84rem;color:var(--mute);font-weight:500}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(var(--nav-h,62px) + 14px + env(safe-area-inset-bottom,0px));z-index:60;background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:10px;font-weight:600;max-width:calc(100vw - 32px);box-shadow:0 6px 24px rgba(0,0,0,.2)}
+/* mode joueur */
+.big{display:flex;flex-direction:column;gap:6px;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px;border-top:5px solid var(--bc,var(--ind));text-decoration:none}
+.big .k{font-size:.76rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--bc,var(--ind))}
+.big b{font-family:var(--display);font-size:1.6rem;line-height:1.1}
+.big span{color:var(--mute)}
+.bigs{display:grid;grid-template-columns:minmax(0,1fr);gap:12px}
+@media (min-width:640px){.bigs{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.pin{display:flex;gap:8px;justify-content:center;margin:12px 0}
+.pin input{width:56px;height:60px;text-align:center;font-size:1.6rem;font-weight:700;border:1px solid var(--line);border-radius:10px;background:var(--panel)}
+/* écran de lancement */
+#splash{position:fixed;inset:0;z-index:100;background:#0B3B36;color:#F3F7F6;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;transition:opacity .28s ease}
+#splash .w{font-family:var(--display);font-weight:700;font-size:4.6rem;letter-spacing:.14em;line-height:1;padding-left:.14em;animation:spIn .5s ease both}
+#splash .l{width:0;height:2px;background:#5EEAD4;animation:spL .6s .15s ease forwards}
+#splash .s{font-size:.82rem;letter-spacing:.22em;text-transform:uppercase;opacity:0;animation:spT .4s .3s ease forwards}
+#splash.out{opacity:0;pointer-events:none}
+@keyframes spIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+@keyframes spL{to{width:120px}}
+@keyframes spT{to{opacity:.75}}
+@media (prefers-reduced-motion: reduce){#splash{display:none}}
+@media print{.top,#grun-nav,.acts,.toast{display:none}}
+</style>
+
+<div id="splash" aria-hidden="true"><div class="w">GRÜN</div><div class="l"></div><div class="s">Performance tennis</div></div>
+<header class="top"><div class="topin">
+  <button class="ib" id="back" type="button" aria-label="Retour">‹</button>
+  <a class="brand" href="#/" aria-label="Accueil GRÜN">GR<i>Ü</i>N</a>
+  <div class="sbox" id="sbox"><svg viewBox="0 0 24 24" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+    <input id="q" type="search" placeholder="Rechercher partout : joueur, exo, test, doc…" autocomplete="off" enterkeyhint="search" aria-label="Recherche globale"></div>
+  <span class="sp" id="tsp" hidden></span>
+  <a class="ib" id="cfg" href="#/reglages" aria-label="Réglages"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></a>
+</div></header>
+<main id="main"><div class="load">Chargement…</div></main>
+
+<script>
+/* ===== GRÜN · ACCUEIL + INDIVIDUALISATION =====
+   Routes : #/ (accueil coach ou dossier du joueur en mode joueur) · #/recherche/<q> · #/pole/<id> · #/joueurs · #/j/<jid>[/<section>] · #/g/<gid> · #/reglages
+   Tout passe par GRUN.* (joueurs, groupes, journal, banque, tests, relais, sauvegarde). Les données des modules (plans, séances, routines)
+   sont lues sous leurs clés historiques, en tolérant les champs absents. */
+"use strict";
+(function () {
+const G = window.GRUN;
+const $ = (s, r = document) => r.querySelector(s), $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const esc = G.esc, arr = x => Array.isArray(x) ? x : [];
+const fold = s => String(s == null ? "" : s).normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
+const pad = n => String(n).padStart(2, "0");
+const DAY = 864e5;
+const P = s => { const [y, m, d] = String(s).slice(0, 10).split("-").map(Number); return Date.UTC(y, (m || 1) - 1, d || 1); };
+const I = t => new Date(t).toISOString().slice(0, 10);
+const add = (s, n) => I(P(s) + n * DAY);
+const lundi = s => { const t = P(s); return I(t - ((new Date(t).getUTCDay() + 6) % 7) * DAY); };
+const ecart = (a, b) => Math.round((P(a) - P(b)) / DAY);
+const JS = ["dimanche", "lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi"], JC = ["dim.", "lun.", "mar.", "mer.", "jeu.", "ven.", "sam."];
+const MOIS = ["janv.", "févr.", "mars", "avr.", "mai", "juin", "juil.", "août", "sept.", "oct.", "nov.", "déc."];
+const dLong = s => { const d = new Date(P(s)); return JS[d.getUTCDay()] + " " + d.getUTCDate() + " " + MOIS[d.getUTCMonth()]; };
+const dCourt = s => { const d = new Date(P(s)); return d.getUTCDate() + " " + MOIS[d.getUTCMonth()]; };
+const dJour = s => { const d = new Date(P(s)); return JC[d.getUTCDay()] + " " + d.getUTCDate() + " " + MOIS[d.getUTCMonth()]; };
+const nf = (v, d = 1) => v == null || isNaN(v) ? "–" : String(Math.round(v * 10 ** d) / 10 ** d).replace(".", ",");
+const prenom = j => (j && j.nom || "").split(" ")[0];
+const isoOk = s => /^\d{4}-\d{2}-\d{2}/.test(String(s || ""));
+/* GRÜN = 4-18 ans : un âge calculé au-delà de 18 ans compte pour 18 ans (anciennes données adulte:true ignorées) */
+const ageJ = (nai, ref) => { const a = G.ageCiv(nai, ref); return a == null ? null : Math.min(18, a); };
+const matur = j => G.maturite(j);
+const ageTxt = j => ageJ(j.naissance) != null ? ageJ(j.naissance) + " ans" : "";
+
+/* ---------- référentiels ---------- */
+const LN0 = {
+  PP: ["Force du bas du corps", "Force du haut du corps", "Gainage et stabilité du tronc", "Puissance des jambes : sauts et pliométrie", "Puissance du haut du corps et rotation", "Vitesse et accélération", "Freinage, changements de direction et agilité", "Endurance aérobie", "Répétition d'efforts intenses", "Coordination, motricité fondamentale et rythme", "Équilibre et proprioception", "Mobilité et souplesse"],
+  GE: ["Service à plat", "Service slicé", "Service lifté", "Coup droit lifté", "Coup droit à plat", "Coup droit slicé", "Revers lifté", "Revers à plat", "Revers slicé", "Volée de coup droit", "Volée de revers", "Smash", "Amortie et touché de balle"],
+  DE: ["Position d'attention", "Allègement et reprise d'appuis", "Démarrage et premiers pas", "Déplacements latéraux", "Déplacements vers l'avant et vers l'arrière", "Pas d'ajustement et mise à distance", "Appuis de frappe", "Freinage et décélération", "Changement de direction et réaccélération", "Replacement", "Enchaînements et liaison des actions"]
+};
+const DOMS = ["PP", "GE", "DE"], DOMN = { PP: "Préparation physique", GE: "Geste", DE: "Déplacement" }, DOMC = { PP: "var(--pp)", GE: "var(--ge)", DE: "var(--de)" };
+const KN = { PPI: "PP individuelle", PPC: "PP collective", TI: "Tennis individuel", TC: "Tennis collectif", PM: "Préparation mentale" };
+const PHN = { G: "Préparation générale", S: "Préparation spécifique", P: "Pré-compétition", C: "Compétition", R: "Récupération", T: "Transition" };
+const CLASSEMENTS = ["NC", "40", "30/5", "30/4", "30/3", "30/2", "30/1", "30", "15/5", "15/4", "15/3", "15/2", "15/1", "15", "5/6", "4/6", "3/6", "2/6", "1/6", "0", "-2/6", "-4/6", "-15", "-30", "Top 60", "Top 40"];
+const ZONES = { dos: "Dos", genou: "Genou", talon: "Talon, cheville", epaule: "Épaule", poignet: "Poignet, coude", hanche: "Hanche", autre: "Autre" };
+const zn = z => ZONES[z] || z || "";
+const TYPN = { tournoi: "Tournoi", bilan: "Bilan", seance: "Séance", plan: "Séance du plan", repos: "Repos", autre: "Autre" };
+const TYPC = { tournoi: "var(--bad)", bilan: "var(--tests)", seance: "var(--create)", plan: "var(--create)", repos: "var(--low)", autre: "var(--mute)" };
+const RTYP = { seance: "Séance", warmup: "Warm-up", tennis: "Tennis", match: "Match", autre: "Autre" };
+const APRES = { tennis: "entraînement tennis", pp: "séance de PP", match: "match", bilan: "bilan" };
+const FF = [["sommeil", "Sommeil", "Très mal dormi", "Très bien dormi"], ["fatigue", "Énergie", "Épuisé", "Plein d'énergie"], ["courbatures", "Courbatures", "Très courbaturé", "Aucune"], ["stress", "Stress", "Très stressé", "Serein"], ["humeur", "Humeur", "Au plus bas", "Au top"]];
+const RPEN = ["Repos", "Très très facile", "Très facile", "Facile", "Modéré", "Un peu dur", "Dur", "Très dur", "Très très dur", "Presque maximal", "Maximal"];
+const POLEC = { ind: "var(--ind)", create: "var(--create)", res: "var(--res)", tests: "var(--tests)" };
+
+/* ---------- données de l'accueil (index de recherche, barèmes, calendrier) ---------- */
+let RD = { docs: [], tests: [], saisons: [], fams: [], lignes: LN0, gm: {}, s: {}, sens: {}, cal: [] }, TM = {};
+const rdP = fetch("data-recherche.json").then(r => r.ok ? r.json() : null).catch(() => null).then(d => {
+  if (d) RD = { ...RD, ...d, lignes: d.lignes && d.lignes.PP ? d.lignes : LN0 };
+  RD.tests.forEach(t => TM[t.id] = t);
+});
+const LN = d => (RD.lignes && RD.lignes[d]) || LN0[d];
+const ligneNom = l => { const m = /^(PP|GE|DE)(\d+)$/.exec(l || ""); return m ? (LN(m[1])[+m[2] - 1] || l) : l; };
+
+/* ---------- données des modules (lecture tolérante) ---------- */
+function PROG() { const s = G.load(G.K.prog, {}) || {}; return { plans: arr(s.plans), profils: s.profils || {} }; }
+function CACHE() { return G.load(G.K.progCache, {}) || {}; }
+function SEANCES() { const s = G.load(G.K.seances, {}) || {}; return arr(s.seances).filter(x => x && x.id); }
+function ROUT() { const s = G.load(G.K.routines, {}) || {}; return { routines: arr(s.routines).filter(x => x && x.id), hist: arr(s.hist) }; }
+const REG = () => ({ theme: "auto", fs: 100, nomCoach: "", code: "", ...(G.load(G.K.reglages, {}) || {}) });
+/* profil d'utilisation : "coach" (ses joueurs et groupes) ou "autonome" (joueur sans coach : son seul dossier, jidMoi) — distinct du mode joueur prêté par un coach */
+const auto = () => !G.isJoueur() && REG().profil === "autonome";
+const moi = () => G.joueurs.get(REG().jidMoi || "");
+const setReg = p => quiet(() => G.save(G.K.reglages, { ...REG(), ...p }));
+const gidsDe = jid => G.groupes.de(jid).map(g => g.id);
+const grpOk = gid => gid && G.groupes.get(gid);
+function planJids(p) { const s = new Set([p.jid, ...arr(p.jids)].filter(Boolean)); if (grpOk(p.gid)) G.groupes.joueurs(p.gid).forEach(j => s.add(j.id)); return [...s]; }
+function seanceJids(x) { const s = new Set([...arr(x.joueurs), ...arr(x.jids), x.jid].filter(Boolean)); const g = x.gid || x.groupe; if (grpOk(g)) G.groupes.joueurs(g).forEach(j => s.add(j.id)); return [...s]; }
+function routJids(r) { const s = new Set([...arr(r.jids), r.jid].filter(Boolean)); if (grpOk(r.gid)) G.groupes.joueurs(r.gid).forEach(j => s.add(j.id)); return [...s]; }
+const plansDe = jid => PROG().plans.filter(p => planJids(p).includes(jid));
+const seancesDe = jid => SEANCES().filter(s => seanceJids(s).includes(jid));
+const routinesDe = jid => ROUT().routines.filter(r => routJids(r).includes(jid));
+
+/* semaines d'un plan : cache de Create my prog (thèmes) sinon semaine type brute */
+function planSemaines(p) {
+  const c = CACHE()[p.id];
+  if (c && arr(c.W).length) return c.W.map(w => {
+    const d1 = typeof w.d1 === "number" ? I(w.d1) : String(w.d1 || "").slice(0, 10);
+    return { d1, ph: w.ph, mi: w.mi, ses: arr(w.ses).map(s => ({ date: add(d1, +s.j || 0), j: s.j, k: s.k, t: s.t || "", l: arr(s.l), key: s.key })) };
+  }).filter(w => isoOk(w.d1));
+  if (!isoOk(p.debut) || !isoOk(p.fin)) return [];
+  const out = []; let m = lundi(p.debut), n = 0;
+  while (m <= p.fin && n < 70) {
+    const ses = arr(p.sem).map(s => ({ date: add(m, +s.j || 0), j: s.j, k: s.k, t: "", l: [] })).filter(s => s.date >= p.debut && s.date <= p.fin);
+    out.push({ d1: m, ses, brut: true }); m = add(m, 7); n++;
+  }
+  return out;
+}
+
+/* tous les évènements datés d'un joueur entre a et b (inclus) */
+function evJoueur(j, a, b) {
+  const out = [], jid = j.id;
+  for (const x of arr(j.agenda)) { if (!x || !isoOk(x.date)) continue; const fin = isoOk(x.fin) ? x.fin : x.date; if (x.date <= b && fin >= a) out.push({ date: x.date < a ? a : x.date, fin: fin !== x.date ? fin : "", type: x.type || "autre", titre: x.titre || TYPN[x.type] || "Évènement", src: "agenda", id: x.id, k: "ag|" + x.id }); }
+  const S = SEANCES(), built = new Set();
+  for (const s of S) {
+    if (s.src && s.src.plan && s.src.key) built.add(s.src.plan + "|" + s.src.key);
+    if (!isoOk(s.date) || s.date < a || s.date > b || !seanceJids(s).includes(jid)) continue;
+    out.push({ date: s.date, type: "seance", titre: s.nom || s.theme || "Séance", sous: [KN[s.type], s.duree ? s.duree + " min" : ""].filter(Boolean).join(" · "), href: G.href("seances", "#/s/" + s.id), terrain: G.href("seances", "#/terrain/" + s.id), ref: s.id, fait: !!s.fait, duree: s.duree, gid: grpOk(s.gid) ? s.gid : null, k: "s|" + s.id });
+  }
+  for (const p of PROG().plans) {
+    if (!planJids(p).includes(jid)) continue;
+    if ((isoOk(p.fin) && p.fin < a) || (isoOk(p.debut) && p.debut > b)) continue;
+    for (const w of planSemaines(p)) {
+      if (add(w.d1, 6) < a || w.d1 > b) continue;
+      for (const s of w.ses) {
+        if (s.date < a || s.date > b || (s.key && built.has(p.id + "|" + s.key))) continue;
+        out.push({ date: s.date, type: "plan", titre: s.t || KN[s.k] || "Séance du plan", sous: (s.t ? (KN[s.k] || "") + " · " : "") + (p.nom || "Plan"), kk: s.k, l: s.l, href: G.href("prog", "#p/" + p.id), plan: p.id, gid: grpOk(p.gid) ? p.gid : null, k: "p|" + p.id + "|" + s.date + "|" + (s.key || s.k) });
+      }
+    }
+    for (const c of arr(p.compets)) if (c && isoOk(c.d1) && c.d1 <= b && (isoOk(c.d2) ? c.d2 : c.d1) >= a) out.push({ date: c.d1 < a ? a : c.d1, fin: c.d2 && c.d2 !== c.d1 ? c.d2 : "", type: "tournoi", titre: c.nom || "Tournoi", sous: p.nom || "", href: G.href("prog", "#p/" + p.id), k: "c|" + p.id + "|" + c.d1 + "|" + (c.nom || "") });
+  }
+  return out.sort((x, y) => x.date < y.date ? -1 : x.date > y.date ? 1 : (x.type === "tournoi" ? -1 : 1));
+}
+
+/* ---------- bilans des grilles ---------- */
+/* un bilan vide (créé d'office par Grilles à la création du joueur, rien de saisi) ne compte pas */
+const bilanRempli = b => ["PP", "GE", "DE"].some(d => arr((b.v || b.valeurs || {})[d]).some(x => x != null && x !== "")) || Object.keys(b.res || {}).some(k => b.res[k] && Object.keys(b.res[k]).length);
+const bilans = j => arr(j.bilans).filter(b => b && b.date && bilanRempli(b)).slice().sort((a, b) => a.date < b.date ? 1 : -1);
+const vOf = (b, d) => arr((b.v || b.valeurs || {})[d]);
+const bAge = (j, b) => Math.min(18, +b.age || ageJ(j.naissance, b.date) || 12);
+function mask(j, b, d) { const m = RD.gm && RD.gm[(j.sexe === "F" ? "F" : "G") + pad(bAge(j, b)) + "_" + d]; return LN(d).map((_, i) => m ? m[i] === "1" : true); }
+function moy(j, b, d) { if (!b) return null; const mk = mask(j, b, d); const v = vOf(b, d).map((x, i) => x == null || x === "" || !mk[i] ? null : +x).filter(x => x != null && !isNaN(x)); return v.length ? Math.round(v.reduce((a, x) => a + x, 0) / v.length * 10) / 10 : null; }
+const parseN = s => { if (s == null) return null; s = String(s).trim().replace(",", ".").replace(/\s/g, ""); if (s === "") return null; if (/^\d+:\d+(\.\d+)?$/.test(s)) { const [m, x] = s.split(":"); return +m * 60 + +x; } const v = parseFloat(s); return isNaN(v) ? null : v; };
+function niveauTest(tid, sx, age, vals) {
+  if (!vals || typeof vals !== "object") return null;
+  const S = RD.s && RD.s[tid] && RD.s[tid][sx] && RD.s[tid][sx][age];
+  if (S) { let lv = 4; for (const k in S) { const v = parseN(vals[k]); if (v == null) return null; const t = S[k]; const asc = t[0] < t[2] || (t[0] === t[2] && /grand/.test(RD.sens[tid] || "")); lv = Math.min(lv, asc ? (v >= t[2] ? 4 : v >= t[1] ? 3 : v >= t[0] ? 2 : 1) : (v <= t[2] ? 4 : v <= t[1] ? 3 : v <= t[0] ? 2 : 1)); } return lv; }
+  const tp = G.tests.perso().find(t => t.id === tid); const t = tp && tp.seuils && tp.seuils[sx] && tp.seuils[sx][age];
+  if (t && t.length === 3) { const v = parseN(Object.values(vals)[0]); if (v == null) return null; const asc = tp.sens !== "petit"; return asc ? (v >= t[2] ? 4 : v >= t[1] ? 3 : v >= t[0] ? 2 : 1) : (v <= t[2] ? 4 : v <= t[1] ? 3 : v <= t[0] ? 2 : 1); }
+  return null;
+}
+const testNom = id => { const t = TM[id]; if (t) return t.n; const p = G.tests.perso().find(x => x.id === id); return p ? p.nom : id; };
+const lvB = v => v == null ? "" : `<span class="lv n${Math.min(4, Math.max(1, Math.floor(v)))}">${nf(v)}</span>`;
+function moysHTML(j, b) { return `<div class="moys">${DOMS.map(d => `<span class="mo ${d.toLowerCase()}">${d} <b>${b ? nf(moy(j, b, d)) : "–"}</b></span>`).join("")}</div>`; }
+
+/* radar SVG d'un domaine (pointillés = bilan précédent ; cercle tireté = niveau 3) */
+function radar(d, vals, mk, prev) {
+  const n = LN(d).length, R = 76, c = 105, A = i => -Math.PI / 2 + i * 2 * Math.PI / n, Pt = (i, v) => [c + Math.cos(A(i)) * R * v / 4, c + Math.sin(A(i)) * R * v / 4].map(x => Math.round(x * 10) / 10);
+  const poly = v => [...Array(n)].map((_, i) => Pt(i, Math.max(0, Math.min(4, +v[i] || 0))).join(",")).join(" ");
+  let s = `<svg viewBox="0 0 210 210" role="img" aria-label="Radar ${DOMN[d]}" style="--dc:${DOMC[d]}">`;
+  for (let k = 4; k >= 1; k--) s += `<polygon points="${poly(Array(n).fill(k))}" style="fill:none;stroke:var(--line)${k === 3 ? ";stroke:var(--n3);stroke-dasharray:3 3;opacity:.8" : ""}"/>`;
+  for (let i = 0; i < n; i++) { const [x, y] = Pt(i, 4); s += `<line x1="${c}" y1="${c}" x2="${x}" y2="${y}" style="stroke:var(--line);stroke-width:.6"/>`; }
+  if (prev && prev.some(v => v != null)) s += `<polygon points="${poly(prev.map((v, i) => mk[i] ? v : 0))}" style="fill:none;stroke:var(--mute);stroke-width:1.4;stroke-dasharray:4 3"/>`;
+  if (vals.some(v => v != null)) s += `<polygon points="${poly(vals.map((v, i) => mk[i] ? v : 0))}" style="fill:var(--dc);fill-opacity:.2;stroke:var(--dc);stroke-width:2;stroke-linejoin:round"/>`;
+  for (let i = 0; i < n; i++) { const [x, y] = Pt(i, 4.75); s += `<text x="${x}" y="${y + 4}" text-anchor="middle" font-size="11" font-weight="600" style="fill:currentColor;opacity:${mk[i] ? 1 : .3}">${i + 1}</text>`; }
+  return s + "</svg>";
+}
+function radars(j, b, prev) {
+  return `<div class="rads">${DOMS.map(d => {
+    const mk = mask(j, b, d), v = LN(d).map((_, i) => { const x = vOf(b, d)[i]; return x == null || x === "" ? null : +x; });
+    const pv = prev ? LN(d).map((_, i) => { const x = vOf(prev, d)[i]; return x == null || x === "" ? null : +x; }) : null;
+    const m = moy(j, b, d), mp = prev ? moy(j, prev, d) : null, dl = m != null && mp != null ? m - mp : null;
+    return `<div class="rad"><div class="rt" style="color:${DOMC[d]}">${DOMN[d]}</div>${radar(d, v, mk, pv)}<div class="rv">${nf(m)}</div>${dl != null ? `<div class="rd">${dl > 0 ? "+" : ""}${nf(dl)} depuis le ${G.frD(prev.date)}</div>` : ""}</div>`;
+  }).join("")}</div>`;
+}
+
+/* ---------- forme, charge, alertes ---------- */
+function formeScore(f) { const v = FF.map(x => +f[x[0]]).filter(x => x >= 1 && x <= 5); return v.length ? v.reduce((a, x) => a + x, 0) / v.length : null; }
+function semaineBilan(t) { return arr(RD.cal).find(w => w.bilan && w.au >= t && ecart(w.du, t) <= 7) || null; }
+function alertes(j) {
+  const A = [], t = G.today();
+  const ch = G.journal.charge(j.id);
+  const RR = G.journal.retours(j.id).filter(r => r.rpe != null && r.duree), recul = RR.length ? ecart(t, RR[RR.length - 1].date) : 0;
+  if (ch.ratio != null && ch.ratio > 1.3 && recul >= 21) A.push({ n: ch.ratio > 1.5 ? "haute" : "attention", t: "Charge en hausse : ratio " + nf(ch.ratio, 2), s: "journal" });
+  const dl = [...G.journal.retours(j.id), ...G.journal.forme(j.id)].filter(r => r.douleur && (+r.douleur.int > 0) && ecart(t, r.date) >= 0 && ecart(t, r.date) < 7).sort((a, b) => a.date < b.date ? 1 : -1);
+  if (dl.length) { const d = dl[0].douleur; A.push({ n: +d.int >= 5 ? "haute" : "attention", t: "Douleur le " + dCourt(dl[0].date) + (d.zone ? " : " + zn(d.zone).toLowerCase() : "") + " (" + d.int + "/10)", s: "journal" }); }
+  const bl = arr(j.blessures).filter(b => b && b.statut !== "guerie"); if (bl.length) A.push({ n: "attention", t: "Blessure en cours : " + bl.map(b => zn(b.zone) || b.desc || "?").join(", ").toLowerCase(), s: "blessures" });
+  const f = G.journal.forme(j.id)[0]; if (f && ecart(t, f.date) <= 3 && ecart(t, f.date) >= 0) { const sc = formeScore(f), mn = Math.min(...FF.map(x => +f[x[0]] || 5)); if ((sc != null && sc <= 2.4) || mn <= 1) A.push({ n: "attention", t: "Forme basse le " + dCourt(f.date) + " (" + nf(sc) + "/5)", s: "journal" }); }
+  const v = G.vitesseCroissance(j); if (v != null && v > 7) A.push({ n: "attention", t: "Croissance rapide : " + nf(v) + " cm/an", s: "croissance" });
+  const lb = bilans(j)[0];
+  if (!lb) A.push({ n: "info", t: "Aucun bilan pour l'instant", s: "grilles", bil: 1 });
+  else if (ecart(t, lb.date) > 122) A.push({ n: "info", t: "Dernier bilan il y a " + Math.round(ecart(t, lb.date) / 30.4) + " mois", s: "grilles", bil: 1 });
+  else { const sb = semaineBilan(t); if (sb && lb.date < sb.du) A.push({ n: "info", t: sb.bilan + " (S" + sb.n + ") à faire", s: "grilles", bil: 1 }); }
+  return A;
+}
+const NIVO = { haute: 0, attention: 1, info: 2 };
+const NIVT = { haute: "Urgent", attention: "À surveiller", info: "À faire" };
+const badge = (n, t) => `<span class="badge b-${n}">${esc(t || NIVT[n] || n)}</span>`;
+function chargeBadge(ch) { if (ch.ratio == null) return `<span class="badge b-info">pas assez de données</span>`; const t = { haute: "très haute", attention: "en hausse", basse: "basse", ok: "bonne" }[ch.alerte]; return `<span class="badge b-${ch.alerte === "ok" ? "ok" : ch.alerte}">${nf(ch.ratio, 2)} · ${t}</span>`; }
+
+/* ---------- état, rendu ---------- */
+const main = $("#main");
+let mute = 0; const quiet = fn => { mute++; try { return fn(); } finally { mute--; } };
+let OPEN = new Set(); try { OPEN = new Set(JSON.parse(sessionStorage.getItem("hub_open") || "[]")); } catch (e) {}
+const keepOpen = () => { try { sessionStorage.setItem("hub_open", JSON.stringify([...OPEN])); } catch (e) {} };
+const wide = matchMedia("(min-width:900px)");
+let CURJ = null, FILTRE = "", PREF = null, BQ = null, BQload = null;
+function toast(t) { let x = $("#toast"); if (!x) { x = document.createElement("div"); x.id = "toast"; x.className = "toast"; x.setAttribute("role", "status"); document.body.appendChild(x); } x.textContent = t; x.hidden = false; clearTimeout(x._t); x._t = setTimeout(() => x.hidden = true, 2600); }
+function applyReg() { const r = REG(), h = document.documentElement; if (r.theme === "light" || r.theme === "dark") h.dataset.theme = r.theme; else h.removeAttribute("data-theme"); h.style.setProperty("--z", (Math.max(85, Math.min(135, +r.fs || 100)) / 100).toString()); }
+function sx(id, titre, resume, body, col) {
+  const open = OPEN.has(id);
+  return `<details class="sx" id="sx-${id}" data-sx="${id}" ${open ? "open" : ""} style="--sc:${col || "var(--acc)"}"><summary><b>${titre}</b><span>${resume || ""}</span></summary><div class="sxb">${body}</div></details>`;
+}
+const li = (href, code, tt, small, end) => `<${href ? `a href="${esc(href)}"` : "div"} class="li${code == null ? " n2c" : ""}">${code != null ? `<span class="code">${code}</span>` : ""}<span class="tt">${tt}${small ? `<small>${small}</small>` : ""}</span><span class="end">${end || ""}</span></${href ? "a" : "div"}>`;
+const empty = t => `<div class="empty">${t}</div>`;
+function navActive(k) {
+  const AU = auto();
+  $$("#grun-nav a").forEach(a => { const h = a.getAttribute("href"); if (h === "index.html#/joueurs" || h === "index.html#/pole/res") a.hidden = AU;
+    if (h === "index.html" && !G.isJoueur()) { const sp = a.querySelector("span"); if (sp) sp.textContent = AU ? "Mon dossier" : "Accueil"; } });
+  const H = G.isJoueur() ? { acc: "index.html", create: "index.html#/pole/create", tests: "index.html#/pole/tests" } : { acc: "index.html", ind: "index.html#/joueurs", create: "index.html#/pole/create", res: "index.html#/pole/res", tests: "index.html#/pole/tests" };
+  $$("#grun-nav a").forEach(a => a.classList.toggle("on", a.getAttribute("href") === H[k]));
+}
+function setAcc(c) { document.documentElement.style.setProperty("--acc", c); }
+
+function route() {
+  const raw = location.hash.replace(/^#\/?/, ""), parts = raw.split("/").map(x => { try { return decodeURIComponent(x); } catch (e) { return x; } });
+  const [a, b, c] = parts; const J = G.isJoueur();
+  $("#back").style.visibility = a ? "visible" : "hidden";   // rien à remonter depuis l'accueil
+  $("#sbox").hidden = J; $("#tsp").hidden = !J;
+  if (J) {
+    if (a === "reglages") { navActive(""); return vReglages(); }
+    if (a === "pole" && b === "create") { navActive("create"); return vJoueurMode("seance"); }
+    if (a === "pole" && b === "tests") { navActive("tests"); return vJoueurMode("tests"); }
+    navActive("acc"); return vJoueurMode("");
+  }
+  const rg = REG();
+  if (!rg.profil && a !== "reglages" && !G.joueurs.all().length) { navActive("acc"); return vBienvenue(); }
+  if (auto()) {
+    const m = moi();
+    if (a === "reglages") { navActive(""); return vReglages(); }
+    if (!m) { navActive("acc"); return vCreerMoi(); }
+    if (a === "recherche") { navActive("acc"); return vRecherche(parts.slice(1).join("/")); }
+    if (a === "pole" && (b === "create" || b === "tests")) { navActive(b); return vPole(b); }
+    navActive("acc"); return vDossier(m.id, a === "j" ? c : null);
+  }
+  if (a === "recherche") { navActive("acc"); return vRecherche(parts.slice(1).join("/")); }
+  if (a === "pole" && G.POLES.some(p => p.id === b)) { navActive(b); return vPole(b); }
+  if (a === "joueurs") { navActive("ind"); return vJoueurs(); }
+  if (a === "j" && b) { navActive("ind"); return vDossier(b, c); }
+  if (a === "g" && b) { navActive("ind"); return vGroupe(b); }
+  if (a === "reglages") { navActive(""); return vReglages(); }
+  navActive("acc"); return vAccueil();
+}
+function render(keep) { const y = scrollY; route(); if (keep) scrollTo(0, y); }
+addEventListener("hashchange", () => { render(false); scrollTo(0, 0); });
+wide.addEventListener && wide.addEventListener("change", () => render(true));
+$("#back").onclick = () => { if (history.length > 1) history.back(); else location.hash = "#/"; };
+const busy = () => { const a = document.activeElement; return a && /^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName) && main.contains(a); };
+const refresh = () => { if (mute) return; if (busy()) { pending = true; return; } render(true); };
+let pending = false;
+main.addEventListener("focusout", () => setTimeout(() => { if (pending && !busy()) { pending = false; render(true); } }, 50));
+["grun:joueurs", G.K.groupes, G.K.journal, G.K.prog, G.K.progCache, G.K.seances, G.K.routines, G.K.tests, G.K.mode].forEach(k => G.on(k, refresh));
+G.on(G.K.reglages, () => { applyReg(); refresh(); });
+
+/* ================= ACCUEIL COACH ================= */
+function pcard(j) {
+  const m = matur(j), b = bilans(j)[0], al = alertes(j).sort((x, y) => NIVO[x.n] - NIVO[y.n])[0];
+  const grs = G.groupes.de(j.id).map(g => g.nom);
+  return `<a class="pc" href="#/j/${esc(j.id)}" style="border-left-color:${j.sexe === "F" ? "var(--tests)" : "var(--ind)"}"><div class="nm"><span>${esc(j.nom)}</span>${al && al.n !== "info" ? badge(al.n, al.n === "haute" ? "!" : "à surveiller") : ""}</div>
+    <div class="meta">${j.sexe === "F" ? "Fille" : "Garçon"}${ageTxt(j) ? " · " + ageTxt(j) : ""}${m ? " · âge bio " + nf(m.bio) : ""}${grs.length ? " · " + esc(grs.join(", ")) : ""}</div>
+    <div class="meta">${b ? "Bilan du " + G.frD(b.date) : "Pas encore de bilan"}</div>${b ? moysHTML(j, b) : ""}${al && al.n !== "info" ? `<div class="meta" style="color:var(--${al.n === "haute" ? "bad" : "warn"})">${esc(al.t)}</div>` : ""}</a>`;
+}
+function semaine() {
+  const t = G.today(), fin = add(t, 7), M = new Map();
+  for (const j of G.joueurs.all()) for (const e of evJoueur(j, t, fin)) {
+    const k = e.date + "|" + e.k; if (!M.has(k)) M.set(k, { ...e, noms: [], jids: [] });
+    const x = M.get(k); x.noms.push(prenom(j)); x.jids.push(j.id);
+  }
+  const days = {}; for (const e of M.values()) (days[e.date] ||= []).push(e);
+  let h = "";
+  for (let i = 0; i <= 7; i++) {
+    const d = add(t, i), L = (days[d] || []).sort((a, b) => (a.type === "tournoi" ? -1 : 0) - (b.type === "tournoi" ? -1 : 0));
+    if (!L.length && i > 0) continue;
+    h += `<div class="day"><h3 class="${i === 0 ? "auj" : ""}"><span>${i === 0 ? "Aujourd'hui · " + dLong(d) : i === 1 ? "Demain · " + dLong(d) : dLong(d)}</span><span>${L.length || ""}</span></h3>`;
+    if (!L.length) h += `<div class="ev"><span class="dot" style="--ec:var(--line)"></span><span class="tt msg">Rien de prévu aujourd'hui.</span><span></span></div>`;
+    for (const e of L) {
+      const g = e.gid && G.groupes.get(e.gid), who = g ? g.nom : e.noms.length > 3 ? e.noms.slice(0, 3).join(", ") + " +" + (e.noms.length - 3) : e.noms.join(", ");
+      const href = e.href || (e.jids.length === 1 ? "#/j/" + e.jids[0] + "/agenda" : "#/joueurs");
+      h += `<a class="ev" href="${esc(href)}" style="--ec:${TYPC[e.type]}"><span class="dot"></span><span class="tt">${esc(e.titre)}<small>${esc(who)}${e.sous ? " · " + esc(e.sous) : ""}</small></span><span class="end">${TYPN[e.type]}${e.fin ? "<br>→ " + dCourt(e.fin) : ""}</span></a>`;
+    }
+    h += `</div>`;
+  }
+  if (!Object.keys(days).length) h += `<p class="msg" style="margin-top:8px">Les séances des plans (Create my prog), les séances datées (Create my séance) et les tournois de l'agenda des joueurs apparaissent ici.</p>`;
+  return h;
+}
+function alertesHTML(js) {
+  const L = [], bil = [];
+  for (const j of js) for (const a of alertes(j)) { if (a.bil) bil.push(j); else L.push({ ...a, j }); }
+  L.sort((a, b) => NIVO[a.n] - NIVO[b.n]);
+  let h = L.map(a => `<a class="al" href="#/j/${esc(a.j.id)}/${a.s}">${badge(a.n)}<span class="tt"><b>${esc(a.j.nom)}</b> · ${esc(a.t)}</span></a>`).join("");
+  if (bil.length) { const sb = semaineBilan(G.today()); h += `<a class="al" href="#/pole/tests">${badge("info")}<span class="tt"><b>Bilans à faire</b>${sb ? " · " + esc(sb.bilan) + " (semaine " + sb.n + ")" : ""} · ${bil.map(j => esc(prenom(j))).join(", ")}</span></a>`; }
+  return h ? `<div class="list">${h}</div>` : empty("Aucune alerte. Charge, douleurs, forme, croissance et bilans à refaire sont surveillés ici.");
+}
+function vAccueil() {
+  setAcc("var(--ind)"); document.title = "GRÜN";
+  const r = REG(), js = G.joueurs.all(), gs = G.groupes.all();
+  const rec = js.slice().sort((a, b) => ((b.maj || b.cree || "") > (a.maj || a.cree || "") ? 1 : -1)).slice(0, 6);
+  let h = `<div class="hero"><div><p class="word">GR<i>Ü</i>N</p><p class="lead">${r.nomCoach ? "Bonjour " + esc(r.nomCoach) + " · " : ""}${dLong(G.today())}</p></div>
+    <div class="tools"><a class="ib" href="#/joueurs">+ Joueur</a><a class="ib" href="#/pole/create">+ Créer</a></div></div>`;
+  if (!js.length) h += `<div class="card" style="margin-top:16px;border-left:4px solid var(--ind)"><b>Bienvenue dans GRÜN.</b><p class="msg" style="margin:4px 0 10px">Commence par créer tes joueurs et tes groupes : chaque joueur a un dossier complet (fiche, croissance, bilans, programmation, séances, warm-up, journal, agenda, blessures).</p><a class="go acc" href="#/joueurs">Créer mes joueurs</a></div>`;
+  h += `<div class="cols"><section class="sec"><h2>Aujourd'hui et 7 jours</h2>${semaine()}</section>
+    <section class="sec"><h2>Alertes</h2>${js.length ? alertesHTML(js) : empty("Les alertes de tes joueurs apparaîtront ici.")}</section></div>`;
+  if (rec.length) h += `<section class="sec"><h2>Joueurs récents <a href="#/joueurs">Tous (${js.length})${gs.length ? " · " + gs.length + " groupe" + (gs.length > 1 ? "s" : "") : ""}</a></h2><div class="pgrid">${rec.map(pcard).join("")}</div></section>`;
+  h += `<section class="sec"><h2>Les 4 pôles</h2><div class="poles">${G.POLES.map(p => { const ms = Object.values(G.MODS).filter(m => m.pole === p.id && m.f !== "index.html"); return `<a class="pole" href="${p.id === "ind" ? "#/joueurs" : "#/pole/" + p.id}" style="--pc:${POLEC[p.id]}"><b>${esc(p.t)}</b><span>${esc(p.s)}</span><small>${p.id === "ind" ? js.length + " joueur" + (js.length > 1 ? "s" : "") + " · " + gs.length + " groupe" + (gs.length > 1 ? "s" : "") : ms.map(m => esc(m.t)).join(" · ")}</small></a>`; }).join("")}</div></section>`;
+  main.innerHTML = h;
+}
+
+/* ================= PAGE D'UN PÔLE ================= */
+const RACC = {
+  prog: [["Nouvelle prog", "prog", "#/nouveau"], ["Saisons de référence", "saisons", null]],
+  seances: [["Nouvelle séance", "seances", "#/nouvelle"]],
+  warmup: [["Nouveau warm-up", "warmup", "#/nouveau"]],
+  veille: [["Ouvrir la veille", "veille", null]],
+  banque: [["Nouvel exercice", "banque", "#/nouveau"], ["Familles", "banque", "#familles"]],
+  saisons: [["Toutes les saisons", "saisons", null]],
+  grilles: [["Tous les tests", "grilles", "#p/3"], ["Mode d'emploi", "grilles", "#p/4"]]
+};
+function vPole(id) {
+  const p = G.POLES.find(x => x.id === id); setAcc(POLEC[id]); document.title = p.t + " · GRÜN";
+  if (id === "ind") { location.replace("#/joueurs"); return; }
+  const mods = Object.entries(G.MODS).filter(([k, m]) => m.pole === id && m.f !== "index.html"), js = auto() ? [moi()].filter(Boolean) : G.joueurs.all(), gs = auto() ? [] : G.groupes.all();
+  const selJ = js.length ? `<select class="inp" id="pj" aria-label="Joueur"><option value="">Choisir un joueur…</option>${js.map(j => `<option value="${esc(j.id)}">${esc(j.nom)}</option>`).join("")}</select>` : "";
+  const selG = gs.length ? `<select class="inp" id="pg" aria-label="Groupe"><option value="">Choisir un groupe…</option>${gs.map(g => `<option value="${esc(g.id)}">${esc(g.nom)}</option>`).join("")}</select>` : "";
+  let h = `<div class="crumb"><a href="#/">Accueil</a></div><h1 style="color:${POLEC[id]}">${esc(p.t)}</h1><p class="lead">${esc(p.s)}</p>`;
+  h += `<div class="sec"><div class="poles">${mods.map(([k, m]) => `<div class="pole" style="--pc:${POLEC[id]}"><a href="${G.href(k)}" style="text-decoration:none"><b>${esc(m.t)}</b></a><span>${esc(m.s || "")}</span>
+     <div class="tools" style="margin-top:8px"><a class="go acc" href="${G.href(k)}">Ouvrir</a>${(RACC[k] || []).map(([t, mod, hs]) => `<a class="ib" href="${G.href(mod, hs)}">${esc(t)}</a>`).join("")}</div></div>`).join("")}</div></div>`;
+  if (id === "create") h += `<section class="sec"><h2>Pour un joueur ou un groupe</h2><div class="card"><p class="msg" style="margin-top:0">Choisis qui : la prog, la séance ou le warm-up partent de son dossier (âge, maturation, bilans, zones fragiles) et tu reviens ici à la fin.</p>
+     ${js.length ? `<div class="form"><div class="f w">${selJ}</div><button class="ib" data-a="relais" data-vers="prog" data-src="pj">Nouvelle prog</button><button class="ib" data-a="relais" data-vers="seances" data-src="pj">Nouvelle séance</button><button class="ib" data-a="relais" data-vers="warmup" data-src="pj">Nouveau warm-up</button></div>` : `<p class="msg">Crée d'abord tes joueurs dans <a href="#/joueurs">Individualisation</a>.</p>`}
+     ${gs.length ? `<div class="form" style="margin-top:10px"><div class="f w">${selG}</div><button class="ib" data-a="relais" data-vers="prog" data-src="pg">Prog de groupe</button><button class="ib" data-a="relais" data-vers="seances" data-src="pg">Séance de groupe</button><button class="ib" data-a="relais" data-vers="warmup" data-src="pg">Warm-up de groupe</button></div>` : ""}</div></section>`;
+  if (id === "tests") {
+    h += `<section class="sec"><h2>Bilans</h2><div class="card">${js.length ? `<div class="form"><div class="f w">${selJ}</div><button class="go acc" data-a="bilan" data-src="pj">Nouveau bilan</button></div>` : `<p class="msg" style="margin:0">Crée d'abord tes joueurs dans <a href="#/joueurs">Individualisation</a>.</p>`}
+      ${gs.length ? `<div class="form" style="margin-top:10px"><div class="f w">${selG}</div><button class="ib" data-a="bilangrp" data-src="pg">Bilan de groupe</button></div>` : ""}</div></section>`;
+    const af = js.map(j => ({ j, a: alertes(j).find(x => x.bil) })).filter(x => x.a);
+    if (af.length) h += `<section class="sec"><h2>Bilans à faire</h2><div class="list">${af.map(({ j, a }) => li(G.href("grilles", "#/joueur/" + j.id), j.sexe === "F" ? "Fille" : "Garçon", esc(j.nom), esc(a.t), "Nouveau bilan ›")).join("")}</div></section>`;
+  }
+  if (id === "res") h += `<section class="sec"><h2>Chercher partout</h2><p class="msg">La barre de recherche en haut couvre la veille, les tests, les saisons, la banque (tes exos compris), tes joueurs, groupes, séances, plans et routines.</p></section>`;
+  main.innerHTML = h;
+}
+
+/* ================= MES JOUEURS ================= */
+function vJoueurs() {
+  setAcc("var(--ind)"); document.title = "Joueurs · GRÜN";
+  const js = G.joueurs.all(), gs = G.groupes.all(), L = FILTRE && G.groupes.get(FILTRE) ? G.groupes.joueurs(FILTRE).sort((a, b) => a.nom.localeCompare(b.nom, "fr")) : js;
+  let h = `<div class="crumb"><a href="#/">Accueil</a></div><h1 style="color:var(--ind)">Individualisation<small>${js.length} joueur${js.length > 1 ? "s" : ""} · ${gs.length} groupe${gs.length > 1 ? "s" : ""} · un dossier complet par joueur et par groupe</small></h1>`;
+  h += `<section class="sec">${sxForm("nj", "Nouveau joueur", "", `<form class="form" data-f="joueur">
+      <div class="f w"><label for="jn">Prénom et nom</label><input id="jn" name="nom" autocomplete="off" required></div>
+      <div class="f"><label for="jsx">Sexe</label><select id="jsx" name="sexe"><option value="G">Garçon</option><option value="F">Fille</option></select></div>
+      <div class="f"><label for="jnai">Naissance (facultatif)</label><input id="jnai" name="naissance" type="date"></div>
+      <div class="f"><label for="jgr">Groupe</label><select id="jgr" name="gid"><option value="">Aucun</option>${gs.map(g => `<option value="${esc(g.id)}">${esc(g.nom)}</option>`).join("")}<option value="+">+ Nouveau groupe…</option></select></div>
+      <div class="f" id="jngw" hidden><label for="jng">Nom du groupe</label><input id="jng" name="ngroupe" placeholder="Comité G1, SPUC 13-14…"></div>
+      <button class="go acc" type="submit">Créer le joueur</button></form>`, !js.length)}</section>`;
+  h += `<section class="sec"><h2>Mes joueurs</h2>${gs.length && js.length ? `<div class="chips" style="margin-bottom:10px"><button class="tg" data-a="filtre" data-g="" aria-pressed="${!FILTRE}">Tous</button>${gs.map(g => `<button class="tg" data-a="filtre" data-g="${esc(g.id)}" aria-pressed="${FILTRE === g.id}">${esc(g.nom)}</button>`).join("")}</div>` : ""}
+    ${L.length ? `<div class="pgrid">${L.map(pcard).join("")}</div>` : empty(js.length ? "Personne dans ce groupe." : "Aucun joueur. Crée ton premier joueur ci-dessus : rien n'est créé à l'avance.")}</section>`;
+  h += `<section class="sec"><h2>Mes groupes</h2>${gs.length ? `<div class="list">${gs.map(g => { const m = G.groupes.joueurs(g.id); return li("#/g/" + g.id, m.length + " j.", esc(g.nom), esc(m.map(prenom).join(", ")) || "aucun membre", "›"); }).join("")}</div>` : empty("Aucun groupe.")}
+    <div style="margin-top:10px">${sxForm("ng", "Nouveau groupe", "", `<form class="form" data-f="groupe"><div class="f w"><label for="gn">Nom du groupe</label><input id="gn" name="nom" required autocomplete="off"></div>
+      ${js.length ? `<div class="f full"><span class="lab">Membres</span><div class="chips">${js.map(j => `<button type="button" class="tg" data-a="tg" data-v="${esc(j.id)}" aria-pressed="false">${esc(j.nom)}</button>`).join("")}</div></div>` : ""}
+      <button class="go acc" type="submit">Créer le groupe</button></form>`, false)}</div></section>`;
+  const AR = G.joueurs.archives ? G.joueurs.archives() : [];
+  if (AR.length) h += `<section class="sec">${sx("arch", "Joueurs archivés", AR.length + " · tu ne les entraînes plus", `<div class="list">${AR.map(j => li(null, j.sexe === "F" ? "Fille" : "Garçon", `<a href="#/j/${esc(j.id)}">${esc(j.nom)}</a>`, (j.archiveLe ? "archivé le " + G.frD(j.archiveLe) : "archivé") + (ageTxt(j) ? " · " + ageTxt(j) : ""), `<button class="ib sm" data-a="archiver" data-v="0" data-jid="${esc(j.id)}">Réactiver</button><a class="ib sm dang" href="#/j/${esc(j.id)}/fin">Supprimer définitivement</a>`)).join("")}</div>`, "var(--mute)")}</section>`;
+  main.innerHTML = h;
+}
+function sxForm(id, t, res, body, open) { if (open) OPEN.add(id); return sx(id, t, res, body, "var(--ind)"); }
+
+/* ================= DOSSIER JOUEUR ================= */
+function factsJ(j) {
+  const a = ageJ(j.naissance), m = matur(j), gc = G.grilleConseillee(j), ch = G.journal.charge(j.id);
+  const f = (lab, v, s) => `<div class="fact"><span class="lab">${lab}</span><b>${v}${s ? ` <small>${s}</small>` : ""}</b></div>`;
+  return `<div class="facts">${f("Âge civil", a != null ? a + " ans" : "–", a != null ? nf(G.ageDec(j.naissance)) : "")}${f("Âge biologique", m ? nf(m.bio) + " ans" : "–", m ? m.avance : "à mesurer")}
+    ${f("Grille conseillée", gc != null ? gc + " ans" : "–", m ? "âge bio" : "âge civil")}${f("Maturation", m ? esc(m.statut) : "–")}
+    ${f("Classement", esc(j.classement || "NC"))}${f("Main · revers", (j.main === "G" ? "Gaucher" : "Droitier") + " · " + (j.revers === "1" ? "1 main" : "2 mains"))}${f("Charge", ch.ratio != null ? nf(ch.ratio, 2) : "–", ch.ratio != null ? ({ ok: "bonne", attention: "en hausse", haute: "très haute", basse: "basse" }[ch.alerte]) : "")}</div>`;
+}
+function vDossier(jid, ouvrir) {
+  const j = G.joueurs.get(jid);
+  if (!j) { main.innerHTML = `<div class="crumb"><a href="#/">Accueil</a> › <a href="#/joueurs">Joueurs</a></div>` + empty("Ce joueur n'existe pas (ou plus) sur cet appareil."); return; }
+  setAcc("var(--ind)"); document.title = j.nom + " · GRÜN"; CURJ = j.id;
+  if (ouvrir) { OPEN.add("j-" + ouvrir); keepOpen(); }
+  const grs = G.groupes.de(j.id), a = ageJ(j.naissance), al = alertes(j).sort((x, y) => NIVO[x.n] - NIVO[y.n]);
+  const AU = auto();
+  let h = (AU ? `<div class="crumb"><span>Mon dossier</span></div>` : `<div class="crumb"><a href="#/">Accueil</a>›<a href="#/joueurs">Joueurs</a>${grs.map(g => `›<a href="#/g/${esc(g.id)}">${esc(g.nom)}</a>`).join("")}</div>`) + `
+    <div class="head"><h1>${esc(j.nom)}<small>${j.sexe === "F" ? "Fille" : "Garçon"}${ageTxt(j) ? " · " + ageTxt(j) : ""}${j.naissance ? " · né" + (j.sexe === "F" ? "e" : "") + " le " + G.frD(j.naissance) : ""}${grs.length ? " · " + grs.map(g => esc(g.nom)).join(", ") : ""}</small></h1></div>
+    ${factsJ(j)}
+    ${al.length ? `<div class="chips" style="margin-top:10px">${al.map(x => `<a href="#/j/${esc(j.id)}/${x.s}" style="text-decoration:none">${badge(x.n, x.t)}</a>`).join("")}</div>` : ""}
+    <div class="acts"><a class="go acc" href="${G.href("grilles", "#/joueur/" + j.id)}">Nouveau bilan</a>
+      <button class="ib" data-a="relais" data-vers="prog" data-jid="${esc(j.id)}">Nouvelle prog</button><button class="ib" data-a="relais" data-vers="seances" data-jid="${esc(j.id)}">Nouvelle séance</button>
+      <button class="ib" data-a="relais" data-vers="warmup" data-jid="${esc(j.id)}">Nouveau warm-up</button>${AU ? "" : `<button class="ib" data-a="modej" data-jid="${esc(j.id)}">Mode joueur sur cet appareil</button>`}</div>`;
+  if (j.archive && !AU) h = `<div class="card" style="border-color:var(--warn);margin-bottom:10px"><b>Joueur archivé</b>${j.archiveLe ? " le " + G.frD(j.archiveLe) : ""} : tu ne l'entraînes plus, il n'apparaît plus dans les listes. <button class="ib sm" data-a="archiver" data-v="0" data-jid="${esc(j.id)}">Réactiver</button></div>` + h;
+  const S = { fiche: sFiche(j), croissance: sCroissance(j), grilles: sGrilles(j), programmation: sProg(j), seances: sSeances(j), warmup: sWarmup(j), journal: sJournal(j), agenda: sAgenda(j), blessures: sBlessures(j), fin: sFin(j) };
+  const ordre = ["fiche", "croissance", "grilles", "programmation", "seances", "warmup", "journal", "agenda", "blessures", "fin"];
+  h += wide.matches ? `<div class="dos"><div class="dcol">${["fiche", "croissance", "grilles", "blessures", "fin"].map(k => S[k]).join("")}</div><div class="dcol">${["programmation", "seances", "warmup", "journal", "agenda"].map(k => S[k]).join("")}</div></div>`
+    : `<div class="dos"><div class="dcol">${ordre.map(k => S[k]).join("")}</div></div>`;
+  main.innerHTML = h;
+  if (ouvrir) { const d = $("#sx-j-" + CSS.escape(ouvrir)); if (d) setTimeout(() => d.scrollIntoView({ block: "start", behavior: "smooth" }), 60); history.replaceState(null, "", auto() ? "#/" : "#/j/" + j.id); }
+}
+
+/* --- Fiche --- */
+const fld = (k, lab, input, cls) => `<div class="f ${cls || ""}"><label for="fi-${k}">${lab}</label>${input}</div>`;
+function sFiche(j) {
+  const sel = (k, opts, v) => `<select id="fi-${k}" data-fiche="${k}">${opts.map(([x, t]) => `<option value="${esc(x)}"${String(v) === String(x) ? " selected" : ""}>${esc(t)}</option>`).join("")}</select>`;
+  const gs = auto() ? [] : G.groupes.all(), mes = new Set(gidsDe(j.id)), d = j.dispo || {};
+  const body = `<div class="form">
+    ${fld("nom", "Prénom et nom", `<input id="fi-nom" data-fiche="nom" value="${esc(j.nom)}" autocomplete="off">`, "w")}
+    ${fld("sexe", "Sexe", sel("sexe", [["G", "Garçon"], ["F", "Fille"]], j.sexe))}
+    ${fld("naissance", "Naissance", `<input id="fi-naissance" type="date" data-fiche="naissance" value="${esc(j.naissance || "")}">`)}
+    ${fld("main", "Main", sel("main", [["D", "Droitier"], ["G", "Gaucher"]], j.main))}
+    ${fld("revers", "Revers", sel("revers", [["2", "2 mains"], ["1", "1 main"]], j.revers))}
+    ${fld("classement", "Classement FFT", sel("classement", CLASSEMENTS.map(c => [c, c]), j.classement || "NC"))}
+    ${fld("dpp", "PP / semaine", `<input id="fi-dpp" type="number" min="0" max="20" step="0.5" inputmode="decimal" data-fiche="dispo.pp" value="${d.pp != null ? esc(d.pp) : ""}" placeholder="séances">`)}
+    ${fld("dten", "Tennis / semaine", `<input id="fi-dten" type="number" min="0" max="30" step="0.5" inputmode="decimal" data-fiche="dispo.tennis" value="${d.tennis != null ? esc(d.tennis) : ""}" placeholder="séances">`)}
+    </div>
+    <label class="chk"><input type="checkbox" data-fiche="croissance" ${j.croissance ? "checked" : ""}> Pic de croissance en cours (charges et sauts plafonnés dans Create)</label>
+    <div class="f"><span class="lab">Zones fragiles ou douloureuses</span><div class="chips">${Object.entries(ZONES).filter(([k]) => k !== "autre").map(([k, t]) => `<button type="button" class="tg" data-a="zone" data-jid="${esc(j.id)}" data-v="${k}" aria-pressed="${arr(j.zones).includes(k)}">${t}</button>`).join("")}</div></div>
+    ${gs.length ? `<div class="f"><span class="lab">Groupes</span><div class="chips">${gs.map(g => `<button type="button" class="tg" data-a="jgrp" data-jid="${esc(j.id)}" data-v="${esc(g.id)}" aria-pressed="${mes.has(g.id)}">${esc(g.nom)}</button>`).join("")}</div></div>` : ""}
+    ${fld("objectifs", "Objectifs", `<textarea id="fi-objectifs" data-fiche="objectifs" placeholder="Objectifs de la saison, tournois visés…">${esc(j.objectifs || "")}</textarea>`, "full")}
+    ${fld("notes", "Notes", `<textarea id="fi-notes" data-fiche="notes" placeholder="Ce qui compte pour ce joueur…">${esc(j.notes || "")}</textarea>`, "full")}
+    <p class="msg" id="fimsg">Chaque modification est enregistrée sur la fiche unique du joueur (lue par tous les modules).</p>
+    `;
+  return sx("j-fiche", "Fiche", esc([j.classement || "NC", j.main === "G" ? "gaucher" : "droitier", arr(j.zones).length ? arr(j.zones).map(zn).join(", ").toLowerCase() : ""].filter(Boolean).join(" · ")), body, "var(--ind)");
+}
+
+/* --- Croissance --- */
+function courbe(j, m) {
+  const M = arr(j.mesures).filter(x => x && x.taille && isoOk(x.date) && j.naissance).map(x => ({ a: G.ageDec(j.naissance, x.date), h: +x.taille })).sort((a, b) => a.a - b.a);
+  if (M.length < 2) return "";
+  const W = 320, H = 150, pl = 34, pr = 10, pt = 10, pb = 24;
+  let a0 = Math.floor(M[0].a), a1 = Math.ceil(M[M.length - 1].a); if (a1 - a0 < 1) a1 = a0 + 1;
+  if (m && m.aphv > a0 - 0.5 && m.aphv < a1 + 0.5) { a0 = Math.min(a0, Math.floor(m.aphv)); a1 = Math.max(a1, Math.ceil(m.aphv)); }
+  let h0 = Math.floor(Math.min(...M.map(x => x.h)) / 5) * 5, h1 = Math.ceil(Math.max(...M.map(x => x.h)) / 5) * 5; if (h1 - h0 < 10) h1 = h0 + 10;
+  const X = a => pl + (a - a0) / (a1 - a0) * (W - pl - pr), Y = v => pt + (1 - (v - h0) / (h1 - h0)) * (H - pt - pb);
+  let s = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Courbe de taille">`;
+  for (let v = h0; v <= h1; v += (h1 - h0 > 30 ? 10 : 5)) s += `<line x1="${pl}" x2="${W - pr}" y1="${Y(v)}" y2="${Y(v)}" style="stroke:var(--line);stroke-width:.7"/><text x="${pl - 5}" y="${Y(v) + 3.5}" text-anchor="end" font-size="10" style="fill:var(--mute)">${v}</text>`;
+  for (let a = a0; a <= a1; a++) s += `<text x="${X(a)}" y="${H - 7}" text-anchor="middle" font-size="10" style="fill:var(--mute)">${a} ans</text>`;
+  if (m && m.aphv >= a0 && m.aphv <= a1) s += `<line x1="${X(m.aphv)}" x2="${X(m.aphv)}" y1="${pt}" y2="${H - pb}" style="stroke:var(--warn);stroke-dasharray:4 3"/><text x="${X(m.aphv) + 4}" y="${pt + 9}" font-size="10" style="fill:var(--warn)">pic estimé</text>`;
+  s += `<polyline points="${M.map(x => X(x.a).toFixed(1) + "," + Y(x.h).toFixed(1)).join(" ")}" style="fill:none;stroke:var(--ind);stroke-width:2.2;stroke-linejoin:round"/>`;
+  s += M.map(x => `<circle cx="${X(x.a).toFixed(1)}" cy="${Y(x.h).toFixed(1)}" r="3.2" style="fill:var(--panel);stroke:var(--ind);stroke-width:2"/>`).join("");
+  return `<div class="chart">${s}</svg></div>`;
+}
+function sCroissance(j) {
+  const M = arr(j.mesures).filter(x => x && isoOk(x.date)).slice().sort((a, b) => a.date < b.date ? 1 : -1), m = G.maturite(j), v = G.vitesseCroissance(j), d = M[0];
+  const k = (lab, val, s) => `<div><span class="lab">${lab}</span><b>${val}</b>${s ? ` <small class="msg">${s}</small>` : ""}</div>`;
+  const body = `${d ? `<div class="kpi">${k("Taille", d.taille ? nf(+d.taille) + " cm" : "–")}${k("Taille assise", d.assise ? nf(+d.assise) + " cm" : "–")}${k("Poids", d.poids ? nf(+d.poids) + " kg" : "–")}${k("Envergure", d.envergure ? nf(+d.envergure) + " cm" : "–")}</div>
+    <div class="kpi">${k("Âge biologique", m ? nf(m.bio) + " ans" : "–")}${k("Âge du pic", m ? nf(m.aphv) + " ans" : "–")}${k("Vitesse", v != null ? nf(v) + " cm/an" : "–", v != null && v > 7 ? "rapide" : "")}${k("Statut", m ? esc(m.statut) : "–")}</div>
+    ${m ? `<p class="msg" style="margin:0">${m.avance === "précoce" ? "Maturation précoce" : m.avance === "tardif" ? "Maturation tardive" : "Maturation dans la moyenne"} · estimation par ${esc(m.methode)} · grille conseillée ${m.grille} ans.</p>` : `<p class="msg" style="margin:0">${j.naissance ? "Ajoute la taille assise et le poids (garçon) ou la taille (fille) pour estimer l'âge biologique." : "Renseigne la date de naissance dans la fiche pour calculer l'âge biologique."}</p>`}` : ""}
+    ${courbe(j, m)}
+    <form class="form" data-f="mesure" data-jid="${esc(j.id)}"><div class="f"><label>Date</label><input type="date" name="date" value="${G.today()}" required></div>
+      <div class="f"><label>Taille (cm)</label><input type="number" name="taille" step="0.1" min="60" max="230" inputmode="decimal"></div>
+      <div class="f"><label>Assise (cm)</label><input type="number" name="assise" step="0.1" min="30" max="130" inputmode="decimal"></div>
+      <div class="f"><label>Poids (kg)</label><input type="number" name="poids" step="0.1" min="10" max="150" inputmode="decimal"></div>
+      <div class="f"><label>Envergure (cm)</label><input type="number" name="envergure" step="0.1" min="60" max="240" inputmode="decimal"></div>
+      <button class="go acc" type="submit">Ajouter la mesure</button></form>
+    ${M.length ? `<div class="inner">${M.map(x => li(null, G.frD(x.date).slice(0, 5) + "<br>" + x.date.slice(0, 4), [x.taille ? nf(+x.taille) + " cm" : "", x.assise ? "assise " + nf(+x.assise) : "", x.poids ? nf(+x.poids) + " kg" : "", x.envergure ? "envergure " + nf(+x.envergure) : ""].filter(Boolean).join(" · "), (() => { const mm = G.maturite(j, x.taille ? x : null); return mm ? "âge bio " + nf(mm.bio) : ""; })(), `<button class="ib sm" data-a="delmes" data-jid="${esc(j.id)}" data-v="${esc(x.date)}" aria-label="Supprimer la mesure">×</button>`)).join("")}</div>` : ""}
+    <p class="msg" style="margin:0">L'âge biologique situe la maturité du corps : il dit quelle grille utiliser et quand protéger. Autour du pic de croissance (± 1 an), on plafonne les charges, les sauts et les volumes, et on surveille genou, talon et dos. Mesure tous les 3 mois, le matin, sans chaussures.</p>`;
+  return sx("j-croissance", "Croissance", d && d.taille ? nf(+d.taille) + " cm" + (m ? " · âge bio " + nf(m.bio) : "") : "aucune mesure", body, "var(--ind)");
+}
+
+/* --- Grilles et tests --- */
+function testsHTML(j, b) {
+  const ids = [...new Set([...arr(b.sel), ...Object.keys(b.res || {})])].filter(id => b.res && b.res[id] && Object.keys(b.res[id]).length);
+  if (!ids.length) return `<p class="msg" style="margin:0">Aucun résultat de test dans ce bilan.</p>`;
+  const sxx = j.sexe === "F" ? "F" : "G", age = bAge(j, b);
+  return `<div class="inner">${ids.map(id => { const r = b.res[id], lv = niveauTest(id, sxx, age, r), t = TM[id];
+    return li(G.href("grilles", "#/test/" + id), esc(id.replace(/^T-/, "")), esc(testNom(id)), esc(Object.entries(r).map(([k, v]) => (Object.keys(r).length > 1 ? k + " : " : "") + v).join(" · ") + (t && t.u ? " " + t.u : "")), lv ? lvB(lv) : ""); }).join("")}</div>`;
+}
+function axesHTML(j, b, cond, vide) {
+  const L = [], sxx = j.sexe === "F" ? "F" : "G", age = bAge(j, b);
+  for (const d of DOMS) { const mk = mask(j, b, d); vOf(b, d).forEach((v, i) => { if (v != null && v !== "" && mk[i] && cond(+v)) L.push({ l: d + (i + 1), v: +v, d }); }); }
+  if (!L.length) return `<p class="msg" style="margin:0">${vide}</p>`;
+  return `<div class="inner">${L.map(x => `<div class="li"><span class="code"><span class="lc ${x.d.toLowerCase()}">${x.l}</span></span><span class="tt"><a href="${G.href("grilles", "#/ligne/" + x.l + "/" + sxx + "/" + age)}" style="text-decoration:none">${esc(ligneNom(x.l))}</a><small><a href="${G.href("banque", "#/l/" + x.l + "?a=" + age)}" style="color:var(--acc);font-weight:600;text-decoration:none">Exos de la ligne ›</a></small></span><span class="end">${lvB(x.v)}</span></div>`).join("")}</div>`;
+}
+function sGrilles(j) {
+  const B = bilans(j), b = B[0], pv = B[1];
+  const lien = `<div class="tools"><a class="go acc" href="${G.href("grilles", "#/joueur/" + j.id)}">Nouveau bilan</a><a class="ib" href="${G.href("grilles", "#/joueur/" + j.id)}">Ouvrir dans Grilles et tests</a></div>`;
+  if (!b) return sx("j-grilles", "Grilles et tests", "aucun bilan", empty("Aucun bilan pour l'instant. Le premier bilan donne le profil radar, les axes de travail et les points forts.") + lien, "var(--tests)");
+  const body = `<div class="sub">Dernier bilan · ${G.frD(b.date)} · grille ${bAge(j, b)} ans${b.note ? " · " + esc(b.note) : ""}</div>
+    ${radars(j, b, pv)}${pv ? `<p class="msg" style="margin:0">Pointillés : bilan du ${G.frD(pv.date)}. Cercle tireté vert : niveau 3, l'attendu du haut niveau de sa génération.</p>` : ""}
+    <div class="sub">Axes de travail (niveau &lt; 3)</div>${axesHTML(j, b, v => v < 3, "Aucune ligne sous le niveau 3.")}
+    <div class="sub">Points forts (≥ 3,5)</div>${axesHTML(j, b, v => v >= 3.5, "Pas encore de ligne à 3,5 ou plus.")}
+    <div class="sub">Résultats des tests</div>${testsHTML(j, b)}
+    ${B.length > 1 ? `<div class="sub">Historique des bilans</div><div class="tw"><table class="cmp" style="min-width:0"><thead><tr><th>Date</th><th>Grille</th>${DOMS.map(d => `<th style="text-align:center">${d}</th>`).join("")}</tr></thead><tbody>${B.map(x => `<tr><td>${G.frD(x.date)}</td><td>${bAge(j, x)} ans</td>${DOMS.map(d => `<td class="n">${nf(moy(j, x, d))}</td>`).join("")}</tr>`).join("")}</tbody></table></div>` : ""}
+    ${lien}`;
+  return sx("j-grilles", "Grilles et tests", "Bilan du " + G.frD(b.date) + " · " + DOMS.map(d => nf(moy(j, b, d))).join(" / "), body, "var(--tests)");
+}
+
+/* --- Programmation --- */
+function semaineCourante(p) { const t = G.today(); return planSemaines(p).find(w => w.d1 <= t && add(w.d1, 6) >= t) || null; }
+function semHTML(w) {
+  return `<div class="inner">${w.ses.length ? w.ses.map(s => li(null, JC[new Date(P(s.date)).getUTCDay()] + "<br>" + dCourt(s.date), esc(s.t || KN[s.k] || s.k || "Séance"), esc(KN[s.k] || "") + (arr(s.l).length ? " · " + arr(s.l).map(l => `<span class="lc ${String(l).slice(0, 2).toLowerCase()}">${esc(l)}</span>`).join(" ") : ""), s.date === G.today() ? badge("ok", "aujourd'hui") : "")).join("") : `<div class="li n2c"><span class="tt msg">Pas de séance cette semaine (repos ou coupure).</span><span></span></div>`}</div>`;
+}
+function sProg(j) {
+  const L = plansDe(j.id).sort((a, b) => (a.debut || "") < (b.debut || "") ? 1 : -1), t = G.today();
+  let body = "", res = L.length ? L.length + " plan" + (L.length > 1 ? "s" : "") : "aucun plan";
+  const act = L.filter(p => (!p.debut || p.debut <= t) && (!p.fin || p.fin >= t));
+  for (const p of act) {
+    const w = semaineCourante(p); if (!w) continue;
+    const gp = grpOk(p.gid) ? G.groupes.get(p.gid) : null;
+    body += `<div class="sub">Semaine en cours · ${esc(p.nom || "Plan")}${gp ? " (groupe " + esc(gp.nom) + ")" : ""}</div><p style="margin:0"><b>Du ${dCourt(w.d1)} au ${dCourt(add(w.d1, 6))}</b>${w.ph ? " · " + esc(PHN[w.ph] || w.ph) : ""}${w.mi ? " · " + esc(w.mi) : ""}</p>${semHTML(w)}
+      ${w.brut ? `<p class="msg" style="margin:0">Ouvre ce plan une fois dans Create my prog pour voir les thèmes de chaque séance.</p>` : ""}`;
+    if (w.ph) res = (PHN[w.ph] || "") + (w.mi ? " · " + w.mi : "");
+  }
+  body += L.length ? `<div class="sub">Plans</div><div class="inner">${L.map(p => { const gp = grpOk(p.gid) ? G.groupes.get(p.gid) : null; return li(G.href("prog", "#p/" + p.id), p.debut ? G.frD(p.debut).slice(0, 5) + "<br>" + p.debut.slice(0, 4) : "", esc(p.nom || "Plan"), (p.debut ? G.frD(p.debut) + " → " + G.frD(p.fin) : "") + (gp ? " · groupe " + esc(gp.nom) : "") + (arr(p.compets).length ? " · " + arr(p.compets).length + " tournoi" + (arr(p.compets).length > 1 ? "s" : "") : ""), (!p.fin || p.fin >= t) && (!p.debut || p.debut <= t) ? badge("ok", "en cours") : ""); }).join("")}</div>` : empty("Pas encore de plan pour ce joueur ni pour ses groupes.");
+  body += `<div class="tools"><button class="go acc" data-a="relais" data-vers="prog" data-jid="${esc(j.id)}">Nouvelle prog</button><a class="ib" href="${G.href("prog", "#/joueur/" + j.id)}">Ouvrir Create my prog</a></div>`;
+  return sx("j-programmation", "Programmation", esc(res), body, "var(--create)");
+}
+
+/* --- Séances --- */
+function retourDe(jid, ref) { return G.journal.retours(jid).find(r => r.ref === ref) || null; }
+function sSeances(j) {
+  const t = G.today(), S = seancesDe(j.id), av = S.filter(s => isoOk(s.date) && s.date >= t && !s.fait).sort((a, b) => a.date < b.date ? -1 : 1), fa = S.filter(s => !(isoOk(s.date) && s.date >= t && !s.fait)).sort((a, b) => (a.date || "") < (b.date || "") ? 1 : -1);
+  const nd = S.filter(s => !isoOk(s.date));
+  const row = (s, fut) => { const r = retourDe(j.id, s.id); return li(G.href("seances", "#/s/" + s.id), isoOk(s.date) ? dJour(s.date).replace(" ", "<br>") : "–", esc(s.nom || s.theme || "Séance"), esc([KN[s.type], s.duree ? s.duree + " min" : "", grpOk(s.gid) ? "groupe " + G.groupes.get(s.gid).nom : ""].filter(Boolean).join(" · ")) + (r ? " · retour : RPE " + r.rpe + (r.duree ? ", " + r.duree + " min" : "") + (r.comment ? " · « " + esc(r.comment.slice(0, 60)) + " »" : "") : ""),
+    fut ? `<a class="ib sm" href="${G.href("seances", "#/terrain/" + s.id)}">Terrain</a>` : r ? badge("ok", "fait") : `<button class="ib sm" data-a="retourde" data-jid="${esc(j.id)}" data-v="${esc(s.id)}">Retour</button>`); };
+  const body = `<div class="sub">À venir</div>${av.length ? `<div class="inner">${av.slice(0, 10).map(s => row(s, true)).join("")}</div>` : `<p class="msg" style="margin:0">Aucune séance datée à venir.</p>`}
+    <div class="sub">Faites ou passées</div>${fa.length ? `<div class="inner">${fa.slice(0, 12).map(s => row(s, false)).join("")}</div>` : `<p class="msg" style="margin:0">Aucune pour l'instant.</p>`}
+    <div class="tools"><button class="go acc" data-a="relais" data-vers="seances" data-jid="${esc(j.id)}">Nouvelle séance</button><a class="ib" href="${G.href("seances", "#/joueur/" + j.id)}">Ouvrir Create my séance</a></div>`;
+  return sx("j-seances", "Séances", av.length ? av.length + " à venir · prochaine " + dCourt(av[0].date) : fa.length + " séance" + (fa.length > 1 ? "s" : ""), body, "var(--create)");
+}
+
+/* --- Warm-up --- */
+function sWarmup(j) {
+  const R = ROUT(), rs = routinesDe(j.id).sort((a, b) => (a.date || "") < (b.date || "") ? 1 : -1), H = R.hist.filter(h => h && h.who === j.id).sort((a, b) => (a.date || "") < (b.date || "") ? 1 : -1);
+  const fav = arr(j.favWarmup), rby = Object.fromEntries(R.routines.map(r => [r.id, r]));
+  const nomR = r => r.nom || ("Échauffement " + (r.duree ? r.duree + " min" : "") + (r.apres ? " avant " + (APRES[r.apres] || r.apres) : ""));
+  const body = `${fav.length ? `<div class="sub">Ses favoris</div><div class="inner">${fav.map(id => { const r = rby[id]; return li(G.href("warmup", "#/r/" + id), "♥", esc(r ? nomR(r) : id), r && r.duree ? r.duree + " min" : "", ""); }).join("")}</div>` : ""}
+    <div class="sub">Routines</div>${rs.length ? `<div class="inner">${rs.slice(0, 10).map(r => li(G.href("warmup", "#/r/" + r.id), isoOk(r.date) ? G.frD(r.date).slice(0, 5) : "", esc(nomR(r)), esc([r.duree ? r.duree + " min" : "", r.apres ? "avant " + (APRES[r.apres] || r.apres) : "", grpOk(r.gid) ? "groupe " + G.groupes.get(r.gid).nom : ""].filter(Boolean).join(" · ")), fav.includes(r.id) ? "♥" : "")).join("")}</div>` : `<p class="msg" style="margin:0">Aucune routine enregistrée pour ce joueur.</p>`}
+    <div class="sub">Historique</div>${H.length ? `<div class="inner">${H.slice(0, 10).map(h => li(null, isoOk(h.date) ? G.frD(h.date).slice(0, 5) : "", (h.duree ? h.duree + " min" : "Échauffement") + (h.apres ? " avant " + esc(APRES[h.apres] || h.apres) : ""), arr(h.g).length ? arr(h.g).length + " jeux" : "", "")).join("")}</div>` : `<p class="msg" style="margin:0">Aucun échauffement fait pour l'instant.</p>`}
+    <div class="tools"><button class="go acc" data-a="relais" data-vers="warmup" data-jid="${esc(j.id)}">Nouveau warm-up</button><a class="ib" href="${G.href("warmup", "#/joueur/" + j.id)}">Ouvrir Create my warm-up</a></div>`;
+  return sx("j-warmup", "Warm-up", rs.length + " routine" + (rs.length > 1 ? "s" : "") + (H.length ? " · dernier le " + G.frD(H[0].date).slice(0, 5) : ""), body, "var(--create)");
+}
+
+/* --- Journal --- */
+function chargeSVG(ch) {
+  const W = 320, H = 120, pl = 30, pb = 20, pt = 8, S = ch.semaines, mx = Math.max(100, ...S.map(s => s.ua)) * 1.1, bw = (W - pl - 6) / S.length;
+  const Y = v => pt + (1 - v / mx) * (H - pt - pb);
+  let s = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Charge des 12 dernières semaines">`;
+  const step = mx > 3000 ? 1000 : mx > 1200 ? 500 : mx > 500 ? 200 : 100;
+  for (let v = 0; v <= mx; v += step) s += `<line x1="${pl}" x2="${W - 4}" y1="${Y(v)}" y2="${Y(v)}" style="stroke:var(--line);stroke-width:.7"/><text x="${pl - 4}" y="${Y(v) + 3.5}" text-anchor="end" font-size="9.5" style="fill:var(--mute)">${v}</text>`;
+  if (ch.chronique) s += `<line x1="${pl}" x2="${W - 4}" y1="${Y(ch.chronique)}" y2="${Y(ch.chronique)}" style="stroke:var(--mute);stroke-dasharray:4 3"/>`;
+  S.forEach((w, i) => { const x = pl + i * bw + 3, last = i === S.length - 1; s += `<rect x="${x.toFixed(1)}" y="${Y(w.ua).toFixed(1)}" width="${(bw - 6).toFixed(1)}" height="${(H - pb - Y(w.ua)).toFixed(1)}" rx="2" style="fill:${last ? (ch.alerte === "haute" ? "var(--bad)" : ch.alerte === "attention" ? "var(--warn)" : "var(--ind)") : "var(--ind)"};opacity:${last ? 1 : .55}"/>`;
+    if (i % 3 === 2 || last) s += `<text x="${(x + (bw - 6) / 2).toFixed(1)}" y="${H - 6}" text-anchor="middle" font-size="9.5" style="fill:var(--mute)">${G.frD(w.fin).slice(0, 5)}</text>`; });
+  return `<div class="chart">${s}</svg></div>`;
+}
+function rng(name, lab, min, max, val, l0, l1, labs) {
+  return `<div class="rng"><div class="rh"><label for="r-${name}">${lab}</label><output>${labs ? val + " · " + labs[val] : val}</output></div><input id="r-${name}" type="range" name="${name}" min="${min}" max="${max}" step="1" value="${val}" ${labs ? `data-labs="${esc(JSON.stringify(labs))}"` : ""}><div class="rl"><span>${l0}</span><span>${l1}</span></div></div>`;
+}
+const douleurF = (z, i) => `<div class="form"><div class="f"><label>Douleur</label><select name="dzone"><option value="">Aucune</option>${Object.entries(ZONES).map(([k, t]) => `<option value="${k}"${z === k ? " selected" : ""}>${t}</option>`).join("")}</select></div><div class="f w">${rng("dint", "Intensité", 0, 10, i || 0, "0", "10 : insupportable")}</div></div>`;
+function formeForm(j, joueur) {
+  const f = G.journal.forme(j.id).find(x => x.date === G.today()) || {};
+  return `<form data-f="forme" data-jid="${esc(j.id)}" class="grid2">${FF.map(([k, t, a, b]) => rng(k, t, 1, 5, f[k] || 3, "1 · " + a, "5 · " + b)).join("")}</form>
+    <form data-f="forme2" class="sxb" style="padding:0">${douleurF(f.douleur && f.douleur.zone, f.douleur && f.douleur.int)}
+    <div class="f full"><label>${joueur ? "Un mot ?" : "Commentaire"}</label><input name="comment" value="${esc(f.comment || "")}" placeholder="${joueur ? "Comment tu te sens…" : ""}"></div>
+    <div class="tools"><button class="go acc" type="button" data-a="forme" data-jid="${esc(j.id)}">${f.id ? "Mettre à jour la forme du jour" : "Enregistrer la forme du jour"}</button></div></form>`;
+}
+function retourForm(j, joueur) {
+  const t = G.today(), pr = PREF && PREF.jid === j.id ? PREF : {};
+  const recent = seancesDe(j.id).filter(s => isoOk(s.date) && ecart(t, s.date) >= 0 && ecart(t, s.date) <= 14).sort((a, b) => a.date < b.date ? 1 : -1);
+  return `<form data-f="retour" data-jid="${esc(j.id)}" class="sxb" style="padding:0">
+    <div class="form"><div class="f"><label>Date</label><input type="date" name="date" value="${esc(pr.date || t)}"></div>
+      <div class="f"><label>Type</label><select name="type">${Object.entries(RTYP).map(([k, v]) => `<option value="${k}"${(pr.type || "seance") === k ? " selected" : ""}>${v}</option>`).join("")}</select></div>
+      ${recent.length ? `<div class="f w"><label>Séance</label><select name="ref" data-refsel="1"><option value="">— autre —</option>${recent.map(s => `<option value="${esc(s.id)}" data-t="${esc(s.nom || s.theme || "Séance")}" data-d="${esc(s.duree || "")}" data-date="${esc(s.date)}"${pr.ref === s.id ? " selected" : ""}>${dCourt(s.date)} · ${esc(s.nom || s.theme || "Séance")}</option>`).join("")}</select></div>` : ""}
+      <div class="f w"><label>Titre</label><input name="titre" value="${esc(pr.titre || "")}" placeholder="Séance PP, entraînement…"></div>
+      <div class="f"><label>Durée (min)</label><input type="number" name="duree" min="0" max="400" inputmode="numeric" value="${esc(pr.duree || 60)}"></div>
+      <div class="f"><label>${joueur ? "Tu l'as faite ?" : "Faite"}</label><select name="fait"><option value="oui">Oui</option><option value="partiel">En partie</option><option value="non">Non</option></select></div></div>
+    ${rng("rpe", joueur ? "C'était dur comment ?" : "Dureté ressentie (RPE)", 0, 10, 5, "0 · repos", "10 · maximal", RPEN)}
+    ${douleurF("", 0)}
+    <div class="f full"><label>${joueur ? "Un mot pour ton coach ?" : "Commentaire"}</label><input name="comment" placeholder="${joueur ? "Ce qui a marché, ce qui était difficile…" : ""}"></div>
+    <div class="tools"><button class="go acc" type="submit">Enregistrer le retour</button></div></form>`;
+}
+function sJournal(j) {
+  const ch = G.journal.charge(j.id), R = G.journal.retours(j.id), F = G.journal.forme(j.id);
+  const body = `<div class="kpi"><div><span class="lab">Charge 7 jours</span><b>${Math.round(ch.aigu)} UA</b></div><div><span class="lab">Moyenne 4 sem.</span><b>${Math.round(ch.chronique)} UA</b></div><div><span class="lab">Ratio aigu/chronique</span>${chargeBadge(ch)}</div></div>
+    ${chargeSVG(ch)}<p class="msg" style="margin:0">Charge d'une séance = dureté ressentie (0-10) × durée. Ratio entre 0,8 et 1,3 : bonne zone ; au-delà de 1,3 la charge monte trop vite (orange), au-delà de 1,5 risque élevé (rouge). Pointillés : moyenne des 4 semaines.</p>
+    <div class="sub">Forme du jour</div>${formeForm(j)}
+    <div class="sub" id="retour-${esc(j.id)}">Retour après séance</div>${retourForm(j)}
+    <div class="sub">Retours</div>${R.length ? `<div class="inner">${R.slice(0, 15).map(r => li(null, G.frD(r.date).slice(0, 5), esc(r.titre || RTYP[r.type] || "Séance"), [RTYP[r.type], r.rpe != null ? "RPE " + r.rpe : "", r.duree ? r.duree + " min" : "", r.rpe != null && r.duree ? r.rpe * r.duree + " UA" : "", r.fait && r.fait !== "oui" && r.fait !== true ? (r.fait === "partiel" ? "en partie" : "non faite") : "", r.douleur && +r.douleur.int > 0 ? "douleur " + zn(r.douleur.zone).toLowerCase() + " " + r.douleur.int + "/10" : ""].filter(Boolean).map(esc).join(" · ") + (r.comment ? " · « " + esc(r.comment) + " »" : ""), `<button class="ib sm" data-a="deljr" data-v="${esc(r.id)}" aria-label="Supprimer">×</button>`)).join("")}</div>` : `<p class="msg" style="margin:0">Aucun retour pour l'instant.</p>`}
+    <div class="sub">Formes</div>${F.length ? `<div class="inner">${F.slice(0, 15).map(f => { const sc = formeScore(f); return li(null, G.frD(f.date).slice(0, 5), `${nf(sc)} / 5 <span class="msg">· ${FF.map(([k, t]) => t.toLowerCase() + " " + (f[k] || "–")).join(", ")}</span>`, (f.douleur && +f.douleur.int > 0 ? "douleur " + esc(zn(f.douleur.zone).toLowerCase()) + " " + f.douleur.int + "/10" : "") + (f.comment ? " · « " + esc(f.comment) + " »" : ""), `<button class="ib sm" data-a="deljr" data-v="${esc(f.id)}" aria-label="Supprimer">×</button>`); }).join("")}</div>` : `<p class="msg" style="margin:0">Aucune forme renseignée.</p>`}`;
+  const f0 = F[0];
+  return sx("j-journal", "Journal", "charge " + (ch.ratio != null ? nf(ch.ratio, 2) : "–") + (f0 ? " · forme " + nf(formeScore(f0)) + "/5 le " + G.frD(f0.date).slice(0, 5) : ""), body, "var(--ind)");
+}
+
+/* --- Agenda --- */
+function agendaListe(j, a, b) {
+  const E = evJoueur(j, a, b); if (!E.length) return `<p class="msg" style="margin:0">Rien de prévu.</p>`;
+  const W = {}; for (const e of E) (W[lundi(e.date)] ||= []).push(e);
+  return Object.entries(W).sort().map(([m, L]) => `<div class="sub">Semaine du ${dCourt(m)}${(() => { const c = arr(RD.cal).find(w => w.du === m); return c ? " · S" + c.n + (c.vacances ? " · vacances " + esc(c.vacances) : "") + (c.bilan ? " · " + esc(c.bilan) : "") : ""; })()}</div><div class="inner">${L.map(e => `<${e.href ? `a href="${esc(e.href)}"` : "div"} class="ev" style="--ec:${TYPC[e.type]}"><span class="dot"></span><span class="tt">${esc(e.titre)}<small>${dJour(e.date)}${e.fin ? " → " + dCourt(e.fin) : ""}${e.sous ? " · " + esc(e.sous) : ""}</small></span><span class="end">${TYPN[e.type]}${e.src === "agenda" ? ` <button class="ib sm" data-a="delag" data-jid="${esc(j.id)}" data-v="${esc(e.id)}" aria-label="Supprimer">×</button>` : ""}</span></${e.href ? "a" : "div"}>`).join("")}</div>`).join("");
+}
+function sAgenda(j, joueur) {
+  const t = G.today(), next = evJoueur(j, t, add(t, 120)).find(e => e.type === "tournoi" || e.src === "agenda");
+  const body = `<form class="form" data-f="agenda" data-jid="${esc(j.id)}"><div class="f"><label>Type</label><select name="type"><option value="tournoi">Tournoi</option><option value="bilan">Bilan</option><option value="repos">Repos</option><option value="autre">Autre</option></select></div>
+      <div class="f"><label>Du</label><input type="date" name="date" value="${t}" required></div><div class="f"><label>Au</label><input type="date" name="fin"></div>
+      <div class="f w"><label>Titre</label><input name="titre" placeholder="TMC Mérignac, stage…"></div><button class="go acc" type="submit">Ajouter</button></form>
+    ${agendaListe(j, lundi(t), add(lundi(t), 55))}
+    <details class="sx" style="--sc:var(--line)"><summary><b style="font-size:1.05rem">4 semaines passées</b></summary><div class="sxb">${agendaListe(j, add(lundi(t), -28), add(t, -1))}</div></details>`;
+  return sx("j-agenda", joueur ? "Mon agenda" : "Agenda", next ? esc(TYPN[next.type]) + " · " + dCourt(next.date) : "", body, "var(--ind)");
+}
+
+/* --- Blessures --- */
+function sBlessures(j) {
+  const L = arr(j.blessures).filter(Boolean).slice().sort((a, b) => (a.debut || "") < (b.debut || "") ? 1 : -1), enc = L.filter(b => b.statut !== "guerie");
+  const body = `${L.length ? `<div class="inner">${L.map(b => li(null, b.debut ? G.frD(b.debut).slice(0, 5) + "<br>" + b.debut.slice(0, 4) : "", esc(zn(b.zone) || "Blessure") + (b.desc ? " · " + esc(b.desc) : ""), (b.debut ? "depuis le " + G.frD(b.debut) : "") + (b.fin ? " · jusqu'au " + G.frD(b.fin) : ""), `<button class="ib sm" data-a="blst" data-jid="${esc(j.id)}" data-v="${esc(b.id)}">${b.statut === "guerie" ? "Guérie" : "En cours"}</button><button class="ib sm" data-a="delbl" data-jid="${esc(j.id)}" data-v="${esc(b.id)}" aria-label="Supprimer">×</button>`)).join("")}</div>` : `<p class="msg" style="margin:0">Aucune blessure enregistrée.</p>`}
+    <form class="form" data-f="blessure" data-jid="${esc(j.id)}"><div class="f"><label>Zone</label><select name="zone">${Object.entries(ZONES).map(([k, t]) => `<option value="${k}">${t}</option>`).join("")}</select></div>
+      <div class="f w"><label>Description</label><input name="desc" placeholder="Tendinopathie rotulienne, entorse…"></div>
+      <div class="f"><label>Début</label><input type="date" name="debut" value="${G.today()}"></div><div class="f"><label>Fin</label><input type="date" name="fin"></div>
+      <div class="f"><label>Statut</label><select name="statut"><option value="encours">En cours</option><option value="guerie">Guérie</option></select></div>
+      <button class="go acc" type="submit">Ajouter</button></form>
+    <p class="msg" style="margin:0">Une blessure en cours apparaît dans les alertes ; pense à cocher la zone fragile dans la fiche pour que Create adapte les séances.</p>`;
+  return sx("j-blessures", "Blessures", enc.length ? enc.length + " en cours" : L.length ? "aucune en cours" : "aucune", body, "var(--bad)");
+}
+
+/* --- Fin du suivi : archiver (« je ne l'entraîne plus ») ou supprimer définitivement --- */
+function aEffacer(j) {
+  const id = j.id, P = PROG().plans.filter(p => p.jid === id).length, S = SEANCES().filter(x => arr(x.joueurs).length === 1 && x.joueurs[0] === id && !x.gid).length;
+  const R = ROUT().routines.filter(x => arr(x.jids).length === 1 && x.jids[0] === id && !x.gid).length, JR = G.journal.retours(id).length + G.journal.forme(id).length;
+  const n = (k, a, b) => k + " " + (k > 1 ? b : a);
+  return [n(arr(j.bilans).length, "bilan des grilles (radar, tests)", "bilans des grilles (radar, tests)"), n(arr(j.mesures).length, "mesure de croissance", "mesures de croissance"),
+    n(JR, "ligne du journal (retours, forme, charge)", "lignes du journal (retours, forme, charge)"), n(P, "plan individuel", "plans individuels"), n(S, "séance individuelle", "séances individuelles"),
+    n(R, "routine d'échauffement", "routines d'échauffement"), "la fiche (agenda, blessures, objectifs, notes)"].concat(G.groupes.de(id).length ? ["retiré de : " + G.groupes.de(id).map(g => g.nom).join(", ")] : []);
+}
+function sFin(j) {
+  if (auto()) return "";
+  const body = j.archive
+    ? `<p style="margin-top:0">Joueur archivé${j.archiveLe ? " le " + G.frD(j.archiveLe) : ""} : il n'apparaît plus dans les listes, son dossier est gardé.</p><div class="tools"><button class="go acc" data-a="archiver" data-v="0" data-jid="${esc(j.id)}">Réactiver ce joueur</button></div>`
+    : `<p style="margin-top:0"><b>Je ne l'entraîne plus</b> : il disparaît de toutes les listes (accueil, modules, recherche) ; son dossier est gardé et tu peux le réactiver.</p><div class="tools"><button class="ib" data-a="archiver" data-v="1" data-jid="${esc(j.id)}">Je ne l'entraîne plus</button></div>`;
+  return sx("j-fin", "Fin du suivi", j.archive ? "archivé" : "", body + `<div class="sub" style="margin-top:14px">Supprimer définitivement</div>
+    <div class="tools"><button class="ib sm dang" data-a="delask" data-jid="${esc(j.id)}">Supprimer définitivement…</button></div>
+    <div id="delbox" hidden class="card" style="margin-top:10px;border-color:var(--bad)"><p style="margin-top:0"><b>Tout sera effacé de cet appareil, sans retour possible :</b></p><ul>${aEffacer(j).filter(x => !/^0 /.test(x)).map(x => `<li>${esc(x)}</li>`).join("")}</ul>
+      <p class="msg">Conseil : fais d'abord une sauvegarde. Les séances et routines partagées avec d'autres joueurs sont gardées (il en est seulement retiré).</p>
+      <div class="tools"><button class="ib" data-a="export">Tout sauvegarder d'abord</button><button class="go" style="background:var(--bad);color:#fff" data-a="deljoueur" data-jid="${esc(j.id)}">Oui, supprimer définitivement</button></div><p class="msg" id="impm"></p></div>`, "var(--mute)");
+}
+
+/* ================= DOSSIER DE GROUPE ================= */
+function vGroupe(gid) {
+  const g = G.groupes.get(gid);
+  if (!g) { main.innerHTML = `<div class="crumb"><a href="#/">Accueil</a>›<a href="#/joueurs">Joueurs</a></div>` + empty("Ce groupe n'existe pas (ou plus)."); return; }
+  setAcc("var(--ind)"); document.title = g.nom + " · GRÜN";
+  const M = G.groupes.joueurs(gid).sort((a, b) => a.nom.localeCompare(b.nom, "fr")), autres = G.joueurs.all().filter(j => !g.jids.includes(j.id));
+  const PL = PROG().plans.filter(p => p.gid === gid), SE = SEANCES().filter(s => (s.gid || s.groupe) === gid).sort((a, b) => (a.date || "") < (b.date || "") ? 1 : -1), RO = ROUT().routines.filter(r => r.gid === gid);
+  let h = `<div class="crumb"><a href="#/">Accueil</a>›<a href="#/joueurs">Joueurs</a></div><h1>${esc(g.nom)}<small>Groupe · ${M.length} joueur${M.length > 1 ? "s" : ""}</small></h1>
+    <div class="acts"><button class="go acc" data-a="relais" data-vers="prog" data-gid="${esc(gid)}">Prog de groupe</button><button class="ib" data-a="relais" data-vers="seances" data-gid="${esc(gid)}">Séance de groupe</button>
+      <button class="ib" data-a="relais" data-vers="warmup" data-gid="${esc(gid)}">Warm-up de groupe</button><button class="ib" data-a="bilangrp" data-gid="${esc(gid)}">Bilan de groupe</button></div>`;
+  h += `<section class="sec"><h2>Tableau comparatif</h2>${M.length ? `<div class="tw"><table class="cmp"><thead><tr><th>Joueur</th><th>Âge</th><th>Bilan</th>${DOMS.map(d => `<th style="text-align:center">${d}</th>`).join("")}<th>Charge</th><th>Alertes</th></tr></thead><tbody>${M.map(j => { const b = bilans(j)[0], ch = G.journal.charge(j.id), al = alertes(j).filter(x => x.n !== "info"), m = matur(j), a = ageJ(j.naissance);
+      return `<tr><td><a href="#/j/${esc(j.id)}" style="font-weight:600;text-decoration:none">${esc(j.nom)}</a></td><td>${a != null ? a : "–"}${m ? ` <span class="msg">(bio ${nf(m.bio)})</span>` : ""}</td><td>${b ? G.frD(b.date) : "–"}</td>${DOMS.map(d => { const v = moy(j, b, d); return `<td class="n">${v != null ? lvB(v) : "–"}</td>`; }).join("")}<td>${ch.ratio != null ? chargeBadge(ch) : "–"}</td><td>${al.length ? al.map(x => badge(x.n, x.t)).join(" ") : "–"}</td></tr>`; }).join("")}</tbody></table></div>` : empty("Ajoute des joueurs au groupe ci-dessous.")}</section>`;
+  h += `<div class="cols"><section class="sec"><h2>Membres</h2>${M.length ? `<div class="list">${M.map(j => li("#/j/" + j.id, j.sexe === "F" ? "Fille" : "Garçon", esc(j.nom), ageTxt(j), `<button class="ib sm" data-a="grm" data-gid="${esc(gid)}" data-v="${esc(j.id)}" aria-label="Retirer du groupe">Retirer</button>`)).join("")}</div>` : ""}
+      ${autres.length ? `<div class="card" style="margin-top:10px"><span class="lab">Ajouter au groupe</span><div class="chips" style="margin-top:6px">${autres.map(j => `<button class="tg" data-a="gadd" data-gid="${esc(gid)}" data-v="${esc(j.id)}">+ ${esc(j.nom)}</button>`).join("")}</div></div>` : ""}</section>
+    <section class="sec"><h2>Plans, séances et warm-up du groupe</h2>
+      ${PL.length ? `<div class="list">${PL.map(p => li(G.href("prog", "#p/" + p.id), "Plan", esc(p.nom || "Plan"), p.debut ? G.frD(p.debut) + " → " + G.frD(p.fin) : "", "›")).join("")}</div>` : ""}
+      ${SE.length ? `<div class="list" style="margin-top:8px">${SE.slice(0, 10).map(s => li(G.href("seances", "#/s/" + s.id), isoOk(s.date) ? G.frD(s.date).slice(0, 5) : "Séance", esc(s.nom || s.theme || "Séance"), esc(KN[s.type] || ""), "›")).join("")}</div>` : ""}
+      ${RO.length ? `<div class="list" style="margin-top:8px">${RO.map(r => li(G.href("warmup", "#/r/" + r.id), "Warm-up", esc(r.nom || "Échauffement"), r.duree ? r.duree + " min" : "", "›")).join("")}</div>` : ""}
+      ${!PL.length && !SE.length && !RO.length ? empty("Rien pour l'instant. Utilise les boutons en haut pour créer une prog, une séance ou un warm-up pour tout le groupe.") : ""}
+      <div class="tools" style="margin-top:10px"><a class="ib" href="${G.href("prog", "#/groupe/" + gid)}">Plans du groupe dans Create my prog</a><a class="ib" href="${G.href("seances", "#/groupe/" + gid)}">Séances du groupe</a></div></section></div>`;
+  h += `<section class="sec"><h2>Réglages du groupe</h2><div class="card"><form class="form" data-f="grnom" data-gid="${esc(gid)}"><div class="f w"><label>Nom</label><input name="nom" value="${esc(g.nom)}"></div><div class="f full"><label>Notes</label><textarea name="notes">${esc(g.notes || "")}</textarea></div><button class="ib" type="submit">Enregistrer</button></form>
+    <div class="tools" style="margin-top:10px"><button class="ib sm dang" data-a="delgrp" data-gid="${esc(gid)}">Supprimer le groupe</button></div><p class="msg">Supprimer le groupe ne supprime pas les joueurs ni leurs dossiers.</p></div></section>`;
+  main.innerHTML = h;
+}
+
+/* ================= MODE JOUEUR ================= */
+function prochaine(j) {
+  const t = G.today(), E = evJoueur(j, t, add(t, 30)).filter(e => e.type === "seance" || e.type === "plan" || e.type === "tournoi");
+  return E.filter(e => e.date === t)[0] || E[0] || null;
+}
+function vJoueurMode(onglet) {
+  const md = G.mode(), j = md.jid && G.joueurs.get(md.jid);
+  setAcc("var(--ind)");
+  if (!j) { main.innerHTML = `<h1>Mode joueur</h1>` + empty("Le joueur de cet appareil n'existe plus. Reviens au mode coach dans les réglages.") + `<div class="tools" style="margin-top:12px"><a class="go" href="#/reglages">Réglages</a></div>`; return; }
+  document.title = prenom(j) + " · GRÜN";
+  const B = bilans(j), b = B[0], pv = B[1], t = G.today(), nx = prochaine(j), fj = G.journal.forme(j.id).find(x => x.date === t);
+  let h = "";
+  if (onglet === "tests") {
+    h = `<h1>Mes tests<small>${b ? "Dernier bilan le " + G.frD(b.date) : "Pas encore de bilan"}</small></h1>`;
+    if (b) h += `<section class="sec"><h2>Mes progrès</h2><div class="card">${radars(j, b, pv)}${pv ? `<p class="msg" style="margin:6px 0 0">Les pointillés, c'est ton bilan d'avant (${G.frD(pv.date)}). Le cercle vert, c'est le niveau 3 : celui des meilleurs de ton âge.</p>` : ""}</div></section>
+      <section class="sec"><h2>Mes résultats</h2>${testsHTML(j, b)}</section>
+      <div class="cols"><section class="sec"><h2>Mes points forts</h2>${axesHTML(j, b, v => v >= 3.5, "Ça arrive : continue comme ça !")}</section><section class="sec"><h2>Ce que je travaille</h2>${axesHTML(j, b, v => v < 3, "Rien sous le niveau 3, bravo !")}</section></div>`;
+    else h += `<div class="sec">` + empty("Ton coach fera bientôt ton premier bilan : tu verras ici ton profil et tes progrès.") + `</div>`;
+    main.innerHTML = h; return;
+  }
+  if (onglet === "seance") {
+    const S = seancesDe(j.id).filter(s => isoOk(s.date) && s.date >= t).sort((a, b) => a.date < b.date ? -1 : 1);
+    h = `<h1>Ma séance<small>${dLong(t)}</small></h1><div class="sec bigs">${nxCard(j, nx)}<a class="big" href="#" data-a="monwu" style="--bc:var(--create)"><span class="k">Mon échauffement</span><b>Prépare ton warm-up</b><span>Durée, ce qui suit, lieu : 3 choix et c'est parti.</span></a></div>
+      <section class="sec"><h2>Mes prochaines séances</h2>${S.length ? `<div class="list">${S.slice(0, 8).map(s => li(G.href("seances", "#/terrain/" + s.id), dJour(s.date).replace(" ", "<br>"), esc(s.nom || s.theme || "Séance"), esc([KN[s.type], s.duree ? s.duree + " min" : ""].filter(Boolean).join(" · ")), "Terrain ›")).join("")}</div>` : empty("Pas de séance prévue pour l'instant.")}</section>
+      <section class="sec"><h2>Retour après séance</h2><div class="card">${retourForm(j, true)}</div></section>`;
+    main.innerHTML = h; return;
+  }
+  h = `<h1>Salut ${esc(prenom(j))} !<small>${dLong(t)}${ageTxt(j) ? " · " + ageTxt(j) : ""}</small></h1>
+    <div class="sec bigs">${nxCard(j, nx)}<a class="big" href="#" data-a="monwu" style="--bc:var(--create)"><span class="k">Mon échauffement</span><b>Prépare ton warm-up</b><span>Durée, ce qui suit, lieu : 3 choix et c'est parti.</span></a></div>
+    <div class="cols"><section class="sec"><h2>Ma forme du jour</h2><div class="card">${fj ? `<p style="margin:0 0 8px"><b>Merci, c'est noté !</b> <span class="msg">${nf(formeScore(fj))} / 5 · tu peux corriger si besoin.</span></p>` : `<p class="msg" style="margin:0 0 8px">30 secondes pour dire à ton coach comment tu te sens.</p>`}${formeForm(j, true)}</div></section>
+    <section class="sec"><h2>Retour après séance</h2><div class="card">${retourForm(j, true)}</div></section></div>`;
+  if (b) h += `<section class="sec"><h2>Mes progrès <a href="#/pole/tests">Mes tests ›</a></h2><div class="card">${radars(j, b, pv)}</div></section>`;
+  h += `<section class="sec"><h2>Mon agenda</h2><div class="card">${agendaListe(j, t, add(t, 27))}</div></section>`;
+  main.innerHTML = h;
+}
+function nxCard(j, e) {
+  if (!e) return `<div class="big"><span class="k">Prochaine séance</span><b>Rien de prévu</b><span>Ton coach ajoutera tes séances ici.</span></div>`;
+  const auj = e.date === G.today();
+  return `<div class="big"><span class="k">${auj ? "Aujourd'hui" : "Prochaine : " + dLong(e.date)}</span><b>${esc(e.titre)}</b><span>${esc(e.sous || TYPN[e.type])}</span>${e.terrain ? `<div class="tools" style="margin-top:6px"><a class="go acc" href="${esc(e.terrain)}">Mode terrain</a></div>` : ""}</div>`;
+}
+
+/* ================= PREMIER LANCEMENT · JOUEUR AUTONOME ================= */
+function vBienvenue() {
+  setAcc("var(--ind)"); document.title = "GRÜN";
+  main.innerHTML = `<div class="hero"><div><p class="word">GR<i>Ü</i>N</p><p class="lead">La méthode de préparation physique et de biomécanique du joueur de tennis, de 4 à 18 ans.</p></div></div>
+    <section class="sec"><h2>Tu es…</h2><div class="bigs">
+      <a class="big" href="#" data-a="profil" data-v="coach" style="--bc:var(--ind)"><span class="k">Je suis coach</span><b>Mes joueurs, mes groupes</b><span>Un dossier complet par joueur et par groupe, Create, ressources, tests et profilage.</span></a>
+      <a class="big" href="#" data-a="profil" data-v="autonome" style="--bc:var(--create)"><span class="k">Je suis joueur</span><b>Je suis mon propre coach</b><span>Ton dossier, tes séances, tes warm-up, tes tests et ton profil, pour toi.</span></a></div>
+    <p class="msg" style="margin-top:10px">Tu pourras changer ce choix dans les réglages.</p></section>`;
+}
+function vCreerMoi() {
+  setAcc("var(--create)"); document.title = "Mon profil · GRÜN";
+  main.innerHTML = `<h1>Mon profil<small>Joueur autonome : ton dossier, rien que pour toi</small></h1>
+    <section class="sec"><div class="card"><form class="form" data-f="moi">
+      <div class="f w"><label for="mn">Prénom et nom</label><input id="mn" name="nom" required autocomplete="off"></div>
+      <div class="f"><label for="msx">Sexe</label><select id="msx" name="sexe"><option value="G">Garçon</option><option value="F">Fille</option></select></div>
+      <div class="f"><label for="mnai">Naissance (facultatif)</label><input id="mnai" name="naissance" type="date"></div>
+      <button class="go acc" type="submit">Créer mon dossier</button></form>
+      ${G.joueurs.all().length ? `<p class="msg">Ou reprends un dossier existant : ${G.joueurs.all().map(j => `<button class="tg" data-a="moi" data-v="${esc(j.id)}">${esc(j.nom)}</button>`).join(" ")}</p>` : ""}</div></section>`;
+}
+
+/* ================= RECHERCHE GLOBALE ================= */
+const termes = q => fold(q).split(/[\s,;]+/).filter(w => w.length >= 2);
+const hit = (hay, ts) => { const f = fold(hay); return ts.every(t => f.includes(t)); };
+function marque(txt, ts) {
+  const e = esc(txt), f = fold(e); const H = []; ts.forEach(t => { let p = f.indexOf(t); while (p >= 0) { H.push([p, p + t.length]); p = f.indexOf(t, p + t.length); } });
+  H.sort((a, b) => a[0] - b[0]); let o = "", last = 0; for (const [s, x] of H) { if (s < last) continue; const pre = e.slice(last, s); if (/&[a-z#0-9]*$/i.test(pre)) continue; o += pre + "<mark>" + e.slice(s, x) + "</mark>"; last = x; } return o + e.slice(last);
+}
+function extrait(txt, ts, n = 170) { const f = fold(txt); let p = -1; for (const t of ts) { const k = f.indexOf(t); if (k >= 0 && (p < 0 || k < p)) p = k; } const a = Math.max(0, p - 50); return (a ? "…" : "") + txt.slice(a, a + n) + (a + n < txt.length ? "…" : ""); }
+function chercher(q) {
+  const ts = termes(q), G2 = [];
+  if (!ts.length) return G2;
+  const grp = (t, col, items, all) => { if (items.length) G2.push({ t, col, items, n: all || items.length }); };
+  const sc = (title, ts) => ts.reduce((a, t) => a + (fold(title).includes(t) ? 10 : 0), 0) + (fold(title).startsWith(ts[0]) ? 5 : 0);
+  const top = (L, n) => L.sort((a, b) => b.s - a.s).slice(0, n);
+  const js = (auto() ? [moi()].filter(Boolean) : G.joueurs.all()).filter(j => hit([j.nom, j.groupe, j.classement, j.notes, j.objectifs].join(" "), ts)).map(j => ({ s: sc(j.nom, ts), h: "#/j/" + j.id, t: j.nom, w: (j.sexe === "F" ? "Fille" : "Garçon") + (ageJ(j.naissance) != null ? " · " + ageJ(j.naissance) + " ans" : "") + " · dossier joueur" }));
+  grp("Joueurs", "var(--ind)", top(js, 20));
+  grp("Groupes", "var(--ind)", G.groupes.all().filter(g => hit(g.nom + " " + (g.notes || ""), ts)).map(g => ({ h: "#/g/" + g.id, t: g.nom, w: g.jids.length + " joueurs · dossier de groupe" })));
+  const se = SEANCES().filter(s => hit([s.nom, s.theme, KN[s.type], arr(s.lignes).join(" ")].join(" "), ts)).map(s => ({ s: sc(s.nom || s.theme || "", ts), h: G.href("seances", "#/s/" + s.id), t: s.nom || s.theme || "Séance", w: [isoOk(s.date) ? G.frD(s.date) : "", KN[s.type], seanceJids(s).map(id => prenom(G.joueurs.get(id))).filter(Boolean).join(", ")].filter(Boolean).join(" · ") }));
+  grp("Séances", "var(--create)", top(se, 15), se.length);
+  const pl = PROG().plans.filter(p => hit([p.nom, (G.joueurs.get(p.jid) || {}).nom, arr(p.compets).map(c => c.nom).join(" ")].join(" "), ts)).map(p => ({ h: G.href("prog", "#p/" + p.id), t: p.nom || "Plan", w: [(G.joueurs.get(p.jid) || {}).nom, p.debut ? G.frD(p.debut) + " → " + G.frD(p.fin) : ""].filter(Boolean).join(" · ") }));
+  grp("Plans", "var(--create)", pl.slice(0, 15), pl.length);
+  const ro = ROUT().routines.filter(r => hit([r.nom, APRES[r.apres], routJids(r).map(id => (G.joueurs.get(id) || {}).nom).join(" "), "echauffement warm-up"].join(" "), ts)).map(r => ({ h: G.href("warmup", "#/r/" + r.id), t: r.nom || "Échauffement", w: [r.duree ? r.duree + " min" : "", r.apres ? "avant " + (APRES[r.apres] || r.apres) : ""].filter(Boolean).join(" · ") }));
+  grp("Warm-up", "var(--create)", ro.slice(0, 15), ro.length);
+  const dv = RD.docs.filter(d => hit([d.c, d.t, d.d, d.k].join(" "), ts)).map(d => ({ s: sc(d.t, ts) + (hit(d.t, ts) ? 20 : 0), h: G.href("veille", "#d/" + d.c), t: d.t, w: d.c + " · " + String(d.p).replace(/^\d+\s*/, "").toLowerCase() + " › " + d.d.replace(/^\d+(\.\d+)*\s/, ""), x: extrait(d.k, ts) }));
+  if (!auto()) grp("Veille", "var(--res)", top(dv, 12), dv.length);
+  const tp = G.tests.perso().map(t => ({ id: t.id, n: t.nom, l: "Test perso", dom: t.dom }));
+  const tt = [...RD.tests, ...tp].filter(t => hit([t.id, t.n, t.l].join(" "), ts)).map(t => ({ s: sc(t.n, ts), h: G.href("grilles", "#/test/" + t.id), t: t.n, w: t.id + " · " + t.l }));
+  grp("Tests", "var(--tests)", top(tt, 12), tt.length);
+  if (BQ) { const ex = BQ.ex.filter(e => hit([e.id, e.n, e.s, e.li, e.ob, arr(e.L).join(" ")].join(" "), ts)).map(e => ({ s: sc(e.n || "", ts) + (e.perso ? 3 : 0), h: G.href("banque", "#/ex/" + e.id), t: e.n || e.id, w: [e.id, e.perso ? "mon exo" : "", e.s].filter(Boolean).join(" · "), x: e.ob ? extrait(e.ob, ts, 140) : "" }));
+    grp("Exercices", "var(--res)", top(ex, 15), ex.length); }
+  const fa = RD.fams.filter(f => hit([f.c, f.t, f.d].join(" "), ts)).map(f => ({ h: G.href("banque", "#f/" + f.c), t: f.t, w: f.c + " · famille de la banque" }));
+  grp("Familles de la banque", "var(--res)", fa.slice(0, 10), fa.length);
+  const sa = RD.saisons.filter(s => hit([s.c, s.t, s.d, s.x].join(" "), ts)).map(s => ({ h: G.href("saisons", "#/s/" + s.c), t: s.t, w: s.c + " · " + s.d, x: s.x }));
+  grp("Saisons de référence", "var(--res)", sa.slice(0, 10), sa.length);
+  return G2;
+}
+function vRecherche(q) {
+  setAcc("var(--ink)"); document.title = "Recherche · GRÜN";
+  const inp = $("#q"); if (document.activeElement !== inp) inp.value = q;
+  const ts = termes(q);
+  if (!ts.length) { main.innerHTML = `<h1>Recherche</h1><p class="lead">Tape au moins 2 lettres : joueur, groupe, séance, plan, warm-up, document de la veille, test, exercice, famille, saison.</p>`; return; }
+  if (!BQ && !BQload) BQload = G.banque.load().then(b => { BQ = b; if (location.hash.startsWith("#/recherche/")) render(true); }).catch(() => { BQ = { ex: [] }; });
+  const R = chercher(q), n = R.reduce((a, g) => a + g.n, 0);
+  let h = `<h1>Recherche</h1><p class="lead">${n ? n + " résultat" + (n > 1 ? "s" : "") + " pour « " + esc(q) + " »" : "Rien pour « " + esc(q) + " ». Essaie un mot plus court ou un synonyme."}${!BQ ? " · chargement de la banque…" : ""}</p>`;
+  h += R.map(g => `<div class="rgrp" style="--rc:${g.col}"><h2>${esc(g.t)} <small>${g.n > g.items.length ? g.items.length + " sur " + g.n : g.n}</small></h2>${g.items.map(r => `<a class="res" href="${esc(r.h)}"><div class="t">${marque(r.t, ts)}</div><div class="w">${esc(r.w || "")}</div>${r.x ? `<div class="s">${marque(r.x, ts)}</div>` : ""}</a>`).join("")}</div>`).join("");
+  if (!auto()) h += `<div class="sec tools"><a class="ib" href="${G.href("veille", "#s/" + encodeURIComponent(q))}">Chercher « ${esc(q)} » dans le texte complet de la veille ›</a></div>`;
+  main.innerHTML = h;
+}
+let qT;
+$("#q").addEventListener("input", e => { clearTimeout(qT); const v = e.target.value.trim(); qT = setTimeout(() => { if (v.length >= 2) { history.replaceState(null, "", "#/recherche/" + encodeURIComponent(v)); navActive("acc"); vRecherche(v); } else if (!v && location.hash.startsWith("#/recherche")) location.hash = "#/"; }, 220); });
+$("#q").addEventListener("keydown", e => { if (e.key === "Enter") e.target.blur(); });
+
+/* ================= RÉGLAGES ================= */
+function vReglages() {
+  setAcc("var(--ind)"); document.title = "Réglages · GRÜN";
+  const r = REG(), J = G.isJoueur(), js = G.joueurs.all();
+  let h = `<div class="crumb"><a href="#/">${J ? "Mon dossier" : "Accueil"}</a></div><h1>Réglages</h1>`;
+  h += `<section class="sec"><h2>Affichage</h2><div class="card"><div class="form"><div class="f"><span class="lab">Thème</span><div class="seg">${[["auto", "Auto"], ["light", "Clair"], ["dark", "Sombre"]].map(([k, t]) => `<button data-a="theme" data-v="${k}" aria-pressed="${(r.theme || "auto") === k}">${t}</button>`).join("")}</div></div>
+    <div class="f"><span class="lab">Taille du texte</span><div class="tools"><button class="ib" data-a="fs" data-v="-5" aria-label="Texte plus petit">A−</button><span class="ib" style="border:none;background:none">${r.fs || 100} %</span><button class="ib" data-a="fs" data-v="5" aria-label="Texte plus grand">A+</button></div></div>
+    ${J ? "" : `<div class="f w"><label for="rnc">Nom du coach</label><input id="rnc" data-reg="nomCoach" value="${esc(r.nomCoach || "")}" placeholder="Eliot"></div>`}</div></div></section>`;
+  if (J) {
+    const j = G.joueurs.get(G.mode().jid);
+    h += `<section class="sec"><h2>Mode joueur</h2><div class="card"><p style="margin-top:0">Cet appareil est en mode joueur${j ? " pour <b>" + esc(j.nom) + "</b>" : ""}.</p>${r.code ? `<p class="msg">Pour revenir au mode coach, tape le code à 4 chiffres du coach.</p><form data-f="pin" class="pin">${[0, 1, 2, 3].map(i => `<input inputmode="numeric" maxlength="1" pattern="[0-9]" aria-label="Chiffre ${i + 1}" data-pin="${i}" autocomplete="off">`).join("")}</form><p class="msg" id="pinm" style="text-align:center"></p>` : `<button class="go" data-a="coach">Revenir au mode coach</button>`}</div></section>`;
+    main.innerHTML = h; return;
+  }
+  const m0 = moi();
+  h += `<section class="sec"><h2>Profil d'utilisation</h2><div class="card"><div class="seg">${[["coach", "Je suis coach"], ["autonome", "Je suis joueur"]].map(([k, t]) => `<button data-a="profil" data-v="${k}" aria-pressed="${(r.profil || "coach") === k}">${t}</button>`).join("")}</div>
+    <p class="msg">${auto() ? "Joueur autonome : tu es ton propre coach. GRÜN s'ouvre sur ton dossier" + (m0 ? " (<a href=\"#/\">" + esc(m0.nom) + "</a>)" : "") + " et tu as Create, les tests et le profilage pour toi." : "Coach : tes joueurs, tes groupes et tous les outils."}</p></div></section>`;
+  if (!auto()) h += `<section class="sec"><h2>Mode joueur</h2><div class="card"><p class="msg" style="margin-top:0">Donne l'appareil à un joueur : il ne voit que son dossier (séance du jour, échauffement, forme, retour, progrès, tests, agenda). Pas de veille, pas de modification de la banque ni du référentiel.</p>
+    <div class="form"><div class="f"><label for="rcode">Code coach (4 chiffres)</label><input id="rcode" data-reg="code" inputmode="numeric" maxlength="4" pattern="[0-9]{4}" value="${esc(r.code || "")}" style="width:110px" autocomplete="off"></div>
+    ${js.length ? `<div class="f w"><label for="rmj">Joueur</label><select id="rmj"><option value="">Choisir…</option>${js.map(j => `<option value="${esc(j.id)}">${esc(j.nom)}</option>`).join("")}</select></div><button class="go acc" data-a="modej" data-src="rmj">Passer en mode joueur</button>` : `<p class="msg">Crée d'abord un joueur.</p>`}</div>
+    <p class="msg">Honnêtement : ce code évite qu'un joueur repasse en mode coach par erreur, ce n'est pas une sécurité (les données restent lisibles sur l'appareil). Les vrais comptes coach et joueur arrivent bientôt.</p></div></section>`;
+  h += `<section class="sec"><h2>Sauvegarde</h2><div class="card"><p class="msg" style="margin-top:0">Tout reste sur cet appareil. Une seule sauvegarde contient toute l'appli : joueurs, groupes, journal, bilans, plans, séances, routines, exos et tests perso, favoris et notes de la veille, de la banque et du référentiel.</p>
+    <div class="tools"><button class="go acc" data-a="export">Tout sauvegarder</button><label class="ib" for="fimp">Restaurer ou importer…</label><input id="fimp" type="file" accept=".json,application/json" multiple hidden></div>
+    <p class="msg" id="impm"></p>
+    <p class="msg">La restauration fusionne avec ce qui est déjà là (rien n'est effacé). Elle reconnaît aussi les anciennes sauvegardes des applis séparées : Grilles et tests, Banque d'exercices, Programmation, Séances, Routines, Veille, Référentiel des saisons, Profil radar.</p></div></section>`;
+  h += `<section class="sec"><h2>À propos de GRÜN</h2><div class="card note"><p style="margin-top:0"><b>GRÜN</b> réunit en une seule appli la méthode de préparation physique et de biomécanique du tennis d'Eliot Gruner : la science du joueur de tennis de 4 à 18 ans : préparation physique, biomécanique, physiologie, de la méthode de formation jusqu'à la séance. Notre modèle haute performance : le niveau 3, c'est être dans les temps du haut niveau de sa génération.</p>
+    <p>Quatre pôles : <b>Individualisation</b> (le dossier complet de chaque joueur et de chaque groupe), <b>Create</b> (prog, séance, warm-up construits pour le joueur), <b>Ressources et savoirs</b> (veille, banque d'exercices, référentiel de programmation) et <b>Tests et profilage</b> (grilles, tests, profil radar).</p>
+    <p class="msg" style="margin-bottom:0">Version ${esc(G.version)} · données sur l'appareil · hors connexion.</p></div></section>`;
+  main.innerHTML = h;
+}
+
+/* ---------- import des sauvegardes (GRÜN et anciennes applis) ---------- */
+function fusionPrefs(key, d, unions, objets) {
+  const cur = G.load(key, {}) || {};
+  for (const k of unions) if (Array.isArray(d[k])) cur[k] = [...new Set([...arr(cur[k]), ...d[k]])];
+  for (const k of objets) if (d[k] && typeof d[k] === "object") cur[k] = { ...(cur[k] || {}), ...d[k] };
+  G.save(key, cur);
+}
+function parId(cur, nv) { const m = new Map(arr(cur).filter(x => x && x.id).map(x => [x.id, x])); arr(nv).forEach(x => { if (x && x.id) m.set(x.id, x); }); return [...m.values()]; }
+function fusionJoueurs(list) {
+  const s = G.load(G.K.joueurs, { joueurs: [] }) || {}; s.joueurs = arr(s.joueurs); let n = 0;
+  for (const p of arr(list)) {
+    if (!p || !p.nom) continue;
+    const bil = arr(p.bilans).map(b => ({ ...b, id: b.id || G.uid(), date: b.date || G.today(), age: b.age, note: b.note || "", v: b.v || b.valeurs || { PP: [], GE: [], DE: [] }, sel: arr(b.sel), res: b.res || {} }));
+    let ex = s.joueurs.find(x => p.id && x.id === p.id) || s.joueurs.find(x => x.nom === p.nom && (x.naissance || "") === (p.naissance || ""));
+    if (!ex) { const j = { ...p, id: p.id || G.uid(), sexe: p.sexe === "F" ? "F" : "G", bilans: bil }; delete j.valeurs; s.joueurs.push(j); n++; continue; }
+    for (const k in p) if (k !== "bilans" && k !== "id" && (ex[k] == null || ex[k] === "" || (Array.isArray(ex[k]) && !ex[k].length))) ex[k] = p[k];
+    ex.bilans = arr(ex.bilans); for (const b of bil) if (!ex.bilans.some(x => x.id === b.id || (x.date === b.date && x.age === b.age))) ex.bilans.push(b);
+    n++;
+  }
+  G.save(G.K.joueurs, s); return n;
+}
+function importer(d, nom) {
+  if (!d || typeof d !== "object") throw new Error("illisible");
+  if (d.app === "GRUN" && d.data) { const o = { ...d, data: { ...d.data } }; delete o.data[G.K.mode]; delete o.data[G.K.handoff]; G.importAll(o, true); return "Sauvegarde GRÜN du " + G.frD(d.date); }
+  switch (d.format) {
+    case "veille": fusionPrefs(G.K.veille, d, ["fav"], ["notes"]); return "Veille (favoris et notes)";
+    case "banque": { fusionPrefs(G.K.banqueDocs, d, ["fav"], ["notes", "links"]); const c = G.load(G.K.banqueDocs, {}) || {}; c.lists = parId(c.lists, d.lists); G.save(G.K.banqueDocs, c); return "Banque d'exercices (favoris, listes, notes)"; }
+    case "saisons": fusionPrefs(G.K.saisons, d, ["fav"], ["notes"]); return "Référentiel des saisons (favoris et notes)";
+    case "grilles-docs": fusionPrefs(G.K.grillesDocs, d, ["fav"], ["notes"]); { const n = fusionJoueurs(d.joueurs); return "Grilles (favoris, notes" + (n ? ", " + n + " joueur" + (n > 1 ? "s" : "") : "") + ")"; }
+    case "profil-radar": { const n = fusionJoueurs(d.joueurs); return "Profil radar (" + n + " joueur" + (n > 1 ? "s" : "") + " et leurs bilans)"; }
+    case "programmation": {
+      const pr = d.prog || {}, c = G.load(G.K.prog, {}) || {}; c.plans = parId(c.plans, pr.plans); c.profils = { ...(c.profils || {}), ...(pr.profils || {}) }; G.save(G.K.prog, c);
+      const n = fusionJoueurs((d.joueurs && d.joueurs.joueurs) || d.joueurs);
+      for (const [id, p] of Object.entries(pr.profils || {})) { const j = G.joueurs.get(id); if (!j) continue; const patch = {}; for (const k of ["classement", "croissance", "zones", "prio"]) if (p[k] != null && (j[k] == null || j[k] === "NC" || j[k] === false || (Array.isArray(j[k]) && !j[k].length))) patch[k] = p[k]; if (Object.keys(patch).length) G.joueurs.update(id, patch); }
+      return "Programmation (" + arr(pr.plans).length + " plan" + (arr(pr.plans).length > 1 ? "s" : "") + (n ? ", " + n + " joueurs" : "") + ")";
+    }
+    case "seances": { const st = d.st || {}, c = G.load(G.K.seances, {}) || {}; const o = { ...st, ...c }; o.seances = parId(c.seances, st.seances); G.save(G.K.seances, o); return "Séances (" + arr(st.seances).length + ")"; }
+    case "routines": { const st = d.st || {}, c = G.load(G.K.routines, {}) || {}; const o = { ...st, ...c }; o.routines = parId(c.routines, st.routines);
+      o.hist = [...new Map([...arr(c.hist), ...arr(st.hist)].map(h => [JSON.stringify(h), h])).values()]; o.fav = [...new Set([...arr(c.fav), ...arr(st.fav)])]; o.hide = [...new Set([...arr(c.hide), ...arr(st.hide)])]; G.save(G.K.routines, o); return "Routines (" + arr(st.routines).length + ")"; }
+  }
+  // ancienne appli « Grilles et tests » (Grilles_et_tests_<date>.json) et formats inconnus : on cherche une liste de joueurs
+  const cand = [d.joueurs, d.data && d.data.joueurs, d.grilles_v1 && d.grilles_v1.joueurs, d.st && d.st.joueurs, d.players, Array.isArray(d) ? d : null, d.joueurs && d.joueurs.joueurs].find(x => Array.isArray(x) && x.some(p => p && p.nom));
+  if (cand) { const n = fusionJoueurs(cand); return (/grilles/i.test(nom || "") ? "Grilles et tests (ancienne appli)" : "Joueurs") + " · " + n + " joueur" + (n > 1 ? "s" : ""); }
+  throw new Error("format inconnu");
+}
+main.addEventListener("change", async e => {
+  const t = e.target;
+  if (t.id === "fimp") {
+    const fs = [...(t.files || [])]; t.value = ""; const out = [];
+    for (const f of fs) { try { out.push("✓ " + f.name + " : " + importer(JSON.parse(await f.text()), f.name)); } catch (x) { out.push("✗ " + f.name + " : fichier non reconnu"); } }
+    render(true); const m = $("#impm"); if (m) { m.innerHTML = out.map(esc).join("<br>"); m.className = "msg ok"; } return;
+  }
+  if (t.dataset.reg) { const v = t.value.trim(); if (t.dataset.reg === "code" && v && !/^\d{4}$/.test(v)) { toast("Le code doit faire 4 chiffres."); return; } setReg({ [t.dataset.reg]: v }); toast("Enregistré"); return; }
+  if (t.dataset.fiche) {
+    const j = G.joueurs.get(CURJ || ""); if (!j) return;
+    const k = t.dataset.fiche, v = t.type === "checkbox" ? t.checked : t.type === "number" ? (t.value === "" ? null : +t.value) : t.value;
+    if (k === "nom" && !String(v).trim()) { t.value = j.nom; return; }
+    if (k.startsWith("dispo.")) { j.dispo = { ...(j.dispo || {}) }; j.dispo[k.slice(6)] = v; } else j[k] = typeof v === "string" ? v.trim() : v;
+    quiet(() => G.joueurs.save(j)); const m = $("#fimsg"); if (m) { m.textContent = "Enregistré."; m.className = "msg ok"; }
+    if (["nom", "sexe", "naissance", "main", "revers", "classement"].includes(k)) { const y = scrollY; render(true); scrollTo(0, y); }
+    return;
+  }
+  if (t.dataset.refsel) { const o = t.selectedOptions[0], f = t.form; if (o && o.value) { f.titre.value = o.dataset.t || ""; if (o.dataset.d) f.duree.value = o.dataset.d; if (o.dataset.date) f.date.value = o.dataset.date; } return; }
+  if (t.id === "jgr") { $("#jngw").hidden = t.value !== "+"; return; }
+});
+main.addEventListener("input", e => {
+  const t = e.target;
+  if (t.type === "range") { const o = t.closest(".rng") && t.closest(".rng").querySelector("output"); if (o) { const L = t.dataset.labs ? JSON.parse(t.dataset.labs) : null; o.textContent = L ? t.value + " · " + L[t.value] : t.value; } }
+  if (t.dataset.pin != null) { t.value = t.value.replace(/\D/g, "").slice(-1); const I2 = $$("[data-pin]"); if (t.value && +t.dataset.pin < 3) I2[+t.dataset.pin + 1].focus(); const code = I2.map(x => x.value).join("");
+    if (code.length === 4) { if (code === REG().code) { G.setMode("coach"); location.hash = "#/"; location.reload(); } else { $("#pinm").textContent = "Ce n'est pas le bon code."; I2.forEach(x => x.value = ""); I2[0].focus(); } } }
+});
+main.addEventListener("toggle", e => { const d = e.target; if (d.dataset && d.dataset.sx) { if (d.open) OPEN.add(d.dataset.sx); else OPEN.delete(d.dataset.sx); keepOpen(); } }, true);
+
+/* ---------- formulaires ---------- */
+const num = v => v === "" || v == null ? null : +String(v).replace(",", ".");
+const FORMS = {
+  joueur(f, F) {
+    const nom = (F.get("nom") || "").trim(); if (!nom) return;
+    let gid = F.get("gid"); if (gid === "+") { const n = (F.get("ngroupe") || "").trim(); gid = n ? quiet(() => G.groupes.create({ nom: n })).id : ""; }
+    const j = quiet(() => G.joueurs.create({ nom, sexe: F.get("sexe"), naissance: F.get("naissance") || "" }));
+    if (gid) { const g = G.groupes.get(gid); if (g && !g.jids.includes(j.id)) { g.jids.push(j.id); quiet(() => G.groupes.save(g)); } }
+    toast(nom + " créé"); location.hash = "#/j/" + j.id + "/fiche";
+  },
+  groupe(f, F) {
+    const nom = (F.get("nom") || "").trim(); if (!nom) return;
+    const jids = $$("[data-a=tg][aria-pressed=true]", f).map(b => b.dataset.v);
+    const g = quiet(() => G.groupes.create({ nom, jids })); toast("Groupe « " + nom + " » créé"); location.hash = "#/g/" + g.id;
+  },
+  grnom(f, F) { const g = G.groupes.get(f.dataset.gid); if (!g) return; g.nom = (F.get("nom") || "").trim() || g.nom; g.notes = F.get("notes") || ""; quiet(() => G.groupes.save(g)); toast("Groupe enregistré"); render(true); },
+  mesure(f, F) {
+    const j = G.joueurs.get(f.dataset.jid); if (!j) return;
+    const m = { date: F.get("date") || G.today() }; for (const k of ["taille", "assise", "poids", "envergure"]) { const v = num(F.get(k)); if (v != null && !isNaN(v)) m[k] = v; }
+    if (Object.keys(m).length < 2) { toast("Indique au moins une mesure."); return; }
+    j.mesures = arr(j.mesures).filter(x => x.date !== m.date).concat([{ ...(arr(j.mesures).find(x => x.date === m.date) || {}), ...m }]);
+    quiet(() => G.joueurs.save(j)); toast("Mesure ajoutée"); render(true);
+  },
+  retour(f, F) {
+    const jid = f.dataset.jid, dz = F.get("dzone"), di = +F.get("dint") || 0;
+    const r = { jid, date: F.get("date") || G.today(), type: F.get("type") || "seance", ref: F.get("ref") || null, titre: (F.get("titre") || "").trim(), duree: num(F.get("duree")) || 0, rpe: +F.get("rpe"), douleur: dz || di ? { zone: dz || "autre", int: di } : null, fait: F.get("fait") === "oui" ? true : F.get("fait") === "non" ? false : "partiel", comment: (F.get("comment") || "").trim() };
+    if (!r.titre) r.titre = RTYP[r.type];
+    quiet(() => G.journal.addRetour(r)); PREF = null; toast(G.isJoueur() ? "Merci, ton coach verra ton retour !" : "Retour enregistré"); render(true);
+  },
+  agenda(f, F) {
+    const j = G.joueurs.get(f.dataset.jid); if (!j) return; const type = F.get("type");
+    j.agenda = arr(j.agenda).concat([{ id: G.uid(), date: F.get("date"), fin: F.get("fin") || "", type, titre: (F.get("titre") || "").trim() || TYPN[type] }]);
+    quiet(() => G.joueurs.save(j)); toast("Ajouté à l'agenda"); render(true);
+  },
+  moi(f, F) {
+    const nom = (F.get("nom") || "").trim(); if (!nom) return;
+    const j = quiet(() => G.joueurs.create({ nom, sexe: F.get("sexe"), naissance: F.get("naissance") || "" }));
+    setReg({ profil: "autonome", jidMoi: j.id }); toast("Ton dossier est prêt"); location.hash = "#/"; render(false);
+  },
+  blessure(f, F) {
+    const j = G.joueurs.get(f.dataset.jid); if (!j) return;
+    j.blessures = arr(j.blessures).concat([{ id: G.uid(), zone: F.get("zone"), desc: (F.get("desc") || "").trim(), debut: F.get("debut") || G.today(), fin: F.get("fin") || "", statut: F.get("statut") }]);
+    quiet(() => G.joueurs.save(j)); toast("Blessure ajoutée"); render(true);
+  }
+};
+main.addEventListener("submit", e => { const f = e.target.closest("form[data-f]"); if (!f || !FORMS[f.dataset.f]) return; e.preventDefault(); FORMS[f.dataset.f](f, new FormData(f)); });
+
+/* ---------- actions ---------- */
+function confirmer(b, txt) { if (b.dataset.ok) return true; b.dataset.ok = "1"; const o = b.textContent; b.textContent = txt || "Toucher encore pour confirmer"; setTimeout(() => { if (b.isConnected) { delete b.dataset.ok; b.textContent = o; } }, 3500); return false; }
+function relais(vers, jid, gid) {
+  const retour = "index.html" + (jid ? "#/j/" + jid : gid ? "#/g/" + gid : "");
+  const j = jid && G.joueurs.get(jid);
+  G.relais.envoyer({ de: "accueil", vers, retour, jid: jid || null, gid: gid || null, age: j ? G.grilleConseillee(j) : null });
+  const H = { prog: jid ? "#/nouveau/" + jid : gid ? "#/groupe/" + gid : "#/nouveau", seances: gid && !jid ? "#/groupe/" + gid : "#/nouvelle", warmup: "#/nouveau" };
+  G.go(vers, H[vers]);
+}
+const ACT = {
+  relais(b) { let jid = b.dataset.jid, gid = b.dataset.gid; if (b.dataset.src) { const v = $("#" + b.dataset.src).value; if (!v) { toast("Choisis d'abord " + (b.dataset.src === "pg" ? "un groupe." : "un joueur.")); return; } if (b.dataset.src === "pg") gid = v; else jid = v; } relais(b.dataset.vers, jid, gid); },
+  bilan(b) { const v = $("#" + b.dataset.src).value; if (!v) { toast("Choisis d'abord un joueur."); return; } G.go("grilles", "#/joueur/" + v); },
+  bilangrp(b) { const gid = b.dataset.gid || ($("#" + b.dataset.src) || {}).value; if (!gid) { toast("Choisis d'abord un groupe."); return; } G.relais.envoyer({ de: "accueil", vers: "grilles", retour: "index.html#/g/" + gid, gid, jids: G.groupes.get(gid).jids, type: "bilan-groupe" }); G.go("grilles"); },
+  filtre(b) { FILTRE = b.dataset.g; render(true); },
+  tg(b) { b.setAttribute("aria-pressed", b.getAttribute("aria-pressed") !== "true"); },
+  zone(b) { const j = G.joueurs.get(b.dataset.jid); const z = b.dataset.v; j.zones = arr(j.zones).includes(z) ? arr(j.zones).filter(x => x !== z) : [...arr(j.zones), z]; quiet(() => G.joueurs.save(j)); b.setAttribute("aria-pressed", j.zones.includes(z)); },
+  jgrp(b) { const g = G.groupes.get(b.dataset.v), jid = b.dataset.jid; g.jids = g.jids.includes(jid) ? g.jids.filter(x => x !== jid) : [...g.jids, jid]; quiet(() => G.groupes.save(g)); render(true); },
+  gadd(b) { const g = G.groupes.get(b.dataset.gid); if (!g.jids.includes(b.dataset.v)) g.jids.push(b.dataset.v); quiet(() => G.groupes.save(g)); render(true); },
+  grm(b) { const g = G.groupes.get(b.dataset.gid); g.jids = g.jids.filter(x => x !== b.dataset.v); quiet(() => G.groupes.save(g)); render(true); },
+  delgrp(b) { if (!confirmer(b)) return; quiet(() => G.groupes.remove(b.dataset.gid)); toast("Groupe supprimé"); location.hash = "#/joueurs"; },
+  deljoueur(b) { if (!confirmer(b, "Toucher encore : suppression définitive")) return; const j = G.joueurs.get(b.dataset.jid); quiet(() => G.joueurs.remove(b.dataset.jid)); toast((j ? j.nom : "Joueur") + " supprimé"); if (location.hash === "#/joueurs") render(true); else location.hash = "#/joueurs"; },
+  delask(b) { const x = $("#delbox"); if (x) { x.hidden = !x.hidden; if (!x.hidden) x.scrollIntoView({ block: "center", behavior: "smooth" }); } },
+  archiver(b) { const oui = b.dataset.v === "1"; if (oui && !confirmer(b, "Toucher encore pour archiver")) return; const j = quiet(() => G.joueurs.archiver(b.dataset.jid, oui)); toast(oui ? (j ? j.nom : "Joueur") + " archivé : il n'apparaît plus dans les listes" : (j ? j.nom : "Joueur") + " réactivé"); if (oui && location.hash.startsWith("#/j/")) location.hash = "#/joueurs"; else render(true); },
+  delmes(b) { const j = G.joueurs.get(b.dataset.jid); j.mesures = arr(j.mesures).filter(x => x.date !== b.dataset.v); quiet(() => G.joueurs.save(j)); render(true); },
+  delag(b, e) { e.preventDefault(); const j = G.joueurs.get(b.dataset.jid); j.agenda = arr(j.agenda).filter(x => x.id !== b.dataset.v); quiet(() => G.joueurs.save(j)); render(true); },
+  delbl(b) { if (!confirmer(b, "Sûr ?")) return; const j = G.joueurs.get(b.dataset.jid); j.blessures = arr(j.blessures).filter(x => x.id !== b.dataset.v); quiet(() => G.joueurs.save(j)); render(true); },
+  blst(b) { const j = G.joueurs.get(b.dataset.jid); const x = arr(j.blessures).find(y => y.id === b.dataset.v); if (!x) return; x.statut = x.statut === "guerie" ? "encours" : "guerie"; if (x.statut === "guerie" && !x.fin) x.fin = G.today(); quiet(() => G.joueurs.save(j)); render(true); },
+  deljr(b) { if (!confirmer(b, "Sûr ?")) return; quiet(() => G.journal.remove(b.dataset.v)); render(true); },
+  forme(b) {
+    const jid = b.dataset.jid, f2 = b.closest("form"), f1 = f2.parentElement.querySelector("form[data-f=forme]");
+    const F1 = new FormData(f1), F2 = new FormData(f2), dz = F2.get("dzone"), di = +F2.get("dint") || 0;
+    const o = { jid, date: G.today(), douleur: dz || di ? { zone: dz || "autre", int: di } : null, comment: (F2.get("comment") || "").trim() }; FF.forEach(([k]) => o[k] = +F1.get(k));
+    quiet(() => G.journal.addForme(o)); toast(G.isJoueur() ? "Merci, c'est noté !" : "Forme enregistrée"); render(true);
+  },
+  retourde(b) { const s = SEANCES().find(x => x.id === b.dataset.v); PREF = { jid: b.dataset.jid, ref: s.id, titre: s.nom || s.theme || "Séance", duree: s.duree || 60, date: s.date, type: "seance" }; OPEN.add("j-journal"); keepOpen(); render(true); const x = $("#retour-" + CSS.escape(b.dataset.jid)); if (x) x.scrollIntoView({ block: "start", behavior: "smooth" }); },
+  modej(b) {
+    const jid = b.dataset.jid || ($("#" + b.dataset.src) || {}).value; if (!jid) { toast("Choisis d'abord un joueur."); return; }
+    const code = ($("#rcode") && $("#rcode").value.trim()) || REG().code;
+    if (!/^\d{4}$/.test(code)) { toast("Choisis d'abord un code coach à 4 chiffres."); location.hash = "#/reglages"; return; }
+    setReg({ code }); G.setMode("joueur", jid); location.hash = "#/"; location.reload();
+  },
+  profil(b, e) { e.preventDefault(); setReg({ profil: b.dataset.v }); location.hash = "#/"; render(false); },
+  moi(b) { setReg({ profil: "autonome", jidMoi: b.dataset.v }); location.hash = "#/"; render(false); },
+  coach() { G.setMode("coach"); location.hash = "#/"; location.reload(); },
+  monwu(b, e) { e.preventDefault(); const jid = G.mode().jid; G.relais.envoyer({ de: "accueil", vers: "warmup", retour: "index.html", jid, mode: "joueur" }); G.go("warmup"); },
+  theme(b) { setReg({ theme: b.dataset.v }); applyReg(); render(true); },
+  fs(b) { setReg({ fs: Math.max(85, Math.min(135, (+REG().fs || 100) + +b.dataset.v)) }); applyReg(); render(true); },
+  export() { G.telecharger(G.exportAll(), "GRUN_sauvegarde_" + G.today() + ".json"); const m = $("#impm"); if (m) { m.textContent = "Sauvegarde créée : enregistre-la dans Fichiers (iCloud Drive)."; m.className = "msg ok"; } }
+};
+main.addEventListener("click", e => {
+  const b = e.target.closest("[data-a]");
+  if (!b) { if (e.target.closest("[data-stop]")) e.stopPropagation(); return; }
+  if (b.tagName === "BUTTON" && b.type !== "submit") e.preventDefault();
+  if (b.closest("a.li, a.ev") && b.tagName === "BUTTON") e.preventDefault();
+  const f = ACT[b.dataset.a]; if (f) f(b, e);
+});
+
+/* ---------- démarrage ---------- */
+function splash() {
+  const s = $("#splash"); if (!s) return; let vu = false;
+  try { vu = sessionStorage.getItem("grun_splash") === "1"; sessionStorage.setItem("grun_splash", "1"); } catch (e) {}
+  if (vu || matchMedia("(prefers-reduced-motion: reduce)").matches) { s.remove(); return; }
+  setTimeout(() => { s.classList.add("out"); setTimeout(() => s.remove(), 300); }, 600);
+}
+applyReg(); splash();
+G.nav(G.isJoueur() ? "acc" : "acc");
+rdP.then(() => {
+  render(false);
+  const rr = G.relais.resultat("accueil"); if (rr) { const r = rr.res || {}; toast("De retour : " + (r.titre || r.nom || "c'est enregistré")); }
+});
+})();
+
+</script>
+</body></html>

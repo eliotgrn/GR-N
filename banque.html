@@ -1,0 +1,802 @@
+<!doctype html><html lang="fr"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="GRÜN"><meta name="theme-color" content="#0B3B36">
+<link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-180.png"><link rel="icon" href="icon-192.png">
+<style>/* GRÜN — styles communs injectés dans chaque module (barre des pôles en bas, éléments partagés).
+   Les modules gardent leurs jetons (--bg, --panel, --ink, --mute, --line, --soft) au style Veille. */
+:root{--grun:#0F766E;--grun-ink:#0B3B36;--nav-h:62px}
+body.grun-has-nav{padding-bottom:calc(var(--nav-h) + env(safe-area-inset-bottom,0px))}
+#grun-nav{position:fixed;left:0;right:0;bottom:0;z-index:50;display:flex;justify-content:space-around;align-items:stretch;
+  background:var(--panel,#fff);border-top:1px solid var(--line,#D9DDE3);padding-bottom:env(safe-area-inset-bottom,0px);
+  box-shadow:0 -4px 18px rgba(0,0,0,.05)}
+#grun-nav a{flex:1;max-width:140px;min-height:var(--nav-h);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
+  text-decoration:none;color:var(--mute,#5D6675);font:600 11.5px/1.1 var(--ui,system-ui,sans-serif);letter-spacing:.01em}
+#grun-nav svg{width:23px;height:23px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+#grun-nav a.on{color:var(--ink,#16202E)}
+#grun-nav a.on svg{stroke:var(--grun)}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) #grun-nav{box-shadow:none}}
+@media print{#grun-nav{display:none}body.grun-has-nav{padding-bottom:0}}
+/* fil « poupée russe » : bandeau de retour vers le module appelant */
+.grun-relais{position:sticky;top:0;z-index:40;display:flex;gap:10px;align-items:center;justify-content:space-between;
+  background:var(--grun);color:#fff;padding:8px 16px;font:600 14px/1.3 var(--ui,system-ui,sans-serif)}
+.grun-relais a,.grun-relais button{color:#fff;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.35);border-radius:8px;
+  min-height:36px;padding:0 12px;display:inline-flex;align-items:center;text-decoration:none;font:inherit;white-space:nowrap}
+.grun-mod #back{visibility:visible!important}
+</style>
+<script src="grun.js?v=1"></script>
+<meta name="grun-module" content="banque"></head><body><title>Banque d'exercices</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Barlow:wght@400;500;600;700&display=swap">
+<style>
+/* Layout : barre fixe (retour, recherche, + exo) ; explorateur = filtres en puces + liste des exercices ; fiche = en-tête coloré par domaine, photo, vidéo, repères, consignes, liens croisés ; formulaire de création / modification ; propositions */
+:root{
+  --bg:#F3F4F6; --panel:#FFFFFF; --ink:#141B26; --mute:#5E6776; --line:#DADEE4; --soft:#ECEEF2;
+  --pp:#C2410C; --ge:#1D4ED8; --de:#0F766E; --ph:#7A5A16; --jeu:#7C3AED; --acc:#141B26;
+  --ok:#15803D; --oks:#E8F6EC; --warn:#B45309; --warns:#FDF1E3; --bad:#B91C1C;
+  --ui:"Barlow",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --display:"Barlow Condensed","Arial Narrow",system-ui,sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0F131A; --panel:#171D27; --ink:#E7EBF1; --mute:#9AA4B3; --line:#2A3341; --soft:#202836;
+  --pp:#F08A4B; --ge:#86A8FF; --de:#3CC7B2; --ph:#E2B85A; --jeu:#B79CF5; --acc:#E7EBF1; --ok:#5BD08A; --oks:#183326; --warn:#F2B35E; --warns:#33270F; --bad:#F87171; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0F131A; --panel:#171D27; --ink:#E7EBF1; --mute:#9AA4B3; --line:#2A3341; --soft:#202836;
+  --pp:#F08A4B; --ge:#86A8FF; --de:#3CC7B2; --ph:#E2B85A; --jeu:#B79CF5; --acc:#E7EBF1; --ok:#5BD08A; --oks:#183326; --warn:#F2B35E; --warns:#33270F; --bad:#F87171; color-scheme:dark}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:var(--bg);color:var(--ink);font-family:var(--ui);font-size:15px;line-height:1.45;margin:0;-webkit-tap-highlight-color:transparent}
+a{color:inherit}
+button,input,select,textarea{font:inherit;color:var(--ink)}
+button,label.btn{cursor:pointer}
+:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);border-bottom:1px solid var(--line)}
+.topin{max-width:1120px;margin:0 auto;padding-block:8px;padding-inline:16px;display:flex;gap:8px;align-items:center}
+.btn{min-height:40px;border:1px solid var(--line);background:var(--panel);border-radius:9px;display:inline-flex;align-items:center;justify-content:center;gap:6px;font-weight:600;padding:0 12px;white-space:nowrap;text-decoration:none}
+.btn.pri{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.btn.new{background:var(--de);color:#fff;border-color:var(--de)}
+.btn.dan{color:var(--bad);border-color:var(--bad)}
+.btn.sm{min-height:34px;font-size:13.5px;padding:0 10px}
+.brand{font-family:var(--display);font-weight:700;font-size:20px;white-space:nowrap;text-decoration:none}
+.sbox{flex:1;min-width:0;position:relative}
+.sbox input{width:100%;min-height:40px;border:1px solid var(--line);border-radius:9px;background:var(--panel);padding:0 12px 0 34px}
+.sbox svg{position:absolute;left:10px;top:11px;width:18px;height:18px;stroke:var(--mute)}
+main{max-width:1120px;margin:0 auto;padding-inline:16px;padding-block:14px 60px}
+h1{font-family:var(--display);font-weight:700;font-size:30px;line-height:1.08;margin:0;text-wrap:balance}
+h2{font-family:var(--display);font-weight:700;font-size:21px;margin:0}
+.lead{color:var(--mute);margin:4px 0 0}
+.headrow{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;flex-wrap:wrap}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-top:12px}
+.tab{min-height:38px;padding:0 14px;border-radius:999px;border:1px solid var(--line);background:var(--panel);font-weight:600;text-decoration:none;display:inline-flex;align-items:center}
+.tab[aria-current=page]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.filters{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin-top:12px;display:flex;flex-direction:column;gap:10px}
+.frow{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.frow>b{font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--mute);min-width:74px}
+.frow>b.in{min-width:auto;margin-left:6px}
+.filters details>summary{font-size:13.5px;font-weight:600;cursor:pointer;color:var(--mute);padding:4px 0}
+.chip{min-height:34px;padding:0 11px;border-radius:999px;border:1px solid var(--line);background:var(--panel);font-size:13.5px;font-weight:500;display:inline-flex;align-items:center;gap:6px}
+.chip[aria-pressed=true]{background:var(--cc,var(--ink));border-color:var(--cc,var(--ink));color:var(--chf,#fff)}
+.chip:not([style*="--cc"])[aria-pressed=true]{color:var(--bg)}
+.chip i{width:9px;height:9px;border-radius:50%;background:var(--cc);display:inline-block}
+.chip[aria-pressed=true] i{background:#fff}
+select.sel{min-height:34px;border:1px solid var(--line);border-radius:999px;background:var(--panel);padding:0 10px;font-size:13.5px;max-width:100%}
+.count{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:14px 0 8px;flex-wrap:wrap}
+.count b{font-variant-numeric:tabular-nums}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:999px;overflow:hidden}
+.seg button{border:0;background:var(--panel);min-height:32px;padding:0 12px;font-size:13px;font-weight:600}
+.seg button[aria-pressed=true]{background:var(--ink);color:var(--bg)}
+.list{display:flex;flex-direction:column;background:var(--panel);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.row{display:grid;grid-template-columns:6px 88px minmax(0,1fr) auto;gap:12px;align-items:center;padding:10px 14px 10px 0;border-top:1px solid var(--line);text-decoration:none}
+.row:first-child{border-top:none}
+.row .bar{align-self:stretch;background:var(--dc)}
+.row .id{font-variant-numeric:tabular-nums;font-size:13px;color:var(--mute);font-weight:600}
+.row .nm{min-width:0}
+.row .nm b{font-weight:600;display:block}
+.row .nm small{color:var(--mute);font-size:12.5px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.list.compact .row{padding:6px 12px 6px 0;gap:10px;grid-template-columns:4px 80px minmax(0,1fr) auto}
+.list.compact .row .nm b{font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.list.compact .row .nm small{display:none}
+.list.compact .pill.x{display:none}
+@media (max-width:560px){.row{grid-template-columns:5px minmax(0,1fr);row-gap:4px}.row .id{grid-column:2;font-size:12px}.row .nm{grid-column:2}.row .meta{grid-column:2;justify-content:flex-start}.row .bar{grid-row:1/4}
+  .list.compact .row{grid-template-columns:4px 72px minmax(0,1fr)}.list.compact .row .id,.list.compact .row .nm{grid-column:auto}.list.compact .row .meta{display:none}.list.compact .row .bar{grid-row:auto}}
+.meta{display:flex;gap:6px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
+.pill{font-size:12px;font-weight:600;padding:2px 8px;border-radius:999px;background:var(--soft);white-space:nowrap}
+.pill.vid{background:var(--oks);color:var(--ok)}
+.pill.mod{background:var(--warns);color:var(--warn)}
+.pill.mine{background:var(--de);color:#fff}
+.pill.fav{color:#C0392B}
+.more{margin-top:10px;display:flex;justify-content:center}
+.empty{color:var(--mute);padding:16px;background:var(--panel);border:1px dashed var(--line);border-radius:12px}
+.crumb{font-size:13px;color:var(--mute);display:flex;flex-wrap:wrap;gap:4px 6px;align-items:center}
+.crumb a{text-decoration:none;font-weight:600;color:var(--dc)}
+/* fiche */
+.fiche{background:var(--panel);border:1px solid var(--line);border-radius:14px;overflow:hidden;margin-top:10px}
+.fhead{border-top:6px solid var(--dc);padding:14px 18px 12px;display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px;align-items:flex-start}
+.fid{font-family:var(--display);font-size:18px;font-weight:700;color:var(--dc);letter-spacing:.03em;display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.fid .pill{font-family:var(--ui);letter-spacing:0}
+.fhead h1{font-size:32px}
+.fline{margin-top:6px;font-weight:600;color:var(--dc)}
+.facts{display:flex;gap:6px;flex-wrap:wrap}
+.grid{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);gap:0;border-top:1px solid var(--line)}
+@media (max-width:820px){.grid{grid-template-columns:minmax(0,1fr)}}
+.cell{padding:14px 18px;border-bottom:1px solid var(--line)}
+.grid>.col+.col .cell{border-left:1px solid var(--line)}
+@media (max-width:820px){.grid>.col+.col .cell{border-left:none}}
+.lab{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--mute);margin-bottom:5px;display:flex;align-items:center;gap:6px}
+.lab::before{content:"";width:8px;height:8px;border-radius:2px;background:var(--dc)}
+.txt{font-size:15.5px;line-height:1.55;max-width:70ch}
+.cell ul{margin:0;padding-left:18px}
+.cell li{margin:3px 0;line-height:1.45}
+.keys{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-top:1px solid var(--line)}
+@media (max-width:640px){.keys{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.key{padding:10px 18px;border-right:1px solid var(--line)}
+.key:last-child{border-right:none}
+.key small{display:block;font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--mute)}
+.key b{font-size:17px}
+.lv{display:inline-flex;gap:3px;vertical-align:middle;margin-left:6px}
+.lv i{width:10px;height:10px;border-radius:2px;background:var(--line)}
+.lv i.on{background:var(--dc)}
+.photo{background:var(--soft);display:flex;justify-content:center;border-top:1px solid var(--line)}
+.photo img{max-width:100%;max-height:420px;display:block}
+.video{background:var(--soft);min-height:150px;width:100%;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:10px;text-align:center;padding:16px}
+.video video,.video iframe{width:100%;height:100%;border:0;background:#000}
+.video.has{padding:0;background:#000;aspect-ratio:16/9;max-height:62vh}
+.video .ph{font-family:var(--display);font-size:22px;color:var(--mute)}
+.video code{font-size:13px;background:var(--panel);padding:2px 8px;border-radius:6px}
+.vtools{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+.ref{color:var(--dc);font-weight:600;text-decoration:none;border-bottom:1px dotted currentColor;white-space:nowrap}
+.links{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.links a{font-size:13px;text-decoration:none;border:1px solid var(--line);border-radius:999px;padding:3px 10px;background:var(--bg)}
+.actbar{display:flex;gap:8px;flex-wrap:wrap}
+.star[aria-pressed=true]{color:#C0392B;border-color:#C0392B}
+.notes textarea{width:100%;min-height:80px;border:1px solid var(--line);border-radius:8px;padding:8px;background:var(--bg);resize:vertical}
+.pn{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px;margin-top:14px}
+.pn a{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:10px 12px;text-decoration:none;font-size:14px}
+.pn a small{display:block;color:var(--mute);font-size:12px}
+.pn a.nx{text-align:right}
+.fam{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px 14px;text-decoration:none;display:flex;flex-direction:column;gap:2px;border-left:5px solid var(--dc)}
+.fams{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+@media (max-width:640px){.fams{grid-template-columns:minmax(0,1fr)}}
+.fam small{color:var(--mute);font-size:12.5px}
+.intro{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:6px 18px 12px;margin-top:12px;font-size:15px}
+.intro details summary{font-weight:700;cursor:pointer;padding:8px 0}
+.intro table{border-collapse:collapse;font-size:13.5px;margin:8px 0;min-width:100%}
+.intro th,.intro td{border-bottom:1px solid var(--line);padding:5px 8px;text-align:left;vertical-align:top}
+.tw{overflow-x:auto}
+.subh{font-family:var(--display);font-size:19px;margin:18px 0 6px;color:var(--dc)}
+.modal{position:fixed;inset:0;background:rgba(10,15,25,.5);display:flex;align-items:center;justify-content:center;padding:16px;z-index:60}
+.box{background:var(--panel);border-radius:14px;padding:16px;max-width:520px;width:100%;display:flex;flex-direction:column;gap:12px;max-height:88vh;overflow:auto}
+.box input[type=url],.box input[type=text]{width:100%;min-height:40px;border:1px solid var(--line);border-radius:8px;padding:0 10px;background:var(--bg)}
+.msg{font-size:13.5px;color:var(--mute)}
+.msg.err{color:var(--bad);font-weight:600}
+.msg.ok{color:var(--ok);font-weight:600}
+.sec{margin-top:20px}
+.load{padding:40px 0;color:var(--mute)}
+/* liens croisés */
+.xl{display:flex;flex-direction:column;gap:10px}
+.xline{border:1px solid var(--line);border-radius:10px;padding:10px 12px;background:var(--bg)}
+.xline>b{display:block;font-size:14px;margin-bottom:6px}
+.xline .links a.main{background:var(--ink);color:var(--bg);border-color:var(--ink);font-weight:600}
+.nb{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px}
+@media (max-width:640px){.nb{grid-template-columns:minmax(0,1fr)}}
+.nb a{display:block;text-decoration:none;font-size:13.5px;padding:6px 0;border-top:1px solid var(--line)}
+.nb a small{color:var(--mute)}
+/* formulaire */
+.form{background:var(--panel);border:1px solid var(--line);border-radius:14px;margin-top:12px;overflow:hidden}
+.fs{padding:14px 18px;border-top:1px solid var(--line)}
+.fs:first-child{border-top:none}
+.fs>h2{font-size:19px;margin-bottom:8px;color:var(--dc,var(--ink))}
+.fg{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px 14px}
+.fg .full{grid-column:1/-1}
+@media (max-width:640px){.fg{grid-template-columns:minmax(0,1fr)}}
+.fld{display:flex;flex-direction:column;gap:4px;min-width:0}
+.fld>label,.fld>span.l{font-size:12px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--mute)}
+.fld small{color:var(--mute);font-size:12.5px}
+.fld input[type=text],.fld input[type=url],.fld input[type=number],.fld select,.fld textarea{width:100%;min-height:42px;border:1px solid var(--line);border-radius:9px;padding:8px 10px;background:var(--bg)}
+.fld textarea{min-height:76px;resize:vertical;line-height:1.45}
+.fld input.bad{border-color:var(--bad)}
+.checks{display:flex;flex-wrap:wrap;gap:6px}
+.ck{display:inline-flex;align-items:center;gap:6px;min-height:34px;padding:0 10px;border:1px solid var(--line);border-radius:999px;font-size:13.5px;background:var(--bg);cursor:pointer}
+.ck input{width:16px;height:16px;margin:0;accent-color:var(--ink)}
+.ck:has(input:checked){border-color:var(--ink);font-weight:600}
+.lgrp{margin-top:6px}
+.lgrp b{font-size:12px;color:var(--mute);display:block;margin:6px 0 4px}
+.radios{display:flex;flex-direction:column;gap:6px}
+.radio{display:flex;gap:10px;align-items:flex-start;border:1px solid var(--line);border-radius:10px;padding:10px 12px;cursor:pointer;background:var(--bg)}
+.radio input{margin-top:3px;accent-color:var(--ink)}
+.radio:has(input:checked){border-color:var(--ink)}
+.radio small{display:block;color:var(--mute)}
+.imgprev{max-width:220px;max-height:160px;border-radius:8px;border:1px solid var(--line);display:block}
+.formbar{display:flex;gap:8px;flex-wrap:wrap;padding:14px 18px;border-top:1px solid var(--line);background:var(--soft);position:sticky;bottom:calc(var(--nav-h,0px) + env(safe-area-inset-bottom,0px));z-index:3}
+.switch{display:flex;align-items:center;gap:10px;font-weight:600;cursor:pointer}
+.switch input{width:20px;height:20px;accent-color:var(--de)}
+.prop{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+.prop+.prop{margin-top:8px}
+.prop details summary{cursor:pointer;font-size:13.5px;color:var(--mute);margin-top:4px}
+.prop dl{margin:6px 0 0;font-size:14px}
+.prop dt{font-weight:700;font-size:12px;text-transform:uppercase;letter-spacing:.05em;color:var(--mute);margin-top:6px}
+.prop dd{margin:0}
+.lvl{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+</style>
+
+<header class="top"><div class="topin">
+  <button class="btn" id="back" type="button" aria-label="Retour">‹</button>
+  <a class="brand" href="#">Banque</a>
+  <div class="sbox"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+    <input id="q" type="search" placeholder="Nom, identifiant (FOR-0123), matériel, mot de la fiche…" autocomplete="off" enterkeyhint="search"></div>
+  <a class="btn new" id="newb" href="#/nouveau" aria-label="Créer un exercice" hidden>+ Exo</a>
+</div></header>
+<main id="main"><div class="load">Chargement des exercices…</div></main>
+<div class="modal" id="modal" hidden><div class="box" id="mbox"></div></div>
+
+<script>
+"use strict";
+/* Correspondance ligne de grille → documents de la veille (écrite par build_data.py à partir de plan/liste_documents.tsv) */
+const LV = /*LV*/{"L":{"PP1":{"c":["2.1.1"],"a":["2.1.2"],"s":["2.1.3"],"b":["2.13.1","2.13.2","2.13.4"],"t":["2.16.7","2.16.12","2.16.13"]},"PP2":{"c":["2.2.1"],"a":["2.2.2"],"s":["2.2.3"],"b":["2.13.1","2.13.2","2.13.4","3.2.4"],"t":["2.16.7","2.16.12","2.16.13"]},"PP3":{"c":["2.3.1"],"a":["2.3.2"],"s":["2.3.3"],"b":["3.1.1"],"t":["2.16.9","2.16.12","2.16.13"]},"PP4":{"c":["2.4.1"],"a":["2.4.2"],"s":["2.4.3"],"b":["3.20.2"],"t":["2.16.5","2.16.12","2.16.13"]},"PP5":{"c":["2.5.1"],"a":["2.5.2"],"s":["2.5.3"],"b":["3.1.1","3.6.1"],"t":["2.16.6","2.16.12","2.16.13"]},"PP6":{"c":["2.6.1"],"a":["2.6.2"],"s":["2.6.3"],"b":["3.20.3"],"t":["2.16.3","2.16.12","2.16.13"]},"PP7":{"c":["2.7.1"],"a":["2.7.2"],"s":["2.7.3"],"b":["3.20.8","3.20.9"],"t":["2.16.4","2.16.12","2.16.13"]},"PP8":{"c":["2.8.1"],"a":["2.8.2"],"s":["2.8.3"],"b":["4.2.3"],"t":["2.16.8","2.16.12","2.16.13"]},"PP9":{"c":["2.9.1"],"a":["2.9.2"],"s":["2.9.3"],"b":["4.2.2","4.2.3"],"t":["2.16.8","2.16.12","2.16.13"]},"PP10":{"c":["2.10.1"],"a":["2.10.2"],"s":["2.10.3"],"b":["3.19.1"],"t":["2.16.9","2.16.12","2.16.13"]},"PP11":{"c":["2.11.1"],"a":["2.11.2"],"s":["2.11.3"],"b":["3.1.1"],"t":["2.16.9","2.16.12","2.16.13"]},"PP12":{"c":["2.12.1"],"a":["2.12.2"],"s":["2.12.3"],"b":["2.14.2","3.2.5"],"t":["2.16.9","2.16.12","2.16.13"]},"GE1":{"c":["3.3.1"],"a":["3.3.2"],"s":["4.6.8"],"b":["3.2.1","3.2.2","3.2.3","3.2.4","3.2.5","3.1.1","3.1.5"],"t":["2.16.11"]},"GE2":{"c":["3.4.1"],"a":["3.4.2"],"s":["4.6.8"],"b":["3.2.1","3.2.2","3.2.3","3.2.4","3.2.5","3.1.1","3.1.5"],"t":["2.16.11"]},"GE3":{"c":["3.5.1"],"a":["3.5.2"],"s":["4.6.8"],"b":["3.2.1","3.2.2","3.2.3","3.2.4","3.2.5","3.1.1","3.1.5"],"t":["2.16.11"]},"GE4":{"c":["3.7.1"],"a":["3.7.2"],"s":["4.6.8"],"b":["3.6.1","3.6.2","3.6.3","3.6.4","3.1.1","3.1.5"],"t":["2.16.11"]},"GE5":{"c":["3.8.1"],"a":["3.8.2"],"s":["4.6.8"],"b":["3.6.1","3.6.2","3.6.3","3.6.4","3.1.1","3.1.5"],"t":["2.16.11"]},"GE6":{"c":["3.9.1"],"a":["3.9.2"],"s":["4.6.8"],"b":["3.6.1","3.6.2","3.6.3","3.6.4","3.1.1","3.1.5"],"t":["2.16.11"]},"GE7":{"c":["3.11.1"],"a":["3.11.2"],"s":["4.6.8"],"b":["3.10.1","3.10.2","3.10.3","3.10.4","3.1.1","3.1.5"],"t":["2.16.11"]},"GE8":{"c":["3.12.1"],"a":["3.12.2"],"s":["4.6.8"],"b":["3.10.1","3.10.2","3.10.3","3.10.4","3.1.1","3.1.5"],"t":["2.16.11"]},"GE9":{"c":["3.13.1"],"a":["3.13.2"],"s":["4.6.8"],"b":["3.10.1","3.10.2","3.10.3","3.10.4","3.1.1","3.1.5"],"t":["2.16.11"]},"GE10":{"c":["3.15.1"],"a":["3.15.2"],"s":["4.6.8"],"b":["3.14.1","3.14.2","3.1.1","3.1.5"],"t":["2.16.11"]},"GE11":{"c":["3.16.1"],"a":["3.16.2"],"s":["4.6.8"],"b":["3.14.1","3.14.2","3.1.1","3.1.5"],"t":["2.16.11"]},"GE12":{"c":["3.17.1"],"a":["3.17.2"],"s":["4.6.8"],"b":["3.2.4","3.1.1","3.1.5"],"t":["2.16.11"]},"GE13":{"c":["3.18.3"],"a":[],"s":["4.6.8"],"b":["3.14.1","3.1.1","3.1.5"],"t":["2.16.11"]},"DE1":{"c":["3.20.1","3.19.1"],"a":["3.21.2","3.21.3"],"s":["3.21.4"],"b":["3.21.1","2.6.1"],"t":["2.16.11"]},"DE2":{"c":["3.20.2","3.19.1"],"a":["3.21.2","3.21.3"],"s":["3.21.4"],"b":["3.21.1","2.4.1"],"t":["2.16.11"]},"DE3":{"c":["3.20.3","3.19.1"],"a":["3.21.2","3.21.3"],"s":["3.21.4"],"b":["3.21.1","2.6.1"],"t":["2.16.3","2.16.11"]},"DE4":{"c":["3.20.4","3.19.1"],"a":["3.21.2","3.21.3"],"s":["3.21.4"],"b":["3.21.1","2.7.1"],"t":["2.16.4","2.16.11"]},"DE5":{"c":["3.20.5","3.19.1"],"a":["3.21.2","3.21.3"],"s":["3.21.4"],"b":["3.21.1","2.6.1"],"t":["2.16.11"]},"DE6":{"c":["3.20.6","3.19.1"],"a":["3.21.2","3.21.3"],"s":["3.21.4"],"b":["3.21.1","3.6.3"],"t":["2.16.11"]},"DE7":{"c":["3.20.7","3.19.1"],"a":["3.21.2","3.21.3"],"s":["3.21.4"],"b":["3.21.1","3.6.3","3.1.1"],"t":["2.16.11"]},"DE8":{"c":["3.20.8","3.19.1"],"a":["3.21.2","3.21.3"],"s":["3.21.4"],"b":["3.21.1","2.7.1"],"t":["2.16.4","2.16.11"]},"DE9":{"c":["3.20.9","3.19.1"],"a":["3.21.2","3.21.3"],"s":["3.21.4"],"b":["3.21.1","2.7.1"],"t":["2.16.4","2.16.11"]},"DE10":{"c":["3.20.10","3.19.1"],"a":["3.21.2","3.21.3"],"s":["3.21.4"],"b":["3.21.1","4.2.2"],"t":["2.16.11"]},"DE11":{"c":["3.20.11","3.19.1"],"a":["3.21.2","3.21.3"],"s":["3.21.4"],"b":["3.21.1","2.10.1"],"t":["2.16.11"]}},"g":{"c":"Comprendre","a":"Âge par âge","s":"Séances et routines","b":"Biomécanique et liens","t":"Tests et évaluation"},"t":{"2.1.1":"Comprendre et développer : bases, méthodes, application au tennis","2.1.2":"Âge par âge, filles et garçons : ce qu'on attend et ce qu'on travaille","2.1.3":"Séances, routines et programmes types","2.2.1":"Comprendre et développer : bases, méthodes, application au tennis","2.2.2":"Âge par âge, filles et garçons : ce qu'on attend et ce qu'on travaille","2.2.3":"Séances, routines et programmes types","2.3.1":"Comprendre et développer : bases, méthodes, application au tennis","2.3.2":"Âge par âge, filles et garçons : ce qu'on attend et ce qu'on travaille","2.3.3":"Séances, routines et programmes types","2.4.1":"Comprendre et développer : bases, méthodes, application au tennis","2.4.2":"Âge par âge, filles et garçons : ce qu'on attend et ce qu'on travaille","2.4.3":"Séances, routines et programmes types","2.5.1":"Comprendre et développer : bases, méthodes, application au tennis","2.5.2":"Âge par âge, filles et garçons : ce qu'on attend et ce qu'on travaille","2.5.3":"Séances, routines et programmes types","2.6.1":"Comprendre et développer : bases, méthodes, application au tennis","2.6.2":"Âge par âge, filles et garçons : ce qu'on attend et ce qu'on travaille","2.6.3":"Séances, routines et programmes types","2.7.1":"Comprendre et développer : bases, méthodes, application au tennis","2.7.2":"Âge par âge, filles et garçons : ce qu'on attend et ce qu'on travaille","2.7.3":"Séances, routines et programmes types","2.8.1":"Comprendre et développer : bases, méthodes, application au tennis","2.8.2":"Âge par âge, filles et garçons : ce qu'on attend et ce qu'on travaille","2.8.3":"Séances, routines et programmes types","2.9.1":"Comprendre et développer : bases, méthodes, application au tennis","2.9.2":"Âge par âge, filles et garçons : ce qu'on attend et ce qu'on travaille","2.9.3":"Séances, routines et programmes types","2.10.1":"Comprendre et développer : bases, méthodes, application au tennis","2.10.2":"Âge par âge, filles et garçons : ce qu'on attend et ce qu'on travaille","2.10.3":"Séances, routines et programmes types","2.11.1":"Comprendre et développer : bases, méthodes, application au tennis","2.11.2":"Âge par âge, filles et garçons : ce qu'on attend et ce qu'on travaille","2.11.3":"Séances, routines et programmes types","2.12.1":"Comprendre et développer : bases, méthodes, application au tennis","2.12.2":"Âge par âge, filles et garçons : ce qu'on attend et ce qu'on travaille","2.12.3":"Séances, routines et programmes types","2.13.1":"Charge, tempo et méthodes de musculation","2.13.2":"Technique et sécurité des mouvements de musculation","2.13.4":"La musculation du jeune : principes et précautions","2.14.2":"Les briques de l'échauffement","2.16.3":"Tests de vitesse et d'accélération","2.16.4":"Tests de changement de direction et d'agilité","2.16.5":"Tests de détente et de puissance des jambes","2.16.6":"Tests de puissance du haut du corps et de frappe","2.16.7":"Tests de force et profil force-vitesse","2.16.8":"Tests d'endurance et de sprints répétés","2.16.9":"Tests de souplesse, de gainage, d'équilibre et de coordination","2.16.11":"Observer et évaluer le joueur sur le court","2.16.12":"Valeurs de référence par âge : filles","2.16.13":"Valeurs de référence par âge : garçons","3.1.1":"Chaîne cinétique, transferts d'énergie, appuis et équilibre","3.1.5":"Contraintes mécaniques et fondamentaux des frappes par tranche d'âge","3.2.1":"Vue d'ensemble et repères chiffrés","3.2.2":"Position de départ, lancer de balle, armé","3.2.3":"Appuis, jambes et tronc","3.2.4":"Bras de frappe, impact, accompagnement, muscles","3.2.5":"Erreurs, contraintes articulaires, fatigue, enseigner le service","3.3.1":"Technique : ce qui est propre à ce coup, repères, erreurs, usages","3.3.2":"Âge par âge : attendus et étapes d'apprentissage","3.4.1":"Technique : ce qui est propre à ce coup, repères, erreurs, usages","3.4.2":"Âge par âge : attendus et étapes d'apprentissage","3.5.1":"Technique : ce qui est propre à ce coup, repères, erreurs, usages","3.5.2":"Âge par âge : attendus et étapes d'apprentissage","3.6.1":"Situer le coup droit, prises, chaîne cinétique","3.6.2":"Le coup droit phase par phase","3.6.3":"Appuis, situations de jeu, repères chiffrés, muscles, hommes et femmes","3.6.4":"Erreurs, contraintes articulaires, fatigue, préparation physique du coup droit","3.7.1":"Technique : ce qui est propre à ce coup, repères, erreurs, usages","3.7.2":"Âge par âge : attendus et étapes d'apprentissage","3.8.1":"Technique : ce qui est propre à ce coup, repères, erreurs, usages","3.8.2":"Âge par âge : attendus et étapes d'apprentissage","3.9.1":"Technique : ce qui est propre à ce coup, repères, erreurs, usages","3.9.2":"Âge par âge : attendus et étapes d'apprentissage","3.10.1":"Situer le revers, prises, tronc commun aux revers","3.10.2":"Le revers à deux mains phase par phase","3.10.3":"Le revers à une main phase par phase","3.10.4":"Repères chiffrés, muscles, erreurs, contraintes, préparation physique du revers","3.11.1":"Technique : ce qui est propre à ce coup, repères, erreurs, usages","3.11.2":"Âge par âge : attendus et étapes d'apprentissage","3.12.1":"Technique : ce qui est propre à ce coup, repères, erreurs, usages","3.12.2":"Âge par âge : attendus et étapes d'apprentissage","3.13.1":"Technique : ce qui est propre à ce coup, repères, erreurs, usages","3.13.2":"Âge par âge : attendus et étapes d'apprentissage","3.14.1":"Le jeu au filet : prises, phases, hauteurs, volées particulières, demi-volée, montée","3.14.2":"Muscles, erreurs, contraintes, préparation physique de la volée","3.15.1":"Technique : ce qui est propre à ce coup, repères, erreurs, usages","3.15.2":"Âge par âge : attendus et étapes d'apprentissage","3.16.1":"Technique : ce qui est propre à ce coup, repères, erreurs, usages","3.16.2":"Âge par âge : attendus et étapes d'apprentissage","3.17.1":"Technique : phases, formes de smash, exigences, erreurs","3.17.2":"Âge par âge : attendus, enseigner et entraîner","3.18.3":"La main, l'amortie et la contre-amortie","3.19.1":"Comprendre le jeu de jambes : rôle, cycle de déplacement, exigences","3.20.1":"Ligne 1 · Position d'attention : technique, repères, erreurs, attendus par âge","3.20.2":"Ligne 2 · Allègement et reprise d'appuis : technique, repères, erreurs, attendus par âge","3.20.3":"Ligne 3 · Démarrage et premiers pas : technique, repères, erreurs, attendus par âge","3.20.4":"Ligne 4 · Déplacements latéraux : technique, repères, erreurs, attendus par âge","3.20.5":"Ligne 5 · Déplacements vers l'avant et vers l'arrière : technique, repères, erreurs, attendus par âge","3.20.6":"Ligne 6 · Pas d'ajustement et mise à distance : technique, repères, erreurs, attendus par âge","3.20.7":"Ligne 7 · Appuis de frappe : technique, repères, erreurs, attendus par âge","3.20.8":"Ligne 8 · Freinage et décélération : technique, repères, erreurs, attendus par âge","3.20.9":"Ligne 9 · Changement de direction et réaccélération : technique, repères, erreurs, attendus par âge","3.20.10":"Ligne 10 · Replacement : technique, repères, erreurs, attendus par âge","3.20.11":"Ligne 11 · Enchaînements et liaison des actions : technique, repères, erreurs, attendus par âge","3.21.1":"Le jeu de jambes selon la surface","3.21.2":"Le jeu de jambes âge par âge : de 3 à 10 ans","3.21.3":"Le jeu de jambes âge par âge : de 11 ans à l'adulte","3.21.4":"Observer, corriger, routines et séances types","4.2.2":"Déplacements et frappes en match","4.2.3":"Exigences physiologiques et mentales du match","4.6.8":"Situations types par secteur de jeu"}}/*/LV*/;
+const DOM = {PP:["Préparation physique","--pp"], PH:["Prépa physique hors grille","--ph"], GE:["Biomécanique du geste","--ge"], DE:["Biomécanique du déplacement","--de"], JEU:["Situations de jeu","--jeu"]};
+const LIG = {
+ PP:["Force du bas du corps","Force du haut du corps","Gainage et stabilité du tronc","Puissance des jambes : sauts et pliométrie","Puissance du haut du corps et rotation","Vitesse et accélération","Freinage, changements de direction et agilité","Endurance aérobie","Répétition d'efforts intenses","Coordination, motricité fondamentale et rythme","Équilibre et proprioception","Mobilité et souplesse"],
+ GE:["Service à plat","Service slicé","Service lifté","Coup droit lifté","Coup droit à plat","Coup droit slicé","Revers lifté","Revers à plat","Revers slicé","Volée de coup droit","Volée de revers","Smash","Amortie et touché de balle"],
+ DE:["Position d'attention","Allègement et reprise d'appuis","Démarrage et premiers pas","Déplacements latéraux","Déplacements vers l'avant et vers l'arrière","Pas d'ajustement et mise à distance","Appuis de frappe","Freinage et décélération","Changement de direction et réaccélération","Replacement","Enchaînements et liaison des actions"]};
+const NIV = ["","Découverte","Maîtrise","Avancé","Expert"];
+const MAT = [["Sans matériel",/\baucun|sans materiel|poids du corps/],["Tapis",/tapis/],["Raquette et balles",/raquette|balle/],["Plots et cibles",/plot|cible|cone|coupelle/],["Élastique",/elastique/],["Médecine-ball",/medecine|ballon leste/],["Ballon suisse",/ballon suisse/],["Lattes, échelle, cerceaux",/latte|echelle|cerceau|haie/],["Corde à sauter",/corde/],["Banc, box, step",/banc|box|step|marche|plinth/],["Barre, haltères, kettlebell",/barre|haltere|kettlebell|disque|poulie|machine|charge/],["Mur",/\bmur\b/],["Partenaire",/partenaire|binome|serveur|relanceur/],["Chrono, My Sprint, My Jump",/chrono|my sprint|my jump|ipad/]];
+/* échauffement (CIBLES.md, CONSIGNES_JEUX.md) */
+const ETN = {MR:"Mise en route",MO:"Mobilité",AC:"Activation et prévention",CV:"Coordination et vitesse",ST:"Spécifique tennis",PO:"Mise en tension finale"};
+const CIB = {MR:[["cardio","Cardio"],["gammes","Gammes"],["appuis","Appuis"]],MO:[["chevilles","Chevilles et pieds"],["hanches","Hanches"],["tronc","Colonne et tronc"],["epaules","Épaules"],["poignets","Poignets et avant-bras"]],
+  AC:[["fessiers","Fessiers et bassin"],["gainage","Gainage"],["epaule","Épaule (coiffe, omoplate)"],["genou_cheville","Genou, pied et cheville"]],CV:[["rythme","Rythme d'appuis"],["reaction","Réaction"],["direction","Changements de direction"],["vitesse","Vitesse courte"]],
+  ST:[["fond","Fond de court"],["filet","Filet"],["service_retour","Service et retour"],["deplacements","Déplacements tennis"]],PO:[["jambes","Jambes explosives"],["haut","Haut du corps"],["mental","Activation mentale"]]};
+const CIBN = Object.fromEntries(Object.values(CIB).flat());
+const FMTN = {seul:"Seul",deux:"À deux",groupe:"En groupe"};
+const LIEUN = {court:"Court",salle:"Salle",ext:"Extérieur",bord:"Bord de court",hotel:"Chambre d'hôtel"};
+const APRN = {tennis:"Avant le tennis",pp:"Avant la prépa physique",match:"Avant un match",bilan:"Avant un bilan / tests"};
+const WMAT = new Set(["rb","plots","lattes","echelle","cerceaux","haies","corde","mb","ballon","elast","banc","mur","cibles","chasubles","tapis"]);
+const STN = {perso:"Perso",propose:"Proposé",valide:"Exercice de la méthode"};
+const PAGE = 60;
+const $ = s => document.querySelector(s);
+const $$ = s => [...document.querySelectorAll(s)];
+const esc = s => String(s??"").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const fold = s => String(s??"").normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase();
+const dc = d => `var(${(DOM[d]||DOM.PH)[1]})`;
+const ligDom = l => l.slice(0,2), ligN = l => +l.slice(2);
+const ligNom = l => (LIG[ligDom(l)]||[])[ligN(l)-1] || l;
+const okLig = l => /^(PP|GE|DE)\d{1,2}$/.test(l) && !!LIG[ligDom(l)][ligN(l)-1];
+const ligCol = l => ({PP:"var(--pp)",GE:"var(--ge)",DE:"var(--de)"}[ligDom(l)]);
+const J = () => window.GRUN && GRUN.isJoueur();
+const today = () => (window.GRUN ? GRUN.today() : new Date().toISOString().slice(0,10));
+const MOIFAM = {c:"MOI", t:"Mes exercices", dom:"PH", dossier:"Mes exercices", intro:"<p>Les exercices que tu as créés et rangés dans « Mes exercices ».</p>", subs:[]};
+
+let FAMS=[], EX=[], BY={}, FBY={}, VID={}, MATC=[], FAV=new Set(), HIDE=new Set(), EDITING=false, FLASH="";
+const dmsg = t => { FLASH=t; const m=$("#dmsg"); if(m) m.textContent=t; };
+/* ---------- données personnelles du module (appareil, clé historique banque_v1) : listes, notes, liens vidéo, filtres, propositions reçues ---------- */
+const ST="banque_v1";
+const FDEF = {dom:"",lig:"",age:"",niv:"",mat:"",vid:"",lieu:"",wu:"",fav:false,mine:false,mod:false,hid:false,dispo:[],tri:"",vue:"liste"};
+function loadP(){ let o={}; try{ o=JSON.parse(localStorage.getItem(ST))||{}; }catch(e){} const p=Object.assign({fav:[], lists:[], notes:{}, links:{}, recues:[], traitees:[]}, o); p.f=Object.assign({},FDEF,p.f||{}); if(!Array.isArray(p.f.dispo)) p.f.dispo=[]; return p; }
+let P = loadP();
+const save = () => { try{ if(window.GRUN) GRUN.save(ST,P); else localStorage.setItem(ST, JSON.stringify(P)); }catch(e){} };
+/* vidéos importées depuis l'appareil : IndexedDB */
+const IDB = { db:null,
+  open(){ return this.db ? Promise.resolve(this.db) : new Promise((ok,ko)=>{ try{ const r=indexedDB.open("banque_videos",1); r.onupgradeneeded=()=>r.result.createObjectStore("v"); r.onsuccess=()=>{ this.db=r.result; ok(this.db); }; r.onerror=()=>ko(r.error); }catch(e){ ko(e); } }); },
+  async get(k){ const db=await this.open(); return new Promise(ok=>{ const r=db.transaction("v").objectStore("v").get(k); r.onsuccess=()=>ok(r.result); r.onerror=()=>ok(null); }); },
+  async put(k,v){ const db=await this.open(); return new Promise((ok,ko)=>{ const t=db.transaction("v","readwrite"); t.objectStore("v").put(v,k); t.oncomplete=ok; t.onerror=()=>ko(t.error); }); },
+  async del(k){ const db=await this.open(); return new Promise(ok=>{ const t=db.transaction("v","readwrite"); t.objectStore("v").delete(k); t.oncomplete=ok; }); },
+  async keys(){ try{ const db=await this.open(); return await new Promise(ok=>{ const r=db.transaction("v").objectStore("v").getAllKeys(); r.onsuccess=()=>ok(r.result); r.onerror=()=>ok([]); }); }catch(e){ return []; } } };
+let LOCALV = new Set();
+
+/* ---------- chargement : base + exos perso + modifications + masqués (GRUN.banque) ---------- */
+function index(B){
+  FAMS = [...B.fams, MOIFAM]; EX = B.ex; MATC = B.mat||[]; BY = {}; FBY = {};
+  FAV = new Set(B.fav||[]); HIDE = new Set(B.hide||[]);
+  EX.forEach((e,i)=>{ e.i=i; e.L=e.L||[]; BY[e.id]=e; e.k = fold([e.id,e.n,e.ob,e.ma,e.de,e.co,e.er,e.ut,e.s,e.li,e.dos].join(" ")); e.mk = fold(e.ma||""); });
+  FAMS.forEach(f=>FBY[f.c]=f);
+  MOIFAM.subs = [...new Set(EX.filter(e=>e.f==="MOI").map(e=>e.s||"Mes exercices"))];
+}
+async function reload(){ index(await GRUN.banque.load()); }
+async function boot(){
+  if(!window.GRUN){ $("#main").innerHTML='<div class="empty">Ouvre la banque depuis l\'appli GRÜN.</div>'; return; }
+  GRUN.nav("res");
+  try{ await reload(); }
+  catch(e){ $("#main").innerHTML='<div class="empty">La banque n\'a pas pu se charger. Ouvre-la une première fois avec internet, puis recharge.</div>'; return; }
+  try{ VID = await GRUN.videos(); VID = {...VID}; }catch(e){ VID={}; }
+  delete VID._mode_emploi;
+  /* reprise des favoris de l'ancienne appli Banque (banque_v1.fav) dans les favoris communs */
+  if(!P.favMig){ for(const id of P.fav||[]) if(!FAV.has(id) && BY[id]){ GRUN.banque.toggleFav(id); FAV.add(id); } P.favMig=true; save(); }
+  LOCALV = new Set(await IDB.keys());
+  $("#newb").hidden = J();
+  GRUN.on("grun:banque", ()=>{ const B=GRUN.banque.cache(); if(!B) return; index(B); if(!EDITING){ const y=scrollY; route(true); scrollTo(0,y); } });
+  GRUN.on(ST, ()=>{ P = loadP(); });
+  route();
+}
+const vidOf = e => P.links[e.id] || e.vid || VID[e.id] || "";
+const hasVid = id => { const e=BY[id]; return !!((e && vidOf(e)) || LOCALV.has(id)); };
+
+/* ---------- routage ---------- */
+addEventListener("hashchange", ()=>route());
+$("#back").onclick=()=>{ if(history.length>1) history.back(); else location.hash=""; };
+function parseHash(){ const raw=location.hash.slice(1), i=raw.indexOf("?"); let path=i<0?raw:raw.slice(0,i); try{ path=decodeURIComponent(path); }catch(e){} return {path, q:new URLSearchParams(i<0?"":raw.slice(i+1))}; }
+function route(keep){
+  const {path:h,q} = parseHash(); if(!keep){ scrollTo(0,0); FLASH=""; } EDITING=false;
+  if(h.startsWith("/ex/")) return showEx(h.slice(4));
+  if(h.startsWith("/l/")) return showLigne(h.slice(3), q.get("a"));
+  if(h==="/nouveau") return showForm(null,q);
+  if(h.startsWith("/modifier/")) return showForm(h.slice(10),q);
+  if(h==="/propositions") return showProps();
+  if(h.startsWith("e/")) return showEx(h.slice(2));
+  if(h.startsWith("f/")) return showFam(h.slice(2));
+  if(h==="familles") return showFams();
+  if(h==="favoris") return showFav();
+  if(h.startsWith("l/")) return showList(h.slice(2));
+  if(h==="listes") return showLists();
+  if(h==="tournage") return showShoot();
+  showExplore();
+}
+function tabs(cur){ const T=[["","Explorer"],["familles","Familles"],["favoris","♥ Favoris"],["listes","Mes séances"],["tournage","Vidéos"]]; if(!J()) T.push(["/propositions","Propositions"]);
+  return `<nav class="tabs">${T.map(([h,t])=>`<a class="tab" href="#${h}" ${cur===h?'aria-current="page"':""}>${t}</a>`).join("")}</nav>`; }
+function reserve(){ $("#main").innerHTML=`<h1>Réservé au coach</h1><p class="lead">En mode joueur, la banque se consulte seulement : pas de création ni de modification d'exercice.</p><div class="sec actbar"><a class="btn pri" href="#">Retour à la banque</a></div>`; }
+
+/* ---------- explorer : filtres et vues ---------- */
+let shown = PAGE;
+function filtered(){
+  const f=P.f, q=fold($("#q").value.trim()), ws=q.split(/\s+/).filter(Boolean);
+  const mat = f.mat!=="" ? MAT[+f.mat][1] : null, dispo = new Set(f.dispo||[]);
+  const exact = /^[a-z]{3}-\d{4}$/.test(q) ? q.toUpperCase() : null;
+  const r = EX.filter(e=>{
+    if(exact) return e.id===exact;
+    const hid = HIDE.has(e.id);
+    if(f.hid ? !hid : hid) return false;
+    if(f.dom && e.dom!==f.dom) return false;
+    if(f.lig && !e.L.includes(f.lig)) return false;
+    if(f.age && (e.a > +f.age || (e.ax||18) < +f.age)) return false;
+    if(f.niv && e.v !== +f.niv) return false;
+    if(mat && !mat.test(e.mk)) return false;
+    if(dispo.size && !(e.m||[]).every(m=>dispo.has(m))) return false;
+    if(f.lieu==="court" && !e.c) return false;
+    if(f.lieu==="hors" && e.c) return false;
+    if(f.lieu==="grand" && !e.e) return false;
+    if(f.wu){ if(!e.w) return false; if(f.wu!=="1" && e.w.et!==f.wu && !(e.w.ets||[]).includes(f.wu)) return false; }
+    if(f.fav && !FAV.has(e.id)) return false;
+    if(f.mine && !e.perso) return false;
+    if(f.mod && !e.modifie) return false;
+    if(f.vid==="1" && !hasVid(e.id)) return false;
+    if(f.vid==="0" && hasVid(e.id)) return false;
+    for(const w of ws) if(!e.k.includes(w)) return false;
+    return true;
+  });
+  const by = {nom:(a,b)=>a.n.localeCompare(b.n,"fr"), niv:(a,b)=>a.v-b.v||a.a-b.a||a.i-b.i, age:(a,b)=>a.a-b.a||a.v-b.v||a.i-b.i}[f.tri];
+  if(by) r.sort(by);
+  return r;
+}
+function showExplore(){
+  document.documentElement.style.setProperty("--acc","var(--ink)");
+  const f=P.f;
+  const domChips = Object.entries(DOM).map(([k,[n,c]])=>`<button class="chip" type="button" data-dom="${k}" aria-pressed="${f.dom===k}" style="--cc:var(${c})"><i></i>${n}</button>`).join("");
+  const ligOpts = ["PP","GE","DE"].map(d=>`<optgroup label="${DOM[d][0]}">${LIG[d].map((n,i)=>`<option value="${d}${i+1}">${d}${i+1} · ${esc(n)}</option>`).join("")}</optgroup>`).join("");
+  const tog = (k,t) => `<button class="chip" type="button" data-tog="${k}" aria-pressed="${!!f[k]}">${t}</button>`;
+  const nMine = EX.filter(e=>e.perso).length;
+  $("#main").innerHTML = `<div class="headrow"><div><h1>Banque d'exercices</h1><p class="lead">${EX.length.toLocaleString("fr-FR")} exercices${nMine?` dont ${nMine} à toi`:""} · une fiche par exercice · rangés selon les lignes des grilles</p></div>${J()?"":`<a class="btn new" href="#/nouveau">+ Créer un exercice</a>`}</div>${tabs("")}
+  <div class="filters">
+    <div class="frow"><b>Domaine</b>${domChips}</div>
+    <div class="frow"><b>Ligne</b><select class="sel" id="flig" aria-label="Ligne de grille"><option value="">Toutes les lignes</option>${ligOpts}</select>
+      <b class="in">Âge</b><select class="sel" id="fage" aria-label="Âge du joueur"><option value="">Tous âges</option>${Array.from({length:15},(_,i)=>`<option value="${i+4}">Joueur de ${i+4} ans</option>`).join("")}</select>
+      <b class="in">Niveau</b><select class="sel" id="fniv" aria-label="Niveau"><option value="">Tous</option>${[1,2,3,4].map(n=>`<option value="${n}">${n} · ${NIV[n]}</option>`).join("")}</select></div>
+    <div class="frow"><b>Lieu</b><select class="sel" id="flieu" aria-label="Lieu"><option value="">Partout</option><option value="court">Sur le court</option><option value="hors">Hors court</option><option value="grand">Grand espace</option></select>
+      <b class="in">Échauff.</b><select class="sel" id="fwu" aria-label="Étape d'échauffement"><option value="">Tous les exos</option><option value="1">Utilisables en échauffement</option>${Object.entries(ETN).map(([k,n])=>`<option value="${k}">Étape · ${n}</option>`).join("")}</select>
+      <b class="in">Vidéo</b><select class="sel" id="fvid" aria-label="Vidéo"><option value="">Toutes</option><option value="1">Avec vidéo</option><option value="0">Sans vidéo</option></select></div>
+    <div class="frow"><b>Afficher</b>${tog("fav","♥ Favoris")}${tog("mine","Mes exos")}${tog("mod","Modifiés")}${tog("hid","Masqués")}<button class="chip" type="button" id="freset">Tout effacer</button></div>
+    <details id="fmore" ${f.dispo.length||f.mat?"open":""}><summary>Matériel${f.dispo.length?` · ${f.dispo.length} disponible${f.dispo.length>1?"s":""}`:""}</summary>
+      <div class="frow" style="margin-top:6px"><b>Disponible</b>${MATC.map(([k,n])=>`<button class="chip" type="button" data-mat="${k}" aria-pressed="${f.dispo.includes(k)}">${esc(n)}</button>`).join("")}</div>
+      <p class="msg" style="margin:4px 0 8px">Coche le matériel que tu as : seuls les exos faisables avec ce matériel (ou sans rien) restent.</p>
+      <div class="frow"><b>Utilise</b><select class="sel" id="fmat" aria-label="Matériel utilisé"><option value="">Tout matériel</option>${MAT.map((m,i)=>`<option value="${i}">${m[0]}</option>`).join("")}</select></div>
+    </details>
+  </div>
+  <div class="count"><span id="cnt"></span><span class="actbar"><select class="sel" id="ftri" aria-label="Trier"><option value="">Ordre de la banque</option><option value="nom">Trier par nom</option><option value="niv">Trier par niveau</option><option value="age">Trier par âge</option></select>
+    <span class="seg" role="group" aria-label="Vue"><button type="button" data-vue="liste" aria-pressed="${f.vue!=="compacte"}">Liste</button><button type="button" data-vue="compacte" aria-pressed="${f.vue==="compacte"}">Compacte</button></span></span></div><div id="res"></div>`;
+  [["flig","lig"],["fage","age"],["fniv","niv"],["fmat","mat"],["fvid","vid"],["flieu","lieu"],["fwu","wu"],["ftri","tri"]].forEach(([id,k])=>{ const s=$("#"+id); s.value=f[k]; s.onchange=()=>{ f[k]=s.value; if(k==="lig" && s.value){ const d=s.value.slice(0,2); if(f.dom && !(f.dom===d || (f.dom==="PH"&&d==="PP") || f.dom==="JEU")) f.dom=""; } save(); shown=PAGE; showExplore(); }; });
+  $$("[data-dom]").forEach(b=>b.onclick=()=>{ f.dom = f.dom===b.dataset.dom ? "" : b.dataset.dom; save(); shown=PAGE; showExplore(); });
+  $$("[data-tog]").forEach(b=>b.onclick=()=>{ const k=b.dataset.tog; f[k]=!f[k]; save(); shown=PAGE; showExplore(); });
+  $$("[data-mat]").forEach(b=>b.onclick=()=>{ const k=b.dataset.mat; f.dispo = f.dispo.includes(k) ? f.dispo.filter(x=>x!==k) : [...f.dispo,k]; save(); shown=PAGE; showExplore(); $("#fmore").open=true; });
+  $$("[data-vue]").forEach(b=>b.onclick=()=>{ f.vue=b.dataset.vue; save(); showExplore(); });
+  $("#freset").onclick=()=>{ P.f={...FDEF, dispo:[], vue:f.vue}; $("#q").value=""; save(); shown=PAGE; showExplore(); };
+  renderRes();
+}
+function renderRes(){
+  const r = filtered();
+  const c=$("#cnt"); if(!c) return;
+  c.innerHTML = `<b>${r.length.toLocaleString("fr-FR")}</b> exercice${r.length>1?"s":""}`;
+  $("#res").innerHTML = r.length ? rowsHTML(r.slice(0,shown), P.f.vue==="compacte") + (r.length>shown?`<div class="more"><button class="btn" id="more" type="button">Afficher ${Math.min(PAGE,r.length-shown)} de plus</button></div>`:"") : '<div class="empty">Aucun exercice ne correspond. Retire un filtre ou raccourcis la recherche.</div>';
+  const m=$("#more"); if(m) m.onclick=()=>{ shown+=PAGE; renderRes(); };
+}
+function badges(e){ return `${e.perso?`<span class="pill mine">${e.st==="valide"?"méthode":e.st==="propose"?"proposé":"perso"}</span>`:""}${e.modifie?'<span class="pill mod">modifié</span>':""}${HIDE.has(e.id)?'<span class="pill">masqué</span>':""}`; }
+function rowsHTML(arr, compact){
+  return `<div class="list${compact?" compact":""}">${arr.map(e=>`<a class="row" href="#/ex/${e.id}" style="--dc:${dc(e.dom)}"><span class="bar"></span><span class="id">${e.id}</span><span class="nm"><b>${FAV.has(e.id)?'<span class="pill fav" style="background:none;padding:0 4px 0 0">♥</span>':""}${esc(e.n)}</b><small>${esc(e.li||"")}</small></span><span class="meta">${badges(e)}<span class="pill">${e.a}${(e.ax||18)<18?`-${e.ax}`:"+"} ans</span><span class="pill">niv. ${e.v}</span>${e.w?'<span class="pill x">échauff.</span>':""}${hasVid(e.id)?'<span class="pill vid x">▶ vidéo</span>':""}</span></a>`).join("")}</div>`;
+}
+let qT; $("#q").addEventListener("input",()=>{ clearTimeout(qT); qT=setTimeout(()=>{ shown=PAGE; if(location.hash && location.hash!=="#") location.hash=""; else if($("#res")) renderRes(); else showExplore(); },200); });
+$("#q").addEventListener("keydown",e=>{ if(e.key==="Enter") e.target.blur(); });
+
+/* ---------- exos d'une ligne pour un âge (du plus simple au plus dur) ---------- */
+function showLigne(L, a){
+  if(!okLig(L)) return showExplore();
+  const age = a && +a>=4 && +a<=18 ? +a : null;
+  document.documentElement.style.setProperty("--acc",ligCol(L));
+  const xs = EX.filter(e=>e.L.includes(L) && !HIDE.has(e.id) && (!age || (e.a<=age && (e.ax||18)>=age))).sort((x,y)=>x.v-y.v||x.a-y.a||x.n.localeCompare(y.n,"fr"));
+  const m=$("#main"); m.style.setProperty("--dc",ligCol(L));
+  const lv={}; xs.forEach(e=>{ (lv[e.v]=lv[e.v]||[]).push(e); });
+  m.innerHTML = `<div class="crumb"><a href="#">Banque</a>›<span>Ligne ${L}</span></div>
+   <div class="headrow" style="margin-top:4px"><div><h1 style="color:${ligCol(L)}">${L} · ${esc(ligNom(L))}</h1><p class="lead">${xs.length} exercice${xs.length>1?"s":""}${age?` accessibles à ${age} ans`:""} · du plus simple au plus dur</p></div>${J()?"":`<a class="btn new" href="#/nouveau?ligne=${L}${age?`&a=${age}`:""}">+ Créer un exo pour cette ligne</a>`}</div>
+   <div class="filters"><div class="frow"><b>Âge</b><select class="sel" id="lage" aria-label="Âge du joueur"><option value="">Tous âges</option>${Array.from({length:15},(_,i)=>`<option value="${i+4}" ${age===i+4?"selected":""}>Joueur de ${i+4} ans</option>`).join("")}</select></div>
+   <div class="frow"><b>Liens</b>${J()?"":`<a class="chip" href="veille.html#/l/${L}">Comprendre (veille)</a>`}<a class="chip" href="grilles.html#/ligne/${L}/G/${age||10}">Tests · garçons</a><a class="chip" href="grilles.html#/ligne/${L}/F/${age||10}">Tests · filles</a></div></div>
+   ${xs.length ? Object.entries(lv).map(([v,arr])=>`<h3 class="subh">Niveau ${v} · ${NIV[v]||""} <small style="color:var(--mute);font-family:var(--ui);font-size:13px">${arr.length}</small></h3>${rowsHTML(arr)}`).join("") : '<div class="empty" style="margin-top:12px">Aucun exercice pour cette ligne à cet âge. Change l\'âge ou crée un exercice.</div>'}`;
+  $("#lage").onchange=ev=>{ location.hash = `#/l/${L}${ev.target.value?`?a=${ev.target.value}`:""}`; };
+}
+
+/* ---------- fiche ---------- */
+function linkIds(s, self){ return esc(s).replace(/\b([A-Z]{3}-\d{4})\b/g,(m,id)=> BY[id] && id!==self ? `<a class="ref" href="#/ex/${id}">${id}</a>` : m).replace(/\b(5\.\d\.\d{1,2})\b/g,(m,c)=> FBY[c] ? `<a class="ref" href="#f/${c}">${esc(FBY[c].t)}</a>` : m); }
+function bullets(s, self){ const parts=String(s||"").split(/\s*;\s*/).filter(Boolean); return parts.length>1 ? `<ul>${parts.map(p=>`<li>${linkIds(cap(p.replace(/\.$/,"")),self)}</li>`).join("")}</ul>` : `<div class="txt">${linkIds(cap(String(s||"")),self)}</div>`; }
+const cap = s => s ? s[0].toUpperCase()+s.slice(1) : s;
+const ageTxt = e => (e.ax||18)<18 ? `${e.a} à ${e.ax} ans` : `dès ${e.a} ans`;
+function wHTML(w){
+  const ets=[...new Set([w.et,...(w.ets||[])].filter(Boolean))];
+  return `<div class="txt"><b>${ets.map(x=>ETN[x]||x).join(" + ")}</b>${w.complet?" · circuit complet":""}</div><ul style="margin-top:4px">
+   ${(w.ci||[]).length?`<li>Cibles : ${w.ci.map(c=>CIBN[c]||c).join(", ")}</li>`:""}
+   ${w.a?`<li>Âges : ${w.a[0]} à ${w.a[1]} ans</li>`:""}
+   ${(w.fmt||[]).length?`<li>Formats : ${w.fmt.map(x=>FMTN[x]||x).join(", ")}</li>`:""}
+   ${(w.lieu||[]).length?`<li>Lieux : ${w.lieu.map(x=>LIEUN[x]||x).join(", ")}</li>`:""}
+   <li>Intensité ${w.int||1}/3${w.dur?` · ${w.dur} min`:""}</li>
+   ${(w.apres||[]).length?`<li>${w.apres.map(x=>APRN[x]||x).join(", ")}</li>`:""}</ul>`;
+}
+function crossHTML(e){
+  if(!e.L.length) return "";
+  const age = +P.f.age || Math.max(e.a||4, 4);
+  const T = LV.t||{}, G = LV.g||{};
+  return `<div class="cell"><div class="lab">Comprendre et évaluer</div><div class="xl">${e.L.filter(okLig).map(l=>{ const d=(LV.L||{})[l]||{}; const docs=[...(d.c||[]),...(d.a||[])].slice(0,4);
+    return `<div class="xline"><b style="color:${ligCol(l)}">${l} · ${esc(ligNom(l))}</b><div class="links">
+      ${J()?"":`<a class="main" href="veille.html#/l/${l}">Comprendre · veille</a>${docs.map(c=>`<a href="veille.html#d/${c}${(d.a||[]).includes(c)?`/a${age}`:""}" title="${esc(G[(d.c||[]).includes(c)?"c":"a"]||"")}">${c} · ${esc((T[c]||"").split(":")[0].slice(0,46))}</a>`).join("")}`}
+      <a href="grilles.html#/ligne/${l}/G/${age}">Tests de cette ligne · G ${age} ans</a><a href="grilles.html#/ligne/${l}/F/${age}">F ${age} ans</a>
+      <a href="#/l/${l}?a=${age}">Tous les exos ${l} à ${age} ans</a></div></div>`; }).join("")}</div></div>`;
+}
+function neighbours(e){
+  const same = EX.filter(x=>x.f===e.f && x.s===e.s && x.id!==e.id && !HIDE.has(x.id));
+  const near = (v)=> same.filter(x=>x.v===v).sort((a,b)=>Math.abs(a.a-e.a)-Math.abs(b.a-e.a)).slice(0,4);
+  const reg = near(e.v-1), pro = near(e.v+1), eq = near(e.v).slice(0,3);
+  const li = arr => arr.length ? arr.map(x=>`<a href="#/ex/${x.id}">${esc(x.n)} <small>· ${x.id} · niv. ${x.v} · ${ageTxt(x)}</small></a>`).join("") : '<span class="msg">—</span>';
+  return `<div class="cell"><div class="lab">Exos voisins · ${esc(e.s||"")}</div><div class="nb">
+    <div><b style="font-size:13px">‹ Régression (plus simple)</b>${li(reg.length?reg:eq.filter(x=>x.a<e.a))}</div>
+    <div><b style="font-size:13px">Progression (plus dur) ›</b>${li(pro.length?pro:eq.filter(x=>x.a>=e.a))}</div></div></div>`;
+}
+function showEx(id){
+  const e=BY[id]; if(!e) return showExplore();
+  const f=FBY[e.f]||MOIFAM, d=DOM[e.dom]?e.dom:"PH"; document.documentElement.style.setProperty("--acc",dc(d));
+  const sib=EX.filter(x=>x.f===e.f), k=sib.indexOf(e), prev=sib[k-1], next=sib[k+1];
+  const fav=FAV.has(id), co=!J();
+  const rel=[...new Set((e.ut||"").match(/\b[A-Z]{3}-\d{4}\b/g)||[])].filter(x=>BY[x]&&x!==id);
+  const m=$("#main"); m.style.setProperty("--dc",dc(d));
+  m.innerHTML = `<div class="crumb"><a href="#">Banque</a>›<a href="#f/${f.c}">${esc(f.t)}</a>›<span>${esc(e.s||"")}</span></div>
+  <article class="fiche">
+    <div class="fhead"><div style="min-width:0"><div class="fid">${e.id} · ${DOM[d][0]} ${badges(e)}</div><h1>${esc(e.n)}</h1><div class="fline">${esc(e.li||"")}</div></div>
+      <div class="actbar"><button class="btn star" id="fav" type="button" aria-pressed="${fav}">${fav?"♥ Favori":"♡ Favori"}</button><button class="btn" id="addl" type="button">+ Ma liste</button>
+       ${co?`<button class="btn pri" id="useS" type="button">Utiliser dans une séance</button><a class="btn" id="edit" href="#/modifier/${e.id}">Modifier</a>${e.modifie?'<button class="btn" id="reset" type="button">Remettre l\'original</button>':""}${e.perso?'<button class="btn dan" id="del" type="button">Supprimer</button>':""}<button class="btn" id="hide" type="button">${HIDE.has(id)?"Réafficher":"Masquer"}</button>`:""}</div></div>
+    ${e.img?`<div class="photo"><img src="${esc(e.img)}" alt="Photo : ${esc(e.n)}"></div>`:""}
+    <div class="video" id="vid"></div>
+    <div class="keys">
+      <div class="key"><small>Âge</small><b>${ageTxt(e)}</b></div>
+      <div class="key"><small>Niveau</small><b>${e.v} · ${NIV[e.v]||""}</b><span class="lv">${[1,2,3,4].map(n=>`<i class="${n<=e.v?"on":""}"></i>`).join("")}</span></div>
+      <div class="key"><small>Famille</small><b style="font-size:14.5px">${esc(e.s||f.t)}</b></div>
+      <div class="key"><small>Lieu</small><b style="font-size:14.5px">${e.c?"Sur le court":"Hors court"}${e.e?" · grand espace":""}</b></div>
+    </div>
+    <div class="grid">
+      <div class="col">
+        <div class="cell"><div class="lab">Objectif</div><div class="txt">${linkIds(cap(e.ob||""),id)}</div></div>
+        <div class="cell"><div class="lab">Description</div><div class="txt">${linkIds(cap(e.de||""),id)}</div></div>
+        <div class="cell"><div class="lab">Matériel</div>${bullets(e.ma,id)}${(e.m||[]).length?`<div class="links">${e.m.map(c=>`<a>${esc((MATC.find(x=>x[0]===c)||[c,c])[1])}</a>`).join("")}</div>`:""}</div>
+        ${e.dos?`<div class="cell"><div class="lab">Dosage conseillé</div><div class="txt">${esc(e.dos)}</div></div>`:""}
+      </div>
+      <div class="col">
+        <div class="cell"><div class="lab">Consignes au joueur</div>${bullets(e.co,id)}</div>
+        ${e.er?`<div class="cell"><div class="lab">Erreurs à éviter</div>${bullets(e.er,id)}</div>`:""}
+        <div class="cell"><div class="lab">Utilisation et progression</div><div class="txt">${linkIds(cap(e.ut||""),id)}</div>${rel.length?`<div class="links">${rel.map(x=>`<a href="#/ex/${x}">${x} · ${esc(BY[x].n)}</a>`).join("")}</div>`:""}</div>
+        ${e.w?`<div class="cell"><div class="lab">Usage en échauffement</div>${wHTML(e.w)}<div class="msg">Proposé par Create my warm-up et Create my séance.</div></div>`:""}
+      </div>
+    </div>
+    ${crossHTML(e)}
+    ${neighbours(e)}
+    <div class="cell notes"><label class="lab" for="nt">Mes notes</label><textarea id="nt" placeholder="Variantes, joueurs, charges utilisées…"></textarea><div class="msg" id="ntm"></div></div>
+  </article>
+  <div class="pn">${prev?`<a href="#/ex/${prev.id}"><small>‹ ${prev.id}</small>${esc(prev.n)}</a>`:"<span></span>"}${next?`<a class="nx" href="#/ex/${next.id}"><small>${next.id} ›</small>${esc(next.n)}</a>`:"<span></span>"}</div>`;
+  $("#fav").onclick=()=>{ const on=GRUN.banque.toggleFav(id); on?FAV.add(id):FAV.delete(id); $("#fav").setAttribute("aria-pressed",on); $("#fav").textContent=on?"♥ Favori":"♡ Favori"; };
+  $("#addl").onclick=()=>pickList(id);
+  if(co){
+    $("#useS").onclick=()=>{ GRUN.relais.envoyer({de:"banque",vers:"seances",exo:id,retour:"banque.html#/ex/"+id}); location.href=GRUN.href("seances","#/nouvelle"); };
+    const r=$("#reset"); if(r) r.onclick=async()=>{ if(!r.dataset.c){ r.dataset.c=1; r.textContent="Confirmer : remettre l'original"; return; } GRUN.banque.reset(id); await reload(); showEx(id); };
+    const dl=$("#del"); if(dl) dl.onclick=async()=>{ if(!dl.dataset.c){ dl.dataset.c=1; dl.textContent="Confirmer la suppression"; return; } GRUN.banque.remove(id); await IDB.del(id).catch(()=>{}); LOCALV.delete(id); await reload(); location.hash=""; };
+    $("#hide").onclick=()=>{ const on=GRUN.banque.toggleHide(id); on?HIDE.add(id):HIDE.delete(id); $("#hide").textContent=on?"Réafficher":"Masquer"; };
+  }
+  const nt=$("#nt"); nt.value=P.notes[id]||""; let tm; nt.oninput=()=>{ clearTimeout(tm); tm=setTimeout(()=>{ if(nt.value.trim()) P.notes[id]=nt.value; else delete P.notes[id]; save(); $("#ntm").textContent="Note enregistrée sur cet appareil."; },500); };
+  renderVideo(e);
+}
+function ytId(u){ const m=String(u).match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|shorts\/|embed\/))([\w-]{6,})/); return m?m[1]:null; }
+async function renderVideo(e){
+  const box=$("#vid"); if(!box) return; const id=e.id;
+  let url = vidOf(e);
+  let blob = LOCALV.has(id) ? await IDB.get(id).catch(()=>null) : null;
+  if(!$("#vid") || $("#vid")!==box) return;
+  if(blob){ box.className="video has"; const v=document.createElement("video"); v.controls=true; v.playsInline=true; v.preload="metadata"; v.src=URL.createObjectURL(blob); box.innerHTML=""; box.appendChild(v); addVidTools(box,e,true); return; }
+  if(url){
+    const yt=ytId(url);
+    if(yt){ box.className="video has"; box.innerHTML=`<iframe src="https://www.youtube-nocookie.com/embed/${yt}?playsinline=1&rel=0" title="Vidéo ${id}" allow="fullscreen; picture-in-picture" allowfullscreen></iframe>`; addVidTools(box,e,true); return; }
+    if(/\.(mp4|mov|m4v|webm)(\?|$)/i.test(url)){ box.className="video has"; box.innerHTML=`<video controls playsinline preload="metadata" src="${esc(url)}"></video>`; addVidTools(box,e,true); return; }
+    box.className="video"; box.innerHTML=`<div class="ph">Vidéo de démonstration</div><a class="btn pri" href="${esc(url)}" target="_blank" rel="noopener">▶ Ouvrir la vidéo</a>`; addVidTools(box,e,true); return;
+  }
+  box.className="video"; box.innerHTML=`<div class="ph">Vidéo de démonstration à venir</div><div class="msg">Nom du fichier à tourner : <code>${id}.mp4</code></div>`; addVidTools(box,e,false);
+}
+function addVidTools(box,e,has){
+  if(J()) return;
+  const t=document.createElement("div"); t.className="vtools"; if(has){ t.style.cssText="position:static;padding:8px;background:var(--panel);width:100%"; }
+  t.innerHTML=`<button class="btn" type="button" data-a="link">${has?"Changer le lien":"Ajouter un lien vidéo"}</button><label class="btn" for="vf_${e.id}">Choisir une vidéo de l'appareil</label><input id="vf_${e.id}" type="file" accept="video/*" hidden>${has&&(P.links[e.id]||LOCALV.has(e.id))?'<button class="btn" type="button" data-a="del">Retirer</button>':""}`;
+  if(has){ box.after(t); } else box.appendChild(t);
+  t.querySelector('[data-a="link"]').onclick=()=>linkModal(e);
+  const del=t.querySelector('[data-a="del"]'); if(del) del.onclick=async()=>{ delete P.links[e.id]; save(); await IDB.del(e.id).catch(()=>{}); LOCALV.delete(e.id); showEx(e.id); };
+  t.querySelector("input").onchange=async ev=>{ const file=ev.target.files[0]; if(!file) return; try{ await IDB.put(e.id,file); LOCALV.add(e.id); showEx(e.id); }catch(err){ alertBox("La vidéo n'a pas pu être enregistrée sur l'appareil (espace insuffisant ?). Utilise plutôt un lien."); } };
+}
+function modal(build){ const m=$("#modal"), b=$("#mbox"); b.innerHTML=""; build(b,()=>{ m.hidden=true; }); m.hidden=false; }
+$("#modal").addEventListener("click",e=>{ if(e.target.id==="modal") $("#modal").hidden=true; });
+function alertBox(t){ modal((b,close)=>{ b.innerHTML=`<div>${esc(t)}</div>`; const k=document.createElement("button"); k.className="btn"; k.textContent="OK"; k.onclick=close; b.appendChild(k); }); }
+function linkModal(e){
+  modal((b,close)=>{
+    b.innerHTML=`<h2>Vidéo · ${e.id}</h2><div class="msg">Colle le lien de la vidéo : YouTube (non répertoriée), lien direct .mp4, iCloud ou Google Drive.</div><input id="vl" type="url" placeholder="https://…" value="${esc(vidOf(e))}"><div class="actbar"><button class="btn pri" id="vok" type="button">Enregistrer</button><button class="btn" id="vno" type="button">Annuler</button></div>`;
+    $("#vno").onclick=close; $("#vok").onclick=async()=>{ const v=$("#vl").value.trim();
+      if(e.perso){ GRUN.banque.edit(e.id,{vid:v}); await reload(); }
+      else { if(v) P.links[e.id]=v; else delete P.links[e.id]; save(); }
+      close(); showEx(e.id); };
+  });
+}
+
+/* ---------- créer / modifier un exercice ---------- */
+function resizeImg(file, max=800){ return new Promise((ok,ko)=>{ const u=URL.createObjectURL(file), im=new Image();
+  im.onload=()=>{ const k=Math.min(1,max/Math.max(im.naturalWidth,im.naturalHeight)); const c=document.createElement("canvas"); c.width=Math.max(1,Math.round(im.naturalWidth*k)); c.height=Math.max(1,Math.round(im.naturalHeight*k));
+    const g=c.getContext("2d"); g.fillStyle="#fff"; g.fillRect(0,0,c.width,c.height); g.drawImage(im,0,0,c.width,c.height); URL.revokeObjectURL(u); ok(c.toDataURL("image/jpeg",0.82)); };
+  im.onerror=()=>{ URL.revokeObjectURL(u); ko(new Error("image")); }; im.src=u; }); }
+const nameTaken = (n, self) => { const k=fold(n.trim()); return EX.find(x=>x.id!==self && fold(x.n.trim())===k) || null; };
+function ckH(name, items, sel){ return `<div class="checks">${items.map(([v,t])=>`<label class="ck"><input type="checkbox" name="${name}" value="${esc(v)}" ${sel.includes(v)?"checked":""}>${esc(t)}</label>`).join("")}</div>`; }
+const optA = (v) => Array.from({length:15},(_,i)=>`<option value="${i+4}" ${+v===i+4?"selected":""}>${i+4} ans</option>`).join("");
+function showForm(id, q){
+  if(J()) return reserve();
+  const e = id ? BY[id] : null; if(id && !e) return showExplore();
+  const ql = q.get("ligne"), qa = +q.get("a") || 0, retour = q.get("retour");
+  const v = e ? JSON.parse(JSON.stringify(e)) : {n:"", f:"MOI", s:"", dom: ql ? ligDom(ql) : "PP", L: ql && okLig(ql) ? [ql] : [], a: qa||6, ax:18, v:1, ob:"", de:"", co:"", er:"", ut:"", ma:"", m:[], c:0, e:0, st:"perso"};
+  const dz = v.dosq || {};
+  const w = v.w || {et:"MR", ets:[], ci:[], a:[v.a||6, v.ax||18], fmt:["seul","groupe"], lieu:["court"], int:2, dur:3, apres:["tennis"]};
+  let IMG = v.img || "", VFILE = null;
+  EDITING = true;
+  document.documentElement.style.setProperty("--acc","var(--ink)");
+  const groups={}; FAMS.filter(f=>f.c!=="MOI").forEach(f=>{ (groups[f.dossier]=groups[f.dossier]||[]).push(f); });
+  const famOpts = `<option value="MOI" ${v.f==="MOI"?"selected":""}>Mes exercices</option>` + Object.entries(groups).map(([g,fs])=>`<optgroup label="${esc(g)}">${fs.map(f=>`<option value="${f.c}" ${v.f===f.c?"selected":""}>${esc(f.t)}</option>`).join("")}</optgroup>`).join("");
+  const m=$("#main"); m.style.setProperty("--dc","var(--ink)");
+  m.innerHTML = `<div class="crumb"><a href="#">Banque</a>›<span>${e?"Modifier "+e.id:"Nouvel exercice"}</span></div>
+  <h1 style="margin-top:4px">${e?"Modifier · "+esc(e.n):"Créer un exercice"}</h1>
+  <p class="lead">${e ? (e.perso ? "Ton exercice : la modification est directe." : "Exercice d'origine : tes changements s'ajoutent par-dessus (badge « modifié ») ; « Remettre l'original » les efface.") : "Mêmes champs que la banque, plus vidéo, photo, dosage et usage en échauffement."}</p>
+  <form class="form" id="fx" novalidate autocomplete="off">
+   <div class="fs"><h2>L'essentiel</h2><div class="fg">
+    <div class="fld full"><label for="f_n">Nom de l'exercice *</label><input type="text" id="f_n" value="${esc(v.n)}" required maxlength="120"><small id="f_nm"></small></div>
+    <div class="fld"><label for="f_f">Famille</label><select id="f_f">${famOpts}</select></div>
+    <div class="fld"><label for="f_s">Sous-famille</label><input type="text" id="f_s" list="dl_s" value="${esc(v.s||"")}" placeholder="Choisis ou écris"><datalist id="dl_s"></datalist></div>
+    <div class="fld"><label for="f_dom">Domaine</label><select id="f_dom">${Object.entries(DOM).map(([k,[n]])=>`<option value="${k}" ${v.dom===k?"selected":""}>${n}</option>`).join("")}</select></div>
+    <div class="fld"><label for="f_v">Niveau</label><select id="f_v">${[1,2,3,4].map(n=>`<option value="${n}" ${+v.v===n?"selected":""}>${n} · ${NIV[n]}</option>`).join("")}</select></div>
+    <div class="fld"><label for="f_a">Âge mini</label><select id="f_a">${optA(v.a||6)}</select></div>
+    <div class="fld"><label for="f_ax">Âge maxi</label><select id="f_ax">${optA(v.ax||18)}</select></div>
+    <div class="fld full"><span class="l">Lignes de grille (plusieurs possibles)</span>
+      <details ${v.L.length?"":"open"}><summary class="msg" style="cursor:pointer">${v.L.length?`Choisies : ${v.L.join(", ")}`:"Choisir les lignes"}</summary>
+      ${["PP","GE","DE"].map(d=>`<div class="lgrp"><b>${DOM[d][0]}</b>${ckH("L", LIG[d].map((n,i)=>[d+(i+1), `${d}${i+1} · ${n}`]), v.L)}</div>`).join("")}</details></div>
+   </div></div>
+   <div class="fs"><h2>La fiche</h2><div class="fg">
+    <div class="fld full"><label for="f_ob">Objectif</label><textarea id="f_ob" rows="2">${esc(v.ob)}</textarea></div>
+    <div class="fld full"><label for="f_de">Description</label><textarea id="f_de" rows="3">${esc(v.de)}</textarea></div>
+    <div class="fld"><label for="f_co">Consignes clés</label><textarea id="f_co">${esc(v.co)}</textarea><small>Sépare par « ; » pour une liste.</small></div>
+    <div class="fld"><label for="f_er">Erreurs fréquentes</label><textarea id="f_er">${esc(v.er)}</textarea><small>Sépare par « ; ».</small></div>
+    <div class="fld full"><label for="f_ut">Utilisation et progression</label><textarea id="f_ut" rows="2">${esc(v.ut)}</textarea><small>Tu peux citer d'autres exos par leur identifiant (FOR-0002).</small></div>
+   </div></div>
+   <div class="fs"><h2>Matériel et lieu</h2><div class="fg">
+    <div class="fld full"><label for="f_ma">Matériel (texte)</label><input type="text" id="f_ma" value="${esc(v.ma)}" placeholder="aucun, 4 plots, raquette et balles…"></div>
+    <div class="fld full"><span class="l">Matériel (cases, pour les filtres et Create)</span>${ckH("m", MATC, v.m||[])}</div>
+    <div class="fld"><label class="switch"><input type="checkbox" id="f_c" ${v.c?"checked":""}> Se fait sur le court</label></div>
+    <div class="fld"><label class="switch"><input type="checkbox" id="f_e" ${v.e?"checked":""}> Demande un grand espace</label></div>
+   </div></div>
+   <div class="fs"><h2>Dosage conseillé</h2><div class="fg">
+    <div class="fld"><label for="d_se">Séries</label><input type="text" id="d_se" value="${esc(dz.se||"")}" placeholder="3"></div>
+    <div class="fld"><label for="d_re">Répétitions ou durée</label><input type="text" id="d_re" value="${esc(dz.re||"")}" placeholder="8 rép. ou 30 s"></div>
+    <div class="fld"><label for="d_rec">Récupération</label><input type="text" id="d_rec" value="${esc(dz.rec||"")}" placeholder="1 min"></div>
+    <div class="fld"><label for="d_txt">Précisions</label><input type="text" id="d_txt" value="${esc(dz.txt|| (v.dosq?"":(v.dos||"")))}" placeholder="tempo, charge, consignes de dosage…"></div>
+   </div></div>
+   <div class="fs"><h2>Vidéo et photo</h2><div class="fg">
+    <div class="fld full"><label for="f_vid">Lien vidéo</label><input type="url" id="f_vid" value="${esc(v.vid||"")}" placeholder="https://… (YouTube non répertoriée, iCloud, Drive, .mp4)"></div>
+    <div class="fld"><span class="l">Ou vidéo de l'appareil</span><label class="btn" for="f_vf">Choisir une vidéo</label><input type="file" id="f_vf" accept="video/*" hidden><small id="f_vfm">${e&&LOCALV.has(e.id)?"Une vidéo de l'appareil est déjà enregistrée.":"Gardée hors ligne sur cet appareil."}</small></div>
+    <div class="fld"><span class="l">Photo</span><div class="actbar"><label class="btn" for="f_img">Choisir une photo</label><button class="btn" type="button" id="f_imgx" ${IMG?"":"hidden"}>Retirer</button></div><input type="file" id="f_img" accept="image/*" hidden><img class="imgprev" id="f_imgp" alt="Aperçu de la photo" ${IMG?`src="${esc(IMG)}"`:"hidden"}><small>Réduite à 800 px.</small></div>
+   </div></div>
+   <div class="fs"><h2>Usage en échauffement <small class="msg" style="font-family:var(--ui)">facultatif</small></h2>
+    <label class="switch"><input type="checkbox" id="w_on" ${v.w?"checked":""}> Proposer cet exo dans Create my warm-up et Create my séance</label>
+    <div id="wbox" style="margin-top:10px" ${v.w?"":"hidden"}><div class="fg">
+     <div class="fld"><label for="w_et">Étape principale</label><select id="w_et">${Object.entries(ETN).map(([k,n])=>`<option value="${k}" ${w.et===k?"selected":""}>${n}</option>`).join("")}</select></div>
+     <div class="fld"><span class="l">Autres étapes couvertes</span>${ckH("ets", Object.entries(ETN), w.ets||[])}</div>
+     <div class="fld full"><span class="l">Cibles travaillées (1 à 3 par étape, celles qu'il travaille vraiment)</span><div id="w_ci"></div></div>
+     <div class="fld"><label for="w_a0">Âge mini</label><select id="w_a0"><option value="">Comme l'exercice</option>${v.w?optA((w.a||[])[0]):Array.from({length:15},(_,i)=>`<option value="${i+4}">${i+4} ans</option>`).join("")}</select></div>
+     <div class="fld"><label for="w_a1">Âge maxi</label><select id="w_a1"><option value="">Comme l'exercice</option>${v.w?optA((w.a||[])[1]):Array.from({length:15},(_,i)=>`<option value="${i+4}">${i+4} ans</option>`).join("")}</select></div>
+     <div class="fld"><span class="l">Formats</span>${ckH("fmt", Object.entries(FMTN), w.fmt||[])}</div>
+     <div class="fld"><span class="l">Lieux</span>${ckH("lieu", Object.entries(LIEUN), w.lieu||[])}</div>
+     <div class="fld"><label for="w_int">Intensité</label><select id="w_int">${[[1,"1 · douce"],[2,"2 · modérée"],[3,"3 · vive"]].map(([n,t])=>`<option value="${n}" ${+w.int===n?"selected":""}>${t}</option>`).join("")}</select></div>
+     <div class="fld"><label for="w_dur">Durée (min)</label><input type="number" id="w_dur" min="1" max="15" value="${+w.dur||3}"></div>
+     <div class="fld full"><span class="l">Pertinent avant</span>${ckH("apres", Object.entries(APRN), w.apres||[])}</div>
+    </div></div>
+   </div>
+   <div class="fs"><h2>Statut</h2><div class="radios">
+    ${[["perso","Perso","Visible seulement par toi."],["propose","Proposé à la méthode","À exporter depuis « Propositions » pour qu'Eliot le relise."],["valide","Exercice de la méthode","Validé par Eliot : visible par tous les abonnés dès que les comptes en ligne seront ouverts."]].map(([k,t,s])=>`<label class="radio"><input type="radio" name="st" value="${k}" ${(v.st||"perso")===k?"checked":""}><span><b>${t}</b><small>${s}</small></span></label>`).join("")}
+    ${e&&!e.perso?'<p class="msg">Exercice d\'origine : il fait déjà partie de la méthode.</p>':""}</div></div>
+   <div class="formbar"><button class="btn pri" type="submit" id="f_ok">${e?"Enregistrer les modifications":"Créer l'exercice"}</button><button class="btn" type="button" id="f_no">Annuler</button><span class="msg" id="f_msg" role="status"></span></div>
+  </form>`;
+  if(e && !e.perso) $$('input[name="st"]').forEach(r=>{ r.disabled=true; });
+  const fillSubs=()=>{ const f=FBY[$("#f_f").value]; $("#dl_s").innerHTML=(f?f.subs:[]).map(s=>`<option value="${esc(s)}">`).join(""); };
+  fillSubs(); $("#f_f").onchange=()=>{ fillSubs(); const f=FBY[$("#f_f").value]; if(f && f.c!=="MOI" && !e) $("#f_dom").value=f.dom; };
+  const ciSel = new Set(w.ci||[]);
+  const fillCi=()=>{ $$('input[name="ci"]').forEach(x=>x.checked?ciSel.add(x.value):ciSel.delete(x.value)); const ets=[...new Set([$("#w_et").value, ...$$('input[name="ets"]:checked').map(x=>x.value)])];
+    $("#w_ci").innerHTML = ets.map(et=>`<div class="lgrp"><b>${ETN[et]}</b>${ckH("ci", CIB[et], [...ciSel])}</div>`).join(""); };
+  fillCi(); $("#w_et").onchange=fillCi; $$('input[name="ets"]').forEach(x=>x.onchange=fillCi);
+  $("#w_on").onchange=ev=>{ $("#wbox").hidden=!ev.target.checked; };
+  const chkName=()=>{ const n=$("#f_n").value, t=n.trim()?nameTaken(n, e&&e.id):null; $("#f_n").classList.toggle("bad",!!t); $("#f_nm").className=t?"msg err":""; $("#f_nm").innerHTML=t?`Ce nom est déjà pris par <a class="ref" href="#/ex/${t.id}">${t.id}</a>. Choisis un autre nom.`:""; return !t; };
+  $("#f_n").oninput=chkName;
+  $("#f_img").onchange=async ev=>{ const file=ev.target.files[0]; ev.target.value=""; if(!file) return; try{ IMG=await resizeImg(file); $("#f_imgp").src=IMG; $("#f_imgp").hidden=false; $("#f_imgx").hidden=false; }catch(err){ $("#f_msg").textContent="Cette photo n'a pas pu être lue."; } };
+  $("#f_imgx").onclick=()=>{ IMG=""; $("#f_imgp").hidden=true; $("#f_imgp").removeAttribute("src"); $("#f_imgx").hidden=true; };
+  $("#f_vf").onchange=ev=>{ VFILE=ev.target.files[0]||null; $("#f_vfm").textContent = VFILE ? `Vidéo choisie : ${VFILE.name}` : ""; };
+  const back = id2 => { if(retour){ location.href = id2 ? retour + (retour.includes("#") ? "&" : "#") + "exo=" + encodeURIComponent(id2) : retour; } else location.hash = id2 ? "#/ex/"+id2 : (e ? "#/ex/"+e.id : ""); };
+  $("#f_no").onclick=()=>{ EDITING=false; if(retour) back(null); else if(e) location.hash="#/ex/"+e.id; else history.length>1 ? history.back() : (location.hash=""); };
+  $("#fx").onsubmit=async ev=>{ ev.preventDefault(); const msg=$("#f_msg"); msg.className="msg";
+    const n=$("#f_n").value.trim().replace(/\s+/g," ");
+    if(!n){ $("#f_n").classList.add("bad"); $("#f_n").focus(); msg.className="msg err"; msg.textContent="Donne un nom à l'exercice."; return; }
+    if(!chkName()){ $("#f_n").focus(); msg.className="msg err"; msg.textContent="Ce nom est déjà pris."; return; }
+    let a=+$("#f_a").value, ax=+$("#f_ax").value; if(ax<a) [a,ax]=[ax,a];
+    const L=$$('input[name="L"]:checked').map(x=>x.value), vv=+$("#f_v").value;
+    const dq={se:$("#d_se").value.trim(), re:$("#d_re").value.trim(), rec:$("#d_rec").value.trim(), txt:$("#d_txt").value.trim()};
+    const dos=[dq.se&&dq.re?`${dq.se} série${+dq.se>1?"s":""} × ${dq.re}`:dq.se?`${dq.se} série${+dq.se>1?"s":""}`:dq.re, dq.rec&&`récupération ${dq.rec}`, dq.txt].filter(Boolean).join(" · ");
+    const mm=$$('input[name="m"]:checked').map(x=>x.value);
+    const x={ n, f:$("#f_f").value, s:$("#f_s").value.trim() || (FBY[$("#f_f").value]||MOIFAM).subs[0] || "Mes exercices", dom:$("#f_dom").value, L, a, ax, v:vv,
+      an:`de ${a} à ${ax} ans · niveau ${vv}`, li:L.map(l=>`${l} · ${ligNom(l)}`).join(" · "),
+      ob:$("#f_ob").value.trim(), de:$("#f_de").value.trim(), co:$("#f_co").value.trim(), er:$("#f_er").value.trim(), ut:$("#f_ut").value.trim(),
+      ma:$("#f_ma").value.trim() || (mm.length ? mm.map(c=>(MATC.find(y=>y[0]===c)||[c,c])[1].toLowerCase()).join(", ") : "aucun"), m:mm, c:$("#f_c").checked?1:0, e:$("#f_e").checked?1:0,
+      dos, dosq:dq, vid:$("#f_vid").value.trim(), img:IMG };
+    if($("#w_on").checked){
+      const et=$("#w_et").value, ets=[...new Set([et,...$$('input[name="ets"]:checked').map(y=>y.value)])], ci=$$('input[name="ci"]:checked').map(y=>y.value);
+      let w0=+$("#w_a0").value||a, w1=+$("#w_a1").value||ax; if(w1<w0) [w0,w1]=[w1,w0];
+      x.w={ et, ets, ci, a:[w0,w1], fmt:$$('input[name="fmt"]:checked').map(y=>y.value), lieu:$$('input[name="lieu"]:checked').map(y=>y.value), int:+$("#w_int").value, dur:Math.max(1,Math.min(15,+$("#w_dur").value||3)),
+        apres:$$('input[name="apres"]:checked').map(y=>y.value), but:x.ob ? cap(x.ob) : n, mat:mm.filter(c=>WMAT.has(c)), L, va:"", complet: (CIB[et]||[]).every(([c])=>ci.includes(c)) };
+      if(!x.w.fmt.length) x.w.fmt=["seul"]; if(!x.w.lieu.length) x.w.lieu=["court"]; if(!x.w.apres.length) x.w.apres=["tennis","pp","match","bilan"];
+    } else if(e && e.w) x.w=null;
+    if(!e || e.perso) x.st=($$('input[name="st"]:checked')[0]||{}).value||"perso";
+    const nom=(GRUN.load(GRUN.K.reglages,{})||{}).nomCoach; if(nom && !e) x.par=nom;
+    let nid;
+    if(!e){ const nx=GRUN.banque.add(x); nid=nx.id; if(!GRUN.banque.perso().some(y=>y.id===nid)){ msg.className="msg err"; msg.textContent="Enregistrement impossible : la mémoire de l'appareil est pleine (essaie sans photo)."; return; } }
+    else if(e.perso){ GRUN.banque.edit(e.id,x); nid=e.id; }
+    else { const patch={}; for(const k in x){ const cur=e[k]; if(JSON.stringify(cur??"")!==JSON.stringify(x[k]??"")) patch[k]=x[k]; }
+      if(!("a" in patch || "ax" in patch || "v" in patch)) delete patch.an; if(!("L" in patch)) delete patch.li; if(!dos && !e.dosq) delete patch.dosq; if(!$("#f_ma").value.trim() && !("m" in patch)) delete patch.ma;
+      if(Object.keys(patch).length) GRUN.banque.edit(e.id,patch); nid=e.id; }
+    if(VFILE){ try{ await IDB.put(nid,VFILE); LOCALV.add(nid); }catch(err){ alertBox("La vidéo n'a pas pu être enregistrée sur l'appareil (espace insuffisant ?). Utilise plutôt un lien."); } }
+    await reload(); EDITING=false; back(nid);
+  };
+}
+
+/* ---------- propositions : circuit de validation (fichier ce soir, en ligne demain) ---------- */
+const PROPKEYS = ["n","f","s","dom","L","a","ax","v","an","li","ob","de","co","er","ut","ma","m","c","e","dos","dosq","vid","img","w","par","id","cree"];
+const clean = e => Object.fromEntries(PROPKEYS.filter(k=>e[k]!=null && e[k]!=="").map(k=>[k,e[k]]));
+function showProps(){
+  if(J()) return reserve();
+  document.documentElement.style.setProperty("--acc","var(--ink)");
+  const mine = EX.filter(e=>e.perso && e.st==="propose"), val = EX.filter(e=>e.perso && e.st==="valide"), rec = P.recues||[];
+  const pv = x => `<details><summary>Voir la fiche</summary><dl>${[["Famille",(FBY[x.f]||MOIFAM).t+(x.s?" · "+x.s:"")],["Lignes",(x.L||[]).join(", ")],["Âge et niveau",`${x.a||"?"} à ${x.ax||18} ans · niveau ${x.v||1}`],["Objectif",x.ob],["Description",x.de],["Consignes",x.co],["Erreurs",x.er],["Matériel",x.ma],["Dosage",x.dos],["Échauffement",x.w?[ETN[x.w.et],...(x.w.ets||[]).filter(y=>y!==x.w.et).map(y=>ETN[y])].join(" + "):""],["Vidéo",x.vid]].filter(([,y])=>y).map(([k,y])=>`<dt>${k}</dt><dd>${esc(y)}</dd>`).join("")}${x.img?`<dd><img class="imgprev" src="${esc(x.img)}" alt=""></dd>`:""}</dl></details>`;
+  $("#main").innerHTML = `<h1>Propositions</h1><p class="lead">Un coach propose un exercice → Eliot le relit et le valide → il devient un exercice de la méthode, visible par tous les abonnés (en ligne demain ; ce soir, par fichier).</p>${tabs("/propositions")}
+   <div class="sec"><h2>Mes exercices proposés · ${mine.length}</h2><p class="msg">Mets le statut « Proposé à la méthode » sur un de tes exos (bouton Modifier), puis exporte le fichier et envoie-le à Eliot. Les vidéos de l'appareil ne partent pas dans le fichier : mets plutôt un lien.</p>
+    ${mine.length?rowsHTML(mine):'<div class="empty">Aucun exercice proposé pour l\'instant.</div>'}
+    <div class="actbar" style="margin-top:10px"><button class="btn pri" id="pexp" type="button" ${mine.length?"":"disabled"}>Exporter mes propositions (fichier)</button></div></div>
+   <div class="sec"><h2>Propositions reçues · ${rec.length}</h2><p class="msg">Importe un fichier GRUN_propositions_….json reçu d'un coach, relis chaque exercice, puis valide-le (il entre dans la banque avec le statut « Exercice de la méthode ») ou refuse-le.</p>
+    <div class="actbar" style="margin:8px 0"><label class="btn" for="pimp">Importer un fichier de propositions</label><input id="pimp" type="file" accept=".json,application/json" hidden></div><div class="msg" id="pmsg" role="status"></div>
+    ${rec.map(r=>`<div class="prop" data-r="${r.rid}"><div class="headrow"><div><b>${esc(r.ex.n)}</b><div class="msg">Proposé par ${esc(r.de||"un coach")} · ${esc(GRUN.frD(r.date))}${nameTaken(r.ex.n)?' · <span style="color:var(--warn)">nom déjà pris : il sera complété par le nom du coach</span>':""}</div></div>
+      <div class="actbar"><button class="btn pri sm" type="button" data-ok="${r.rid}">Valider</button><button class="btn dan sm" type="button" data-no="${r.rid}">Refuser</button></div></div>${pv(r.ex)}</div>`).join("") || '<div class="empty">Aucune proposition en attente.</div>'}</div>
+   <div class="sec"><h2>Exercices de la méthode ajoutés · ${val.length}</h2>${val.length?rowsHTML(val):'<div class="empty">Aucun pour l\'instant.</div>'}</div>
+   ${(P.traitees||[]).length?`<div class="sec"><h2>Historique</h2><div class="list">${P.traitees.slice(0,30).map(t=>`<div class="row" style="--dc:${t.res==="validé"?"var(--ok)":"var(--bad)"}"><span class="bar"></span><span class="id">${esc(GRUN.frD(t.date))}</span><span class="nm"><b>${esc(t.n)}</b><small>${esc(t.de||"")} · ${t.res}${t.id?" · "+t.id:""}</small></span><span class="meta"></span></div>`).join("")}</div></div>`:""}`;
+  $("#pexp").onclick=()=>{ const nom=(GRUN.load(GRUN.K.reglages,{})||{}).nomCoach||"";
+    GRUN.telecharger({app:"GRUN", type:"propositions_banque", v:1, date:today(), de:nom, ex:mine.map(clean)}, `GRUN_propositions_${today()}.json`); $("#pmsg").textContent=""; };
+  $("#pimp").onchange=async ev=>{ const f=ev.target.files[0]; ev.target.value=""; if(!f) return; try{ const d=JSON.parse(await f.text()); const n=importProps(d); showProps(); $("#pmsg").className="msg ok"; $("#pmsg").textContent=`${n} proposition${n>1?"s":""} ajoutée${n>1?"s":""} à relire.`; }catch(err){ $("#pmsg").className="msg err"; $("#pmsg").textContent="Ce fichier n'est pas un fichier de propositions (GRUN_propositions_….json)."; } };
+  $$("[data-ok]").forEach(b=>b.onclick=async()=>{ const r=P.recues.find(y=>y.rid===b.dataset.ok); if(!r) return;
+    const x={...r.ex}; const pid=x.id; delete x.id; delete x.cree; if(nameTaken(x.n)) x.n=`${x.n} (${r.de||"proposé"})`; let k=2; while(nameTaken(x.n)) x.n=`${r.ex.n} (${r.de||"proposé"} ${k++})`;
+    if(!FBY[x.f]) x.f="MOI";
+    const nx=GRUN.banque.add({...x, st:"valide", propPar:r.de||"", propId:pid||""});
+    P.recues=P.recues.filter(y=>y.rid!==r.rid); P.traitees=[{n:nx.n,de:r.de,date:today(),res:"validé",id:nx.id},...(P.traitees||[])]; save(); await reload(); showProps(); });
+  $$("[data-no]").forEach(b=>b.onclick=()=>{ if(!b.dataset.c){ b.dataset.c=1; b.textContent="Confirmer le refus"; return; } const r=P.recues.find(y=>y.rid===b.dataset.no); if(!r) return;
+    P.recues=P.recues.filter(y=>y.rid!==r.rid); P.traitees=[{n:r.ex.n,de:r.de,date:today(),res:"refusé"},...(P.traitees||[])]; save(); showProps(); });
+}
+function importProps(d){
+  const L = Array.isArray(d) ? d : (d && Array.isArray(d.ex) ? d.ex : null);
+  if(!L || (d.type && d.type!=="propositions_banque")) throw new Error("format");
+  let n=0; P.recues=P.recues||[];
+  for(const x of L){ if(!x || !x.n) continue; const ex=clean(x); if(P.recues.some(r=>fold(r.ex.n)===fold(ex.n) && (r.de||"")===(d.de||""))) continue;
+    P.recues.push({rid:GRUN.uid(), de:d.de||x.par||"", date:d.date||today(), ex}); n++; }
+  save(); return n;
+}
+
+/* ---------- familles ---------- */
+function showFams(){
+  document.documentElement.style.setProperty("--acc","var(--ink)");
+  const groups={}; FAMS.forEach(f=>{ if(f.c==="MOI" && !EX.some(e=>e.f==="MOI")) return; (groups[f.dossier]=groups[f.dossier]||[]).push(f); });
+  $("#main").innerHTML=`<h1>Familles d'exercices</h1><p class="lead">${FAMS.length-1} familles · chacune avec son mode d'emploi, sa progression et ses repères d'âge</p>${tabs("familles")}`+
+    Object.entries(groups).map(([g,fs])=>`<div class="sec"><h2>${esc(g.replace(/^\d+\.\d+\s/,""))}</h2><div class="fams" style="margin-top:8px">${fs.map(f=>`<a class="fam" href="#f/${f.c}" style="--dc:${dc(f.dom)}"><b>${esc(f.t)}</b><small>${EX.filter(e=>e.f===f.c).length} exercices · ${f.subs.length} sous-familles</small></a>`).join("")}</div></div>`).join("");
+}
+function showFam(c){
+  const f=FBY[c]; if(!f) return showFams(); document.documentElement.style.setProperty("--acc",dc(f.dom));
+  const xs=EX.filter(e=>e.f===c && !HIDE.has(e.id)), subs={}; xs.forEach(e=>{ (subs[e.s]=subs[e.s]||[]).push(e); });
+  const m=$("#main"); m.style.setProperty("--dc",dc(f.dom));
+  m.innerHTML=`<div class="crumb"><a href="#familles">Familles</a>›<span>${esc(f.dossier)}</span></div><h1 style="margin-top:4px">${esc(f.t)}</h1><p class="lead">${xs.length} exercices</p>
+   <div class="intro"><details><summary>Mode d'emploi de la famille : à quoi elle sert, comment choisir, progression, repères d'âge</summary><div class="tw">${f.intro}</div></details></div>`+
+   Object.entries(subs).map(([s,arr])=>`<h3 class="subh">${esc(s)}</h3>${rowsHTML(arr)}`).join("");
+}
+
+/* ---------- favoris et listes ---------- */
+function showFav(){
+  document.documentElement.style.setProperty("--acc","var(--ink)");
+  const xs=[...FAV].map(i=>BY[i]).filter(Boolean);
+  $("#main").innerHTML=`<h1>Favoris</h1><p class="lead">Touche ♡ sur une fiche pour l'ajouter ici. Tes favoris reviennent en priorité dans Create.</p>${tabs("favoris")}<div class="sec">${xs.length?rowsHTML(xs):'<div class="empty">Aucun favori pour l\'instant.</div>'}</div>`+dataBox();
+  bindData();
+}
+function showLists(){
+  document.documentElement.style.setProperty("--acc","var(--ink)");
+  $("#main").innerHTML=`<h1>Mes séances</h1><p class="lead">Regroupe des exercices pour une séance, un joueur ou un groupe. Pour une séance complète et structurée : <a class="ref" href="seances.html">Create my séance</a>.</p>${tabs("listes")}
+   <div class="sec"><div class="actbar"><input id="ln" type="text" placeholder="Nom de la séance (ex. U12 jeudi · vitesse)" style="flex:1;min-width:200px;min-height:40px;border:1px solid var(--line);border-radius:9px;padding:0 10px;background:var(--panel)"><button class="btn pri" id="lnew" type="button">Créer</button></div></div>
+   <div class="sec">${P.lists.length?`<div class="list">${P.lists.map(l=>`<a class="row" href="#l/${l.id}" style="--dc:var(--ink)"><span class="bar"></span><span class="id">${l.ex.length} ex.</span><span class="nm"><b>${esc(l.n)}</b><small>${l.ex.slice(0,4).map(i=>BY[i]?BY[i].n:i).map(esc).join(" · ")}</small></span><span class="meta"></span></a>`).join("")}</div>`:'<div class="empty">Aucune séance. Crée-en une ci-dessus, puis ajoute des exercices avec « + Ma liste » sur leur fiche.</div>'}</div>`;
+  $("#lnew").onclick=()=>{ const n=$("#ln").value.trim(); if(!n){ $("#ln").focus(); return; } P.lists.unshift({id:Date.now().toString(36), n, ex:[]}); save(); showLists(); };
+}
+function showList(lid){
+  const l=P.lists.find(x=>x.id===lid); if(!l) return showLists(); document.documentElement.style.setProperty("--acc","var(--ink)");
+  const xs=l.ex.map(i=>BY[i]).filter(Boolean);
+  $("#main").innerHTML=`<div class="crumb" style="--dc:var(--ink)"><a href="#listes">Mes séances</a></div><h1 style="margin-top:4px">${esc(l.n)}</h1><p class="lead">${xs.length} exercice${xs.length>1?"s":""}</p>
+   <div class="sec actbar"><button class="btn" id="lcopy" type="button">Copier la séance en texte</button><button class="btn" id="lren" type="button">Renommer</button><button class="btn" id="ldel" type="button">Supprimer la séance</button></div><div class="msg" id="lmsg"></div>
+   <div class="sec">${xs.length?`<div class="list">${xs.map((e,k)=>`<div class="row" style="--dc:${dc(e.dom)}"><span class="bar"></span><span class="id">${k+1}. ${e.id}</span><a class="nm" href="#/ex/${e.id}" style="text-decoration:none"><b>${esc(e.n)}</b><small>${esc(e.ma||"")}</small></a><span class="meta"><button class="chip" data-up="${k}" type="button" aria-label="Monter">↑</button><button class="chip" data-dn="${k}" type="button" aria-label="Descendre">↓</button><button class="chip" data-rm="${k}" type="button" aria-label="Retirer">✕</button></span></div>`).join("")}</div>`:'<div class="empty">Ajoute des exercices avec « + Ma liste » sur leur fiche.</div>'}</div>`;
+  $$("[data-up]").forEach(b=>b.onclick=()=>{ const k=+b.dataset.up; if(k>0){ [l.ex[k-1],l.ex[k]]=[l.ex[k],l.ex[k-1]]; save(); showList(lid);} });
+  $$("[data-dn]").forEach(b=>b.onclick=()=>{ const k=+b.dataset.dn; if(k<l.ex.length-1){ [l.ex[k+1],l.ex[k]]=[l.ex[k],l.ex[k+1]]; save(); showList(lid);} });
+  $$("[data-rm]").forEach(b=>b.onclick=()=>{ l.ex.splice(+b.dataset.rm,1); save(); showList(lid); });
+  $("#lcopy").onclick=async()=>{ const t=l.n+"\n\n"+xs.map((e,k)=>`${k+1}. ${e.id} · ${e.n}\n   Objectif : ${e.ob}\n   Matériel : ${e.ma}\n   Consignes : ${e.co}${e.dos?`\n   Dosage : ${e.dos}`:""}`).join("\n\n"); try{ await navigator.clipboard.writeText(t); $("#lmsg").textContent="Séance copiée : colle-la dans Notes ou un message."; }catch(err){ modal((b,close)=>{ b.innerHTML='<div class="msg">Sélectionne le texte puis copie-le.</div>'; const ta=document.createElement("textarea"); ta.value=t; ta.style.cssText="width:100%;min-height:260px"; b.appendChild(ta); ta.select(); const k=document.createElement("button"); k.className="btn"; k.textContent="Fermer"; k.onclick=close; b.appendChild(k); }); } };
+  $("#lren").onclick=()=>modal((b,close)=>{ b.innerHTML=`<h2>Renommer</h2><input id="rn" type="text" value="${esc(l.n)}"><div class="actbar"><button class="btn pri" id="rok" type="button">Enregistrer</button></div>`; $("#rok").onclick=()=>{ const v=$("#rn").value.trim(); if(v){ l.n=v; save(); } close(); showList(lid); }; });
+  $("#ldel").onclick=()=>{ const b=$("#ldel"); if(b.dataset.c){ P.lists=P.lists.filter(x=>x.id!==lid); save(); location.hash="listes"; } else { b.dataset.c=1; b.textContent="Confirmer la suppression"; } };
+}
+function pickList(id){
+  modal((b,close)=>{
+    b.innerHTML=`<h2>Ajouter ${id} à une liste</h2>${P.lists.map(l=>`<button class="btn" type="button" data-l="${l.id}" style="justify-content:flex-start">${esc(l.n)} · ${l.ex.length} ex.${l.ex.includes(id)?" ✓":""}</button>`).join("")}<div class="actbar"><input id="nl" type="text" placeholder="Nouvelle liste" style="flex:1"><button class="btn pri" id="nlok" type="button">Créer et ajouter</button></div>`;
+    b.querySelectorAll("[data-l]").forEach(x=>x.onclick=()=>{ const l=P.lists.find(y=>y.id===x.dataset.l); if(!l.ex.includes(id)) l.ex.push(id); save(); close(); });
+    $("#nlok").onclick=()=>{ const n=$("#nl").value.trim(); if(!n) return; P.lists.unshift({id:Date.now().toString(36), n, ex:[id]}); save(); close(); };
+  });
+}
+
+/* ---------- vidéos à tourner ---------- */
+function showShoot(){
+  document.documentElement.style.setProperty("--acc","var(--ink)");
+  const done=EX.filter(e=>hasVid(e.id)).length;
+  $("#main").innerHTML=`<h1>Vidéos de démonstration</h1><p class="lead"><b>${done}</b> exercice${done>1?"s":""} avec vidéo sur ${EX.length.toLocaleString("fr-FR")} · ${EX.length-done} à tourner</p>${tabs("tournage")}
+   <div class="sec intro" style="padding:12px 18px"><b>Comment ajouter les vidéos</b><ol style="margin:6px 0 0;padding-left:20px;line-height:1.6">
+   <li>Filme l'exercice et nomme le fichier avec son identifiant : <code>FOR-0123.mp4</code>.</li>
+   <li>Sur la fiche, touche <b>Ajouter un lien vidéo</b> (YouTube non répertoriée, iCloud, Drive…) ou <b>Choisir une vidéo de l'appareil</b> (gardée hors ligne sur cet iPad).</li>
+   <li>Pour que les vidéos soient dans l'appli pour tout le monde et sur tous tes appareils : touche <b>Sauvegarder</b> ci-dessous et envoie le fichier à Claude, qui les ajoutera à l'appli.</li></ol></div>
+   <div class="sec actbar"><a class="btn" href="#" id="fsans">Voir les exercices sans vidéo</a><button class="btn" id="copyshoot" type="button">Copier la liste de tournage</button></div><div class="msg" id="smsg"></div>`+dataBox();
+  $("#fsans").onclick=ev=>{ ev.preventDefault(); P.f.vid="0"; save(); location.hash=""; showExplore(); };
+  $("#copyshoot").onclick=async()=>{ const t=EX.filter(e=>!hasVid(e.id)).map(e=>`${e.id}.mp4\t${e.n}\t${e.ma||""}`).join("\n"); try{ await navigator.clipboard.writeText(t); $("#smsg").textContent="Liste copiée ("+t.split("\n").length+" exercices) : colle-la dans Notes ou Numbers."; }catch(err){ $("#smsg").textContent="Copie impossible dans cette vue."; } };
+  bindData();
+}
+
+/* ---------- sauvegarde : une seule pour tout GRÜN (GRUN.exportAll / importAll) ; anciens fichiers Banque_exercices_….json acceptés ---------- */
+function dataBox(){ return `<div class="sec"><h2>Mes données</h2><div class="actbar" style="margin-top:8px"><button class="btn" id="dsave" type="button">Sauvegarder toute l'appli</button><label class="btn" for="drest">Restaurer</label><input id="drest" type="file" accept=".json,application/json" hidden></div><div class="msg" id="dmsg">${FLASH?esc(FLASH):`Une seule sauvegarde pour tout GRÜN : joueurs, séances, exos créés et modifiés, favoris, listes, notes, liens vidéo. Les vidéos choisies sur l'appareil ne sont pas incluses. Les anciennes sauvegardes de la banque (Banque_exercices_….json) sont acceptées.`}</div></div>`; }
+function bindData(){
+  $("#dsave").onclick=()=>GRUN.telecharger(GRUN.exportAll(), "GRUN_sauvegarde_"+today()+".json");
+  $("#drest").onchange=async ev=>{ const f=ev.target.files[0]; ev.target.value=""; if(!f) return; const msg={set textContent(t){ dmsg(t); }};
+    try{ const d=JSON.parse(await f.text());
+      if(d && d.app==="GRUN" && d.data){ GRUN.importAll(d); P=loadP(); await reload(); msg.textContent="Sauvegarde GRÜN restaurée (fusionnée avec les données de l'appareil)."; return; }
+      if(d && d.type==="propositions_banque"){ const n=importProps(d); msg.textContent=`${n} proposition${n>1?"s":""} à relire dans l'onglet Propositions.`; return; }
+      if(!d || d.format!=="banque") throw 0;
+      for(const id of d.fav||[]) if(!FAV.has(id) && BY[id]){ GRUN.banque.toggleFav(id); FAV.add(id); }
+      const ids=new Set(P.lists.map(l=>l.id)); (d.lists||[]).forEach(l=>{ if(!ids.has(l.id)) P.lists.push(l); }); P.notes=Object.assign({},P.notes,d.notes||{}); P.links=Object.assign({},P.links,d.links||{}); save(); msg.textContent="Données de l'ancienne banque restaurées."; }
+    catch(e){ msg.textContent="Ce fichier n'est pas une sauvegarde reconnue (GRUN_sauvegarde_….json ou Banque_exercices_….json)."; } };
+}
+
+boot();
+</script>
+</body></html>

@@ -1,0 +1,1263 @@
+<!doctype html><html lang="fr"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="GRÜN"><meta name="theme-color" content="#0B3B36">
+<link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-180.png"><link rel="icon" href="icon-192.png">
+<style>/* GRÜN — styles communs injectés dans chaque module (barre des pôles en bas, éléments partagés).
+   Les modules gardent leurs jetons (--bg, --panel, --ink, --mute, --line, --soft) au style Veille. */
+:root{--grun:#0F766E;--grun-ink:#0B3B36;--nav-h:62px}
+body.grun-has-nav{padding-bottom:calc(var(--nav-h) + env(safe-area-inset-bottom,0px))}
+#grun-nav{position:fixed;left:0;right:0;bottom:0;z-index:50;display:flex;justify-content:space-around;align-items:stretch;
+  background:var(--panel,#fff);border-top:1px solid var(--line,#D9DDE3);padding-bottom:env(safe-area-inset-bottom,0px);
+  box-shadow:0 -4px 18px rgba(0,0,0,.05)}
+#grun-nav a{flex:1;max-width:140px;min-height:var(--nav-h);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
+  text-decoration:none;color:var(--mute,#5D6675);font:600 11.5px/1.1 var(--ui,system-ui,sans-serif);letter-spacing:.01em}
+#grun-nav svg{width:23px;height:23px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+#grun-nav a.on{color:var(--ink,#16202E)}
+#grun-nav a.on svg{stroke:var(--grun)}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) #grun-nav{box-shadow:none}}
+@media print{#grun-nav{display:none}body.grun-has-nav{padding-bottom:0}}
+/* fil « poupée russe » : bandeau de retour vers le module appelant */
+.grun-relais{position:sticky;top:0;z-index:40;display:flex;gap:10px;align-items:center;justify-content:space-between;
+  background:var(--grun);color:#fff;padding:8px 16px;font:600 14px/1.3 var(--ui,system-ui,sans-serif)}
+.grun-relais a,.grun-relais button{color:#fff;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.35);border-radius:8px;
+  min-height:36px;padding:0 12px;display:inline-flex;align-items:center;text-decoration:none;font:inherit;white-space:nowrap}
+.grun-mod #back{visibility:visible!important}
+</style>
+<script src="grun.js?v=1"></script>
+<meta name="grun-module" content="grilles"></head><body><title>Grilles et tests</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Barlow:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
+<style>
+/* Même mise en page que l'appli Veille : barre fixe (retour, recherche) ; accueil = accès direct, 4 portes, favoris ; document = fil d'Ariane, L'essentiel ouvert, Le détail en sections dépliables (une par ligne de grille) */
+:root{
+  --bg:#F4F5F7; --panel:#FFFFFF; --ink:#16202E; --mute:#5D6675; --line:#D9DDE3; --soft:#ECEFF3; --mark:#FFE58A;
+  --p1:#B83280; --p2:#2B6CB0; --p3:#0F766E; --p4:#8A5A00; --acc:#16202E;
+  --pp:#C2410C; --ge:#1D4ED8; --de:#0F766E;
+  --p5:#4A5568; --n1:#B42318; --n2:#A15C00; --n3:#15803D; --n4:#6D3FC0; --n1s:#FDECEA; --n2s:#FFF3DC; --n3s:#E6F5EA; --n4s:#EFE8FB;
+  --ui:"Barlow",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --display:"Barlow Condensed","Arial Narrow",system-ui,sans-serif;
+  --read:"Source Serif 4",Georgia,"Times New Roman",serif;
+  --fs:17px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#10141B; --panel:#181E28; --ink:#E6EAF0; --mute:#9AA4B3; --line:#2B3442; --soft:#212938; --mark:#6B5A12;
+  --p1:#F27AB8; --p2:#7FB2F0; --p3:#3CC7B2; --p4:#E2B85A; --acc:#E6EAF0; --pp:#F08A4B; --ge:#86A8FF; --de:#3CC7B2; --p5:#C3CCD8; --n1:#F2786A; --n2:#F0B14A; --n3:#5BD08A; --n4:#B79CF5; --n1s:#3A1F1C; --n2s:#3A2C12; --n3s:#183326; --n4s:#2A2140; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#10141B; --panel:#181E28; --ink:#E6EAF0; --mute:#9AA4B3; --line:#2B3442; --soft:#212938; --mark:#6B5A12;
+  --p1:#F27AB8; --p2:#7FB2F0; --p3:#3CC7B2; --p4:#E2B85A; --acc:#E6EAF0; --pp:#F08A4B; --ge:#86A8FF; --de:#3CC7B2; --p5:#C3CCD8; --n1:#F2786A; --n2:#F0B14A; --n3:#5BD08A; --n4:#B79CF5; --n1s:#3A1F1C; --n2s:#3A2C12; --n3s:#183326; --n4s:#2A2140; color-scheme:dark}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:var(--bg);color:var(--ink);font-family:var(--ui);font-size:15px;line-height:1.45;margin:0;-webkit-tap-highlight-color:transparent}
+a{color:inherit}
+button,input,select,textarea{font:inherit;color:var(--ink)}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);border-bottom:1px solid var(--line)}
+.topin{max-width:1100px;margin:0 auto;padding-block:8px;padding-inline:16px;display:flex;gap:8px;align-items:center}
+.ib{min-width:40px;min-height:40px;border:1px solid var(--line);background:var(--panel);border-radius:9px;display:inline-flex;align-items:center;justify-content:center;font-weight:600;padding:0 10px;white-space:nowrap}
+.brand{font-family:var(--display);font-weight:700;font-size:20px;letter-spacing:.01em;white-space:nowrap;text-decoration:none}
+.sbox{flex:1;min-width:0;position:relative}
+.sbox input{width:100%;min-height:40px;border:1px solid var(--line);border-radius:9px;background:var(--panel);padding:0 12px 0 34px}
+.sbox svg{position:absolute;left:10px;top:11px;width:18px;height:18px;stroke:var(--mute)}
+main{max-width:1100px;margin:0 auto;padding-inline:16px;padding-block:16px 60px}
+h1{font-family:var(--display);font-weight:700;font-size:30px;line-height:1.1;margin:0;text-wrap:balance}
+.lead{color:var(--mute);margin:4px 0 0}
+.sec{margin-top:22px}
+.sec>h2{font-family:var(--display);font-size:21px;font-weight:700;margin:0 0 8px}
+.doors{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+@media (max-width:640px){.doors{grid-template-columns:minmax(0,1fr)}}
+.door{display:flex;flex-direction:column;gap:6px;text-decoration:none;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px 16px;border-top:4px solid var(--pc)}
+.door b{font-family:var(--display);font-size:24px;color:var(--pc);line-height:1.1}
+.door span{color:var(--mute);font-size:14px}
+.door small{color:var(--mute);font-size:12.5px}
+.quick{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px 14px;display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end}
+.f{display:flex;flex-direction:column;gap:3px;min-width:0}
+.f label{font-size:11px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--mute)}
+.f select{min-height:40px;border:1px solid var(--line);border-radius:8px;background:var(--panel);padding:0 8px;max-width:100%}
+.go{min-height:40px;border-radius:8px;border:none;background:var(--ink);color:var(--bg);font-weight:600;padding:0 16px}
+.list{display:flex;flex-direction:column;background:var(--panel);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.li{display:grid;grid-template-columns:84px minmax(0,1fr);gap:10px;padding:10px 14px;text-decoration:none;border-top:1px solid var(--line);align-items:baseline}
+.li:first-child{border-top:none}
+.li .code{font-variant-numeric:tabular-nums;color:var(--mute);font-size:13px}
+.li .tt{font-size:15px}
+.li .tt small{display:block;color:var(--mute);font-size:12.5px;margin-top:1px}
+.fold{margin-top:12px}
+.fold>h3{font-family:var(--display);font-size:19px;margin:16px 0 6px;color:var(--pc)}
+.crumb{font-size:13px;color:var(--mute);display:flex;flex-wrap:wrap;gap:4px 6px;align-items:center}
+.crumb a{text-decoration:none;color:var(--pc);font-weight:600}
+.dochead{display:flex;flex-wrap:wrap;gap:10px;justify-content:space-between;align-items:flex-start;margin-top:6px}
+.acts{display:flex;gap:6px;flex-wrap:wrap}
+.star[aria-pressed=true]{color:#B7791F;border-color:#B7791F}
+.toc{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:10px 14px;margin-top:14px;font-size:14px}
+.toc b{font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--mute)}
+.toc ol{margin:6px 0 0;padding-left:18px;columns:2;column-gap:28px}
+@media (max-width:640px){.toc ol{columns:1}}
+.toc a{text-decoration:none}
+.toc a:hover{text-decoration:underline}
+.doc{font-family:var(--read);font-size:var(--fs);line-height:1.6;margin-top:10px}
+.doc p,.doc li{max-width:72ch}
+.doc h2{font-family:var(--display);font-size:1.35em;letter-spacing:.04em;margin:26px 0 8px;color:var(--pc)}
+.doc .ess{background:var(--panel);border:1px solid var(--line);border-left:4px solid var(--pc);border-radius:10px;padding:4px 18px 10px}
+.doc .ess h2{margin-top:12px}
+.doc details{border-top:1px solid var(--line);padding:2px 0}
+.doc summary{font-family:var(--ui);font-weight:600;font-size:1.02em;padding:10px 0;cursor:pointer;list-style:none;display:flex;gap:10px;align-items:baseline}
+.doc summary::-webkit-details-marker{display:none}
+.doc summary::before{content:"+";display:inline-block;width:1em;color:var(--pc);font-weight:700}
+.doc details[open]>summary::before{content:"–"}
+.doc h4{font-family:var(--ui);font-size:.98em;margin:16px 0 4px;color:var(--pc)}
+.doc h5,.doc h6{font-family:var(--ui);font-size:.92em;margin:12px 0 4px}
+.tw{overflow-x:auto;margin:10px 0;border:1px solid var(--line);border-radius:8px;background:var(--panel)}
+.doc table{border-collapse:collapse;font-family:var(--ui);font-size:.82em;line-height:1.4;min-width:100%}
+.doc th,.doc td{border-bottom:1px solid var(--line);padding:6px 9px;text-align:left;vertical-align:top}
+.doc th{background:var(--soft);font-weight:600}
+.doc blockquote{margin:10px 0;padding:6px 14px;border-left:3px solid var(--line);color:var(--mute)}
+.ref{color:var(--pc);font-weight:600;text-decoration:none;border-bottom:1px dotted currentColor}
+.bq,.ex{font-family:var(--ui);font-size:.82em;background:var(--soft);border-radius:5px;padding:1px 5px;white-space:nowrap}
+mark{background:var(--mark);color:inherit;border-radius:2px}
+.doc th.n1,.doc td.n1{background:var(--n1s);color:var(--n1)} .doc th.n2,.doc td.n2{background:var(--n2s);color:var(--n2)}
+.doc th.n3,.doc td.n3{background:var(--n3s);color:var(--n3)} .doc th.n4,.doc td.n4{background:var(--n4s);color:var(--n4)}
+.doc td.n1,.doc td.n2,.doc td.n3,.doc td.n4{white-space:nowrap}
+.doc tr.off td{color:var(--mute)}
+.doc small{color:var(--mute);font-size:.86em}
+.doc .att{background:var(--n3s);border:1px solid var(--n3);border-radius:10px;padding:8px 14px;margin:10px 0}
+.doc .att b{font-family:var(--ui);color:var(--n3);font-size:.85em;letter-spacing:.04em;text-transform:uppercase}
+.doc .att p{margin:4px 0 2px}
+.jump{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.jump a{font-size:13.5px;font-weight:600;text-decoration:none;border:1px solid var(--line);background:var(--panel);border-radius:999px;padding:6px 12px}
+.jump a.on{background:var(--pc);border-color:var(--pc);color:#fff}
+.inp{min-height:40px;border:1px solid var(--line);border-radius:8px;background:var(--panel);padding:0 10px;max-width:100%}
+details.jg{background:var(--panel);border:1px solid var(--line);border-radius:12px;margin-top:10px;border-top:4px solid var(--pc)}
+details.jg>summary{list-style:none;cursor:pointer;padding:12px 14px;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;font-family:var(--display);font-size:20px;font-weight:700;color:var(--pc)}
+details.jg>summary::-webkit-details-marker{display:none}
+details.jg .jm{font-family:var(--ui);font-size:13.5px;font-weight:600;color:var(--mute);align-self:center}
+.jgrid{display:grid;gap:10px;padding:0 12px 12px}
+@media(min-width:820px){.jgrid{grid-template-columns:220px minmax(0,1fr);align-items:start}}
+.jrad{max-width:240px;margin:0 auto;color:var(--ink)} .rad{width:100%;display:block}
+table.jt{border-collapse:collapse;width:100%;font-size:14px}
+table.jt th,table.jt td{border-bottom:1px solid var(--line);padding:8px;text-align:left;vertical-align:top}
+table.jt th{background:var(--soft);font-weight:600;font-size:12.5px}
+table.jt td.c{text-align:center;vertical-align:middle}
+table.jt tr.off td{color:var(--mute)}
+.lvtxt{font-size:12.5px;color:var(--mute);margin-top:3px;line-height:1.35}
+.lvsel{min-height:38px;border:1px solid var(--line);border-radius:8px;background:var(--panel);padding:0 6px;font-weight:600;max-width:190px}
+.lvsel.n1,.lvb.n1{background:var(--n1s);color:var(--n1);border-color:var(--n1)} .lvsel.n2,.lvb.n2{background:var(--n2s);color:var(--n2);border-color:var(--n2)}
+.lvsel.n3,.lvb.n3{background:var(--n3s);color:var(--n3);border-color:var(--n3)} .lvsel.n4,.lvb.n4{background:var(--n4s);color:var(--n4);border-color:var(--n4)}
+@media(max-width:600px){.lvsel{max-width:104px;font-size:13px} table.jt th,table.jt td{padding:7px 5px} table.jt{font-size:13.5px} .jgrid{padding:0 8px 10px}}
+.lvb{display:inline-block;min-width:34px;padding:3px 8px;border-radius:7px;border:1px solid;font-weight:700;text-align:center}
+.pk{padding:10px 14px;border-top:1px solid var(--line);display:flex;flex-direction:column;gap:6px;font-size:14.5px}
+.pk:first-child{border-top:none}
+.pk label{display:flex;gap:8px;align-items:center}
+.pk input{width:20px;height:20px}
+.ms{display:flex;flex-direction:column;gap:2px;font-size:11.5px;color:var(--mute);margin-bottom:4px}
+.ms .inp{width:110px;font-size:16px;color:var(--ink)}
+.lines{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.lines a{font-size:13px;text-decoration:none;border:1px solid var(--line);background:var(--panel);border-radius:8px;padding:5px 9px}
+.doc details,.doc h4,.doc h5,.doc tr,.doc mark{scroll-margin-top:78px}
+.flash{animation:fl 1.6s ease}
+@keyframes fl{0%{background:var(--mark)}100%{background:transparent}}
+@media (prefers-reduced-motion: reduce){.flash{animation:none}}
+.pn{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px;margin-top:26px}
+.pn a{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:10px 12px;text-decoration:none;font-size:14px}
+.pn a small{display:block;color:var(--mute);font-size:12px}
+.pn a.nx{text-align:right}
+.notes{margin-top:22px;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+.notes textarea{width:100%;min-height:90px;border:1px solid var(--line);border-radius:8px;padding:8px;background:var(--bg);resize:vertical}
+.res{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px 14px;text-decoration:none;display:block}
+.res+.res{margin-top:8px}
+.res .t{font-weight:600}
+.res .w{color:var(--mute);font-size:12.5px}
+.res .s{font-family:var(--read);font-size:14.5px;margin-top:4px;color:var(--ink)}
+.empty{color:var(--mute);padding:14px;background:var(--panel);border:1px dashed var(--line);border-radius:12px}
+.tools{display:flex;flex-wrap:wrap;gap:8px}
+.msg{font-size:13.5px;color:var(--mute)}
+.load{padding:40px 0;color:var(--mute)}
+/* ----- GRÜN : dossier joueur, profil radar, tests perso ----- */
+.bdg{display:inline-block;font-family:var(--ui);font-size:11px;font-weight:700;letter-spacing:.03em;padding:1px 7px;border-radius:999px;background:var(--n4s);color:var(--n4);vertical-align:middle;white-space:nowrap}
+.bdg.mod{background:var(--n2s);color:var(--n2)} .bdg.warn{background:var(--n1s);color:var(--n1)}
+.att2{margin-top:12px;background:var(--n2s);color:var(--ink);border:1px solid var(--n2);border-radius:10px;padding:8px 12px;font-size:14px}
+.inp.ta{min-height:70px;width:100%;padding:8px 10px;resize:vertical}
+.ck{display:flex;gap:8px;align-items:center;font-size:14px;min-height:40px}
+.ck input{width:20px;height:20px}
+.ib.sm{min-height:34px;font-size:13px;padding:0 9px}
+.tabs{margin-top:16px}
+.xl{display:flex;flex-wrap:wrap;gap:4px 12px;margin-top:4px;font-size:12.5px}
+.xl a,.xla{color:var(--pc);font-weight:600;text-decoration:none;font-family:var(--ui)}
+.xlp{font-family:var(--ui);font-size:14px;display:flex;flex-wrap:wrap;gap:6px 14px;align-items:center;background:var(--soft);border-radius:8px;padding:8px 12px}
+.xlp .xl{font-size:14px;margin:0}
+.dtabs a small{font-weight:500;opacity:.8;margin-left:3px}
+.dtabs a.on{background:var(--pc);border-color:var(--pc);color:#fff}
+.prof{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:14px;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px;margin-top:10px}
+@media(max-width:860px){.prof{grid-template-columns:minmax(0,1fr)}}
+.chartcol{display:flex;flex-direction:column;gap:6px;min-width:0}
+.charthead{display:flex;flex-wrap:wrap;gap:4px 14px;align-items:baseline;justify-content:space-between}
+.rcode{font-family:var(--display);font-size:20px;color:var(--pc)}
+.rbig{width:100%;max-width:660px;height:auto;margin:0 auto;display:block;touch-action:none;user-select:none;-webkit-user-select:none;cursor:crosshair}
+.rmini{width:100%;max-width:360px;height:auto;display:block;margin:0 auto}
+.legend{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:12px;color:var(--mute);justify-content:center}
+.legend span{display:inline-flex;align-items:center;gap:5px}
+.sw{width:14px;height:10px;border-radius:2px;display:inline-block}
+.sw.dash{border-top:2px dashed var(--mute);height:0;width:18px;border-radius:0}
+.hint{font-size:12.5px;color:var(--mute);text-align:center;margin:0}
+.rows{display:flex;flex-direction:column;gap:3px;min-width:0}
+.row{display:grid;grid-template-columns:28px minmax(0,1fr) auto;gap:8px;align-items:center;padding:5px 6px;border-radius:8px;border:1px solid transparent;cursor:pointer}
+.row.sel{border-color:var(--pc);background:var(--soft)}
+.row.grey{opacity:.5;cursor:default}
+.num{font-family:var(--display);font-weight:700;font-size:18px;color:var(--pc);text-align:center}
+.nm{font-size:14px;line-height:1.25;min-width:0}
+.nm small{display:block;color:var(--mute);font-size:11.5px;margin-top:1px}
+.step{display:flex;align-items:center;gap:4px}
+.step button{min-width:38px;min-height:38px;border:1px solid var(--line);background:var(--panel);border-radius:8px;font-size:18px;font-weight:700;padding:0}
+.val{display:inline-block;min-width:40px;text-align:center;font-variant-numeric:tabular-nums;font-size:15px;border-radius:7px;padding:5px 2px;border:1px solid var(--line)}
+.val.n1{background:var(--n1s);color:var(--n1);border-color:var(--n1)} .val.n2{background:var(--n2s);color:var(--n2);border-color:var(--n2)} .val.n3{background:var(--n3s);color:var(--n3);border-color:var(--n3)} .val.n4{background:var(--n4s);color:var(--n4);border-color:var(--n4)}
+.detail{border-top:1px solid var(--line);margin-top:8px;padding-top:10px;display:flex;flex-direction:column;gap:8px}
+.detail h3{font-family:var(--display);font-size:20px;margin:0;color:var(--pc)}
+.att3{font-size:14px}
+.lvls{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
+@media(max-width:520px){.lvls{grid-template-columns:minmax(0,1fr)}}
+.lv{text-align:left;font-size:12.5px;line-height:1.35;padding:7px 9px;border-radius:8px;border:1px solid var(--line);background:var(--panel);color:var(--ink)}
+.lv b{display:block;font-size:12.5px;margin-bottom:2px}
+.lv.n1{background:var(--n1s);border-color:var(--n1)} .lv.n1 b{color:var(--n1)} .lv.n2{background:var(--n2s);border-color:var(--n2)} .lv.n2 b{color:var(--n2)}
+.lv.n3{background:var(--n3s);border-color:var(--n3)} .lv.n3 b{color:var(--n3)} .lv.n4{background:var(--n4s);border-color:var(--n4)} .lv.n4 b{color:var(--n4)}
+.lv.on{outline:3px solid var(--pc);outline-offset:1px}
+.ovw{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px;margin-top:10px}
+@media(max-width:760px){.ovw{grid-template-columns:minmax(0,1fr)}}
+.ov{display:flex;flex-direction:column;gap:6px;align-items:center;min-width:0;text-align:center}
+.ov h3{font-family:var(--display);font-size:20px;margin:0}
+.axes{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:12px}
+@media(max-width:640px){.axes{grid-template-columns:minmax(0,1fr)}}
+.axc{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:10px 14px}
+.axc h3{font-family:var(--display);font-size:19px;margin:2px 0 6px}
+.axc h3 small{font-family:var(--ui);font-size:12px;color:var(--mute);font-weight:500}
+.axc ul{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:5px;font-size:14px}
+.axc a{color:var(--pc);font-weight:600;text-decoration:none}
+.pgr{display:flex;flex-direction:column;gap:6px}
+.sparkw{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:6px;max-width:420px}
+.spark{width:100%;height:auto;display:block}
+table.pg td,table.pg th{white-space:nowrap} table.pg td:first-child{white-space:normal;min-width:150px}
+table.pg tr.tot td{background:var(--soft)}
+.rv{font-variant-numeric:tabular-nums;font-size:13px}
+.mat{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
+.mat div{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:8px 12px}
+.mat small{display:block;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--mute);font-weight:600}
+.mat b{font-family:var(--display);font-size:22px}
+.n4c{color:var(--n4)} .n2c{color:var(--n2)} .warnc{color:var(--n1)}
+.tef{display:flex;flex-direction:column;gap:12px;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin-top:12px}
+.tef .inp{width:100%}
+.row2{display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end}
+.row2 .inp{width:auto}
+.lchk{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:4px 12px;font-size:14px}
+.lchk label{display:flex;gap:8px;align-items:center;min-height:32px}
+.lchk input{width:18px;height:18px}
+.mrow{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px}
+.mrow .inp{flex:1;min-width:120px}
+.mrow select{min-height:40px;border:1px solid var(--line);border-radius:8px;background:var(--panel)}
+table.bed td{padding:4px}
+table.bed .bi{width:74px;font-size:16px;text-align:center;padding:0 4px}
+@media(max-width:420px){table.bed .bi{width:62px}}
+.modal{position:fixed;inset:0;background:rgba(10,15,25,.55);display:flex;align-items:center;justify-content:center;padding:16px;z-index:60}
+.modal .box{background:var(--panel);border-radius:12px;padding:16px;max-width:620px;width:100%;display:flex;flex-direction:column;gap:12px;max-height:90vh;overflow:auto}
+.pimg{width:100%;border-radius:8px;border:1px solid var(--line)}
+.att.mine{background:var(--n2s);border-color:var(--n2)} .att.mine b{color:var(--n2)}
+table.fs td.blank{min-width:90px;height:34px}
+@media print{.top,.noprint,#grun-nav,.tools{display:none!important} body{background:#fff} main{padding:0} .fsheet,.ov,.axc{break-inside:avoid}}
+</style>
+
+<header class="top"><div class="topin">
+  <button class="ib" id="back" type="button" aria-label="Retour">‹</button>
+  <a class="brand" href="#">Grilles</a>
+  <div class="sbox"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+    <input id="q" type="search" placeholder="Rechercher dans les grilles et les tests" autocomplete="off" enterkeyhint="search"></div>
+</div></header>
+<main id="main"><div class="load">Chargement des grilles…</div></main>
+
+<script>
+"use strict";
+const PORTES = {
+  "1": {n:"Filles", c:"--p1", s:"Les grilles filles de 4 à 18 ans : un dossier par âge, 3 grilles par âge (préparation physique, geste, déplacement)."},
+  "2": {n:"Garçons", c:"--p2", s:"Les grilles garçons de 4 à 18 ans : un dossier par âge, 3 grilles par âge (préparation physique, geste, déplacement)."},
+  "3": {n:"Tests", c:"--p3", s:"Les 287 fiches de tests : protocole complet et barèmes de tous les âges, filles et garçons."},
+  "4": {n:"Mode d'emploi", c:"--p4", s:"Utiliser les grilles, l'âge biologique, les 4 niveaux, les lignes et les règles d'évaluation."}
+};
+const DOMN = {PP:"Préparation physique", GE:"Biomécanique du geste", DE:"Biomécanique du déplacement"};
+let LIGNES = {};
+
+
+let DOCS = [], BY = {}, NORM = null;
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const fold = s => { let o=""; for(const ch of s){ const d=ch.normalize("NFD")[0]; o += (d||ch).toLowerCase(); } return o; };
+const keyc = c => c.split(".").map(Number);
+
+/* ---------- préférences locales ---------- */
+const ST = "grilles_docs_v1";
+function load(){ try{ return JSON.parse(localStorage.getItem(ST)) || {}; }catch(e){ return {}; } }
+let P = Object.assign({fav:[], rec:[], notes:{}, fs:17, sx:"G", age:"10", dom:"PP", ligne:"0"}, load());
+function save(){ try{ localStorage.setItem(ST, JSON.stringify(P)); }catch(e){} }
+document.documentElement.style.setProperty("--fs", P.fs+"px");
+
+/* ---------- données ---------- */
+async function boot(){
+  if(window.GRUN) GRUN.nav("tests");
+  try{
+    const r = await fetch("data-grilles.json"); const d = await r.json();
+    DOCS = d.docs; LIGNES = d.lignes||{}; X = d.x; DOCS.forEach((x,i)=>{ x.i=i; BY[x.c]=x; });
+  }catch(e){ $("#main").innerHTML = '<div class="empty">Les grilles n\'ont pas pu se charger. Vérifie la connexion pour la première ouverture, puis recharge la page.</div>'; return; }
+  route();
+  setTimeout(buildIndex, 50);
+}
+function buildIndex(){
+  if(NORM) return;
+  const tmp = document.createElement("div");
+  NORM = DOCS.map(x => { tmp.innerHTML = x.h.replace(/></g,"> <"); const t = (x.t+" \n "+tmp.textContent).replace(/\s+/g," "); return {raw:t, f:fold(t)}; });
+}
+
+/* ---------- routage ---------- */
+window.addEventListener("hashchange", route);
+$("#back").onclick = () => { if(history.length > 1) history.back(); else location.hash = ""; };
+function route(){
+  const h0 = decodeURIComponent(location.hash.slice(1)); const qi = h0.indexOf("?"); const h = qi>=0 ? h0.slice(0,qi) : h0, q = qi>=0 ? h0.slice(qi+1) : "";
+  const m = $("#main"); window.scrollTo(0,0); m.style.removeProperty("--pc");
+  const mm = document.getElementById("modal"); if(mm) mm.hidden = true;
+  /* points d'entrée GRÜN */
+  if(h.startsWith("/joueur/")) return showJoueur(h.split("/")[2]);
+  if(h.startsWith("/test/")){ const [,, id, hint] = h.split("/"); return isPerso(id) ? showTestPerso(id, hint) : BY[id] ? showDoc(id, hint) : showMesTests(); }
+  if(h.startsWith("/ligne/")){ const [,, L, sx, a] = h.split("/"); const k = /^(PP|GE|DE)(\d+)$/.exec(L||""); const age = clampA(+a||+P.age||10);
+    if(k) return showDoc(`${sx==="F"?"F":"G"}${pad2(age)}_${k[1]}`, "l"+k[2]); return showHome(); }
+  if(h==="/mestests") return showMesTests();
+  if(h==="/tests") return showPorte("3");
+  if(h==="/test-nouveau") return showTestEdit(null, q);
+  if(h.startsWith("/test-edit/")) return showTestEdit(h.split("/")[2], q);
+  if(h==="/gbilan" || h.startsWith("/gbilan/")) return showGBilan(h.slice(8));
+  if(h.startsWith("/fiche/")) return showFiche(h.split("/")[2], h.split("/")[3]);
+  if(h==="/joueurs") return showJoueurs();
+  if(h.startsWith("d/")) return showDoc(h.slice(2).split("/")[0], h.split("/")[2]);
+  if(h.startsWith("p/")) return showPorte(h.slice(2));
+  if(h.startsWith("s/")) { $("#q").value = h.slice(2); return showSearch(h.slice(2)); }
+  if(h==="j") return showJoueurs();
+  if(h.startsWith("j/")) return showJoueur(h.slice(2));
+  if(RO() && h==="") return showJoueur(GR.mode().jid);
+  if(h==="/accueil") return showHome();
+  showHome();
+}
+function porteOf(x){ return x.p; }
+function colOf(x){ return x.dom ? `var(--${x.dom.toLowerCase()})` : pc(porteOf(x)); }
+const pad2 = n => String(n).padStart(2,"0");
+function pc(p){ return `var(${PORTES[p].c})`; }
+
+/* ---------- accueil ---------- */
+function showHome(){
+  document.documentElement.style.setProperty("--acc", "var(--ink)");
+  const m = $("#main");
+  const count = p => DOCS.filter(x=>porteOf(x)===p).length;
+  let html = `<h1>Grilles et tests</h1><p class="lead">Grilles de compétences 4-18 ans · 90 grilles · 287 tests · niveau 3 = attendu du haut niveau de sa génération</p>`;
+  html += `<div class="sec"><h2>Accès direct</h2><div class="quick">
+    <div class="f"><label for="qs">Sexe</label><select id="qs"><option value="F">Fille</option><option value="G">Garçon</option></select></div>
+    <div class="f"><label for="qa">Âge</label><select id="qa">${Array.from({length:15},(_,i)=>String(i+4)).map(a=>`<option value="${a}">${a} ans</option>`).join("")}</select></div>
+    <div class="f"><label for="qd">Grille</label><select id="qd"><option value="PP">Préparation physique</option><option value="GE">Biomécanique du geste</option><option value="DE">Biomécanique du déplacement</option></select></div>
+    <div class="f" style="flex:1;min-width:200px"><label for="ql">Ligne</label><select id="ql"></select></div>
+    <button class="go" id="qgo" type="button">Ouvrir</button></div></div>`;
+  const nJ = GR.joueurs.all().length, nT = tc().per.length;
+  if(RO()) html += `<div class="sec"><a class="door" href="#/joueur/${GR.mode().jid}" style="--pc:var(--p5)"><b>Mon dossier</b><span>Ton profil radar, tes résultats de tests et ta progression.</span></a></div>`;
+  html += `<div class="sec"><h2>Les portes</h2><div class="doors">${Object.entries(PORTES).map(([p,o])=>`<a class="door" href="#p/${p}" style="--pc:var(${o.c})"><b>${p} · ${o.n}</b><span>${o.s}</span><small>${count(p)} documents${p==="3"&&nT?` · ${nT} test${nT>1?"s":""} perso`:""}</small></a>`).join("")}${RO()?"":`<a class="door" href="#j" style="--pc:var(--p5)"><b>5 · Joueurs</b><span>Dossier de chaque joueur : profil radar, grilles remplies, tests et résultats, progression, croissance. Bilans de groupe.</span><small>${nJ} joueur${nJ>1?"s":""}</small></a>`}</div></div>`;
+  const favs = P.fav.filter(c=>BY[c]), recs = P.rec.filter(c=>BY[c]).slice(0,8);
+  html += `<div class="sec"><h2>Favoris</h2>${favs.length ? listHTML(favs.map(c=>BY[c]), true) : '<div class="empty">Touche ☆ en haut d\'une grille ou d\'un test pour le retrouver ici.</div>'}</div>`;
+  if(recs.length) html += `<div class="sec"><h2>Consultés récemment</h2>${listHTML(recs.map(c=>BY[c]), true)}</div>`;
+  html += `<div class="sec"><h2>Mes données</h2><div class="tools">
+     ${RO()?"":`<button class="ib" id="bsave" type="button">Sauvegarder tout GRÜN</button>
+     <label class="ib" for="frest">Restaurer</label><input id="frest" type="file" accept=".json,application/json" hidden>`}
+     <button class="ib" id="fsm" type="button" aria-label="Texte plus petit">A−</button><button class="ib" id="fsp" type="button" aria-label="Texte plus grand">A+</button></div><p class="msg" id="dmsg">${RO()?"Tes données sont gardées sur cet appareil.":"Une seule sauvegarde pour toute l'appli (joueurs, groupes, tests, favoris, notes…) ; la restauration accepte aussi les anciens fichiers Grilles et Profil radar."}</p></div>`;
+  m.innerHTML = html;
+  const qs=$("#qs"), qa=$("#qa"), qd=$("#qd"), ql=$("#ql");
+  qs.value=P.sx; qa.value=P.age; qd.value=P.dom;
+  const fill=()=>{ const L = LIGNES[qd.value]||[]; ql.innerHTML = `<option value="0">Toute la grille</option>`+L.map((n,i)=>`<option value="${i+1}">${i+1} · ${esc(n)}</option>`).join(""); ql.value = +P.ligne <= L.length ? P.ligne : "0"; };
+  fill(); qd.onchange=()=>{ P.ligne="0"; fill(); };
+  $("#qgo").onclick=()=>{ P.sx=qs.value; P.age=qa.value; P.dom=qd.value; P.ligne=ql.value||"0"; save(); location.hash = `d/${qs.value}${pad2(qa.value)}_${qd.value}` + (+ql.value ? `/l${ql.value}` : ""); };
+  if($("#bsave")){ $("#bsave").onclick=exportData; $("#frest").onchange=importData; }
+  $("#fsm").onclick=()=>setFs(-1); $("#fsp").onclick=()=>setFs(1);
+}
+function setFs(d){ P.fs=Math.max(14,Math.min(24,P.fs+d)); save(); document.documentElement.style.setProperty("--fs",P.fs+"px"); const m=$("#dmsg"); if(m) m.textContent="Taille du texte des documents : "+P.fs+" px."; }
+function listHTML(xs, withPath){
+  return `<div class="list">${xs.map(x=>`<a class="li" href="#d/${x.c}"><span class="code">${x.c}</span><span class="tt">${esc(x.t)}${x.p==="3"&&tov(x.c)?' <span class="bdg mod">modifié</span>':""}${withPath?`<small>${esc(x.ch)}</small>`:""}</span></a>`).join("")}</div>`;
+}
+function persoListHTML(ts){ return `<div class="list">${ts.map(t=>`<a class="li" href="#/test/${t.id}"><span class="code">${t.id.replace("T-MOI-","MOI ")}</span><span class="tt">${t.prio?"★ ":""}${esc(t.nom)} <span class="bdg">mon test</span><small>${DOMN[t.dom]||""} · ligne${(t.lignes||[]).length>1?"s":""} ${(t.lignes||[]).join(", ")||"–"}</small></span></a>`).join("")}</div>`; }
+
+/* ---------- porte ---------- */
+function showPorte(p){
+  if(!PORTES[p]) return showHome();
+  document.documentElement.style.setProperty("--acc", pc(p));
+  const xs = DOCS.filter(x=>porteOf(x)===p), groups = {};
+  xs.forEach(x=>{ (groups[x.d] = groups[x.d] || []).push(x); });
+  let html = `<div class="crumb" style="--pc:${pc(p)}"><a href="#${RO()?"/accueil":""}">Accueil</a></div><h1 style="color:${pc(p)}">${p} · ${PORTES[p].n}</h1><p class="lead">${PORTES[p].s}</p>`;
+  if(p==="3"){ const per = tc().per;
+    html += `<div class="tools" style="margin-top:12px">${RO()?"":`<a class="ib" href="#/test-nouveau">+ Créer un test</a>`}<a class="ib" href="#/mestests">Mes tests et modifications</a></div>`;
+    if(per.length){ const byd = {}; per.forEach(t=>(byd[t.dom]=byd[t.dom]||[]).push(t)); html += `<div class="fold" style="--pc:${pc(p)}"><h3>Mes tests</h3>${persoListHTML(DOM3.flatMap(d=>byd[d]||[]))}</div>`; } }
+  html += Object.entries(groups).map(([d,arr])=>`<div class="fold" style="--pc:${pc(p)}"><h3>${esc(d)}</h3>${listHTML(arr,false)}</div>`).join("");
+  $("#main").innerHTML = html;
+}
+
+/* ---------- document ---------- */
+function showDoc(code, hint){
+  const x = BY[code]; if(!x) return showHome();
+  const p = porteOf(x); document.documentElement.style.setProperty("--acc", colOf(x));
+  P.rec = [code, ...P.rec.filter(c=>c!==code)].slice(0,20); save();
+  const sib = DOCS.filter(y=>y.d===x.d), k = sib.indexOf(x), prev = sib[k-1], next = sib[k+1];
+  const fav = P.fav.includes(code);
+  const m = $("#main"); m.style.setProperty("--pc", colOf(x));
+  m.innerHTML = `<div class="crumb"><a href="#">Accueil</a>›<a href="#p/${p}">${p} · ${PORTES[p].n}</a>›<span>${esc(x.d)}</span></div>
+    <div class="dochead"><h1>${esc(x.t)}</h1><div class="acts">
+      <button class="ib star" id="fav" type="button" aria-pressed="${fav}">${fav?"★ Favori":"☆ Favori"}</button>
+      <button class="ib" id="fsm" type="button" aria-label="Texte plus petit">A−</button><button class="ib" id="fsp" type="button" aria-label="Texte plus grand">A+</button></div></div>
+    <div class="crumb" style="margin-top:4px">${esc(x.ch||"")} · ${x.c}</div>${jumps(x)}
+    <nav class="toc" id="toc" hidden></nav>
+    <article class="doc" id="doc"></article>
+    <div class="pn">${prev?`<a href="#d/${prev.c}"><small>‹ Précédent</small>${esc(prev.t)}</a>`:"<span></span>"}${next?`<a class="nx" href="#d/${next.c}"><small>Suivant ›</small>${esc(next.t)}</a>`:"<span></span>"}</div>
+    <div class="notes"><label for="nt" style="font-weight:600">Mes notes sur ce document</label><textarea id="nt" placeholder="Idées, joueurs concernés, à tester…"></textarea><div class="msg" id="ntm"></div></div>`;
+  // structure : L'essentiel encadré, Le détail en sections dépliables
+  const doc = $("#doc"); const tmp = document.createElement("div"); tmp.innerHTML = x.h;
+  tmp.querySelectorAll("table").forEach(t=>{ const w=document.createElement("div"); w.className="tw"; t.replaceWith(w); w.appendChild(t); });
+  let cur = null, mode = null, sections = [];
+  for(const node of [...tmp.childNodes]){
+    if(node.nodeName==="H2"){
+      const t = fold(node.textContent);
+      if(t.includes("essentiel")){ cur = document.createElement("section"); cur.className="ess"; cur.appendChild(node); doc.appendChild(cur); mode="ess"; continue; }
+      mode = "det"; doc.appendChild(node); cur = doc; continue;
+    }
+    if(node.nodeName==="H3" && mode!=="ess"){
+      const d = document.createElement("details"); const s = document.createElement("summary"); s.textContent = node.textContent; d.appendChild(s);
+      d.id = "s"+sections.length; sections.push([d.id, node.textContent]); doc.appendChild(d); cur = d; continue;
+    }
+    (cur || doc).appendChild(node);
+  }
+  if(sections.length>2){ const toc=$("#toc"); toc.hidden=false; toc.innerHTML = `<b>Le détail</b><ol>${sections.map(([id,t])=>`<li><a href="#" data-s="${id}">${esc(t.replace(/^\d+\.\s*/,""))}</a></li>`).join("")}</ol>`;
+    toc.onclick = e=>{ const a=e.target.closest("a[data-s]"); if(!a) return; e.preventDefault(); const d=document.getElementById(a.dataset.s); d.open=true; d.scrollIntoView({behavior:"smooth",block:"start"}); }; }
+  if(sections.length===1){ doc.querySelector("details").open = true; }
+  try{ if(/^[FG]\d\d_(PP|GE|DE)$/.test(code)) enhanceGrid(x); else if(p==="3") enhanceTest(x); }catch(e){ console.warn("enrichissement", e); }
+  // favoris, taille, notes
+  $("#fav").onclick = ()=>{ const on = !P.fav.includes(code); P.fav = on ? [code,...P.fav] : P.fav.filter(c=>c!==code); save(); $("#fav").setAttribute("aria-pressed",on); $("#fav").textContent = on?"★ Favori":"☆ Favori"; };
+  $("#fsm").onclick=()=>setFs(-1); $("#fsp").onclick=()=>setFs(1);
+  const nt=$("#nt"); nt.value = P.notes[code]||""; let tm;
+  nt.oninput = ()=>{ clearTimeout(tm); tm=setTimeout(()=>{ if(nt.value.trim()) P.notes[code]=nt.value; else delete P.notes[code]; save(); $("#ntm").textContent="Note enregistrée sur cet appareil."; },500); };
+  // aller à un âge ou surligner une recherche
+  if(hint && hint.startsWith("l")) goLine(+hint.slice(1));
+  else if(hint && hint.startsWith("b")) goBareme(hint.slice(1));
+  else if(hint && hint.startsWith("q")) highlight(hint.slice(1));
+}
+function jumps(x){
+  const m = /^([FG])(\d\d)_(PP|GE|DE)$/.exec(x.c); if(!m) return "";
+  const [_, sx, a2, dom] = m, a = +a2, o = sx==="F"?"G":"F";
+  const L = LIGNES[dom]||[];
+  return `<div class="jump">${["PP","GE","DE"].map(d=>`<a href="#d/${sx}${a2}_${d}" class="${d===dom?"on":""}">${DOMN[d]}</a>`).join("")}</div>
+  <div class="jump">${a>4?`<a href="#d/${sx}${pad2(a-1)}_${dom}">‹ ${a-1} ans</a>`:""}${a<18?`<a href="#d/${sx}${pad2(a+1)}_${dom}">${a+1} ans ›</a>`:""}<a href="#d/${o}${a2}_${dom}">Même grille · ${o==="F"?"filles":"garçons"}</a></div>
+`;
+}
+document.addEventListener("click", e=>{ const a=e.target.closest(".lines a[data-l]"); if(!a) return; e.preventDefault(); goLine(+a.dataset.l); });
+function goLine(n){
+  const d = [...document.querySelectorAll("#doc details")].find(x=>x.querySelector("summary").textContent.startsWith("Ligne "+n+" ·"));
+  if(!d) return; d.open = true; setTimeout(()=>{ d.scrollIntoView({behavior:"smooth",block:"start"}); d.querySelector("summary").classList.add("flash"); },60);
+}
+function goBareme(k){
+  const tr = document.getElementById("b"+k); if(!tr) return; const d = tr.closest("details"); if(d) d.open = true;
+  setTimeout(()=>{ tr.scrollIntoView({behavior:"smooth",block:"center"}); tr.classList.add("flash"); },60);
+}
+function ageIn(text, age){
+  const t = fold(text); if(!/\ban|ans\b/.test(t)) return false;
+  const nums = (t.match(/\d+/g)||[]).map(Number).filter(n=>n<=25); if(!nums.length) return false;
+  if(/\d+\s*(-|a|à|et)\s*\d+/.test(t) && nums.length>=2){ const lo=Math.min(...nums), hi=Math.max(...nums); return age>=lo && age<=hi; }
+  return nums.includes(age);
+}
+function goAge(age){
+  const doc = $("#doc");
+  let target = [...doc.querySelectorAll("details")].find(d=>ageIn(d.querySelector("summary").textContent, age));
+  if(target){ target.open=true; setTimeout(()=>{ target.scrollIntoView({behavior:"smooth",block:"start"}); target.querySelector("summary").classList.add("flash"); },60); return; }
+  const h = [...doc.querySelectorAll("h4,h5")].find(e=>ageIn(e.textContent, age));
+  if(h){ const d=h.closest("details"); if(d) d.open=true; setTimeout(()=>{ h.scrollIntoView({behavior:"smooth",block:"center"}); h.classList.add("flash"); },60); return; }
+  const td = [...doc.querySelectorAll("td:first-child")].find(e=>ageIn(e.textContent, age));
+  if(td){ const tr=td.parentNode; setTimeout(()=>{ tr.scrollIntoView({behavior:"smooth",block:"center"}); tr.classList.add("flash"); },60); }
+}
+
+/* ---------- recherche ---------- */
+let sT;
+$("#q").addEventListener("input", e=>{ clearTimeout(sT); const v=e.target.value.trim(); sT=setTimeout(()=>{ if(v.length>=2) history.replaceState(null,"","#s/"+encodeURIComponent(v)), showSearch(v); else if(!v && location.hash.startsWith("#s/")) location.hash=""; },250); });
+$("#q").addEventListener("keydown", e=>{ if(e.key==="Enter"){ e.target.blur(); } });
+function terms(q){ return fold(q).split(/\s+/).filter(w=>w.length>=2); }
+function showSearch(q){
+  document.documentElement.style.setProperty("--acc", "var(--ink)");
+  buildIndex();
+  const ts = terms(q), m = $("#main");
+  if(!ts.length){ showHome(); return; }
+  const res = [];
+  NORM.forEach((n,i)=>{
+    let score=0, first=-1;
+    for(const t of ts){ let c=0, pos=n.f.indexOf(t); if(pos<0){ score=0; return; } if(first<0||pos<first) first=pos; while(pos>=0 && c<60){ c++; pos=n.f.indexOf(t,pos+t.length); } score+=c; }
+    if(fold(DOCS[i].t).includes(ts[0])) score+=40;
+    res.push({i, score, first});
+  });
+  res.sort((a,b)=>b.score-a.score);
+  const top = res.slice(0,60);
+  let html = `<h1>Recherche</h1><p class="lead">${res.length ? `${res.length} document${res.length>1?"s":""} pour « ${esc(q)} »${res.length>60?" · les 60 plus pertinents":""}` : `Aucun document ne contient « ${esc(q)} ». Essaie un mot plus court ou un synonyme.`}</p><div class="sec">`;
+  html += top.map(r=>{ const x=DOCS[r.i], n=NORM[r.i]; const a=Math.max(0,r.first-90), b=Math.min(n.raw.length,r.first+190);
+    let snip = (a?"…":"")+n.raw.slice(a,b)+(b<n.raw.length?"…":"");
+    snip = markTerms(esc(snip), ts);
+    return `<a class="res" href="#d/${x.c}/q${encodeURIComponent(q)}" style="--pc:${colOf(x)}"><div class="t">${esc(x.t)}</div><div class="w">${x.c} · ${esc(x.ch)}</div><div class="s">${snip}</div></a>`; }).join("");
+  const pm = tc().per.filter(t=>{ const f = fold([t.nom,t.protocole,t.materiel,t.id].join(" ")); return ts.every(w=>f.includes(w)); });
+  if(pm.length) html = html.replace('<div class="sec">', `<div class="sec">${persoListHTML(pm)}<div style="height:8px"></div>`);
+  m.innerHTML = html + "</div>";
+}
+function markTerms(htmlText, ts){
+  const f = fold(htmlText); let out="", i=0;
+  const hits=[]; ts.forEach(t=>{ let p=f.indexOf(t); while(p>=0){ hits.push([p,p+t.length]); p=f.indexOf(t,p+t.length); } });
+  hits.sort((a,b)=>a[0]-b[0]); let last=0;
+  for(const [s,e] of hits){ if(s<last) continue; const pre=htmlText.slice(last,s); if(/&[a-z]*$/.test(pre)) continue; out+=pre+"<mark>"+htmlText.slice(s,e)+"</mark>"; last=e; }
+  return out+htmlText.slice(last);
+}
+function highlight(q){
+  const ts = terms(q); if(!ts.length) return; const doc=$("#doc");
+  const walker = document.createTreeWalker(doc, NodeFilter.SHOW_TEXT); const nodes=[]; while(walker.nextNode()) nodes.push(walker.currentNode);
+  let firstMark=null;
+  for(const n of nodes){ const f=fold(n.nodeValue); const hits=[]; ts.forEach(t=>{ let p=f.indexOf(t); while(p>=0){ hits.push([p,p+t.length]); p=f.indexOf(t,p+t.length); } });
+    if(!hits.length) continue; hits.sort((a,b)=>a[0]-b[0]);
+    const frag=document.createDocumentFragment(); let last=0;
+    for(const [s,e] of hits){ if(s<last) continue; frag.append(n.nodeValue.slice(last,s)); const mk=document.createElement("mark"); mk.textContent=n.nodeValue.slice(s,e); frag.append(mk); if(!firstMark) firstMark=mk; last=e; }
+    frag.append(n.nodeValue.slice(last)); n.replaceWith(frag); }
+  doc.querySelectorAll("mark").forEach(mk=>{ const d=mk.closest("details"); if(d) d.open=true; });
+  if(firstMark) setTimeout(()=>firstMark.scrollIntoView({behavior:"smooth",block:"center"}),80);
+}
+
+/* JOUEURS-DEBUT (copie de joueurs.js : modifier joueurs.js puis recopier) */
+/* ===== JOUEURS · PROFIL RADAR · TESTS PERSO · BILANS DE GROUPE (module Grilles et tests de GRÜN) =====
+   Source de la partie « joueurs » de app.html : ce fichier est recopié tel quel dans app.html entre les repères
+   JOUEURS-DEBUT / JOUEURS-FIN (la page est autonome). Toutes les données joueurs passent par GRUN.joueurs (clé grilles_joueurs_v1),
+   les tests perso et les modifications de tests d'origine par GRUN.tests. */
+const GR = window.GRUN;
+let X = null;
+const DOM3 = ["PP","GE","DE"];
+const DCOURT = {PP:"Prépa physique", GE:"Geste", DE:"Déplacement"};
+const NVN = {1:"Non acquis",2:"En cours d'acquisition",3:"Acquis",4:"Maîtrisé"};
+const uid = () => GR.uid();
+const today = () => GR.today();
+const frD = s => GR.frD(s);
+const gcode = (sx,age,d) => sx+pad2(age==="A"?18:age)+"_"+d;
+const fmtN = v => v==null ? "–" : String(v).replace(".",",");
+const f1 = v => v==null||isNaN(v) ? "–" : (Math.round(v*10)/10).toFixed(1).replace(".",",");
+const ageCiv = (nai, ref) => { const a = GR.ageCiv(nai, ref); return a==null ? null : Math.min(18, a); };   /* GRÜN = 4-18 ans : au-delà de 18 ans, compte pour 18 ans */
+const clampA = a => Math.max(4, Math.min(18, a|0));
+const RO = () => GR.isJoueur();
+const cssv = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const lcode = (d,i) => d+(i+1);
+const AGES = Array.from({length:15},(_,i)=>i+4), AGESA = AGES;
+/* GRÜN = 4-18 ans. Compatibilité : un ancien bilan adulte:true ou une ancienne clé de barème "A" valent 18 ans (rien n'affiche « adulte ») */
+const ak = b => b ? clampA(b.age==="A" ? 18 : +b.age||10) : 10;
+const agL = a => (a==="A" ? 18 : a)+" ans";
+const gL = b => "grille "+ak(b)+" ans";
+function conseil(j){ return GR.grilleConseillee(j); }
+const optsAge = sel => AGES.map(a=>`<option value="${a}" ${String(a)===String(sel)?"selected":""}>${a} ans</option>`).join("");
+function newB(date, age){ return {id:uid(), date, age:clampA(age==="A"?18:+age||10), note:"", v:{PP:[],GE:[],DE:[]}, sel:[], res:{}}; }
+function normB(b){ b.v = b.v || b.valeurs || {}; delete b.valeurs; DOM3.forEach(d=>{ if(!Array.isArray(b.v[d])) b.v[d]=[]; }); b.sel = b.sel||[]; b.res = b.res||{}; b.age = clampA(b.age==="A"?18:+b.age||10); delete b.adulte; b.date = b.date||today(); return b; }
+function getP(id){ const j = GR.joueurs.get(id); if(j){ j.bilans = (j.bilans||[]).map(normB); } return j; }
+let SELF = 0;
+function jsave(j){ SELF++; try{ return GR.joueurs.save(j); } finally { SELF--; } }
+const sortB = j => [...(j.bilans||[])].sort((a,b)=>a.date<b.date?-1:a.date>b.date?1:0);
+const lastB = j => sortB(j).slice(-1)[0];
+function curB(j){ return (j.bilans||[]).find(b=>b.id===j.cur) || lastB(j); }
+function parseN(s){ if(s==null) return null; s=String(s).trim().replace(",",".").replace(/\s/g,""); if(s==="") return null; if(/^\d+:\d+(\.\d+)?$/.test(s)){ const [m,x]=s.split(":"); return +m*60 + +x; } const v=parseFloat(s); return isNaN(v)?null:v; }
+const lvCls = v => v==null ? "" : "n"+Math.min(4,Math.max(1,Math.floor(v)));
+const lvB = v => v==null ? "–" : `<span class="lvb ${lvCls(v)}">${fmtN(v)}</span>`;
+
+/* ---------- TESTS : origine (data) + perso + modifications (GRUN.tests) ---------- */
+let TC = null;
+function tc(){ if(!TC){ const per = GR.tests.perso(), ov = GR.tests.over(); TC = {per, ov, by:Object.fromEntries(per.map(t=>[t.id,t]))}; } return TC; }
+GR.on(GR.K.tests, ()=>{ TC = null; });
+const isPerso = t => !!tc().by[t];
+const tov = t => tc().ov[t] || null;
+const ok3 = a => Array.isArray(a) && a.length===3 && a.every(x=>typeof x==="number" && isFinite(x));
+function tdom(t){ const p=tc().by[t]; return p ? p.dom : t.slice(2,4); }
+function tnom(t){ const p=tc().by[t]; if(p) return p.nom||t; const o=tov(t); return (o&&o.nom) || (BY[t]?BY[t].t:t); }
+const texists = t => !!(tc().by[t] || BY[t]);
+function pmes(p){ return (p.mesures&&p.mesures.length) ? p.mesures : [{k:"m1", nom:"Résultat", unite:""}]; }
+function tunite(t){ const p=tc().by[t]; if(p) return pmes(p).map(m=>m.unite).filter(Boolean).join(", "); return X.u[t]||""; }
+function seuilsOf(t, sx, age){ age = String(age); if(age==="A" || +age>18) age = "18"; if(age==="18") return seuils0(t,sx,"18") || seuils0(t,sx,"A"); return seuils0(t,sx,age); }
+function seuils0(t, sx, age){
+  const p = tc().by[t];
+  if(p){ const s = p.seuils && p.seuils[sx] && p.seuils[sx][age]; if(!s) return null; const ms = pmes(p), o = {};
+    if(Array.isArray(s)){ if(ok3(s)) o[ms[0].k] = s; } else for(const m of ms) if(ok3(s[m.k])) o[m.k] = s[m.k];
+    return Object.keys(o).length ? o : null; }
+  const ov = tov(t);
+  if(ov && ov.seuils){ const s = ov.seuils[sx] && ov.seuils[sx][age]; if(!s) return null; const o = {}; for(const k in s) if(ok3(s[k])) o[k] = s[k]; return Object.keys(o).length ? o : null; }
+  return (X.s[t] && X.s[t][sx] && X.s[t][sx][age]) || null;
+}
+function mesuresOf(t, sx, age){ const s = seuilsOf(t, sx, age); return s ? Object.keys(s) : null; }
+function mlabel(t, k){ const p=tc().by[t]; if(!p) return k; const m=pmes(p).find(x=>x.k===k); return m ? m.nom+(m.unite?" ("+m.unite+")":"") : k; }
+function ascOf(t, k, th){ const p=tc().by[t]; if(p){ const m=pmes(p).find(x=>x.k===k); return ((m&&m.sens)||p.sens||"grand") !== "petit"; }
+  return th[0]<th[2] || (th[0]===th[2] && /grand/.test(X.sens[t]||"")); }
+const lvOne = (v, th, asc) => asc ? (v>=th[2]?4:v>=th[1]?3:v>=th[0]?2:1) : (v<=th[2]?4:v<=th[1]?3:v<=th[0]?2:1);
+function niveau(t, sx, age, vals){ const S = seuilsOf(t, sx, age); if(!S || !vals) return null; let lv = 4;
+  for(const k in S){ const v = parseN(vals[k]); if(v==null) return null; lv = Math.min(lv, lvOne(v, S[k], ascOf(t,k,S[k]))); }
+  return lv; }
+const nf = x => String(Math.round(x*1000)/1000).replace(".",",");
+function txtNiv(th, asc, u, lv){ const a=nf(th[0])+u, b=nf(th[1])+u, c=nf(th[2])+u;
+  return asc ? ["moins de "+a, "de "+a+" à moins de "+b, "de "+b+" à moins de "+c, c+" ou plus"][lv-1]
+             : ["plus de "+a, a+" ou moins (plus de "+b+")", b+" ou moins (plus de "+c+")", c+" ou moins"][lv-1]; }
+function btxtGen(t, sx, age, lv){ const S = seuilsOf(t, sx, age); if(!S) return ""; const ks = Object.keys(S), p = tc().by[t];
+  return ks.map(k=>{ let u, pre = "";
+    if(p){ const m = pmes(p).find(x=>x.k===k)||{}; u = m.unite ? " "+m.unite : ""; if(ks.length>1) pre = (m.nom||k)+" : "; } else { u = " "+k; if(ks.length>1) pre = ""; }
+    return pre + txtNiv(S[k], ascOf(t,k,S[k]), u, lv); }).join(" ; "); }
+function btxt(t, sx, age, lv){ if(!isPerso(t) && !(tov(t)&&tov(t).seuils)) { const a = age==="A"?"18":age; return (X.bt[t]&&X.bt[t][sx]&&X.bt[t][sx][a]&&X.bt[t][sx][a][lv]) || ""; } return btxtGen(t, sx, age, lv); }
+function persoFor(d, n, sx, age){ return tc().per.filter(t=>t.dom===d && (t.lignes||[]).map(Number).includes(n) && seuilsOf(t.id, sx, age)); }
+function lineT(sx, age, d, i){ const L = (X.g[gcode(sx,age,d)]||[])[i]; if(!L) return null; const per = persoFor(d, i+1, sx, age);
+  return {L, t:[...L.t, ...per.map(x=>x.id)], p:[L.p, ...per.filter(x=>x.prio).map(x=>x.id)]}; }
+function lineTestsLevel(j, b, d, i){ const T = lineT(j.sexe, ak(b), d, i); if(!T) return null;
+  for(const p of T.p){ const lv = niveau(p, j.sexe, ak(b), b.res[p]); if(lv) return lv; }
+  const ls = T.t.map(t=>niveau(t, j.sexe, ak(b), b.res[t])).filter(Boolean); if(!ls.length) return null;
+  return Math.round(ls.reduce((a,x)=>a+x,0)/ls.length*2)/2; }
+/* une ligne vide (ou remplie automatiquement) reçoit le niveau de ses tests */
+function autoFrom(j, b, t){ const d = tdom(t); const g = X.g[gcode(j.sexe,ak(b),d)]||[]; const ch = [];
+  g.forEach((L,i)=>{ const T = lineT(j.sexe,ak(b),d,i); if(!T || !T.t.includes(t)) return; const tl = lineTestsLevel(j,b,d,i);
+    if(tl && (b.v[d][i]==null || (b.auto&&b.auto[d+i]))){ b.v[d][i] = tl; b.auto = b.auto||{}; b.auto[d+i] = 1; ch.push(i); }
+    else if(!tl && b.auto && b.auto[d+i]){ b.v[d][i] = null; delete b.auto[d+i]; ch.push(i); } });
+  return ch; }
+function prioTests(j, b){ const out = []; DOM3.forEach(d=>(X.g[gcode(j.sexe,ak(b),d)]||[]).forEach((L,i)=>{ const T = lineT(j.sexe,ak(b),d,i); if(!T) return; T.p.forEach(p=>{ if(!out.includes(p)) out.push(p); }); })); return out; }
+function moy(j, b, d){ const g = X.g[gcode(j.sexe,ak(b),d)]||[]; const v = (b.v[d]||[]).filter((x,i)=>x!=null && g[i]); if(!v.length) return null; return Math.round(v.reduce((a,x)=>a+x,0)/v.length*10)/10; }
+function nbLines(j, b, d){ const g = X.g[gcode(j.sexe,ak(b),d)]||[]; return [g.filter((L,i)=>L && b.v[d][i]!=null).length, g.filter(Boolean).length]; }
+function tlink(t, sx, age){ if(age==="A") age = 18; return isPerso(t) ? `#/test/${t}` : `#d/${t}/b${sx}${age}`; }
+const badgeT = t => isPerso(t) ? ' <span class="bdg">mon test</span>' : (tov(t) ? ' <span class="bdg mod">modifié</span>' : "");
+function lineLinks(d, i, age){ return `<span class="xl"><a href="${GR.href("banque","#/l/"+lcode(d,i)+"?a="+age)}">Exercices pour passer au niveau supérieur ›</a>${RO()?"":`<a href="${GR.href("veille","#/l/"+lcode(d,i))}">Comprendre ›</a>`}</span>`; }
+async function tvideo(t){ const p = tc().by[t]; if(p) return p.vid||null; const o = tov(t); if(o&&o.vid) return o.vid; try{ const v = await GR.videos(); return v[t]||null; }catch(e){ return null; } }
+
+/* ---------- rappels de bilans ---------- */
+const shiftD = (s, n) => { const x = new Date(s+"T12:00:00"); x.setDate(x.getDate()+n); return x.toISOString().slice(0,10); };
+function semBilan(d){ d = d||today(); for(const w of (X.cal||[])) for(let k=-2;k<=5;k++){ const du = shiftD(w.du,k*364), au = shiftD(w.au,k*364); if(d>=du && d<=au) return {du, au, t:w.t, n:w.n}; } return null; }
+function bilanAfaire(j){ const bs = j.bilans||[]; if(!bs.length) return "premier bilan à faire"; const l = lastB(j); const w = semBilan();
+  if(w && !(l.date>=w.du && l.date<=w.au)) return "semaine de bilan · "+w.t;
+  const days = (new Date(today()) - new Date(l.date))/864e5; if(days >= 122) return "bilan à faire · dernier il y a "+Math.floor(days/30.4)+" mois"; return null; }
+
+/* ---------- âge biologique ---------- */
+function raisonGrille(j){ const ac = ageCiv(j.naissance); const m = GR.maturite(j);
+  if(m) return `âge biologique ${f1(m.bio)} ans (pic de croissance estimé à ${f1(m.aphv)} ans, ${m.avance}, mesures du ${frD(m.date)}) → grille ${m.grille} ans`;
+  if(ac!=null) return `âge civil ${ac} ans → grille ${clampA(ac)} ans (sans mesures ; ajoute taille, taille assise et poids dans « Croissance » pour l'âge biologique)`;
+  return "pas de date de naissance : choisis la grille"; }
+
+/* ---------- modale ---------- */
+function modal(html, bind){ let m = document.getElementById("modal"); if(!m){ m = document.createElement("div"); m.id = "modal"; m.className = "modal"; document.body.appendChild(m);
+    m.addEventListener("click", e=>{ if(e.target===m || e.target.closest("[data-close]")) m.hidden = true; }); }
+  m.innerHTML = `<div class="box">${html}</div>`; m.hidden = false; if(bind) bind(m.firstChild); }
+async function partagerFichier(blob, nom){ const f = new File([blob], nom, {type:blob.type});
+  if(navigator.canShare && navigator.canShare({files:[f]})){ try{ await navigator.share({files:[f], title:nom}); return; }catch(e){ if(e && e.name==="AbortError") return; } }
+  const u = URL.createObjectURL(blob);
+  modal(`<p class="msg">Appuie longuement sur l'image pour l'enregistrer dans Photos ou la partager.</p><img src="${u}" alt="Profil radar" class="pimg"><div class="tools"><a class="ib" href="${u}" download="${esc(nom)}">Télécharger</a><button class="ib" type="button" data-close>Fermer</button></div>`); }
+
+/* ---------- RADAR (SVG, couleurs résolues : sert aussi à l'image PNG) ---------- */
+function geomR(n, kind){ return kind==="wide" ? {W:880,H:660,cx:440,cy:330,R:215,fs:17} : {W:600,H:600,cx:300,cy:300,R:224,fs:kind==="mini"?26:28}; }
+function wrapLabel(t, max){ const w = t.split(" "), out = []; let cur = ""; for(const x of w){ if((cur+" "+x).trim().length>max && cur){ out.push(cur); cur = x; } else cur = (cur+" "+x).trim(); } if(cur) out.push(cur); return out.slice(0,4); }
+function radarInner(d, o){
+  const names = LIGNES[d], n = names.length, Gm = geomR(n, o.kind), A = i => -Math.PI/2 + i*2*Math.PI/n, g = o.g, v = o.v;
+  const col = cssv("--"+d.toLowerCase()), ink = cssv("--ink"), mute = cssv("--mute"), line = cssv("--line"), panel = cssv("--panel"), fam = "Barlow, system-ui, sans-serif";
+  const P = (i,x) => [Gm.cx+Gm.R*x/4*Math.cos(A(i)), Gm.cy+Gm.R*x/4*Math.sin(A(i))], f = x => x.toFixed(1);
+  let s = `<rect x="0" y="0" width="${Gm.W}" height="${Gm.H}" fill="${o.bg||"transparent"}"/>`;
+  for(let k=4;k>=1;k--) s += `<polygon points="${names.map((_,i)=>P(i,k).map(f).join(",")).join(" ")}" fill="${cssv("--n"+k+"s")}" stroke="${k===3?cssv("--n3"):line}" stroke-width="${k===3?3:1}"/>`;
+  for(let k=1;k<=4;k++) s += `<text x="${Gm.cx+5}" y="${f(Gm.cy-Gm.R*k/4+15)}" font-size="${o.kind==="wide"?14:18}" font-weight="700" fill="${cssv("--n"+k)}" font-family="${fam}">${k}</text>`;
+  for(let i=0;i<n;i++){ const gr = !g[i], [x2,y2] = P(i,4);
+    s += `<line x1="${Gm.cx}" y1="${Gm.cy}" x2="${f(x2)}" y2="${f(y2)}" stroke="${gr?mute:line}" stroke-width="1.2" ${gr?'stroke-dasharray="4 5"':""}/>`;
+    const a = A(i), lx = Gm.cx+(Gm.R+(o.kind==="wide"?22:30))*Math.cos(a), ly = Gm.cy+(Gm.R+(o.kind==="wide"?22:30))*Math.sin(a), ca = Math.cos(a);
+    const anchor = Math.abs(ca)<0.25 ? "middle" : (ca>0?"start":"end"), on = i===o.sel && o.kind!=="mini";
+    const L = o.kind==="wide" ? [(i+1)+" · "+wrapLabel(names[i],16)[0], ...wrapLabel(names[i],16).slice(1)] : [String(i+1)];
+    s += `<text x="${f(lx)}" y="${f(ly-(L.length-1)*9.5+(Math.sin(a)>0.3?8:0)+(o.kind==="wide"?0:9))}" text-anchor="${anchor}" font-size="${Gm.fs}" font-weight="${on?700:500}" fill="${gr?mute:(on?col:ink)}" opacity="${gr?.55:1}" font-family="${fam}">${L.map((t,k)=>`<tspan x="${f(lx)}" dy="${k?19:0}">${esc(t)}</tspan>`).join("")}</text>`; }
+  const poly = (vv, gg, st) => { const pts = []; for(let i=0;i<n;i++){ if(!gg[i]) continue; const x = vv[i]; if(x==null) continue; pts.push(P(i,x)); }
+    if(pts.length>=2) s += `<${pts.length>2?"polygon":"polyline"} points="${pts.map(p=>p.map(f).join(",")).join(" ")}" ${st}/>`; };
+  if(o.comp) poly(o.comp.v, o.comp.g, `fill="none" stroke="${mute}" stroke-width="2.6" stroke-dasharray="8 6"`);
+  poly(v, g, `fill="${col}" fill-opacity="0.22" stroke="${col}" stroke-width="3.2" stroke-linejoin="round"`);
+  for(let i=0;i<n;i++){ if(!g[i] || v[i]==null) continue; const [x,y] = P(i, v[i]);
+    s += `<circle cx="${f(x)}" cy="${f(y)}" r="${o.kind==="mini"?8:(i===o.sel?11:8)}" fill="${cssv("--n"+Math.min(4,Math.max(1,Math.floor(v[i]))))}" stroke="${panel}" stroke-width="2.5"/>`; }
+  return s;
+}
+function radarSVG(d, o){ const Gm = geomR(LIGNES[d].length, o.kind); return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${Gm.W} ${Gm.H}" ${o.id?`id="${o.id}"`:""} class="${o.kind==="mini"?"rmini":"rbig"}" role="img" aria-label="Radar ${esc(DOMN[d])}">${radarInner(d,o)}</svg>`; }
+function radarData(j, b, d){ const g = X.g[gcode(j.sexe,ak(b),d)]||[]; return {g, v:g.map((_,i)=>b.v[d][i]??null)}; }
+function compB(j, b){ if(UI.comp==="none") return null; const bs = sortB(j); if(UI.comp==="prev"){ const i = bs.findIndex(x=>x.id===b.id); return i>0 ? bs[i-1] : null; } return bs.find(x=>x.id===UI.comp && x.id!==b.id) || null; }
+function radarOpts(j, b, d, kind, extra){ const r = radarData(j,b,d), cb = compB(j,b); return Object.assign({g:r.g, v:r.v, kind, comp: cb ? radarData(j,cb,d) : null}, extra||{}); }
+
+/* ---------- état d'affichage du dossier ---------- */
+const UI = Object.assign({tab:"profil", dom:"PP", sel:0, comp:"prev", gtab:"F"}, P.ui||{});
+function uisave(){ P.ui = {tab:UI.tab, dom:UI.dom, comp:UI.comp==="none"?"none":"prev"}; save(); }
+const OPEN = {}; function S_open(d){ return OPEN[d]!==false; }
+let CUR = {j:null, b:null};
+
+/* ---------- liste des joueurs ---------- */
+const CLASS = ["NC","40","30/5","30/4","30/3","30/2","30/1","30","15/5","15/4","15/3","15/2","15/1","15","5/6","4/6","3/6","2/6","1/6","0","-2/6","-4/6","-15","-30","Promotion","Top 100","Top 60"];
+function showJoueurs(){
+  if(RO()) return showJoueur(GR.mode().jid);
+  document.documentElement.style.setProperty("--acc","var(--p5)");
+  const grs = GR.groupes.all(), gf = P.gf && grs.find(g=>g.id===P.gf) ? P.gf : "";
+  let L = GR.joueurs.all(); if(gf){ const ids = GR.groupes.get(gf).jids; L = L.filter(j=>ids.includes(j.id)); }
+  L.forEach(j=>{ j.bilans = (j.bilans||[]).map(normB); });
+  const af = L.filter(j=>bilanAfaire(j)).length, w = semBilan();
+  let h = `<div class="crumb" style="--pc:var(--p5)"><a href="#">Accueil</a></div><h1 style="color:var(--p5)">5 · Joueurs</h1><p class="lead">Un dossier par joueur : profil radar, grilles remplies, tests et résultats, progression, croissance. Le même joueur existe dans tout GRÜN.</p>`;
+  if(w) h += `<div class="att2"><b>Semaine de bilan</b> · ${esc(w.t)} (S${w.n}, du ${frD(w.du)} au ${frD(w.au)}).</div>`;
+  h += `<div class="sec"><h2>Nouveau joueur</h2><div class="quick">
+    <div class="f" style="flex:1;min-width:180px"><label for="jn">Prénom et nom</label><input id="jn" class="inp" autocomplete="off"></div>
+    <div class="f"><label for="jsx">Sexe</label><select id="jsx"><option value="G">Garçon</option><option value="F">Fille</option></select></div>
+    <div class="f"><label for="jnai">Naissance</label><input id="jnai" class="inp" type="date"></div>
+    <div class="f"><label for="jmain">Main</label><select id="jmain"><option value="D">Droitier</option><option value="G">Gaucher</option></select></div>
+    <div class="f"><label for="jrev">Revers</label><select id="jrev"><option value="2">À 2 mains</option><option value="1">À 1 main</option></select></div>
+    <div class="f"><label for="jcl">Classement</label><input id="jcl" class="inp" list="dlcl" value="NC" style="width:96px"></div>
+    ${grs.length?`<div class="f"><label for="jgg">Groupe</label><select id="jgg"><option value="">—</option>${grs.map(g=>`<option value="${g.id}" ${g.id===gf?"selected":""}>${esc(g.nom)}</option>`).join("")}</select></div>`:""}
+    <button class="go" id="jadd" type="button">Créer</button></div><datalist id="dlcl">${CLASS.map(c=>`<option value="${c}">`).join("")}</datalist><p class="msg" id="jmsg"></p></div>`;
+  h += `<div class="sec"><div class="dochead"><h2 style="margin:0">Mes joueurs</h2><div class="acts">${grs.length?`<select id="gfil" class="inp" aria-label="Filtrer par groupe"><option value="">Tous les joueurs</option>${grs.map(g=>`<option value="${g.id}" ${g.id===gf?"selected":""}>${esc(g.nom)}</option>`).join("")}</select>`:""}<a class="ib" href="#/gbilan">Bilan de groupe</a></div></div>
+    ${af?`<p class="msg">${af} joueur${af>1?"s":""} avec un bilan à faire.</p>`:""}
+    ${L.length ? `<div class="list" style="margin-top:8px">${L.map(j=>{ const b = curB(j); const ac = ageCiv(j.naissance); const r = bilanAfaire(j); const gs = GR.groupes.de(j.id).map(g=>g.nom);
+    return `<a class="li" href="#/joueur/${j.id}"><span class="code">${j.sexe==="F"?"Fille":"Garçon"}</span><span class="tt">${esc(j.nom)}${r?` <span class="bdg warn">${esc(r)}</span>`:""}<small>${ac!=null?ac+" ans · ":""}${gs.length?esc(gs.join(", "))+" · ":j.groupe?esc(j.groupe)+" · ":""}${b?`bilan du ${frD(b.date)}, ${gL(b)} · moyennes ${DOM3.map(d=>fmtN(moy(j,b,d))).join(" / ")}`:"aucun bilan"}</small></span></a>`; }).join("")}</div>` : `<div class="empty" style="margin-top:8px">${gf?"Aucun joueur dans ce groupe.":"Aucun joueur pour l'instant : crée le premier ci-dessus."}</div>`}</div>`;
+  $("#main").innerHTML = h;
+  const gfil = $("#gfil"); if(gfil) gfil.onchange = ()=>{ P.gf = gfil.value; save(); showJoueurs(); };
+  $("#jadd").onclick = ()=>{ const nom = $("#jn").value.trim(); if(!nom){ $("#jmsg").textContent = "Indique le nom du joueur."; return; }
+    SELF++; let j; try{ j = GR.joueurs.create({nom, sexe:$("#jsx").value, naissance:$("#jnai").value, main:$("#jmain").value, revers:$("#jrev").value, classement:$("#jcl").value.trim()||"NC"}); } finally { SELF--; }
+    const gg = $("#jgg"); if(gg && gg.value){ const g = GR.groupes.get(gg.value); if(g && !g.jids.includes(j.id)){ g.jids.push(j.id); GR.groupes.save(g); } }
+    j = getP(j.id); const b = newB(today(), conseil(j) || 10); j.bilans.push(b); j.cur = b.id; jsave(j); location.hash = "/joueur/"+j.id; };
+}
+
+/* ---------- dossier d'un joueur ---------- */
+function showJoueur(id){
+  if(RO()) id = GR.mode().jid;
+  const j = getP(id);
+  if(!j){ if(RO()){ $("#main").innerHTML = `<div class="empty">Ton dossier n'est pas encore sur cet appareil. Demande à ton coach de te l'envoyer.</div>`; return; } return showJoueurs(); }
+  const b = (RO() && VIEWB && j.bilans.find(x=>x.id===VIEWB)) || curB(j); CUR = {j, b};
+  const pc = j.sexe==="F"?"var(--p1)":"var(--p2)";
+  document.documentElement.style.setProperty("--acc", pc);
+  const m = $("#main"); m.style.setProperty("--pc", pc);
+  const ac = ageCiv(j.naissance), gs = GR.groupes.de(j.id), allg = GR.groupes.all();
+  const infos = [j.sexe==="F"?"Fille":"Garçon", j.naissance?(j.sexe==="F"?"née le ":"né le ")+frD(j.naissance):"", ac!=null?ac+" ans":"", j.main==="G"?"gaucher":"droitier", j.revers==="1"?"revers à 1 main":"revers à 2 mains", j.classement?"classement "+esc(j.classement):""].filter(Boolean);
+  let h = `<div class="crumb">${RO()?`<a href="#/accueil">Grilles</a>›<span>Mon dossier</span>`:`<a href="#">Accueil</a>›<a href="#j">5 · Joueurs</a>›<span>${esc(j.nom)}</span>`}</div>
+  <div class="dochead"><h1>${RO()?"Mon profil · ":""}${esc(j.nom)}</h1>${RO()?"":`<div class="acts"><button class="ib" id="jedit" type="button">Modifier la fiche</button><a class="ib" href="${GR.href("joueurs","#/j/"+j.id)}">Dossier complet</a></div>`}</div>
+  <div class="crumb" style="margin-top:4px">${infos.join(" · ")}</div>
+  ${gs.length||j.groupe?`<div class="jump">${gs.map(g=>`<a href="${GR.href("joueurs","#/g/"+g.id)}">${esc(g.nom)}</a>`).join("")}${!gs.length&&j.groupe?`<span class="msg">${esc(j.groupe)}</span>`:""}</div>`:""}`;
+  if(!RO()) h += ficheForm(j, allg, gs);
+  if(!b){ h += `<div class="sec"><h2>Premier bilan</h2>${nouveauBilanForm(j, null)}</div>`; m.innerHTML = h; bindFiche(j); bindNouveauBilan(j, null); return; }
+  const bs = sortB(j).reverse(), ra = bilanAfaire(j);
+  h += `<div class="sec"><h2>Bilan</h2>${ra && !RO()?`<p class="msg"><span class="bdg warn">${esc(ra)}</span></p>`:""}<div class="quick">
+    <div class="f" style="flex:1;min-width:190px"><label for="bsel">Bilan affiché</label><select id="bsel">${bs.map(x=>`<option value="${x.id}" ${x.id===b.id?"selected":""}>${frD(x.date)} · ${gL(x)}${x.note?" · "+esc(x.note.slice(0,30)):""}</option>`).join("")}</select></div>
+    ${RO()?"":`<div class="f"><label for="bdate">Date</label><input id="bdate" class="inp" type="date" value="${b.date}"></div>
+    <div class="f"><label for="bage">Grille (âge biologique)</label><select id="bage">${optsAge(ak(b))}</select></div>`}
+    <div class="f"><label for="bcomp">Comparer avec</label><select id="bcomp"><option value="prev">Bilan précédent</option><option value="none">Rien</option>${bs.filter(x=>x.id!==b.id).map(x=>`<option value="${x.id}">Bilan du ${frD(x.date)}</option>`).join("")}</select></div>
+    ${RO()?"":`<button class="ib" id="bnew" type="button">+ Nouveau bilan</button>${j.bilans.length>1?`<button class="ib" id="bdel" type="button">Supprimer ce bilan</button>`:""}`}</div>
+    ${RO()?"":`<p class="msg">Grille conseillée : ${esc(raisonGrille(j))}.</p><div id="nbf" hidden>${nouveauBilanForm(j, b)}</div>`}</div>`;
+  const TABS = [["profil","Profil radar"],["grilles","Grilles et tests"],["prog","Progression"],["crois","Croissance"]];
+  if(!TABS.some(t=>t[0]===UI.tab)) UI.tab = "profil";
+  h += `<div class="jump tabs" role="tablist">${TABS.map(([k,t])=>`<a href="#" role="tab" data-tab="${k}" class="${UI.tab===k?"on":""}" aria-selected="${UI.tab===k}">${t}</a>`).join("")}<a href="#/fiche/${j.id}/${b.id}">Fiche bilan ›</a></div><div id="tabc"></div>`;
+  m.innerHTML = h;
+  const sc = $("#bcomp"); sc.value = UI.comp; if(sc.value!==UI.comp){ UI.comp = "prev"; sc.value = "prev"; }
+  bindFiche(j); bindBilanBar(j, b);
+  document.querySelectorAll("[data-tab]").forEach(a=>a.onclick = e=>{ e.preventDefault(); UI.tab = a.dataset.tab; uisave(); document.querySelectorAll("[data-tab]").forEach(x=>{ x.classList.toggle("on", x===a); x.setAttribute("aria-selected", x===a); }); renderTab(); });
+  renderTab();
+}
+function renderTab(){ const {j, b} = CUR; const c = $("#tabc"); if(!c) return;
+  if(UI.tab==="profil"){ c.innerHTML = profilHTML(j,b); bindProfil(j,b); }
+  else if(UI.tab==="grilles"){ c.innerHTML = grillesHTML(j,b); bindGrilles(j,b); }
+  else if(UI.tab==="prog"){ c.innerHTML = progressionHTML(j); }
+  else { c.innerHTML = croissanceHTML(j); bindCroissance(j); } }
+function rerender(){ const y = scrollY; showJoueur(CUR.j.id); scrollTo(0,y); }
+
+function ficheForm(j, allg, gs){ const notIn = allg.filter(g=>!gs.some(x=>x.id===g.id));
+  return `<div class="quick" id="jform" hidden style="margin-top:10px">
+    <div class="f" style="flex:1;min-width:180px"><label for="en">Prénom et nom</label><input id="en" class="inp" value="${esc(j.nom)}"></div>
+    <div class="f"><label for="esx">Sexe</label><select id="esx"><option value="G" ${j.sexe==="G"?"selected":""}>Garçon</option><option value="F" ${j.sexe==="F"?"selected":""}>Fille</option></select></div>
+    <div class="f"><label for="enai">Naissance</label><input id="enai" class="inp" type="date" value="${esc(j.naissance||"")}"></div>
+    <div class="f"><label for="emain">Main</label><select id="emain"><option value="D" ${j.main!=="G"?"selected":""}>Droitier</option><option value="G" ${j.main==="G"?"selected":""}>Gaucher</option></select></div>
+    <div class="f"><label for="erev">Revers</label><select id="erev"><option value="2" ${j.revers!=="1"?"selected":""}>À 2 mains</option><option value="1" ${j.revers==="1"?"selected":""}>À 1 main</option></select></div>
+    <div class="f"><label for="ecl">Classement</label><input id="ecl" class="inp" list="dlcl2" value="${esc(j.classement||"NC")}" style="width:96px"><datalist id="dlcl2">${CLASS.map(c=>`<option value="${c}">`).join("")}</datalist></div>
+    <div class="f"><label for="egr">Groupe (texte libre)</label><input id="egr" class="inp" value="${esc(j.groupe||"")}" style="width:150px"></div>
+    ${notIn.length?`<div class="f"><label for="eadd">Ajouter à un groupe</label><select id="eadd"><option value="">—</option>${notIn.map(g=>`<option value="${g.id}">${esc(g.nom)}</option>`).join("")}</select></div>`:""}
+    <label class="ck"><input type="checkbox" id="ecr" ${j.croissance?"checked":""}> En pleine croissance</label>
+    <div class="f" style="flex-basis:100%"><label for="eobj">Objectifs</label><textarea id="eobj" class="inp ta">${esc(j.objectifs||"")}</textarea></div>
+    <div class="f" style="flex-basis:100%"><label for="enot">Notes</label><textarea id="enot" class="inp ta">${esc(j.notes||"")}</textarea></div>
+    <button class="go" id="esave" type="button">Enregistrer</button><button class="ib" id="jarch" type="button">Je ne l'entraîne plus</button><a class="ib" href="${GR.href("joueurs","#/j/"+j.id+"/fin")}">Supprimer définitivement…</a></div>`; }
+function bindFiche(j){ if(RO()) return; const ed = $("#jedit"); if(!ed) return;
+  ed.onclick = ()=>{ $("#jform").hidden = !$("#jform").hidden; };
+  $("#esave").onclick = ()=>{ const n = $("#en").value.trim(); if(n) j.nom = n; j.sexe = $("#esx").value; j.naissance = $("#enai").value; j.main = $("#emain").value; j.revers = $("#erev").value; j.classement = $("#ecl").value.trim()||"NC"; j.groupe = $("#egr").value.trim(); j.croissance = $("#ecr").checked; j.objectifs = $("#eobj").value; j.notes = $("#enot").value; jsave(j);
+    const ad = $("#eadd"); if(ad && ad.value){ const g = GR.groupes.get(ad.value); if(g && !g.jids.includes(j.id)){ g.jids.push(j.id); GR.groupes.save(g); } } rerender(); };
+  /* archiver (dossier gardé, réactivable dans Individualisation) ; la suppression définitive se fait depuis le dossier de l'accueil (liste de ce qui sera effacé) */
+  const del = $("#jarch"); del.onclick = ()=>{ if(!del.dataset.ok){ del.dataset.ok = 1; del.textContent = "Toucher encore pour archiver"; setTimeout(()=>{ if(del.isConnected){ delete del.dataset.ok; del.textContent = "Je ne l'entraîne plus"; } },4000); return; } SELF++; try{ GR.joueurs.archiver ? GR.joueurs.archiver(j.id, true) : GR.joueurs.remove(j.id); } finally { SELF--; } location.hash = "j"; }; }
+function nouveauBilanForm(j, b){ const age = conseil(j) || (b?ak(b):10); const w = semBilan();
+  return `<div class="quick" style="margin-top:8px">
+    <div class="f"><label for="nbd">Date</label><input id="nbd" class="inp" type="date" value="${today()}"></div>
+    <div class="f"><label for="nba">Grille</label><select id="nba">${optsAge(age)}</select></div>
+    <div class="f" style="flex:1;min-width:160px"><label for="nbn">Intitulé</label><input id="nbn" class="inp" value="${esc(w?w.t:"")}" placeholder="Bilan de rentrée…"></div>
+    ${b?`<div class="f"><label for="nbc">Départ</label><select id="nbc"><option value="tests">Reprendre les tests choisis</option><option value="vide">Bilan vide</option><option value="tout">Reprendre tests et niveaux</option></select></div>`:""}
+    <button class="go" id="nbok" type="button">Créer le bilan</button></div>
+    <p class="msg">Grille proposée : ${esc(raisonGrille(j))}. Tu peux la changer.</p>`; }
+function bindNouveauBilan(j, b){ const ok = $("#nbok"); if(!ok) return;
+  ok.onclick = ()=>{ const nv = $("#nba").value, nb = newB($("#nbd").value||today(), +nv); nb.note = $("#nbn").value.trim(); const c = $("#nbc") ? $("#nbc").value : "vide";
+    if(b && c!=="vide") nb.sel = [...b.sel]; if(b && c==="tout") DOM3.forEach(d=>nb.v[d] = [...b.v[d]]);
+    j.bilans.push(nb); j.cur = nb.id; jsave(j); rerender(); }; }
+function bindBilanBar(j, b){
+  $("#bsel").onchange = e=>{ if(RO()){ VIEWB = e.target.value; rerender(); return; } j.cur = e.target.value; jsave(j); rerender(); };
+  $("#bcomp").onchange = e=>{ UI.comp = e.target.value; uisave(); renderTab(); };
+  if(RO()) return;
+  $("#bdate").onchange = e=>{ if(e.target.value){ b.date = e.target.value; jsave(j); rerender(); } };
+  $("#bage").onchange = e=>{ b.age = clampA(+e.target.value); delete b.adulte; jsave(j); rerender(); };
+  $("#bnew").onclick = ()=>{ $("#nbf").hidden = !$("#nbf").hidden; };
+  bindNouveauBilan(j, b);
+  const bd = $("#bdel"); if(bd) bd.onclick = ()=>{ if(!bd.dataset.ok){ bd.dataset.ok = 1; bd.textContent = "Toucher encore pour supprimer"; setTimeout(()=>{ if(bd.isConnected){ delete bd.dataset.ok; bd.textContent = "Supprimer ce bilan"; } },4000); return; } j.bilans = j.bilans.filter(x=>x.id!==b.id); j.cur = lastB(j).id; jsave(j); rerender(); };
+}
+let VIEWB = null; /* mode joueur : bilan affiché (pas enregistré sur la fiche) */
+
+/* ----- onglet PROFIL : 3 radars touchables + vue d'ensemble + axes de travail ----- */
+function profilHTML(j, b){
+  const d = UI.dom, cb = compB(j, b);
+  let h = `<div class="jump dtabs">${DOM3.map(x=>`<a href="#" data-dom="${x}" class="${d===x?"on":""}" style="--pc:var(--${x.toLowerCase()})">${DCOURT[x]} <small>${fmtN(moy(j,b,x))}</small></a>`).join("")}<a href="#" data-dom="ALL" class="${d==="ALL"?"on":""}" style="--pc:var(--ink)">Vue d'ensemble</a></div>`;
+  if(d==="ALL"){
+    h += `<div class="ovw">${DOM3.map(x=>{ const m = moy(j,b,x), mc = cb?moy(j,cb,x):null; return `<div class="ov"><h3 style="color:var(--${x.toLowerCase()})">${DOMN[x]}</h3>${radarSVG(x, radarOpts(j,b,x,"mini"))}<div class="msg">Moyenne ${fmtN(m)}${mc!=null?` (avant : ${fmtN(mc)})`:""}</div><button class="ib" type="button" data-open="${x}">Ouvrir</button></div>`; }).join("")}</div>`;
+  } else {
+    const o = radarOpts(j,b,d, matchMedia("(min-width:700px)").matches?"wide":"narrow", {sel:UI.sel, id:"radar"});
+    const [f,a] = nbLines(j,b,d), acq = o.v.filter((x,i)=>x!=null && x>=3 && o.g[i]).length;
+    h += `<div class="prof" style="--pc:var(--${d.toLowerCase()})"><div class="chartcol"><div class="charthead"><b class="rcode">${gcode(j.sexe,ak(b),d)} · ${j.sexe==="F"?"fille":"garçon"} ${ak(b)+" ans"}</b><span class="msg" id="rsum">Moyenne ${fmtN(moy(j,b,d))} · ${acq}/${a} au niveau 3 ou plus · ${f}/${a} évaluées</span></div>
+      ${radarSVG(d, o)}
+      <div class="legend">${[1,2,3,4].map(k=>`<span><i class="sw" style="background:var(--n${k}s);border:1.5px solid var(--n${k})"></i>${k} ${NVN[k]}</span>`).join("")}${cb?`<span><i class="sw dash"></i>Bilan du ${frD(cb.date)}</span>`:""}</div>
+      <p class="hint">${RO()?"Ton profil au bilan du "+frD(b.date)+". L'anneau vert épais = niveau 3, l'attendu du haut niveau de ton âge.":"Touche ou fais glisser le long d'un axe pour placer le niveau (pas de 0,5). Anneau vert épais = niveau 3 ; pointillés = bilan comparé."}</p></div>
+      <div class="rows" id="rows">${rowsHTML(j,b,d)}</div></div>`;
+  }
+  h += axesHTML(j, b, cb);
+  h += `<div class="tools" style="margin-top:14px"><button class="ib" id="bpng" type="button">Image du profil (PNG)</button><a class="ib" href="#/fiche/${j.id}/${b.id}">Fiche bilan à partager</a></div>`;
+  return h;
+}
+function rowsHTML(j, b, d){ const g = X.g[gcode(j.sexe,ak(b),d)]||[]; const sel = UI.sel;
+  let h = LIGNES[d].map((nm,i)=>{ const L = g[i]; if(!L) return `<div class="row grey"><span class="num">${i+1}</span><span class="nm">${esc(nm)}<small>non notée à cet âge</small></span><span></span></div>`;
+    const v = b.v[d][i]??null;
+    return `<div class="row ${i===sel?"sel":""}" data-row="${i}"><span class="num">${i+1}</span><span class="nm">${esc(nm)}<small>${b.auto&&b.auto[d+i]?"niveau donné par les tests · ":""}★ ${esc(tnom(L.p))}</small></span>
+      <span class="step">${RO()?"":`<button type="button" data-st="-1" data-i="${i}" aria-label="Baisser ${esc(nm)}">−</button>`}<b class="val ${lvCls(v)}" id="rv_${i}">${fmtN(v)}</b>${RO()?"":`<button type="button" data-st="1" data-i="${i}" aria-label="Monter ${esc(nm)}">+</button>`}</span></div>`; }).join("");
+  const L = g[sel]; if(L){ const v = b.v[d][sel]??null, tl = lineTestsLevel(j,b,d,sel);
+    h += `<div class="detail"><h3>${sel+1} · ${esc(LIGNES[d][sel])}</h3><div class="att3"><b>Attendu de l'âge (niveau 3) :</b> ${esc(L.a||"")}</div>
+      <div class="msg">Test ★ : <a class="ref" href="${tlink(L.p,j.sexe,ak(b))}">${esc(tnom(L.p))}</a>${tl?` · niveau donné par les tests : ${lvB(tl)}`:""}</div>
+      <div class="lvls">${[1,2,3,4].map(k=>`<button type="button" class="lv n${k} ${v!=null&&Math.floor(v)===k?"on":""}" data-lv="${k}" ${RO()?"disabled":""}><b>${k} · ${NVN[k]}</b>${esc(L.n[k-1])}</button>`).join("")}</div>
+      ${lineLinks(d, sel, b.age)}</div>`; }
+  return h; }
+function axesHTML(j, b, cb){ const ax = [], fo = [];
+  DOM3.forEach(d=>(X.g[gcode(j.sexe,ak(b),d)]||[]).forEach((L,i)=>{ if(!L) return; const v = b.v[d][i]; if(v==null) return; const pv = cb ? cb.v[d][i] : null;
+    const it = {d, i, v, pv}; if(v<3) ax.push(it); else if(v>=3.5) fo.push(it); }));
+  ax.sort((a,c)=>a.v-c.v); fo.sort((a,c)=>c.v-a.v);
+  const li = (it, ex) => `<li><span class="lvb ${lvCls(it.v)}">${fmtN(it.v)}</span> <b style="color:var(--${it.d.toLowerCase()})">${lcode(it.d,it.i)}</b> ${esc(LIGNES[it.d][it.i])}${it.pv!=null&&it.pv!==it.v?` <small class="msg">(${it.v>it.pv?"↑":"↓"} ${fmtN(it.pv)})</small>`:""}${ex?` · <a href="${GR.href("banque","#/l/"+lcode(it.d,it.i)+"?a="+b.age)}">exercices ›</a>`:""}</li>`;
+  return `<div class="axes"><div class="axc"><h3>Axes de travail <small>(niveau &lt; 3)</small></h3>${ax.length?`<ul>${ax.map(x=>li(x,1)).join("")}</ul>`:`<p class="msg">Aucune ligne sous le niveau 3${DOM3.some(d=>moy(j,b,d)!=null)?"":" (rien d'évalué pour l'instant)"}.</p>`}</div>
+    <div class="axc"><h3>Points forts <small>(niveau ≥ 3,5)</small></h3>${fo.length?`<ul>${fo.map(x=>li(x,0)).join("")}</ul>`:`<p class="msg">Pas encore de ligne à 3,5 ou plus.</p>`}</div></div>`; }
+let DRAG = null, GEO = null;
+function bindProfil(j, b){
+  document.querySelectorAll("[data-dom]").forEach(a=>a.onclick = e=>{ e.preventDefault(); UI.dom = a.dataset.dom; UI.sel = firstActive(j,b,UI.dom); uisave(); renderTab(); });
+  document.querySelectorAll("[data-open]").forEach(x=>x.onclick = ()=>{ UI.dom = x.dataset.open; UI.sel = firstActive(j,b,UI.dom); uisave(); renderTab(); });
+  $("#bpng").onclick = ()=>profilPNG(j,b).then(bl=>partagerFichier(bl, ("Profil_"+j.nom+"_"+b.date).replace(/[^\wÀ-ÿ-]+/g,"_")+".png")).catch(e=>console.warn(e));
+  if(UI.dom==="ALL") return;
+  const d = UI.dom, svg = $("#radar"), rows = $("#rows"); if(!svg) return;
+  const g = X.g[gcode(j.sexe,ak(b),d)]||[];
+  if(!g[UI.sel]){ UI.sel = firstActive(j,b,d); renderTab(); return; }
+  rows.addEventListener("click", e=>{ const st = e.target.closest("[data-st]"); if(st){ if(RO()) return; const i = +st.dataset.i, v = b.v[d][i]; let nv = v==null ? (+st.dataset.st>0?1:null) : v + 0.5*(+st.dataset.st); if(nv!=null && nv<1) nv = null; if(nv>4) nv = 4; UI.sel = i; setV(j,b,d,i,nv); jsave(j); renderTab(); return; }
+    const lv = e.target.closest("[data-lv]"); if(lv){ if(RO()) return; setV(j,b,d,UI.sel,+lv.dataset.lv); jsave(j); renderTab(); return; }
+    const r = e.target.closest("[data-row]"); if(r && !e.target.closest("a")){ UI.sel = +r.dataset.row; renderTab(); } });
+  if(RO()) return;
+  const kind = svg.viewBox.baseVal.width===880 ? "wide" : "narrow"; GEO = geomR(LIGNES[d].length, kind);
+  const pv = (e, lock) => { const r = svg.getBoundingClientRect(), s = GEO.W/r.width, x = (e.clientX-r.left)*s - GEO.cx, y = (e.clientY-r.top)*s - GEO.cy, n = LIGNES[d].length, A = i => -Math.PI/2 + i*2*Math.PI/n;
+    let best = lock, bd = 9; const ang = Math.atan2(y,x);
+    if(best==null) for(let i=0;i<n;i++){ if(!g[i]) continue; const dd = Math.abs(Math.atan2(Math.sin(ang-A(i)), Math.cos(ang-A(i)))); if(dd<bd){ bd = dd; best = i; } }
+    if(best==null) return null; const proj = x*Math.cos(A(best)) + y*Math.sin(A(best));
+    return {i:best, val:Math.max(1, Math.min(4, Math.round(proj/GEO.R*4*2)/2)), dist:Math.hypot(x,y)}; };
+  svg.addEventListener("pointerdown", e=>{ const p = pv(e, null); if(!p) return; e.preventDefault();
+    if(p.dist > GEO.R*1.12){ UI.sel = p.i; renderTab(); return; }
+    DRAG = p.i; UI.sel = p.i; try{ svg.setPointerCapture(e.pointerId); }catch(_){} setV(j,b,d,p.i,p.val); live(j,b,d); });
+  svg.addEventListener("pointermove", e=>{ if(DRAG==null) return; const p = pv(e, DRAG); if(p && p.val!==b.v[d][p.i]){ setV(j,b,d,p.i,p.val); live(j,b,d); } });
+  const end = ()=>{ if(DRAG!=null){ DRAG = null; jsave(j); renderTab(); } };
+  svg.addEventListener("pointerup", end); svg.addEventListener("pointercancel", end);
+}
+function firstActive(j, b, d){ if(d==="ALL") return 0; const g = X.g[gcode(j.sexe,ak(b),d)]||[]; const k = g.findIndex(Boolean); return k<0?0:k; }
+function setV(j, b, d, i, v){ b.v[d][i] = v; if(b.auto) delete b.auto[d+i]; }
+function live(j, b, d){ const svg = $("#radar"); if(!svg) return; const kind = svg.viewBox.baseVal.width===880 ? "wide" : "narrow";
+  svg.innerHTML = radarInner(d, radarOpts(j,b,d,kind,{sel:UI.sel})); const v = b.v[d][UI.sel]; const e = $("#rv_"+UI.sel); if(e){ e.textContent = fmtN(v); e.className = "val "+lvCls(v); }
+  document.querySelectorAll("#rows .row").forEach(r=>r.classList.toggle("sel", +r.dataset.row===UI.sel)); }
+
+/* ----- image PNG du profil (canvas) ----- */
+async function profilPNG(j, b){
+  const cb = compB(j,b), W = 1800, ax = [], fo = [];
+  DOM3.forEach(d=>(X.g[gcode(j.sexe,ak(b),d)]||[]).forEach((L,i)=>{ const v = b.v[d][i]; if(!L||v==null) return; if(v<3) ax.push([d,i,v]); else if(v>=3.5) fo.push([d,i,v]); }));
+  ax.sort((a,c)=>a[2]-c[2]); fo.sort((a,c)=>c[2]-a[2]);
+  const nl = Math.max(Math.min(ax.length,12), Math.min(fo.length,12)), H = 800 + (nl ? 70 + nl*34 : 0);
+  const cv = document.createElement("canvas"); cv.width = W; cv.height = H; const x = cv.getContext("2d");
+  x.fillStyle = cssv("--panel")||"#fff"; x.fillRect(0,0,W,H);
+  x.fillStyle = cssv("--ink"); x.font = "700 44px 'Barlow Condensed', 'Arial Narrow', sans-serif"; x.fillText(j.nom+" · "+(j.sexe==="F"?"fille":"garçon")+" · "+gL(b), 40, 62);
+  x.fillStyle = cssv("--mute"); x.font = "500 25px Barlow, sans-serif"; x.fillText("Bilan du "+frD(b.date)+(b.note?" · "+b.note:"")+(cb?"   (pointillés : bilan du "+frD(cb.date)+")":"")+"   · niveau 3 = attendu du haut niveau de l'âge", 40, 102);
+  let k = 0;
+  for(const d of DOM3){ const svg = radarSVG(d, radarOpts(j,b,d,"mini",{bg:cssv("--panel")}));
+    const img = new Image(); await new Promise(r=>{ img.onload = r; img.onerror = r; img.src = "data:image/svg+xml;charset=utf-8,"+encodeURIComponent(svg); });
+    const X0 = 40+k*590; try{ x.drawImage(img, X0, 170, 560, 560); }catch(e){}
+    x.fillStyle = cssv("--"+d.toLowerCase()); x.font = "700 32px 'Barlow Condensed', sans-serif"; x.fillText(DOMN[d], X0+10, 160);
+    x.fillStyle = cssv("--ink"); x.font = "600 26px Barlow, sans-serif"; const m = moy(j,b,d), mc = cb?moy(j,cb,d):null; x.fillText("Moyenne "+fmtN(m)+(mc!=null?"  (avant "+fmtN(mc)+")":""), X0+10, 765); k++; }
+  if(nl){ const col = (title, arr, X0) => { x.fillStyle = cssv("--ink"); x.font = "700 30px 'Barlow Condensed', sans-serif"; x.fillText(title, X0, 830);
+      x.font = "500 23px Barlow, sans-serif"; arr.slice(0,12).forEach(([d,i,v],n)=>{ x.fillStyle = cssv("--n"+Math.floor(v)); x.fillText(fmtN(v), X0, 870+n*34); x.fillStyle = cssv("--ink"); const t = lcode(d,i)+" · "+LIGNES[d][i]; x.fillText(t.length>60?t.slice(0,58)+"…":t, X0+56, 870+n*34); }); };
+    col("Axes de travail (niveau < 3)", ax, 40); col("Points forts (niveau ≥ 3,5)", fo, 940); }
+  return await new Promise(r=>cv.toBlob(r, "image/png"));
+}
+
+/* ----- onglet GRILLES ET TESTS (la saisie d'origine, inchangée sur le fond) ----- */
+function grillesHTML(j, b){
+  let h = `<div class="sec"><h2>Grilles du bilan</h2><p class="msg" style="margin:-4px 0 8px">${RO()?"Ton niveau sur chaque ligne de la grille.":"Choisis le niveau de chaque ligne (par demi-niveau) ; c'est le même que sur le radar. La colonne « Tests » donne le niveau calculé à partir des résultats saisis plus bas."}</p>`;
+  DOM3.forEach(d=>{ const c = gcode(j.sexe,ak(b),d); const g = X.g[c]; const [f,a] = nbLines(j,b,d);
+    h += `<details class="jg" ${S_open(d)?"open":""} data-d="${d}" style="--pc:var(--${d.toLowerCase()})"><summary><span>${DOMN[d]}</span><span class="jm" id="m_${d}">moyenne ${fmtN(moy(j,b,d))} · ${f}/${a} lignes</span></summary>
+      <div class="jgrid"><div class="jrad" id="r_${d}">${radar(d, g.map((x,i)=>b.v[d][i]??null), g.map(x=>!x))}</div>
+      <div class="tw"><table class="jt"><thead><tr><th>Ligne</th><th>Niveau</th><th>Tests</th></tr></thead><tbody>${g.map((L,i)=>{ const nm = LIGNES[d][i];
+        if(!L) return `<tr class="off"><td>${i+1} · ${esc(nm)}</td><td colspan="2">non évaluée à cet âge</td></tr>`;
+        const v = b.v[d][i]??null; const tl = lineTestsLevel(j,b,d,i);
+        return `<tr><td><a class="ref" href="#d/${c}/l${i+1}">${i+1} · ${esc(nm)}</a><div class="lvtxt" id="t_${d}_${i}">${v!=null?esc(L.n[Math.floor(v)-1]):""}</div>${lineLinks(d,i,b.age)}</td>
+        <td><select class="lvsel ${lvCls(v)}" data-d="${d}" data-i="${i}" aria-label="Niveau ligne ${i+1}" ${RO()?"disabled":""}><option value="">–</option>${[1,1.5,2,2.5,3,3.5,4].map(x=>`<option value="${x}" ${v===x?"selected":""}>${fmtN(x)}${Number.isInteger(x)?" · "+NVN[x]:""}</option>`).join("")}</select></td>
+        <td class="c" id="tl_${d}_${i}">${tl?lvB(tl):"–"}</td></tr>`; }).join("")}</tbody></table></div></div></details>`; });
+  h += `</div>`;
+  const pri = prioTests(j,b); const sel = b.sel.filter(texists); const done = sel.filter(t=>niveau(t,j.sexe,ak(b),b.res[t])).length;
+  h += `<div class="sec"><h2>Tests du bilan</h2>${RO()?"":`<div class="tools"><button class="ib" id="tpri" type="button">★ Ajouter les ${pri.length} tests prioritaires</button><button class="ib" id="tchoose" type="button">Choisir les tests</button>${sel.length?`<button class="ib" id="tclear" type="button">Tout retirer</button>`:""}<a class="ib" href="#/test-nouveau">+ Créer un test</a></div>`}
+    <p class="msg" style="margin-top:6px">${sel.length?`${done} fait${done>1?"s":""} sur ${sel.length} au programme. ${RO()?"":`Tape le résultat : le niveau se calcule avec le barème ${j.sexe==="F"?"filles":"garçons"} ${ak(b)+" ans"} (niveau le plus bas des mesures). Une ligne encore vide reçoit le niveau de ses tests.`}`:"Aucun test choisi pour ce bilan."}</p>
+    <div id="tpick" hidden>${DOM3.map(d=>{ const c = gcode(j.sexe,ak(b),d); return `<div class="fold" style="--pc:var(--${d.toLowerCase()})"><h3>${DOMN[d]}</h3><div class="list">${X.g[c].map((L,i)=>{ if(!L) return ""; const T = lineT(j.sexe,ak(b),d,i);
+      return `<div class="pk"><b>${i+1} · ${esc(LIGNES[d][i])}</b>${T.t.map(t=>`<label><input type="checkbox" data-t="${t}" ${b.sel.includes(t)?"checked":""}> ${T.p.includes(t)?"★ ":""}${esc(tnom(t))}${badgeT(t)}</label>`).join("")}</div>`; }).join("")}</div></div>`; }).join("")}</div>`;
+  if(sel.length){
+    const byD = d => sel.filter(t=>tdom(t)===d).sort((a,c)=>(isPerso(a)-isPerso(c)) || (a<c?-1:1));
+    h += DOM3.map(d=>{ const ts = byD(d); if(!ts.length) return ""; return `<div class="fold" style="--pc:var(--${d.toLowerCase()})"><h3>${DOMN[d]}</h3><div class="tw"><table class="jt"><thead><tr><th>Test</th><th>Résultat</th><th>Niveau</th></tr></thead><tbody>${ts.map(t=>testRow(j,b,t,pri)).join("")}</tbody></table></div></div>`; }).join("");
+  }
+  h += `</div><div class="notes"><label for="bnote" style="font-weight:600">Notes du bilan</label><textarea id="bnote" placeholder="Observations, priorités de travail, contexte…" ${RO()?"readonly":""}>${esc(b.note||"")}</textarea><div class="msg" id="bnm"></div></div>`;
+  return h;
+}
+function testRow(j, b, t, pri){ const ms = mesuresOf(t,j.sexe,ak(b)); const r = b.res[t]||{}; const lv = niveau(t,j.sexe,ak(b),r);
+  return `<tr><td>${pri.includes(t)?"★ ":""}<a class="ref" href="${tlink(t,j.sexe,ak(b))}">${esc(tnom(t))}</a>${badgeT(t)}<div class="lvtxt">${t} · ${esc(tunite(t))}</div><div class="lvtxt" id="bt_${t}">${lv?esc(btxt(t,j.sexe,ak(b),lv)):""}</div></td>
+    <td>${ms?ms.map(k=>`<label class="ms">${esc(mlabel(t,k))}<input class="inp" inputmode="decimal" autocomplete="off" data-t="${t}" data-k="${esc(k)}" value="${esc(r[k]??"")}" ${RO()?"readonly":""}></label>`).join(""):`<span class="msg">pas de barème (${agL(ak(b))})</span>`}</td>
+    <td class="c" id="lv_${t}">${lv?lvB(lv):"–"}</td></tr>`; }
+function bindGrilles(j, b){
+  document.querySelectorAll("details.jg").forEach(x=>x.addEventListener("toggle",()=>{ OPEN[x.dataset.d] = x.open; }));
+  if(RO()) return;
+  document.querySelectorAll(".lvsel").forEach(s=>s.onchange = ()=>{ const d = s.dataset.d, i = +s.dataset.i; setV(j,b,d,i, s.value===""?null:+s.value); jsave(j); refreshDom(j,b,d); });
+  const pri = prioTests(j,b);
+  $("#tpri").onclick = ()=>{ b.sel = [...new Set([...b.sel,...pri])]; jsave(j); rerender(); };
+  $("#tchoose").onclick = ()=>{ $("#tpick").hidden = !$("#tpick").hidden; $("#tchoose").textContent = $("#tpick").hidden ? "Choisir les tests" : "Fermer et mettre à jour"; if($("#tpick").hidden) rerender(); };
+  document.querySelectorAll("#tpick input[type=checkbox]").forEach(c=>c.onchange = ()=>{ const t = c.dataset.t; b.sel = c.checked ? [...new Set([...b.sel,t])] : b.sel.filter(x=>x!==t); jsave(j); });
+  const tcl = $("#tclear"); if(tcl) tcl.onclick = ()=>{ if(!tcl.dataset.ok){ tcl.dataset.ok = 1; tcl.textContent = "Toucher encore pour tout retirer"; return; } b.sel = []; jsave(j); rerender(); };
+  document.querySelectorAll("#tabc input[data-t][data-k]").forEach(inp=>inp.oninput = ()=>{ const t = inp.dataset.t, k = inp.dataset.k; setRes(j,b,t,k,inp.value);
+    const lv = niveau(t,j.sexe,ak(b),b.res[t]); $("#lv_"+CSS.escape(t)).innerHTML = lv?lvB(lv):"–"; $("#bt_"+CSS.escape(t)).textContent = lv?btxt(t,j.sexe,ak(b),lv):"";
+    const d = tdom(t); (X.g[gcode(j.sexe,ak(b),d)]||[]).forEach((L,i)=>{ const T = lineT(j.sexe,ak(b),d,i); if(!T||!T.t.includes(t)) return; const cell = $(`#tl_${d}_${i}`); const tl = lineTestsLevel(j,b,d,i); if(cell) cell.innerHTML = tl?lvB(tl):"–"; const s = document.querySelector(`.lvsel[data-d="${d}"][data-i="${i}"]`); if(s) s.value = b.v[d][i]==null?"":String(b.v[d][i]); });
+    jsave(j); refreshDom(j,b,d); });
+  let tm; $("#bnote").oninput = e=>{ clearTimeout(tm); tm = setTimeout(()=>{ b.note = e.target.value; jsave(j); $("#bnm").textContent = "Note enregistrée sur cet appareil."; },400); };
+}
+function setRes(j, b, t, k, val){ b.res[t] = b.res[t]||{}; const v = String(val).trim(); if(v==="") delete b.res[t][k]; else b.res[t][k] = v; if(!Object.keys(b.res[t]).length) delete b.res[t]; autoFrom(j,b,t); }
+function refreshDom(j, b, d){ const g = X.g[gcode(j.sexe,ak(b),d)]; const [f,a] = nbLines(j,b,d);
+  $("#m_"+d).textContent = `moyenne ${fmtN(moy(j,b,d))} · ${f}/${a} lignes`;
+  $("#r_"+d).innerHTML = radar(d, g.map((x,i)=>b.v[d][i]??null), g.map(x=>!x));
+  g.forEach((L,i)=>{ if(!L) return; const v = b.v[d][i]??null; const s = document.querySelector(`.lvsel[data-d="${d}"][data-i="${i}"]`); if(s) s.className = "lvsel "+lvCls(v); const t = $(`#t_${d}_${i}`); if(t) t.textContent = v!=null?L.n[Math.floor(v)-1]:""; }); }
+function radar(d, vals, grey){
+  const n = LIGNES[d].length, R = 80, c = 110, A = i => -Math.PI/2 + i*2*Math.PI/n, Pt = (i,v) => [c+Math.cos(A(i))*R*v/4, c+Math.sin(A(i))*R*v/4];
+  let s = `<svg viewBox="0 0 220 220" class="rad" aria-hidden="true">`;
+  for(let k=4;k>=1;k--) s += `<polygon points="${[...Array(n)].map((_,i)=>Pt(i,k).join(",")).join(" ")}" fill="none" stroke="var(--line)" ${k===3?'stroke-dasharray="3 3" stroke="var(--n3)"':""}/>`;
+  if(vals.some(v=>v!=null)) s += `<polygon points="${vals.map((v,i)=>Pt(i,grey[i]?0:(v||0)).join(",")).join(" ")}" fill="var(--pc)" fill-opacity=".18" stroke="var(--pc)" stroke-width="2"/>`;
+  for(let i=0;i<n;i++){ const [x,y] = Pt(i,4.9); s += `<text x="${x}" y="${y+4}" text-anchor="middle" font-size="11" font-weight="600" fill="currentColor" opacity="${grey[i]?.35:1}">${i+1}</text>`; }
+  return s+"</svg>";
+}
+
+/* ----- onglet PROGRESSION ----- */
+function spark(j, bs, d){ const pts = bs.map((b,k)=>[k, moy(j,b,d)]).filter(p=>p[1]!=null); const W = 300, H = 96, px = k => bs.length<2 ? W/2 : 16+k*(W-32)/(bs.length-1), py = v => H-12-(v-1)/3*(H-26);
+  let s = `<svg viewBox="0 0 ${W} ${H}" class="spark" role="img" aria-label="Évolution de la moyenne ${esc(DOMN[d])}"><line x1="8" x2="${W-8}" y1="${py(3)}" y2="${py(3)}" stroke="var(--n3)" stroke-dasharray="4 4"/><text x="10" y="${py(3)+13}" font-size="10" fill="var(--n3)">niveau 3</text>`;
+  if(pts.length>1) s += `<polyline points="${pts.map(p=>px(p[0])+","+py(p[1])).join(" ")}" fill="none" stroke="var(--${d.toLowerCase()})" stroke-width="2.5" stroke-linejoin="round"/>`;
+  pts.forEach(p=>{ s += `<circle cx="${px(p[0])}" cy="${py(p[1])}" r="4.5" fill="var(--${d.toLowerCase()})"/><text x="${px(p[0])}" y="${py(p[1])-8}" text-anchor="middle" font-size="11" font-weight="600" fill="var(--ink)">${fmtN(p[1])}</text>`; });
+  return s+"</svg>"; }
+function progressionHTML(j){
+  const bs = sortB(j); if(!bs.length) return `<div class="empty">Aucun bilan.</div>`;
+  const hd = bs.map(b=>`<th class="c">${frD(b.date).slice(0,6)+frD(b.date).slice(8)}<br><small>${ak(b)+" ans"}</small></th>`).join("");
+  let h = `<p class="msg" style="margin-top:10px">${bs.length} bilan${bs.length>1?"s":""}, du plus ancien au plus récent. Chaque case = niveau de la ligne au bilan.</p>`;
+  h += DOM3.map(d=>`<div class="fold" style="--pc:var(--${d.toLowerCase()})"><h3>${DOMN[d]}</h3><div class="pgr"><div class="sparkw">${spark(j,bs,d)}</div>
+    <div class="tw"><table class="jt pg"><thead><tr><th>Ligne</th>${hd}</tr></thead><tbody>${LIGNES[d].map((nm,i)=>`<tr><td>${i+1} · ${esc(nm)}</td>${bs.map(b=>{ const L = (X.g[gcode(j.sexe,ak(b),d)]||[])[i]; const v = b.v[d][i]; return `<td class="c">${!L?'<span class="msg">·</span>':v==null?"–":lvB(v)}</td>`; }).join("")}</tr>`).join("")}
+    <tr class="tot"><td><b>Moyenne</b></td>${bs.map(b=>`<td class="c"><b>${fmtN(moy(j,b,d))}</b></td>`).join("")}</tr></tbody></table></div></div></div>`).join("");
+  const ts = []; bs.forEach(b=>Object.keys(b.res||{}).forEach(t=>{ if(texists(t) && !ts.includes(t) && Object.keys(b.res[t]).length) ts.push(t); }));
+  ts.sort((a,c)=>(DOM3.indexOf(tdom(a))-DOM3.indexOf(tdom(c))) || (a<c?-1:1));
+  h += `<div class="fold"><h3>Résultats des tests dans le temps</h3>${ts.length?`<div class="tw"><table class="jt pg"><thead><tr><th>Test</th>${hd}</tr></thead><tbody>${ts.map(t=>`<tr><td><a class="ref" href="${tlink(t,j.sexe,bs[bs.length-1].age)}">${esc(tnom(t))}</a>${badgeT(t)}<div class="lvtxt">${esc(tunite(t))}</div></td>${bs.map(b=>{ const r = b.res[t]; if(!r) return `<td class="c">–</td>`; const lv = niveau(t,j.sexe,ak(b),r); return `<td class="c"><span class="rv">${esc(Object.values(r).join(" / "))}</span>${lv?"<br>"+lvB(lv):""}</td>`; }).join("")}</tr>`).join("")}</tbody></table></div>`:`<p class="msg">Aucun résultat de test saisi pour l'instant.</p>`}</div>`;
+  return h;
+}
+
+/* ----- onglet CROISSANCE : mesures et âge biologique ----- */
+function croissanceHTML(j){
+  const M = [...(j.mesures||[])].sort((a,b)=>a.date<b.date?1:-1), mt = GR.maturite(j), vc = GR.vitesseCroissance(j), ac = GR.ageDec(j.naissance);
+  let h = `<div class="sec"><h2>Âge biologique</h2>`;
+  if(mt) h += `<div class="mat"><div><small>Âge civil</small><b>${f1(mt.age)} ans</b></div><div><small>Âge biologique</small><b>${f1(mt.bio)} ans</b></div><div><small>Pic de croissance (âge estimé)</small><b>${f1(mt.aphv)} ans</b></div><div><small>Distance au pic</small><b>${mt.decalage>0?"+":""}${f1(mt.decalage)} an</b></div><div><small>Statut</small><b>${esc(mt.statut)}</b></div><div><small>Maturation</small><b class="${mt.avance==="précoce"?"n4c":mt.avance==="tardif"?"n2c":""}">${esc(mt.avance)}</b></div><div><small>Grille conseillée</small><b>${mt.grille} ans</b></div>${vc!=null?`<div><small>Vitesse de croissance</small><b>${f1(vc)} cm/an</b></div>`:""}</div>
+    <p class="msg">Calcul : ${esc(mt.methode)}, mesures du ${frD(mt.date)}. Référence de la méthode : pic vers ${GR.REF_APHV[j.sexe]} ans chez les ${j.sexe==="F"?"filles":"garçons"}.${/autour/.test(mt.statut)?" <b>Zone sensible</b> : prudence sur les charges, la pliométrie et les volumes ; surveille genoux, talons et dos.":""}${vc!=null&&vc>=7?" <b>Croissance rapide</b> (≥ 7 cm/an) : allège les impacts.":""}</p>`;
+  else h += `<p class="msg">${j.naissance?"Ajoute une mesure avec la taille, la taille assise et le poids pour calculer l'âge biologique (pic de croissance estimé).":"Ajoute la date de naissance dans la fiche, puis une mesure (taille, taille assise, poids)."}</p>`;
+  h += `</div><div class="sec"><h2>Mesures</h2>${RO()?"":`<div class="quick">
+    <div class="f"><label for="mdat">Date</label><input id="mdat" class="inp" type="date" value="${today()}"></div>
+    <div class="f"><label for="mta">Taille (cm)</label><input id="mta" class="inp" inputmode="decimal" style="width:90px"></div>
+    <div class="f"><label for="mas">Taille assise (cm)</label><input id="mas" class="inp" inputmode="decimal" style="width:90px"></div>
+    <div class="f"><label for="mpo">Poids (kg)</label><input id="mpo" class="inp" inputmode="decimal" style="width:90px"></div>
+    <div class="f"><label for="men">Envergure (cm)</label><input id="men" class="inp" inputmode="decimal" style="width:90px"></div>
+    <button class="go" id="madd" type="button">Ajouter</button></div><p class="msg" id="mmsg">Taille assise : assis sur un banc, dos droit, du banc au sommet du crâne.</p>`}
+    ${M.length?`<div class="tw"><table class="jt"><thead><tr><th>Date</th><th>Taille</th><th>Assise</th><th>Poids</th><th>Envergure</th><th>Âge bio</th>${RO()?"":"<th></th>"}</tr></thead><tbody>${M.map((x,k)=>{ const mm = x.taille ? GR.maturite(j, x) : null;
+      return `<tr><td>${frD(x.date)}</td><td>${fmtN(x.taille)}</td><td>${fmtN(x.assise)}</td><td>${fmtN(x.poids)}</td><td>${fmtN(x.envergure)}${x.envergure&&x.taille?` <small class="msg">(${fmtN(Math.round((x.envergure-x.taille)*10)/10)})</small>`:""}</td><td>${mm?f1(mm.bio):"–"}</td>${RO()?"":`<td><button class="ib sm" type="button" data-mdel="${esc(x.date)}|${k}">Retirer</button></td>`}</tr>`; }).join("")}</tbody></table></div>`:`<div class="empty">Aucune mesure.</div>`}</div>`;
+  return h;
+}
+function bindCroissance(j){ if(RO()) return; const ad = $("#madd"); if(!ad) return;
+  ad.onclick = ()=>{ const n = id => { const v = parseN($(id).value); return v==null?null:v; };
+    const m = {date:$("#mdat").value||today(), taille:n("#mta"), assise:n("#mas"), poids:n("#mpo"), envergure:n("#men")};
+    if(m.taille==null && m.poids==null && m.envergure==null){ $("#mmsg").textContent = "Indique au moins la taille ou le poids."; return; }
+    if(m.taille!=null && (m.taille<80 || m.taille>230)){ $("#mmsg").textContent = "Taille en centimètres (ex. 152)."; return; }
+    j.mesures = (j.mesures||[]).filter(x=>x.date!==m.date); j.mesures.push(m); jsave(j); rerender(); };
+  document.querySelectorAll("[data-mdel]").forEach(bt=>bt.onclick = ()=>{ const d = bt.dataset.mdel.split("|")[0]; j.mesures = j.mesures.filter(x=>x.date!==d); jsave(j); rerender(); });
+}
+
+/* ---------- fiche bilan à partager (imprimable) ---------- */
+function showFiche(jid, bid){
+  if(RO()) jid = GR.mode().jid;
+  const j = getP(jid); if(!j) return showJoueurs(); const b = j.bilans.find(x=>x.id===bid) || curB(j); if(!b) return showJoueur(jid);
+  const pc = j.sexe==="F"?"var(--p1)":"var(--p2)"; document.documentElement.style.setProperty("--acc", pc);
+  const cb = compB(j,b), mt = GR.maturite(j), ac = ageCiv(j.naissance, b.date);
+  const ts = Object.keys(b.res||{}).filter(texists);
+  let h = `<div class="crumb noprint"><a href="#/joueur/${j.id}">‹ ${RO()?"Mon dossier":esc(j.nom)}</a></div>
+   <div class="fiche"><div class="dochead"><div><h1>Bilan · ${esc(j.nom)}</h1><p class="lead">${frD(b.date)}${b.note?" · "+esc(b.note):""} · ${j.sexe==="F"?"fille":"garçon"}${ac!=null?", "+ac+" ans":""} · ${gL(b)}${mt?` · âge biologique ${f1(mt.bio)} ans (${esc(mt.avance)})`:""}</p></div>
+   <div class="acts noprint"><button class="ib" id="fprint" type="button">Imprimer ou PDF</button><button class="ib" id="fshare" type="button">Partager le texte</button><button class="ib" id="fpng" type="button">Image PNG</button></div></div>
+   <div class="ovw">${DOM3.map(d=>`<div class="ov"><h3 style="color:var(--${d.toLowerCase()})">${DOMN[d]}</h3>${radarSVG(d, radarOpts(j,b,d,"mini"))}<div class="msg">Moyenne <b>${fmtN(moy(j,b,d))}</b>${cb&&moy(j,cb,d)!=null?` (bilan du ${frD(cb.date)} : ${fmtN(moy(j,cb,d))})`:""}</div></div>`).join("")}</div>
+   ${axesHTML(j,b,cb)}
+   ${ts.length?`<div class="fold"><h3>Résultats des tests</h3><div class="tw"><table class="jt"><thead><tr><th>Test</th><th>Résultat</th><th>Niveau</th></tr></thead><tbody>${ts.map(t=>{ const lv = niveau(t,j.sexe,ak(b),b.res[t]); return `<tr><td>${esc(tnom(t))}<div class="lvtxt">${esc(tunite(t))}</div></td><td>${Object.entries(b.res[t]).map(([k,v])=>(Object.keys(b.res[t]).length>1?esc(mlabel(t,k))+" : ":"")+esc(v)).join("<br>")}</td><td class="c">${lv?lvB(lv):"–"}</td></tr>`; }).join("")}</tbody></table></div></div>`:""}
+   ${b.note?`<div class="fold"><h3>Notes</h3><p>${esc(b.note)}</p></div>`:""}
+   <p class="msg">Niveaux : 1 non acquis · 2 en cours d'acquisition · 3 acquis = attendu du haut niveau de l'âge · 4 maîtrisé.</p></div>`;
+  $("#main").innerHTML = h;
+  $("#fprint").onclick = ()=>print();
+  $("#fpng").onclick = ()=>profilPNG(j,b).then(bl=>partagerFichier(bl, ("Profil_"+j.nom+"_"+b.date).replace(/[^\wÀ-ÿ-]+/g,"_")+".png"));
+  $("#fshare").onclick = async ()=>{ const t = ficheTexte(j,b); if(navigator.share){ try{ await navigator.share({title:"Bilan "+j.nom, text:t}); return; }catch(e){ if(e&&e.name==="AbortError") return; } }
+    try{ await navigator.clipboard.writeText(t); $("#fshare").textContent = "Texte copié ✓"; }catch(e){ modal(`<textarea class="inp ta" style="width:100%;min-height:260px">${esc(t)}</textarea><button class="ib" type="button" data-close>Fermer</button>`); } };
+}
+function ficheTexte(j, b){ const ax = [], fo = [];
+  DOM3.forEach(d=>(X.g[gcode(j.sexe,ak(b),d)]||[]).forEach((L,i)=>{ const v = b.v[d][i]; if(!L||v==null) return; if(v<3) ax.push(LIGNES[d][i]+" ("+fmtN(v)+")"); else if(v>=3.5) fo.push(LIGNES[d][i]+" ("+fmtN(v)+")"); }));
+  let t = `Bilan de ${j.nom} · ${frD(b.date)} (${gL(b)})\n` + DOM3.map(d=>DOMN[d]+" : "+fmtN(moy(j,b,d))).join("\n");
+  if(fo.length) t += "\n\nPoints forts : "+fo.join(", "); if(ax.length) t += "\n\nAxes de travail : "+ax.join(", ");
+  const ts = Object.keys(b.res||{}).filter(texists); if(ts.length) t += "\n\nTests :\n"+ts.map(x=>"· "+tnom(x)+" : "+Object.values(b.res[x]).join(" / ")+(niveau(x,j.sexe,ak(b),b.res[x])?" → niveau "+niveau(x,j.sexe,ak(b),b.res[x]):"")).join("\n");
+  if(b.note) t += "\n\nNotes : "+b.note; return t+"\n\nNiveau 3 = attendu du haut niveau de l'âge."; }
+
+/* ---------- BILAN DE GROUPE ---------- */
+function gbs(){ return P.gbs = P.gbs||[]; }
+function showGBilan(arg){
+  if(RO()) return showJoueur();
+  document.documentElement.style.setProperty("--acc","var(--p5)"); const m = $("#main"); m.style.setProperty("--pc","var(--p5)");
+  const [sid, sub] = (arg||"").split("/");
+  if(sid){ const s = gbs().find(x=>x.id===sid); if(!s){ location.hash = "/gbilan"; return; } return sub==="feuille" ? showFeuille(s) : showSession(s); }
+  const grs = GR.groupes.all(), J = GR.joueurs.all(), w = semBilan();
+  const pre = GB.jids || [];
+  let h = `<div class="crumb"><a href="#">Accueil</a>›<a href="#j">5 · Joueurs</a>›<span>Bilan de groupe</span></div><h1 style="color:var(--p5)">Bilan de groupe</h1><p class="lead">Choisis un groupe ou des joueurs, la date et les tests : un nouveau bilan daté est créé dans le dossier de chacun, puis tu saisis test par test pour tout le groupe.</p>`;
+  if(gbs().length) h += `<div class="sec"><h2>Bilans de groupe en cours</h2><div class="list">${[...gbs()].reverse().map(s=>`<a class="li" href="#/gbilan/${s.id}"><span class="code">${frD(s.date)}</span><span class="tt">${esc(s.nom||"Bilan de groupe")}<small>${s.jids.length} joueurs · ${s.tests.length} tests</small></span></a>`).join("")}</div></div>`;
+  h += `<div class="sec"><h2>Nouveau bilan de groupe</h2>${J.length?`<div class="quick">
+    ${grs.length?`<div class="f"><label for="gbg">Groupe</label><select id="gbg"><option value="">— choisir —</option>${grs.map(g=>`<option value="${g.id}" ${GB.gid===g.id?"selected":""}>${esc(g.nom)} (${g.jids.length})</option>`).join("")}</select></div>`:""}
+    <div class="f"><label for="gbd">Date</label><input id="gbd" class="inp" type="date" value="${GB.date||today()}"></div>
+    <div class="f" style="flex:1;min-width:170px"><label for="gbn">Intitulé</label><input id="gbn" class="inp" value="${esc(GB.nom!=null?GB.nom:(w?w.t:""))}" placeholder="Bilan de rentrée…"></div></div>
+    <div class="fold"><h3>Joueurs</h3><div class="list">${J.map(j=>`<div class="pk"><label><input type="checkbox" data-gj="${j.id}" ${pre.includes(j.id)?"checked":""}> ${esc(j.nom)} <small class="msg">${j.sexe==="F"?"fille":"garçon"}${ageCiv(j.naissance)!=null?", "+ageCiv(j.naissance)+" ans":""} · ${"grille "+(conseil(j)||"?")+" ans"}</small></label></div>`).join("")}</div></div>
+    <div id="gbt"></div>`:`<div class="empty">Crée d'abord tes joueurs.</div>`}</div>`;
+  m.innerHTML = h;
+  const gg = $("#gbg"); if(gg) gg.onchange = ()=>{ GB.gid = gg.value; const g = GR.groupes.get(gg.value); GB.jids = g ? [...g.jids] : []; GB.tests = null; showGBilan(); };
+  document.querySelectorAll("[data-gj]").forEach(c=>c.onchange = ()=>{ GB.jids = [...document.querySelectorAll("[data-gj]:checked")].map(x=>x.dataset.gj); GB.tests = null; gbTests(); });
+  ["gbd","gbn"].forEach(id=>{ const e = $("#"+id); if(e) e.oninput = ()=>{ GB[id==="gbd"?"date":"nom"] = e.value; }; });
+  if(J.length) gbTests();
+}
+const GB = {jids:[], tests:null};
+function gbPlan(j){ const b = lastB(j); return {sx:j.sexe, age:conseil(j) || (b?ak(b):10)}; }
+function gbTests(){ const box = $("#gbt"); if(!box) return; const js = GB.jids.map(getP).filter(Boolean);
+  if(!js.length){ box.innerHTML = `<p class="msg">Coche au moins un joueur.</p>`; return; }
+  const avail = {PP:[],GE:[],DE:[]}, pri = [];
+  js.forEach(j=>{ const p = gbPlan(j); DOM3.forEach(d=>(X.g[gcode(p.sx,p.age,d)]||[]).forEach((L,i)=>{ const T = lineT(p.sx,p.age,d,i); if(!T) return; T.t.forEach(t=>{ if(!avail[d].includes(t)) avail[d].push(t); }); T.p.forEach(t=>{ if(!pri.includes(t)) pri.push(t); }); })); });
+  if(!GB.tests) GB.tests = [...pri];
+  box.innerHTML = `<div class="fold"><h3>Tests <small class="msg">(★ = prioritaire pour au moins un joueur ; ${GB.tests.length} choisis)</small></h3><div class="tools"><button class="ib" type="button" id="gbpri">Seulement les ★</button><button class="ib" type="button" id="gbnone">Aucun</button></div>
+    ${DOM3.map(d=>avail[d].length?`<div class="fold" style="--pc:var(--${d.toLowerCase()})"><h3>${DOMN[d]}</h3><div class="list gbl">${avail[d].sort((a,c)=>(isPerso(a)-isPerso(c))||(a<c?-1:1)).map(t=>`<div class="pk"><label><input type="checkbox" data-gt="${t}" ${GB.tests.includes(t)?"checked":""}> ${pri.includes(t)?"★ ":""}${esc(tnom(t))}${badgeT(t)}</label></div>`).join("")}</div></div>`:"").join("")}
+    <div class="tools" style="margin-top:12px"><button class="go" id="gbok" type="button">Créer les bilans (${js.length} joueur${js.length>1?"s":""})</button></div><p class="msg" id="gbmsg"></p></div>`;
+  document.querySelectorAll("[data-gt]").forEach(c=>c.onchange = ()=>{ GB.tests = [...document.querySelectorAll("[data-gt]:checked")].map(x=>x.dataset.gt); });
+  $("#gbpri").onclick = ()=>{ GB.tests = [...pri]; gbTests(); }; $("#gbnone").onclick = ()=>{ GB.tests = []; gbTests(); };
+  $("#gbok").onclick = ()=>{ if(!GB.tests.length){ $("#gbmsg").textContent = "Choisis au moins un test."; return; }
+    const date = $("#gbd").value||today(), nom = $("#gbn").value.trim(), s = {id:uid(), date, nom, gid:GB.gid||"", jids:[], tests:[...GB.tests], bids:{}, cree:today()};
+    js.forEach(j=>{ const p = gbPlan(j); const nb = newB(date, p.age); nb.note = nom; nb.gb = s.id; nb.sel = [...s.tests]; j.bilans.push(nb); j.cur = nb.id; jsave(j); s.jids.push(j.id); s.bids[j.id] = nb.id; });
+    gbs().push(s); save(); GB.jids = []; GB.tests = null; GB.nom = null; location.hash = "/gbilan/"+s.id; };
+}
+function sessRows(s){ return s.jids.map(id=>{ const j = getP(id); if(!j) return null; const b = j.bilans.find(x=>x.id===s.bids[id]); return b ? {j, b} : null; }).filter(Boolean); }
+function showSession(s){
+  const R = sessRows(s); const k = Math.max(0, Math.min(s.tests.length-1, +(s.k||0))); const t = s.tests[k];
+  let h = `<div class="crumb"><a href="#">Accueil</a>›<a href="#j">5 · Joueurs</a>›<a href="#/gbilan">Bilan de groupe</a>›<span>${frD(s.date)}</span></div>
+   <div class="dochead"><h1 style="color:var(--p5)">${esc(s.nom||"Bilan de groupe")} · ${frD(s.date)}</h1><div class="acts"><a class="ib" href="#/gbilan/${s.id}/feuille">Feuille de terrain</a><button class="ib" id="gsdel" type="button">Retirer de la liste</button></div></div>
+   <p class="lead">${R.length} joueurs · test ${k+1} sur ${s.tests.length}. Le niveau se calcule avec le barème de chaque joueur (sexe, grille) et remplit ses lignes vides.</p>
+   <div class="quick" style="margin-top:10px"><button class="ib" id="gsp" type="button" ${k<=0?"disabled":""}>‹ Précédent</button><div class="f" style="flex:1;min-width:200px"><label for="gst">Test</label><select id="gst">${s.tests.map((x,n)=>`<option value="${n}" ${n===k?"selected":""}>${n+1} · ${esc(tnom(x))}</option>`).join("")}</select></div><button class="ib" id="gsn" type="button" ${k>=s.tests.length-1?"disabled":""}>Suivant ›</button></div>`;
+  if(t){ h += `<div class="fold" style="--pc:var(--${tdom(t).toLowerCase()})"><h3><a class="ref" href="${isPerso(t)?"#/test/"+t:"#d/"+t}">${esc(tnom(t))}</a>${badgeT(t)} <small class="msg">${esc(tunite(t))}</small></h3><div class="tw"><table class="jt"><thead><tr><th>Joueur</th><th>Résultat</th><th>Niveau</th></tr></thead><tbody>${R.map(({j,b})=>{ const ms = mesuresOf(t,j.sexe,ak(b)), r = b.res[t]||{}, lv = niveau(t,j.sexe,ak(b),r);
+      return `<tr><td><a class="ref" href="#/joueur/${j.id}">${esc(j.nom)}</a><div class="lvtxt">${j.sexe==="F"?"F":"G"} · ${gL(b)}</div><div class="lvtxt" id="gbt_${j.id}">${lv?esc(btxt(t,j.sexe,ak(b),lv)):""}</div></td>
+      <td>${ms?ms.map(mk=>`<label class="ms">${esc(mlabel(t,mk))}<input class="inp" inputmode="decimal" autocomplete="off" data-gjid="${j.id}" data-k="${esc(mk)}" value="${esc(r[mk]??"")}"></label>`).join(""):`<span class="msg">pas de barème (${agL(ak(b))})</span>`}</td><td class="c" id="glv_${j.id}">${lv?lvB(lv):"–"}</td></tr>`; }).join("")}</tbody></table></div></div>`; }
+  h += `<div class="fold"><h3>Avancement</h3><div class="tw"><table class="jt pg"><thead><tr><th>Joueur</th>${s.tests.map((x,n)=>`<th class="c" title="${esc(tnom(x))}">${n+1}</th>`).join("")}</tr></thead><tbody>${R.map(({j,b})=>`<tr><td>${esc(j.nom)}</td>${s.tests.map(x=>{ const lv = niveau(x,j.sexe,ak(b),b.res[x]); return `<td class="c">${lv?lvB(lv):(b.res[x]?"…":"·")}</td>`; }).join("")}</tr>`).join("")}</tbody></table></div></div>`;
+  $("#main").innerHTML = h;
+  const go = n => { s.k = n; save(); showSession(s); scrollTo(0,0); };
+  $("#gsp").onclick = ()=>go(k-1); $("#gsn").onclick = ()=>go(k+1); $("#gst").onchange = e=>go(+e.target.value);
+  const del = $("#gsdel"); del.onclick = ()=>{ if(!del.dataset.ok){ del.dataset.ok = 1; del.textContent = "Toucher encore (les bilans restent dans les dossiers)"; return; } P.gbs = gbs().filter(x=>x.id!==s.id); save(); location.hash = "/gbilan"; };
+  document.querySelectorAll("input[data-gjid]").forEach(inp=>inp.oninput = ()=>{ const j = getP(inp.dataset.gjid); if(!j) return; const b = j.bilans.find(x=>x.id===s.bids[j.id]); if(!b) return;
+    setRes(j,b,t,inp.dataset.k,inp.value); if(!b.sel.includes(t)) b.sel.push(t); jsave(j); const lv = niveau(t,j.sexe,ak(b),b.res[t]); $("#glv_"+CSS.escape(j.id)).innerHTML = lv?lvB(lv):"–"; $("#gbt_"+CSS.escape(j.id)).textContent = lv?btxt(t,j.sexe,ak(b),lv):""; });
+}
+function showFeuille(s){ const R = sessRows(s);
+  let h = `<div class="crumb noprint"><a href="#/gbilan/${s.id}">‹ Saisie du bilan de groupe</a></div><div class="dochead"><h1>Feuille de terrain · ${esc(s.nom||"Bilan de groupe")} · ${frD(s.date)}</h1><div class="acts noprint"><button class="ib" id="fprint" type="button">Imprimer ou PDF</button></div></div>
+   <p class="msg">Note les résultats à la main, puis saisis-les test par test dans l'appli. Repère du niveau 3 = barème de la grille du joueur.</p>`;
+  h += s.tests.map((t,n)=>{ const ms = [...new Set(R.flatMap(({j,b})=>mesuresOf(t,j.sexe,ak(b))||[]))];
+    return `<div class="fold fsheet"><h3>${n+1} · ${esc(tnom(t))} <small class="msg">${esc(tunite(t))}</small></h3><div class="tw"><table class="jt fs"><thead><tr><th>Joueur</th><th>Grille</th>${(ms.length?ms:["Résultat"]).map(k=>`<th>${esc(mlabel(t,k))}</th>`).join("")}<th>Niveau 3</th></tr></thead><tbody>${R.map(({j,b})=>`<tr><td>${esc(j.nom)}</td><td>${j.sexe} ${ak(b)}</td>${(ms.length?ms:["x"]).map(()=>`<td class="blank"></td>`).join("")}<td><small>${esc(btxt(t,j.sexe,ak(b),3)||"–")}</small></td></tr>`).join("")}</tbody></table></div></div>`; }).join("");
+  $("#main").innerHTML = h; $("#fprint").onclick = ()=>print(); }
+
+/* ---------- TESTS PERSO : liste, fiche, formulaire, éditeur de barèmes ---------- */
+function showMesTests(){
+  document.documentElement.style.setProperty("--acc", pc("3")); const m = $("#main"); m.style.setProperty("--pc", pc("3"));
+  const per = tc().per, ov = Object.keys(tc().ov).filter(t=>BY[t]);
+  let h = `<div class="crumb"><a href="#">Accueil</a>›<a href="#p/3">3 · Tests</a>›<span>Mes tests</span></div><div class="dochead"><h1 style="color:${pc("3")}">Mes tests et barèmes</h1>${RO()?"":`<div class="acts"><a class="ib" href="#/test-nouveau">+ Créer un test</a></div>`}</div>
+   <p class="lead">Tes tests apparaissent partout comme ceux d'origine : catalogue, grilles (là où ils ont un barème), tests du bilan, calcul du niveau.</p>`;
+  h += `<div class="sec"><h2>Mes tests</h2>${per.length?`<div class="list">${per.map(t=>`<a class="li" href="#/test/${t.id}"><span class="code">${t.id.replace("T-MOI-","MOI ")}</span><span class="tt">${t.prio?"★ ":""}${esc(t.nom)} <span class="bdg">mon test</span><small>${DOMN[t.dom]||""} · ligne${(t.lignes||[]).length>1?"s":""} ${(t.lignes||[]).join(", ")||"–"} · ${nbAges(t.id)} âges avec barème</small></span></a>`).join("")}</div>`:`<div class="empty">Aucun test perso. ${RO()?"":`<a href="#/test-nouveau">Crée le premier</a>.`}</div>`}</div>`;
+  h += `<div class="sec"><h2>Tests d'origine modifiés</h2>${ov.length?`<div class="list">${ov.map(t=>`<a class="li" href="#d/${t}"><span class="code">${t}</span><span class="tt">${esc(tnom(t))} <span class="bdg mod">modifié</span><small>${esc(BY[t].ch)}</small></span></a>`).join("")}</div>`:`<div class="empty">Aucun. Ouvre un test du catalogue et touche « Modifier ce test ».</div>`}</div>`;
+  m.innerHTML = h;
+}
+const ageRows = (t, sx) => AGES.filter(a=>seuilsOf(t,sx,a));
+function nbAges(t){ let n = 0; for(const sx of ["F","G"]) for(const a of AGES) if(seuilsOf(t,sx,a)) n++; return n; }
+function baremeTable(t, sx){ const rows = ageRows(t, sx); if(!rows.length) return "";
+  return `<h3>Barèmes · ${sx==="F"?"filles":"garçons"}</h3><div class="tw"><table><thead><tr><th>Âge</th>${[1,2,3,4].map(k=>`<th class="n${k}">${k} · ${NVN[k]}</th>`).join("")}</tr></thead><tbody>${rows.map(a=>`<tr id="b${sx}${a}"><td><b>${agL(a)}</b></td>${[1,2,3,4].map(k=>`<td>${esc(btxtGen(t,sx,a,k))}</td>`).join("")}</tr>`).join("")}</tbody></table></div>`; }
+function showTestPerso(id, hint){
+  const t = tc().by[id]; if(!t){ $("#main").innerHTML = `<div class="empty">Ce test n'existe plus. <a href="#/mestests">Mes tests</a></div>`; return; }
+  const col = `var(--${(t.dom||"pp").toLowerCase()})`; document.documentElement.style.setProperty("--acc", col); const m = $("#main"); m.style.setProperty("--pc", col);
+  const uses = {F:[],G:[]}; for(const sx of ["F","G"]) for(const a of AGES) if(seuilsOf(id,sx,a)) (t.lignes||[]).forEach(n=>{ if((X.g[gcode(sx,a,t.dom)]||[])[n-1]) uses[sx].push([a,n]); });
+  m.innerHTML = `<div class="crumb"><a href="#">Accueil</a>›<a href="#p/3">3 · Tests</a>›<a href="#/mestests">Mes tests</a></div>
+   <div class="dochead"><h1>${t.prio?"★ ":""}${esc(t.nom)} <span class="bdg">mon test</span></h1><div class="acts">${RO()?"":`<a class="ib" href="#/test-edit/${id}">Modifier</a>`}${t.vid?`<a class="ib" href="${esc(t.vid)}" target="_blank" rel="noopener">▶ Vidéo</a>`:""}</div></div>
+   <div class="crumb" style="margin-top:4px">${id} · ${DOMN[t.dom]||""} · ligne${(t.lignes||[]).length>1?"s":""} ${(t.lignes||[]).map(n=>n+" · "+esc(LIGNES[t.dom][n-1]||"")).join(" ; ")}</div>
+   <article class="doc"><section class="ess"><h2>L'essentiel</h2>${t.protocole?`<p><b>Protocole.</b> ${esc(t.protocole).replace(/\n/g,"<br>")}</p>`:""}${t.materiel?`<p><b>Matériel.</b> ${esc(t.materiel)}</p>`:""}
+   <p><b>Mesure${pmes(t).length>1?"s":""}.</b> ${pmes(t).map(x=>esc(x.nom)+(x.unite?" ("+esc(x.unite)+")":"")).join(" ; ")} · ${t.sens==="petit"?"plus petit = meilleur":"plus grand = meilleur"}</p></section>
+   ${baremeTable(id,"F")}${baremeTable(id,"G")}
+   ${uses.F.length||uses.G.length?`<h3>Dans les grilles</h3>${["F","G"].map(sx=>uses[sx].length?`<p><b>${sx==="F"?"Filles":"Garçons"} :</b> ${uses[sx].map(([a,n])=>`<a class="ref" href="#/ligne/${t.dom}${n}/${sx}/${a}">${a} ans</a>`).join(" · ")}</p>`:"").join("")}`:`<p class="msg">Pas encore de barème : ajoute des seuils pour qu'il apparaisse dans les grilles.</p>`}</article>`;
+  if(hint && hint.startsWith("b")) goBareme(hint.slice(1));
+}
+/* éditeur (test perso ou modification d'un test d'origine) */
+let TE = null;
+function teInit(id, opt){
+  if(id && tc().by[id]){ const t = JSON.parse(JSON.stringify(tc().by[id])); const ms = pmes(t); const S = {F:{},G:{}};
+    for(const sx of ["F","G"]) for(const a of AGES){ const s = t.seuils&&t.seuils[sx]&&(t.seuils[sx][a] || (a===18 ? t.seuils[sx].A : null)); if(!s) continue; S[sx][a] = {}; if(Array.isArray(s)) S[sx][a][ms[0].k] = [...s]; else for(const m of ms) if(s[m.k]) S[sx][a][m.k] = [...s[m.k]]; }
+    return {mode:"perso", id, nom:t.nom||"", dom:t.dom||"PP", lignes:(t.lignes||[]).map(Number), protocole:t.protocole||"", materiel:t.materiel||"", mesures:ms.map(x=>({...x})), sens:t.sens||"grand", prio:!!t.prio, vid:t.vid||"", S, sx:"F", mk:ms[0].k, pa:12}; }
+  if(id && BY[id]){ const o = tov(id)||{}; const ks = []; for(const sx of ["F","G"]) for(const a in (X.s[id]&&X.s[id][sx])||{}) for(const k in X.s[id][sx][a]) if(!ks.includes(k)) ks.push(k);
+    const S = {F:{},G:{}}; for(const sx of ["F","G"]) for(const a of AGES){ const s = seuilsOf(id,sx,a); if(s){ S[sx][a] = {}; for(const k in s) S[sx][a][k] = [...s[k]]; } }
+    return {mode:"orig", id, nom:o.nom||BY[id].t, dom:id.slice(2,4), protocole:o.protocole||"", materiel:o.materiel!=null?o.materiel:(X.mat[id]||""), vid:o.vid||"", mesures:ks.map(k=>({k, nom:k, unite:""})), S, sx:"F", mk:ks[0], pa:12}; }
+  const l = (opt&&opt.l)||""; const mm = /^(PP|GE|DE)(\d+)$/.exec(l);
+  return {mode:"perso", id:null, nom:"", dom:mm?mm[1]:"PP", lignes:mm?[+mm[2]]:[], protocole:"", materiel:"", mesures:[{k:"m1", nom:"Résultat", unite:""}], sens:"grand", prio:false, vid:"", S:{F:{},G:{}}, sx:"F", mk:"m1", pa:12};
+}
+function showTestEdit(id, q){
+  if(RO()){ $("#main").innerHTML = `<div class="empty">La création et la modification des tests sont réservées au coach.</div>`; return; }
+  if(id && !tc().by[id] && !BY[id]){ location.hash = "/mestests"; return; }
+  const opt = Object.fromEntries(new URLSearchParams(q||""));
+  TE = teInit(id, opt); renderTE();
+}
+function teAsc(k, th){ if(TE.mode==="perso"){ const m = TE.mesures.find(x=>x.k===k); return ((m&&m.sens)||TE.sens)!=="petit"; } return th[0]<th[2] || (th[0]===th[2] && /grand/.test(X.sens[TE.id]||"")); }
+function teUnit(k){ if(TE.mode==="perso"){ const m = TE.mesures.find(x=>x.k===k); return m&&m.unite ? " "+m.unite : ""; } return " "+k; }
+function teRow(sx, a, k){ return (TE.S[sx][a]&&TE.S[sx][a][k]) || [null,null,null]; }
+function renderTE(){
+  const t = TE, orig = t.mode==="orig", col = `var(--${t.dom.toLowerCase()})`; document.documentElement.style.setProperty("--acc", col); const m = $("#main"); m.style.setProperty("--pc", col);
+  const isOv = orig && !!tov(t.id);
+  let h = `<div class="crumb"><a href="#">Accueil</a>›<a href="#p/3">3 · Tests</a>›<a href="#/mestests">Mes tests</a>›<span>${orig?"Modifier un test d'origine":t.id?"Modifier mon test":"Nouveau test"}</span></div>
+   <h1>${orig?"Modifier · "+esc(t.nom):t.id?"Modifier · "+esc(t.nom):"Nouveau test"}</h1>${orig?`<p class="lead">Ta version remplace celle d'origine partout (barèmes, calcul du niveau) ; « Remettre l'original » efface tes changements.</p>`:""}
+   <div class="tef">
+    ${orig?"":`<div class="f"><label for="ten">Nom du test</label><input id="ten" class="inp" value="${esc(t.nom)}" placeholder="Ex. Sprint 10 m départ arrêté"></div>
+    <div class="row2"><div class="f"><label for="ted">Domaine</label><select id="ted">${DOM3.map(d=>`<option value="${d}" ${t.dom===d?"selected":""}>${DOMN[d]}</option>`).join("")}</select></div>
+    <div class="f"><label for="tes">Meilleur résultat</label><select id="tes"><option value="grand" ${t.sens!=="petit"?"selected":""}>Plus grand = meilleur</option><option value="petit" ${t.sens==="petit"?"selected":""}>Plus petit = meilleur (temps…)</option></select></div>
+    <label class="ck"><input type="checkbox" id="tep" ${t.prio?"checked":""}> ★ Test prioritaire de ses lignes</label></div>
+    <div class="f"><label>Lignes de grille</label><div class="lchk">${LIGNES[t.dom].map((n,i)=>`<label><input type="checkbox" data-tl="${i+1}" ${t.lignes.includes(i+1)?"checked":""}> ${t.dom}${i+1} · ${esc(n)}</label>`).join("")}</div></div>`}
+    <div class="f"><label for="tepr">${orig?"Ta version du protocole (s'ajoute à la fiche d'origine)":"Protocole"}</label><textarea id="tepr" class="inp ta" placeholder="Installation, déroulement, consignes, essais…">${esc(t.protocole)}</textarea></div>
+    <div class="row2"><div class="f" style="flex:1"><label for="tem">Matériel</label><input id="tem" class="inp" value="${esc(t.materiel)}"></div><div class="f" style="flex:1"><label for="tev">Vidéo (lien)</label><input id="tev" class="inp" type="url" value="${esc(t.vid)}" placeholder="https://…"></div></div>
+    ${orig?"":`<div class="f"><label>Mesures</label><div id="tems">${t.mesures.map((x,n)=>`<div class="mrow"><input class="inp" data-mn="${n}" value="${esc(x.nom)}" placeholder="Nom de la mesure" aria-label="Nom de la mesure ${n+1}"><input class="inp" data-mu="${n}" value="${esc(x.unite||"")}" placeholder="unité" style="width:80px" aria-label="Unité"><select data-msens="${n}" aria-label="Sens"><option value="">sens du test</option><option value="grand" ${x.sens==="grand"?"selected":""}>+ grand = mieux</option><option value="petit" ${x.sens==="petit"?"selected":""}>+ petit = mieux</option></select>${t.mesures.length>1?`<button class="ib sm" type="button" data-mdelx="${n}">Retirer</button>`:""}</div>`).join("")}</div><button class="ib sm" type="button" id="temadd">+ Mesure</button><p class="msg">Avec plusieurs mesures, le niveau du test = le plus bas des niveaux des mesures.</p></div>`}
+   </div>
+   <div class="sec"><h2>Barèmes</h2><p class="msg">Pour chaque âge : 3 seuils = passage au niveau 2, au niveau 3 (attendu de l'âge), au niveau 4. Laisse vide un âge où le test ne se fait pas.</p>
+    <div class="quick">${t.mesures.length>1?`<div class="f"><label for="temk">Mesure</label><select id="temk">${t.mesures.map(x=>`<option value="${esc(x.k)}" ${x.k===t.mk?"selected":""}>${esc(x.nom||x.k)}</option>`).join("")}</select></div>`:""}
+     <div class="jump" style="margin:0">${["F","G"].map(sx=>`<a href="#" data-tsx="${sx}" class="${t.sx===sx?"on":""}">${sx==="F"?"Filles":"Garçons"}</a>`).join("")}</div>
+     <button class="ib sm" type="button" id="tecfg">Copier filles → garçons</button><button class="ib sm" type="button" id="tecgf">Copier garçons → filles</button></div>
+    <div class="tw"><table class="jt bed"><thead><tr><th>Âge</th><th class="n2">→ 2</th><th class="n3">→ 3</th><th class="n4">→ 4</th><th></th></tr></thead><tbody>${AGESA.map(a=>{ const r = teRow(t.sx,a,t.mk); return `<tr><td><b>${a}</b></td>${[0,1,2].map(s=>`<td><input class="inp bi" inputmode="decimal" data-a="${a}" data-s="${s}" value="${r[s]==null?"":String(r[s]).replace(".",",")}" aria-label="${agL(a)}, passage au niveau ${s+2}"></td>`).join("")}<td><button class="ib sm" type="button" data-cpa="${a}" title="Copier cet âge sur tous les âges">sur tous</button></td></tr>`; }).join("")}</tbody></table></div>
+    <div class="quick" style="margin-top:8px"><span class="msg">Remplir en interpolant entre</span><select id="tia">${AGES.map(a=>`<option ${a===8?"selected":""}>${a}</option>`).join("")}</select><span class="msg">et</span><select id="tib">${AGES.map(a=>`<option ${a===16?"selected":""}>${a}</option>`).join("")}</select><span class="msg">ans</span><button class="ib sm" type="button" id="tint">Interpoler</button></div>
+    <div class="fold"><h3>Aperçu des 4 niveaux · ${t.sx==="F"?"fille":"garçon"} <select id="tepa" aria-label="Âge de l'aperçu">${AGESA.map(a=>`<option value="${a}" ${String(a)===String(t.pa)?"selected":""}>${agL(a)}</option>`).join("")}</select></h3><div id="teap"></div></div>
+   </div>
+   <div class="tools" style="margin-top:16px"><button class="go" id="tesave" type="button">Enregistrer</button><a class="ib" href="${t.id?(orig?"#d/"+t.id:"#/test/"+t.id):"#/mestests"}">Annuler</a>${isOv?`<button class="ib" id="tereset" type="button">Remettre l'original</button>`:""}${t.mode==="perso"&&t.id?`<button class="ib" id="tedel" type="button">Supprimer ce test</button>`:""}</div><p class="msg" id="temsg"></p>`;
+  m.innerHTML = h; bindTE(); apercu();
+}
+function apercu(){ const t = TE, a = t.pa, box = $("#teap"); if(!box) return; const th = teRow(t.sx,a,t.mk);
+  if(th.some(x=>x==null)){ box.innerHTML = `<p class="msg">Pas de barème complet (${agL(a)}, ${t.sx==="F"?"filles":"garçons"}) pour cette mesure.</p>`; return; }
+  const asc = teAsc(t.mk, th), bad = asc ? !(th[0]<=th[1]&&th[1]<=th[2]) : !(th[0]>=th[1]&&th[1]>=th[2]);
+  box.innerHTML = `<div class="lvls">${[1,2,3,4].map(k=>`<div class="lv n${k}"><b>${k} · ${NVN[k]}</b>${esc(txtNiv(th, asc, teUnit(t.mk), k))}</div>`).join("")}</div>${bad?`<p class="msg warnc">Seuils dans le désordre pour « ${asc?"plus grand":"plus petit"} = meilleur ».</p>`:""}`; }
+function teRead(){ const t = TE; if(t.mode==="orig"){ t.protocole = $("#tepr").value; t.materiel = $("#tem").value; t.vid = $("#tev").value.trim(); return; }
+  t.nom = $("#ten").value; t.dom = $("#ted").value; t.sens = $("#tes").value; t.prio = $("#tep").checked; t.protocole = $("#tepr").value; t.materiel = $("#tem").value; t.vid = $("#tev").value.trim();
+  t.lignes = [...document.querySelectorAll("[data-tl]:checked")].map(x=>+x.dataset.tl);
+  document.querySelectorAll("[data-mn]").forEach(e=>{ t.mesures[+e.dataset.mn].nom = e.value; }); document.querySelectorAll("[data-mu]").forEach(e=>{ t.mesures[+e.dataset.mu].unite = e.value; });
+  document.querySelectorAll("[data-msens]").forEach(e=>{ const x = t.mesures[+e.dataset.msens]; if(e.value) x.sens = e.value; else delete x.sens; }); }
+function setTh(sx, a, k, s, v){ const t = TE; t.S[sx][a] = t.S[sx][a]||{}; const r = t.S[sx][a][k] = t.S[sx][a][k]||[null,null,null]; r[s] = v; if(r.every(x=>x==null)){ delete t.S[sx][a][k]; if(!Object.keys(t.S[sx][a]).length) delete t.S[sx][a]; } }
+function decs(x){ const s = String(x); return s.includes(".") ? s.split(".")[1].length : 0; }
+function bindTE(){ const t = TE, re = ()=>{ teRead(); const y = scrollY; renderTE(); scrollTo(0,y); };
+  const d = $("#ted"); if(d) d.onchange = ()=>{ teRead(); t.lignes = []; re(); };
+  const ss = $("#tes"); if(ss) ss.onchange = ()=>{ teRead(); apercu(); };
+  const ad = $("#temadd"); if(ad) ad.onclick = ()=>{ teRead(); let n = t.mesures.length+1; while(t.mesures.some(x=>x.k==="m"+n)) n++; t.mesures.push({k:"m"+n, nom:"", unite:""}); re(); };
+  document.querySelectorAll("[data-mdelx]").forEach(b=>b.onclick = ()=>{ teRead(); const x = t.mesures.splice(+b.dataset.mdelx,1)[0]; for(const sx of ["F","G"]) for(const a in t.S[sx]){ delete t.S[sx][a][x.k]; if(!Object.keys(t.S[sx][a]).length) delete t.S[sx][a]; } if(t.mk===x.k) t.mk = t.mesures[0].k; re(); });
+  document.querySelectorAll("[data-msens]").forEach(e=>e.onchange = ()=>{ teRead(); apercu(); });
+  const mk = $("#temk"); if(mk) mk.onchange = ()=>{ teRead(); t.mk = mk.value; re(); };
+  document.querySelectorAll("[data-tsx]").forEach(a=>a.onclick = e=>{ e.preventDefault(); teRead(); t.sx = a.dataset.tsx; re(); });
+  document.querySelectorAll("input.bi").forEach(inp=>inp.oninput = ()=>{ setTh(t.sx, inp.dataset.a, t.mk, +inp.dataset.s, parseN(inp.value)); if(inp.dataset.a===String(t.pa)) apercu(); });
+  document.querySelectorAll("[data-cpa]").forEach(b=>b.onclick = ()=>{ teRead(); const a = b.dataset.cpa, r = [...teRow(t.sx,a,t.mk)]; AGESA.forEach(x=>r.forEach((v,s)=>setTh(t.sx,x,t.mk,s,v))); re(); });
+  const cp = (from, to) => { teRead(); AGESA.forEach(a=>{ const r = [...teRow(from,a,t.mk)]; r.forEach((v,s)=>setTh(to,a,t.mk,s,v)); }); t.sx = to; re(); };
+  $("#tecfg").onclick = ()=>cp("F","G"); $("#tecgf").onclick = ()=>cp("G","F");
+  $("#tint").onclick = ()=>{ teRead(); let a = +$("#tia").value, b = +$("#tib").value; if(a>b) [a,b] = [b,a]; const ra = teRow(t.sx,a,t.mk), rb = teRow(t.sx,b,t.mk);
+    if(b-a<2 || ra.some(x=>x==null) || rb.some(x=>x==null)){ $("#temsg").textContent = "Remplis entièrement les deux âges choisis (écart d'au moins 2 ans), puis interpole."; return; }
+    for(let x=a+1;x<b;x++) for(let s=0;s<3;s++){ const dc = Math.max(decs(ra[s]),decs(rb[s])), p = 10**dc; setTh(t.sx,x,t.mk,s, Math.round((ra[s]+(rb[s]-ra[s])*(x-a)/(b-a))*p)/p); }
+    re(); $("#temsg").textContent = `Âges ${a+1} à ${b-1} remplis par interpolation.`; };
+  $("#tepa").onchange = e=>{ t.pa = +e.target.value; apercu(); };
+  $("#tesave").onclick = ()=>{ teRead(); const msg = $("#temsg");
+    if(t.mode==="perso" && !t.nom.trim()){ msg.textContent = "Donne un nom au test."; return; }
+    if(t.mode==="perso" && t.mesures.some(x=>!x.nom.trim())){ msg.textContent = "Donne un nom à chaque mesure."; return; }
+    const out = {F:{},G:{}}, bad = [], part = [];
+    for(const sx of ["F","G"]) for(const a of AGESA){ const row = t.S[sx][a]; if(!row) continue; const o = {};
+      for(const x of t.mesures){ const th = row[x.k]; if(!th) continue; if(th.some(v=>v==null)){ part.push(`${sx} ${agL(a)}`); continue; }
+        const asc = teAsc(x.k, th); if(asc ? !(th[0]<=th[1]&&th[1]<=th[2]) : !(th[0]>=th[1]&&th[1]>=th[2])){ bad.push(`${sx} ${agL(a)}`); continue; } o[x.k] = th; }
+      if(Object.keys(o).length) out[sx][a] = t.mode==="perso" && t.mesures.length===1 ? o[t.mesures[0].k] : o; }
+    if(bad.length){ msg.textContent = "Seuils dans le désordre : "+bad.slice(0,6).join(", ")+(bad.length>6?"…":"")+". Corrige avant d'enregistrer."; return; }
+    if(part.length){ msg.textContent = "Barème incomplet (3 seuils nécessaires) : "+part.slice(0,6).join(", ")+(part.length>6?"…":"")+"."; return; }
+    if(t.mode==="perso"){ const rec = {nom:t.nom.trim(), dom:t.dom, lignes:t.lignes, protocole:t.protocole, materiel:t.materiel, mesures:t.mesures, sens:t.sens, prio:t.prio, vid:t.vid, seuils:out};
+      let id = t.id; if(id) GR.tests.edit(id, rec); else id = GR.tests.add(rec).id; TC = null; location.hash = "/test/"+id; return; }
+    const patch = {}; if(t.protocole.trim()) patch.protocole = t.protocole; if(t.materiel!==(X.mat[t.id]||"")) patch.materiel = t.materiel; if(t.vid) patch.vid = t.vid;
+    const same = ["F","G"].every(sx=>AGESA.every(a=>JSON.stringify(out[sx][a]||null)===JSON.stringify((X.s[t.id]&&X.s[t.id][sx]&&X.s[t.id][sx][a])||null)));
+    if(!same) patch.seuils = out;
+    GR.tests.reset(t.id); if(Object.keys(patch).length) GR.tests.edit(t.id, patch); TC = null; location.hash = "d/"+t.id; };
+  const rs = $("#tereset"); if(rs) rs.onclick = ()=>{ if(!rs.dataset.ok){ rs.dataset.ok = 1; rs.textContent = "Toucher encore pour remettre l'original"; return; } GR.tests.reset(t.id); TC = null; location.hash = "d/"+t.id; };
+  const dl = $("#tedel"); if(dl) dl.onclick = ()=>{ if(!dl.dataset.ok){ dl.dataset.ok = 1; dl.textContent = "Toucher encore pour supprimer"; return; } GR.tests.remove(t.id); TC = null; location.hash = "/mestests"; };
+}
+
+/* ---------- enrichissement des documents (grilles et fiches de tests) ---------- */
+function enhanceGrid(x){ const mm = /^([FG])(\d\d)_(PP|GE|DE)$/.exec(x.c); if(!mm) return; const sx = mm[1], age = +mm[2], d = mm[3];
+  document.querySelectorAll("#doc details").forEach(det=>{ const s = det.querySelector("summary").textContent; const k = /^Ligne (\d+) ·/.exec(s); if(!k || /non évaluée/.test(s)) return; const n = +k[1];
+    const h4 = [...det.querySelectorAll("h4")].find(e=>/^Tests de la ligne/.test(e.textContent)); const tb = h4 && h4.nextElementSibling && h4.nextElementSibling.querySelector("tbody");
+    if(tb){ tb.querySelectorAll("tr").forEach(tr=>{ const a = tr.querySelector('a.ref[href^="#d/T-"]'); if(!a) return; const t = a.getAttribute("href").split("/")[1]; const o = tov(t); if(!o) return;
+        a.insertAdjacentHTML("afterend", ' <span class="bdg mod">modifié</span>'); if(o.seuils){ const tds = tr.querySelectorAll("td"); for(let lv=1;lv<=4;lv++) if(tds[lv]) tds[lv].textContent = btxt(t,sx,age,lv)||"–"; } });
+      persoFor(d, n, sx, age).forEach(t=>tb.insertAdjacentHTML("beforeend", `<tr><td>${t.prio?"★ ":""}<a class="ref" href="#/test/${t.id}/b${sx}${age}">${esc(t.nom)}</a> <span class="bdg">mon test</span><br><small>${t.id} · ${esc(tunite(t.id))}</small></td>${[1,2,3,4].map(lv=>`<td>${esc(btxt(t.id,sx,age,lv))}</td>`).join("")}</tr>`)); }
+    det.insertAdjacentHTML("beforeend", `<p class="xlp">${lineLinks(d, n-1, age)}${RO()?"":`<a class="xla" href="#/test-nouveau?l=${d}${n}">+ Mon test pour cette ligne</a>`}</p>`); });
+}
+function enhanceTest(x){ const t = x.c, o = tov(t);
+  const acts = document.querySelector(".dochead .acts"); if(acts && !RO()) acts.insertAdjacentHTML("afterbegin", `<a class="ib" href="#/test-edit/${t}">Modifier ce test</a>`);
+  tvideo(t).then(v=>{ if(v && acts && acts.isConnected) acts.insertAdjacentHTML("afterbegin", `<a class="ib" href="${esc(v)}" target="_blank" rel="noopener">▶ Vidéo</a>`); });
+  if(!o) return;
+  const h1 = document.querySelector(".dochead h1"); if(h1) h1.insertAdjacentHTML("beforeend", ' <span class="bdg mod">modifié</span>');
+  const doc = $("#doc"); doc.insertAdjacentHTML("afterbegin", `<div class="att mine"><b>Ta version</b>${o.protocole?`<p>${esc(o.protocole).replace(/\n/g,"<br>")}</p>`:""}${o.materiel!=null&&o.materiel!==(X.mat[t]||"")?`<p><b>Matériel :</b> ${esc(o.materiel)}</p>`:""}${o.seuils?"<p>Barèmes modifiés (ci-dessous).</p>":""}${RO()?"":`<p class="tools"><a class="ib sm" href="#/test-edit/${t}">Modifier</a><button class="ib sm" type="button" id="treset">Remettre l'original</button></p>`}</div>`);
+  const rs = $("#treset"); if(rs) rs.onclick = ()=>{ if(!rs.dataset.ok){ rs.dataset.ok = 1; rs.textContent = "Toucher encore pour remettre l'original"; return; } GR.tests.reset(t); TC = null; route(); };
+  if(o.seuils) doc.querySelectorAll("details").forEach(det=>{ const s = det.querySelector("summary").textContent; const k = /^Barèmes · (filles|garçons)/.exec(s); if(!k) return; const sx = k[1]==="filles"?"F":"G";
+    const tb = det.querySelector("tbody"); if(!tb) return; det.querySelector("summary").textContent = s+" (modifiés)";
+    tb.innerHTML = ageRows(t,sx).map(a=>`<tr id="b${sx}${a}"><td><b>${agL(a)}</b></td>${[1,2,3,4].map(lv=>`<td>${esc(btxt(t,sx,a,lv))}</td>`).join("")}</tr>`).join("") || `<tr><td colspan="5">Aucun barème.</td></tr>`; });
+}
+
+/* ---------- sauvegarde / restauration (une seule pour tout GRÜN, anciens fichiers acceptés) ---------- */
+function importJoueursAnciens(list, radar){ let n = 0;
+  for(const x0 of list||[]){ if(!x0 || !x0.nom || !Array.isArray(x0.bilans)) continue; const x = JSON.parse(JSON.stringify(x0)); x.bilans = x.bilans.map(b=>{ b.id = b.id||uid(); return normB(b); });
+    const ex = getP(x.id) || GR.joueurs.all({archives:true}).find(y=>y.nom===x.nom && (y.naissance||"")===(x.naissance||""));
+    if(!ex){ const j = {...x, id:x.id||uid(), sexe:x.sexe==="F"?"F":"G"}; delete j.maj; SELF++; try{ GR.joueurs.save(j); } finally { SELF--; } n++; continue; }
+    const j = getP(ex.id); for(const b of x.bilans){ const k = j.bilans.findIndex(y=>y.id===b.id); if(k>=0){ if(!radar) j.bilans[k] = b; else j.bilans[k].v = b.v; } else if(!j.bilans.some(y=>y.date===b.date && y.age===b.age && radar)) j.bilans.push(b); }
+    if(!radar) for(const k of ["sexe","naissance","groupe","notes"]) if(x[k]!=null) j[k] = x[k]; jsave(j); n++; }
+  return n; }
+async function exportData(){ await GR.telecharger(GR.exportAll(), "GRUN_sauvegarde_"+today()+".json"); const m = $("#dmsg"); if(m) m.textContent = "Sauvegarde de tout GRÜN prête (joueurs, groupes, tests, banque, séances…)."; }
+async function importData(e){
+  const f = e.target.files&&e.target.files[0]; e.target.value = ""; if(!f) return; const m = $("#dmsg");
+  try{ const d = JSON.parse(await f.text());
+    if(d && d.app==="GRUN" && d.data){ GR.importAll(d); P = Object.assign(P, load()); TC = null; route(); $("#dmsg").textContent = "Sauvegarde GRÜN restaurée (fusionnée avec les données de l'appareil)."; return; }
+    if(d && d.format==="grilles-docs"){ P.fav = [...new Set([...(d.fav||[]),...P.fav])]; P.notes = Object.assign({}, P.notes, d.notes||{}); save(); const n = importJoueursAnciens(d.joueurs, false); route(); $("#dmsg").textContent = `Ancienne sauvegarde Grilles restaurée : favoris, notes et ${n} joueur${n>1?"s":""}.`; return; }
+    const rl = d && (d.format==="profil-radar" ? d.joueurs : Array.isArray(d) ? d : null);
+    if(rl){ const n = importJoueursAnciens(rl, true); route(); $("#dmsg").textContent = `Sauvegarde Profil radar restaurée : ${n} joueur${n>1?"s":""}.`; return; }
+    throw 0; }
+  catch(err){ m.textContent = "Fichier non reconnu : choisis une sauvegarde GRÜN, Grilles_… ou Profils_radar_….json."; }
+}
+
+/* ---------- mises à jour venues d'ailleurs (autre module, autre onglet) ---------- */
+let pendingRe = false;
+GR.on("grun:joueurs", ()=>{ if(SELF) return; const h = location.hash;
+  if(!(h===""||h==="#"||/^#(j($|\/)|\/joueur|\/gbilan|\/fiche)/.test(h))) return;
+  const a = document.activeElement; if(DRAG!=null || (a && a.matches && a.matches("input,textarea,select") && $("#main").contains(a))){ if(!pendingRe){ pendingRe = true; addEventListener("focusout", ()=>{ pendingRe = false; setTimeout(reroute, 0); }, {once:true}); } return; }
+  reroute(); });
+function reroute(){ const y = scrollY; route(); scrollTo(0,y); }
+
+/* JOUEURS-FIN */
+boot();
+</script>
+</body></html>

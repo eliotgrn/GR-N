@@ -1,0 +1,6 @@
+const C="grun-ea188782";const F=["./", "banque.html", "data-banque.json", "data-grilles.json", "data-prog.json", "data-recherche.json", "data-saisons.json", "data-seances.json", "data-veille.json", "data-warmup.json", "grilles.html", "grun.js", "icon-180.png", "icon-192.png", "icon-512.png", "index.html", "logo-1024.png", "manifest.webmanifest", "prog.html", "saisons.html", "seances.html", "veille.html", "videos.json", "vitrine.html", "warmup.html"];
+self.addEventListener("install",e=>{e.waitUntil(caches.open(C).then(c=>Promise.all(F.map(f=>c.add(f).catch(()=>{})))).then(()=>self.skipWaiting()));});
+self.addEventListener("activate",e=>{e.waitUntil(caches.keys().then(k=>Promise.all(k.filter(x=>x.startsWith("grun-")&&x!==C).map(x=>caches.delete(x)))).then(()=>self.clients.claim()));});
+self.addEventListener("fetch",e=>{if(e.request.method!=="GET")return;const u=new URL(e.request.url);
+ if(u.origin!==location.origin){e.respondWith(caches.open(C).then(c=>c.match(e.request).then(r=>r||fetch(e.request).then(n=>{c.put(e.request,n.clone());return n;}).catch(()=>r))));return;}
+ e.respondWith(fetch(e.request).then(n=>{if(n.ok){const cl=n.clone();caches.open(C).then(c=>c.put(e.request,cl));}return n;}).catch(()=>caches.match(e.request,{ignoreSearch:true}).then(r=>r||caches.match("index.html"))));});

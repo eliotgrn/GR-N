@@ -1,0 +1,301 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>GRÜN</title>
+<meta name="description" content="GRÜN : la méthode de préparation physique et de biomécanique du joueur de tennis, de 4 à 18 ans, par Eliot Gruner.">
+<meta name="theme-color" content="#0E4D3F">
+<link rel="apple-touch-icon" href="icon-180.png"><link rel="icon" href="icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,500..900&family=Barlow:wght@400;500;600&display=swap">
+<style>
+:root{
+  --court:#0E4D3F;      /* le vert du court, la couleur de la marque */
+  --court-2:#13604F;    /* bande plus claire (couloirs) */
+  --chalk:#F7F7F2;      /* lignes du court */
+  --ball:#DDF23A;       /* la balle : seul accent, utilisé avec parcimonie */
+  --ink:#0C2A23;        /* texte sur fond clair */
+  --paper:#EEF3EF;      /* fond clair, vert-gris froid */
+  --mute:#4D635C;
+  --rule:#C9D6D0;
+  --display:"Archivo","Arial Narrow",system-ui,sans-serif;
+  --ui:"Barlow",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--paper:#0A231D;--ink:#E8F0EC;--mute:#A6BDB4;--rule:#244A40}}
+:root[data-theme="dark"]{--paper:#0A231D;--ink:#E8F0EC;--mute:#A6BDB4;--rule:#244A40}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}}
+body{margin:0;background:var(--paper);color:var(--ink);font:400 17px/1.55 var(--ui);-webkit-font-smoothing:antialiased}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--ball);outline-offset:3px;border-radius:4px}
+.wrap{width:100%;max-width:1120px;margin:0 auto;padding-inline:max(16px,env(safe-area-inset-left))}
+
+/* ---------- haut de page : le court ---------- */
+.hero{position:relative;background:var(--court);color:var(--chalk);overflow:hidden;min-height:min(100svh,880px);display:flex;flex-direction:column}
+.hero svg.court{position:absolute;inset:0;width:100%;height:100%}
+.court .l{fill:none;stroke:var(--chalk);stroke-opacity:.42;stroke-width:2.2;vector-effect:non-scaling-stroke}
+.court.v{display:none}
+.court .net{stroke-opacity:.85;stroke-width:3}
+@media (prefers-reduced-motion: no-preference){
+  .court .l{opacity:0;animation:appear .5s ease forwards}
+  .court .l:nth-child(2){animation-delay:.12s}.court .l:nth-child(3){animation-delay:.24s}.court .l:nth-child(4){animation-delay:.36s}
+  .court .l:nth-child(5){animation-delay:.48s}.court .l:nth-child(6){animation-delay:.6s}.court .l:nth-child(7){animation-delay:.72s}
+  .hero .mark,.hero .lead,.hero .acts{opacity:0;animation:appear .7s ease forwards 1.1s}
+  .hero .lead{animation-delay:1.3s}.hero .acts{animation-delay:1.45s}
+}
+@keyframes appear{to{opacity:1}}
+.top{position:relative;z-index:2;display:flex;justify-content:space-between;align-items:center;padding-top:max(14px,env(safe-area-inset-top));padding-block-end:14px}
+.top .brand{font:800 20px/1 var(--display);font-stretch:112%;letter-spacing:.02em;text-decoration:none}
+.top a.login{font:600 15px/1 var(--ui);text-decoration:none;border:1.5px solid rgba(247,247,242,.6);border-radius:999px;padding:10px 16px;min-height:42px;display:inline-flex;align-items:center}
+.hero .body{position:relative;z-index:2;flex:1;display:flex;flex-direction:column;justify-content:center;padding-block:40px 64px}
+.mark{margin:0;font:900 clamp(92px,22vw,248px)/.84 var(--display);font-stretch:125%;letter-spacing:-.025em;display:flex;align-items:flex-end}
+.mark .u{position:relative;display:inline-block}
+.mark .dots{position:absolute;left:0;right:0;top:-.04em;display:flex;justify-content:space-between;padding-inline:.09em;pointer-events:none}
+.ball{width:.17em;height:.17em;border-radius:50%;background:var(--ball);position:relative;overflow:hidden;
+  box-shadow:inset -.02em -.02em 0 rgba(0,0,0,.08)}
+.ball::before,.ball::after{content:"";position:absolute;top:-10%;bottom:-10%;width:70%;border:.012em solid var(--court);border-radius:50%}
+.ball::before{left:-46%}.ball::after{right:-46%}
+.hero .lead{max-width:34ch;font:500 clamp(19px,2.4vw,25px)/1.35 var(--ui);margin:28px 0 0;color:#DCE8E2}
+.acts{display:flex;flex-wrap:wrap;gap:12px;margin-top:30px}
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:50px;padding:0 22px;border-radius:999px;font:600 16px/1 var(--ui);text-decoration:none;border:0;cursor:pointer}
+.btn.ball-b{background:var(--ball);color:var(--court)}
+.btn.line{border:1.5px solid rgba(247,247,242,.65);color:var(--chalk)}
+.btn.dark{background:var(--court);color:var(--chalk)}
+
+/* ---------- sections ---------- */
+section{padding-block:clamp(64px,9vw,112px)}
+h2{font:800 clamp(34px,5.2vw,58px)/1.02 var(--display);font-stretch:108%;letter-spacing:-.012em;margin:0;max-width:18ch;text-wrap:balance}
+.intro{max-width:60ch;color:var(--mute);margin:18px 0 0;font-size:18px}
+
+/* la boucle : c'est une vraie séquence, d'où les numéros */
+.loop{list-style:none;margin:48px 0 0;padding:0;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:0;border-top:2px solid var(--ink)}
+.loop li{padding:18px 18px 0 0;position:relative}
+.loop li+li{padding-left:18px;border-left:1px solid var(--rule)}
+.loop .n{font:800 15px/1 var(--display);font-stretch:100%;color:var(--mute)}
+.loop h3{font:700 22px/1.15 var(--display);font-stretch:100%;margin:10px 0 8px}
+.loop p{margin:0;color:var(--mute);font-size:16px}
+.loop-end{margin-top:22px;color:var(--mute);font-size:16px}
+@media (max-width:900px){.loop{grid-template-columns:1fr}.loop li,.loop li+li{padding:16px 0;border-left:0;border-bottom:1px solid var(--rule);display:grid;grid-template-columns:40px 1fr;column-gap:8px}.loop li .n{grid-row:span 2;padding-top:6px}.loop h3{margin:0 0 4px}}
+
+/* les 4 pôles, posés dans les 4 carrés de service */
+.poles{background:var(--court);color:var(--chalk)}
+.poles h2{color:var(--chalk)}.poles .intro{color:#C3D8CF}
+.boxes{margin-top:44px;display:grid;grid-template-columns:1fr 1fr;border:3px solid var(--chalk);position:relative}
+.boxes::before{content:"";position:absolute;top:0;bottom:0;left:50%;width:6px;margin-left:-3px;background:repeating-linear-gradient(0deg,var(--chalk) 0 6px,transparent 6px 10px);opacity:.9}
+.box{padding:clamp(22px,3.4vw,40px);min-height:250px;position:relative}
+.box:nth-child(1),.box:nth-child(3){border-right:3px solid transparent}
+.box:nth-child(1),.box:nth-child(2){border-bottom:3px solid var(--chalk)}
+.box h3{font:800 clamp(24px,3vw,34px)/1.05 var(--display);font-stretch:105%;margin:0 0 12px;max-width:14ch}
+.box p{margin:0 0 14px;color:#DCE8E2;max-width:38ch}
+.box ul{margin:0;padding:0;list-style:none;display:flex;flex-wrap:wrap;gap:8px}
+.box li{font:600 14px/1 var(--ui);border:1.5px solid rgba(247,247,242,.45);border-radius:999px;padding:8px 12px}
+.box.ind li{border-color:var(--ball);color:var(--ball)}
+@media (max-width:760px){.boxes{grid-template-columns:1fr}.boxes::before{display:none}.box{min-height:0}.box:not(:last-child){border-bottom:3px solid var(--chalk)}.box:nth-child(1),.box:nth-child(3){border-right:0}
+  .box:nth-child(2)::before{content:"";position:absolute;left:0;right:0;top:-5px;height:6px;background:repeating-linear-gradient(90deg,var(--chalk) 0 6px,transparent 6px 10px)}}
+
+/* tableau d'affichage : ce que contient la méthode */
+.board{margin-top:44px;background:#0B3B31;color:var(--chalk);border-radius:6px;padding:8px 0;box-shadow:inset 0 0 0 2px #1E5E4F;max-width:760px}
+.board .row{display:grid;grid-template-columns:1fr auto;align-items:baseline;gap:16px;padding:14px clamp(16px,3vw,28px)}
+.board .row+.row{border-top:1px solid #1E5E4F}
+.board .k{font:500 18px/1.3 var(--ui);color:#C7DBD2}
+.board .v{font:800 clamp(28px,4vw,40px)/1 var(--display);font-stretch:90%;font-variant-numeric:tabular-nums;color:var(--chalk)}
+.board .row:first-child .v{color:var(--ball)}
+
+/* offres */
+.offers{margin-top:44px;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:20px}
+@media (max-width:1100px){.offers{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.offer{border-top:4px solid var(--ink);padding-top:20px;display:flex;flex-direction:column}
+.offer.main{border-top-color:var(--court)}
+.offer h3{font:800 26px/1.1 var(--display);font-stretch:104%;margin:0}
+.offer .who{color:var(--mute);margin:6px 0 16px}
+.offer ul{margin:0 0 18px;padding-left:20px}
+.offer li{margin:4px 0}
+.offer li.off{color:var(--mute);text-decoration:line-through;text-decoration-thickness:1px}
+.offer .price{margin-top:auto;font:700 17px/1.3 var(--ui);color:var(--mute);padding-top:14px;border-top:1px solid var(--rule)}
+@media (max-width:900px){.offers{grid-template-columns:1fr;gap:34px}}
+
+/* Eliot */
+.author{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.4fr);gap:clamp(24px,5vw,72px);align-items:start}
+.author blockquote{margin:0;font:600 clamp(24px,3.2vw,34px)/1.25 var(--display);font-stretch:96%;letter-spacing:-.005em}
+.author p{margin:0 0 14px}
+@media (max-width:800px){.author{grid-template-columns:1fr}}
+.access{background:var(--ink);color:var(--paper)}
+:root[data-theme="dark"] .access{background:#06150F;color:#E8F0EC}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .access{background:#06150F;color:#E8F0EC}}
+.access h2{color:inherit}.access .intro{color:inherit;opacity:.8}
+.access .acts{margin-top:28px}
+.access .btn.line{border-color:currentColor;color:inherit}
+footer{padding-block:28px calc(28px + env(safe-area-inset-bottom));color:var(--mute);font-size:14px}
+footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
+@media (max-width:700px){.hero svg.court.h{display:none}.hero svg.court.v{display:block;top:auto;height:50%}.court .l{stroke-opacity:.22}.mark{font-size:27vw}.hero .body{justify-content:flex-start;padding-top:5svh;padding-bottom:52svh}}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <svg class="court h" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+    <!-- court vu de haut, filet vertical au centre : doubles, simples, lignes de service, ligne médiane, filet -->
+    <path class="l" d="M6 10 H94 V90 H6 Z"/>
+    <path class="l" d="M6 20 H94"/>
+    <path class="l" d="M6 80 H94"/>
+    <path class="l" d="M28 20 V80"/>
+    <path class="l" d="M72 20 V80"/>
+    <path class="l" d="M28 50 H72"/>
+    <path class="l net" d="M50 6 V94"/>
+  </svg>
+  <svg class="court v" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+    <path class="l" d="M8 5 H92 V95 H8 Z"/>
+    <path class="l" d="M19 5 V95"/>
+    <path class="l" d="M81 5 V95"/>
+    <path class="l" d="M19 28 H81"/>
+    <path class="l" d="M19 72 H81"/>
+    <path class="l" d="M50 28 V72"/>
+    <path class="l net" d="M3 50 H97"/>
+  </svg>
+  <div class="wrap top">
+    <a class="brand" href="#">GRÜN</a>
+    <a class="login" href="index.html">Se connecter</a>
+  </div>
+  <div class="wrap body">
+    <h1 class="mark" aria-label="GRÜN">GR<span class="u">U<span class="dots" aria-hidden="true"><i class="ball"></i><i class="ball"></i></span></span>N</h1>
+    <p class="lead">La science du joueur de tennis de 4 à 18 ans, préparation physique et biomécanique, réunie dans une seule appli : évaluer, programmer, construire chaque séance, suivre chaque joueur.</p>
+    <div class="acts"><a class="btn ball-b" href="#offres">Voir les offres</a><a class="btn line" href="#poles">Ce que contient l'appli</a></div>
+  </div>
+</header>
+
+<main>
+<section>
+  <div class="wrap">
+    <h2>Un joueur, une boucle qui ne s'arrête jamais</h2>
+    <p class="intro">Tout est relié. Le bilan d'un joueur oriente sa programmation, qui construit ses séances, qui préparent son échauffement. Son ressenti après l'effort revient dans son dossier et prépare le bilan suivant.</p>
+    <ol class="loop">
+      <li><span class="n">1</span><h3>Évaluer</h3><p>Grilles de compétences de son âge biologique, tests et barèmes, profil radar.</p></li>
+      <li><span class="n">2</span><h3>Programmer</h3><p>Une saison, un cycle ou une semaine, adaptés à ses vraies séances et à ses tournois.</p></li>
+      <li><span class="n">3</span><h3>Construire la séance</h3><p>La structure est posée pour toi, les exercices adaptés sont proposés case par case.</p></li>
+      <li><span class="n">4</span><h3>Échauffer</h3><p>L'échauffement complet selon l'âge, la durée et ce qui suit, même en cinq minutes.</p></li>
+      <li><span class="n">5</span><h3>Suivre</h3><p>Ressenti, charge, forme du jour, croissance, blessures : tout arrive dans son dossier.</p></li>
+    </ol>
+    <p class="loop-end">Puis le bilan suivant mesure ce qui a progressé, et la boucle repart.</p>
+  </div>
+</section>
+
+<section class="poles" id="poles">
+  <div class="wrap">
+    <h2>Quatre pôles, un seul court</h2>
+    <p class="intro">Chaque pôle a sa place, et tous partagent les mêmes joueurs, la même banque d'exercices et les mêmes tests. Ce que tu saisis quelque part se retrouve partout.</p>
+    <div class="boxes">
+      <div class="box ind">
+        <h3>Individualisation</h3>
+        <p>Le dossier complet de chaque joueur et de chaque groupe : tout ce qui a été mesuré, prévu et fait, géré depuis un seul endroit.</p>
+        <ul><li>Dossier joueur</li><li>Dossier groupe</li><li>Charge et forme</li><li>Croissance</li></ul>
+      </div>
+      <div class="box">
+        <h3>Create</h3>
+        <p>Trois outils emboîtés : la prog ouvre la séance, la séance ouvre l'échauffement. Chacun s'utilise aussi seul.</p>
+        <ul><li>Create my prog</li><li>Create my séance</li><li>Create my warm-up</li></ul>
+      </div>
+      <div class="box">
+        <h3>Ressources et savoirs</h3>
+        <p>Toute la connaissance de la méthode, rangée pour qu'on trouve la réponse en trois touches.</p>
+        <ul><li>Veille de connaissances</li><li>Banque d'exercices</li><li>Référentiel de programmation</li></ul>
+      </div>
+      <div class="box">
+        <h3>Tests et profilage</h3>
+        <p>Où en est le joueur par rapport aux attendus du haut niveau de sa génération, ligne par ligne.</p>
+        <ul><li>Grilles de compétences</li><li>Tests et barèmes</li><li>Profil radar</li></ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Ce qu'il y a dedans</h2>
+    <p class="intro">Une méthode construite à partir de milliers de pages de formation fédérale, de cours universitaires et d'ouvrages de référence, réécrite en un seul modèle cohérent.</p>
+    <div class="board" role="table" aria-label="Contenu de la méthode">
+      <div class="row" role="row"><span class="k" role="cell">Exercices, jeux et situations, chacun avec sa fiche</span><span class="v" role="cell">4 500+</span></div>
+      <div class="row" role="row"><span class="k" role="cell">Documents de la veille de connaissances</span><span class="v" role="cell">291</span></div>
+      <div class="row" role="row"><span class="k" role="cell">Grilles de compétences, filles et garçons, 4 à 18 ans</span><span class="v" role="cell">90</span></div>
+      <div class="row" role="row"><span class="k" role="cell">Tests avec leurs barèmes par âge et par sexe</span><span class="v" role="cell">287</span></div>
+      <div class="row" role="row"><span class="k" role="cell">Saisons de référence, de 4 à 18 ans</span><span class="v" role="cell">30</span></div>
+    </div>
+  </div>
+</section>
+
+<section id="offres" style="padding-top:0">
+  <div class="wrap">
+    <h2>Quatre façons d'utiliser GRÜN</h2>
+    <p class="intro">Chaque accès est personnel. Une structure ou un coach crée ses joueurs ; chaque joueur suivi reçoit son propre accès et ne voit que son dossier. Un joueur peut aussi utiliser GRÜN seul, comme son propre coach.</p>
+    <div class="offers">
+      <article class="offer main">
+        <h3>Structure</h3>
+        <p class="who">Clubs, comités, ligues, pôles</p>
+        <ul>
+          <li>Les quatre pôles en entier</li>
+          <li>Plusieurs coachs, dossiers joueurs et groupes</li>
+          <li>Exercices et tests propres à la structure</li>
+          <li>Accès offert aux joueurs suivis</li>
+        </ul>
+        <p class="price">Tarif selon le nombre de coachs et de joueurs</p>
+      </article>
+      <article class="offer">
+        <h3>Coach</h3>
+        <p class="who">Préparateurs physiques, entraîneurs indépendants</p>
+        <ul>
+          <li>Les quatre pôles en entier</li>
+          <li>Dossiers de tes joueurs et de tes groupes</li>
+          <li>Tes propres exercices et tests</li>
+          <li>Accès offert à tes joueurs suivis</li>
+        </ul>
+        <p class="price">Abonnement coach</p>
+      </article>
+      <article class="offer">
+        <h3>Joueur performance</h3>
+        <p class="who">Le jeune joueur qui vise le haut niveau</p>
+        <ul>
+          <li>Tests, grilles et profil radar</li>
+          <li>Create my prog, séance et warm-up</li>
+          <li>Son dossier, sa charge, sa croissance</li>
+          <li class="off">Veille et référentiel de programmation</li>
+        </ul>
+        <p class="price">Abonnement individuel</p>
+      </article>
+      <article class="offer">
+        <h3>Joueur club</h3>
+        <p class="who">Le jeune joueur qui veut s'entraîner mieux, à son rythme</p>
+        <ul>
+          <li>Create my prog</li>
+          <li>Create my séance</li>
+          <li>Create my warm-up</li>
+          <li class="off">Tests et profilage</li>
+        </ul>
+        <p class="price">Abonnement individuel</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section style="padding-top:0">
+  <div class="wrap author">
+    <blockquote>« Je voulais l'outil qui me manquait : tout ce qu'on sait sur la formation du joueur, utilisable sur le court. »</blockquote>
+    <div>
+      <p><strong>Eliot Gruner</strong> est préparateur physique tennis du comité de Gironde de tennis et du SPUC Tennis à Pessac, où il accompagne aussi des joueurs en individuel. Étudiant en STAPS, il a construit GRÜN pour former des joueurs de 4 à 18 ans vers le haut niveau.</p>
+      <p>La méthode couvre la préparation physique et la biomécanique du geste et du déplacement, avec un même repère partout : être dans les temps du haut niveau de sa génération.</p>
+    </div>
+  </div>
+</section>
+
+<section class="access" id="acces">
+  <div class="wrap">
+    <h2>Ouvrir un accès</h2>
+    <p class="intro">Les accès sont ouverts par Eliot, structure par structure et joueur par joueur. Tu as déjà un accès ? Connecte-toi.</p>
+    <div class="acts"><a class="btn ball-b" href="index.html">Se connecter</a><a class="btn line" href="#offres">Revoir les offres</a></div>
+  </div>
+</section>
+</main>
+
+<footer><div class="wrap"><span>© 2026 Eliot Gruner. Méthode GRÜN, tous droits réservés.</span><span>Préparation physique et biomécanique du joueur de tennis, 4-18 ans</span></div></footer>
+</body>
+</html>
