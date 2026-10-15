@@ -295,6 +295,26 @@ body.terrain.grun-has-nav{padding-bottom:0}
 #toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(var(--nav-h,62px) + 16px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:10px;font-weight:600;z-index:60;max-width:90vw}
 #sheet{z-index:70}
 .li .tools{display:flex}
+/* trames haute performance : pourquoi, blocs, pied */
+.why{background:var(--panel);border:1px solid var(--line);border-left:4px solid var(--p2);border-radius:12px;padding:10px 14px;margin-top:12px}
+.why p{margin:6px 0;font-size:14.5px;line-height:1.45}
+.why .msg{font-size:12.5px}
+.whyh{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between}
+.whyh>b{font-family:var(--display);font-size:19px}
+.why details{margin:4px 0}.why summary{cursor:pointer;font-weight:600;font-size:13.5px;color:var(--p2)}
+.tbloc{margin-top:6px}
+.bobj{margin:2px 0 6px;font-size:14px;color:var(--ink)}
+.bcode{display:inline-block;font-size:11px;font-weight:700;color:var(--p2);border:1px solid var(--p2);border-radius:5px;padding:0 5px;vertical-align:middle}
+.bdos label{display:block;font-size:11px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--mute)}
+.bdos textarea{width:100%;border:1px solid var(--line);border-radius:7px;background:var(--bg);padding:6px 8px;font-size:13.5px;line-height:1.35;resize:vertical;margin-top:2px}
+.bcons{margin:4px 0}.bcons summary{cursor:pointer;font-weight:600;font-size:13.5px;color:var(--p2);padding:4px 0}
+.bcons ul{margin:4px 0;padding-left:20px;font-size:14px}
+.box.tb{border-left:4px solid var(--p2)}
+.tcons{margin:0 0 8px}
+.tfoot .card{gap:12px}.tfoot ul{margin:4px 0;padding-left:20px}.tfoot p{margin:4px 0}
+.altb[aria-pressed=true]{border-color:var(--ink);box-shadow:inset 0 0 0 1px var(--ink)}
+.altb em{display:block;margin-top:2px}
+@media print{.bdos textarea{display:none}.why{border-color:#bbb}}
 </style>
 <header class="top"><div id="relais"></div><div class="topin">
   <button class="ib" id="back" type="button" aria-label="Retour">‹</button>
@@ -371,7 +391,7 @@ const Partage = (()=>{
 })();
 
 /* ===== CREATE MY SÉANCE (GRÜN) : l'appli construit la structure, propose pour chaque case les exos de la banque, le coach choisit =====
-   Poupée russe : dans Create my prog (relais), contient Create my warm-up (relais).
+   Poupée russe : dans Create my prog (relais) ; l'échauffement se CHOISIT dans Choose your warm-up (relais vers la bibliothèque, pas de constructeur ici).
    Données propres : seances_v1 {seances:[Seance], modeles:[Modele], mat, lieu, relais, relaisProg, run}. Joueurs, groupes, journal, banque : GRUN.* */
 function nomCourt(t,n=60){ t=String(t||"").trim(); if(t.length<=n) return t; const c=t.slice(0,n).replace(/\s+\S*$/,""); return c.replace(/[\s,;:·–-]+$/,"")+"…"; }
 const SK="seances_v1", PK="programmation_v1", CK="programmation_cache_v1";
@@ -449,17 +469,24 @@ function whoTxt(s,c){ const J=joueursDe(s), g=s.gid&&GRUN.groupes.get(s.gid);
 
 /* ---------- contexte de la séance ---------- */
 const STOP=new Set("avant apres entre puis chaque toujours selon leurs notre votre comme quand votre seance travail sur les des dans avec sans pour plus moins tres bien".split(" "));
+function bioOf(j){ try{ const m=GRUN.maturite(j); if(m&&m.bio!=null&&isFinite(m.bio)) return Math.max(4,Math.min(18,Math.round(m.bio))); }catch(e){} return null; }
 function ctxOf(s){
-  const sel=joueursDe(s), L=s.libre||{}; let age, niv=0, zones=new Set(), crois=false, faibles=new Set(), n, sexe="G";
+  const sel=joueursDe(s), L=s.libre||{}; let age, niv=0, zones=new Set(), crois=false, faibles=new Set(), n, sexe="G", tage=null, bioUsed=false;
   if(sel.length){
     const ages=sel.map(ageOf).filter(a=>a!=null); age=ages.length?Math.min(...ages):(+L.age||13);
+    const ta=sel.map(j=>{ const b=bioOf(j); if(b!=null){ bioUsed=true; return b; } return ageOf(j); }).filter(a=>a!=null); tage=ta.length?Math.min(...ta):age;
     niv=Math.max(0,...sel.map(j=>niveauDe(j.classement||"NC",ageOf(j)||13)));
     for(const j of sel){ (j.zones||[]).forEach(z=>zones.add(z)); if(croisDe(j)) crois=true; faiblesDe(j).forEach(l=>faibles.add(l)); }
     n=sel.length+(L.extra||0); sexe=sel.filter(j=>j.sexe==="F").length*2>=sel.length?"F":"G";
   } else { age=+L.age||13; niv=+L.niv||0; n=L.n||1; (L.zones||[]).forEach(z=>zones.add(z)); crois=!!L.crois; sexe=L.sexe==="F"?"F":"G"; }
   age=Math.max(4,Math.min(18,age));   // GRÜN = 4-18 ans (ancien libre.adulte : 18 ans)
+  tage=Math.max(4,Math.min(18,tage==null?age:tage));   // âge de la trame : biologique si mesuré (groupe : le plus jeune), sinon civil
   const words=norm(s.theme).split(/[^a-z0-9]+/).filter(w=>w.length>4&&!STOP.has(w));
-  return {age,al:age+" ans",niv,zones:[...zones],crois,faibles:[...faibles],n,sexe,mat:new Set(s.mat||[]),lieu:s.lieu,phase:s.phase,charge:s.charge,words,lignes:s.lignes||[],done:doneMap(s,sel)};
+  const ch=+s.charge||null, ph=s.phase, low=/^(P|C|R|R0)$/.test(ph)||(ch!=null&&ch<=2), high=!low&&ch>=4&&/^(G|S)$/.test(ph||"G")&&!crois;
+  const s47=age<=7||tage<=7?saison47(sexe,Math.min(7,Math.max(4,age)),s.date):null, fav=new Set();
+  if(s47){ (s47.w?.l||[]).forEach(l=>fav.add(l)); (s47.m?.L||[]).forEach(l=>fav.add(l)); norm(s47.w?.t||"").split(/[^a-z0-9]+/).filter(w=>w.length>4&&!STOP.has(w)).forEach(w=>words.push(w)); }
+  return {age,al:age+" ans",tage,bioUsed,niv,zones:[...zones],crois,faibles:[...faibles],n,sexe,mat:new Set(s.mat||[]),lieu:s.lieu,phase:s.phase,charge:s.charge,words,lignes:s.lignes||[],done:doneMap(s,sel),
+    noKids:age>=11||tage>=11, dmode:low?"bas":high?"haut":"", tid:s.tid||null, s47, fav:[...fav]};
 }
 /* ce que les joueurs ont déjà fait (séances faites) : par ligne, niveau maximal atteint */
 function doneMap(s,sel){
@@ -488,8 +515,9 @@ function scoreEx(e,box,c,used){
   if(box.L?.length&&e.L.some(l=>box.L.includes(l))) s+=6;
   if(box.f?.includes(e.f)) s+=3-Math.min(2,box.f.indexOf(e.f)*0.6);
   const kw=kwOf(box); if(kw&&kw.test(t)) s+=3;
-  const tv=c.age<=9?1:c.age<=11?2:c.age<=14?2.5:3.2+(c.niv>=2?0.4:0);
-  s-=Math.abs(e.v-tv)*1.2;
+  if(box.t){ const i=(box.t.cles||[]).indexOf(e.id); if(i>=0) s+=9-i*0.4; const nv=box.t.niv||[1,4], tv=(nv[0]+nv[1])/2; s-=Math.abs(e.v-tv)*1.2; if(e.v<nv[0]||e.v>nv[1]) s-=2; }
+  else { const tv=c.age<=9?1:c.age<=11?2:c.age<=14?2.5:3.2+(c.niv>=2?0.4:0); s-=Math.abs(e.v-tv)*1.2; }
+  if(c.fav?.length&&e.L.some(l=>c.fav.includes(l))) s+=1.5;
   if(e.a<=c.age-7&&e.v<=1) s-=1.5;
   const fatig=/force|halte|puis|rsa|aero/.test(e.k);
   if((c.phase==="P"||c.phase==="C")&&fatig&&e.v>=3) s-=1.5;
@@ -506,12 +534,15 @@ function scoreEx(e,box,c,used){
   if(used.has(e.id)) s-=3;
   return s;
 }
-function pool(box,c,used){
+/* jeux d'enfants (jeux d'échauffement 5.6, jeux physiques 5.2.6-5.2.7) : jamais dans le corps de séance dès 11 ans, sauf si on coche « afficher aussi les jeux » */
+const isKid=e=>/^5\.6/.test(e.f||"")||e.f==="5.2.6"||e.f==="5.2.7"||/^(ECV|JEU)-/.test(e.id||"");
+function pool(box,c,used,opt){
   const out=[];
   for(const e of DATA.ex){
     if(HIDE.has(e.id)) continue;
-    const inF=box.f?.includes(e.f), inL=box.L?.length&&e.L.some(l=>box.L.includes(l));
-    if(!inF&&!inL) continue;
+    const inF=box.f?.includes(e.f), inL=box.L?.length&&e.L.some(l=>box.L.includes(l)), inC=box.t?.cles?.includes(e.id);
+    if(!inF&&!inL&&!inC) continue;
+    if(c.noKids&&box.part!=="E"&&isKid(e)&&!opt?.jeux) continue;
     if(box.dom&&!box.dom.includes(e.dom)) continue;
     if(!okEx(e,c)) continue;
     out.push({e,s:scoreEx(e,box,c,used)});
@@ -519,12 +550,156 @@ function pool(box,c,used){
   return out.sort((a,b)=>b.s-a.s);
 }
 /* exo inadapté (âge, croissance) → message ; remplaçant = meilleur exo de la case, même sous-famille d'abord */
-function warnEx(e,c){ if(!e) return null; if((e.a||4)>c.age) return "prévu dès "+e.a+" ans"; if(e.ax&&e.ax<c.age) return "prévu jusqu'à "+e.ax+" ans"; if(c.crois&&heavy(e)) return "déconseillé pendant le pic de croissance"; return null; }
-function altFor(e,box,c,used){ const P=pool(box,c,used).filter(p=>p.e.id!==e.id&&!warnEx(p.e,c)); return (P.find(p=>p.e.s===e.s)||P[0])?.e||null; }
+function warnEx(e,c,B){ if(!e) return null; if(c.noKids&&isKid(e)&&(!B||B.part==="C")) return "jeu d'enfant : pas dans le corps de séance dès 11 ans"; if((e.a||4)>c.age) return "prévu dès "+e.a+" ans"; if(e.ax&&e.ax<c.age) return "prévu jusqu'à "+e.ax+" ans"; if(c.crois&&heavy(e)) return "déconseillé pendant le pic de croissance"; return null; }
+function altFor(e,box,c,used){ const P=pool(box,c,used).filter(p=>p.e.id!==e.id&&!warnEx(p.e,c,box)); return (P.find(p=>p.e.s===e.s)||P[0])?.e||null; }
 
 /* ---------- familles d'une ligne ---------- */
 let LFAM={};
 function famsOfLine(l){ if(LFAM[l]) return LFAM[l]; const c={}; for(const e of DATA.ex) if(e.L.includes(l)) c[e.f]=(c[e.f]||0)+1; return LFAM[l]=Object.entries(c).filter(([,n])=>n>=4).map(([f])=>f); }
+
+/* ---------- TRAMES DE SÉANCE HAUTE PERFORMANCE (apps/seances/trames, data.json « trames ») ----------
+   Une séance = une trame (type × tranche d'âge) : blocs dans l'ordre neuromusculaire, objectif, dosage, intensité, consignes, exos clés.
+   Type déduit du thème, des lignes et du type de séance de la prog ; âge = biologique si mesuré, sinon civil (groupe : le plus jeune).
+   4-7 ans : motricité seulement (trames MOT construites à partir des saisons de référence F04…G07). */
+let TRAMES={}, S47={};
+const TNOM={FOR:"Force et musculation",PUI:"Puissance et pliométrie",VIT:"Vitesse et accélération",COD:"Freinage, changements de direction, agilité",RSA:"Répétition d'efforts intenses",AER:"Endurance aérobie",GAI:"Gainage et stabilité du tronc",COO:"Coordination, motricité, rythme",EQU:"Équilibre et proprioception",MOB:"Mobilité et souplesse",PRE:"Prévention des blessures",DEP:"Biomécanique du déplacement",GES:"Biomécanique du geste (PP au service du geste)",REC:"Récupération active",MIX:"Séance mixte (2-3 qualités compatibles)",MOT:"Motricité 4-7 ans"};
+const TORD=["FOR","PUI","VIT","COD","RSA","AER","GAI","COO","EQU","MOB","PRE","DEP","GES","REC","MIX"];
+const BANDS=[[4,5,"0405"],[6,7,"0607"],[8,10,"810"],[11,12,"1112"],[13,13,"13"],[14,15,"1415"],[16,18,"1618"]];
+const bandOf=a=>(BANDS.find(b=>a>=b[0]&&a<=b[1])||BANDS[6])[2];
+const bandTxt=a=>{ const b=BANDS.find(x=>a>=x[0]&&a<=x[1])||BANDS[6]; return b[0]===b[1]?b[0]+" ans":b[0]+"-"+b[1]+" ans"; };
+async function loadTrames(){ try{ const d=await (await fetch("data-seances.json")).json(); TRAMES={}; for(const t of d.trames||[]) TRAMES[t.id]=t; S47=d.saisons47||{};
+  if(!DATA.mat.length&&d.mat) DATA.mat=d.mat; if(!DATA.fams.length&&d.fams){ DATA.fams=d.fams; for(const f of DATA.fams) FAM[f.c]=f; } }catch(e){ console.warn("trames",e); } }
+/* saison de référence 4-7 ans : semaine de la saison (semaine 1 = lundi qui précède le 1er septembre) */
+function saison47(sexe,age,date){
+  const S=S47[(sexe==="F"?"F":"G")+String(age).padStart(2,"0")]; if(!S) return null;
+  const d=new Date((date||todayIso())+"T12:00:00"); let y=d.getFullYear(); const st=yy=>{ const x=new Date(yy,8,1,12); x.setDate(x.getDate()-((x.getDay()+6)%7)); return x; };
+  if(d<st(y)) y--; const n=Math.max(1,Math.min(52,Math.floor((d-st(y))/(7*864e5))+1));
+  const w=S.sem.find(x=>x.n===n)||null, m=S.meso.find(x=>n>=x.s[0]&&n<=x.s[1])||null;
+  return {code:(sexe==="F"?"F":"G")+String(age).padStart(2,"0"),n,w,m,vig:S.vig||[],prio:S.prio||[],pq:S.pq||""};
+}
+/* type de trame : thème d'abord, puis lignes, puis type de séance et phase */
+const TRX=[["REC",/recup|regener|decharge|relachement/],["PRE",/prevent|prophyla|anti-blessure|blessure/],["MOB",/mobilit|souplesse|etirement|amplitude/],
+ ["DEP",/deplacement|replacement|jeu de jambes|placement|pas d.ajustement/],["GES",/geste|service|coup droit|revers|frappe|chaine cinetique|vitesse de bras|smash|volee|rotation du tronc/],
+ ["RSA",/repetition d.effort|intermittent|\brsa\b|fractionn|efforts? repetes?|repeat/],["AER",/endurance|aerobie|foncier|cardio|\bvma\b/],
+ ["PUI",/pliom|saut|\bbonds?\b|rebond|explosi|puissance|lancers?\b|medecine|detente/],["VIT",/vitesse|sprint|acceler|demarrage|vivacite/],
+ ["COD",/appuis|freinage|changements? de direction|agilit|decelera|\bcod\b/],["FOR",/\bforce\b|muscu|renforc|squat|souleve|haltero/],
+ ["GAI",/gainage|tronc|\bcore\b|stabilite|abdo/],["EQU",/equilibre|propriocep|instab/],["COO",/coordination|motricit|rythme|echelle|corde|habilete|dissociation/]];
+const LT={PP1:"FOR",PP2:"FOR",PP3:"GAI",PP4:"PUI",PP5:"PUI",PP6:"VIT",PP7:"COD",PP8:"AER",PP9:"RSA",PP10:"COO",PP11:"EQU",PP12:"MOB"};
+const NM=new Set(["FOR","PUI","VIT","COD"]);
+function deduceType(s,c){
+  const t=norm(s.theme+" "+(s.theme?"":s.nom||"")), hits=[];
+  for(const [k,r] of TRX){ const m=r.exec(t); if(m) hits.push({k,i:m.index}); }
+  hits.sort((a,b)=>a.i-b.i);
+  const L=(s.lignes||[]).filter(isLine), fromL=[]; for(const l of L){ const k=/^GE/.test(l)?"GES":/^DE/.test(l)?"DEP":LT[l]; if(k&&!fromL.includes(k)) fromL.push(k); }
+  const tennis=s.type==="TI";
+  const fin=(k,why)=>{ if(tennis&&k!=="GES"&&k!=="DEP"){ const de=L.filter(l=>/^DE/.test(l)).length, ge=L.filter(l=>/^GE/.test(l)).length; k=de>ge||k==="COD"||k==="VIT"?"DEP":"GES"; why+=" (séance tennis : biomécanique)"; } return {k,why}; };
+  if(hits.length){ const nm=[...new Set(hits.map(h=>h.k).filter(k=>NM.has(k)))];
+    if(nm.length>=2) return fin("MIX","d'après le thème : "+nm.map(k=>TNOM[k].split(/[ ,(]/)[0].toLowerCase()).join(" + "));
+    if(hits[0].k==="REC"||hits[0].k==="PRE") return fin(hits[0].k,"d'après le thème");
+    return fin(hits[0].k,"d'après le thème"); }
+  if(fromL.length){ const nm=fromL.filter(k=>NM.has(k));
+    if(nm.length>=2) return fin("MIX","d'après les lignes "+L.join(", "));
+    return fin(nm[0]||fromL[0],"d'après les lignes "+L.join(", ")); }
+  if(s.phase==="R"&&(+s.charge||1)<=2) return {k:"REC",why:"semaine de récupération"};
+  if(tennis) return {k:"GES",why:"séance tennis : biomécanique du geste"};
+  return {k:c.tage<=10?"COO":"MIX",why:"aucun thème précis : séance "+(c.tage<=10?"de coordination":"mixte")};
+}
+function trameOf(s,c){
+  if(!Object.keys(TRAMES).length||s.type==="TC"||s.type==="PM") return null;
+  const b=bandOf(c.tage);
+  if(c.tage<=7){ if(s.type==="TI"&&s.ttype!=="MOT") return null; s.tdeduit="4-7 ans : motricité"; return TRAMES["T-MOT-"+b]||null; }
+  let k=s.ttype&&TNOM[s.ttype]&&s.ttype!=="MOT"?s.ttype:null;
+  if(k) s.tdeduit="choisi par toi"; else { const d=deduceType(s,c); k=d.k; s.tdeduit=d.why; }
+  return TRAMES["T-"+k+"-"+b]||null;
+}
+/* dosage : fourchette basse (charge 1-2, affûtage, compétition, reprise, récupération) ou haute (charge 4-5 en préparation) ; les récupérations ne bougent pas */
+function pickRange(t,mode){ if(!mode||!t) return t||"";
+  return String(t).split(/(;)/).map(cl=>{ const k=cl.search(/récup|repos|pause|entre (les )?séries|marche retour/i); const a=k<0?cl:cl.slice(0,k), b=k<0?"":cl.slice(k);
+    return a.replace(/(?<![\d,])(?<!min\s)(\d+(?:,\d+)?)\s*(?:à|-)\s*(\d+(?:,\d+)?)(?!\s*m\b)(?![\d,])/g,(m,x,y)=>{ const X=parseFloat(x.replace(",",".")), Y=parseFloat(y.replace(",",".")); return Y>X?(mode==="bas"?x:y):m; })+b; }).join(""); }
+function modeTxt(c){ const ch=+c.charge||null; if(c.dmode==="bas") return "bas de fourchette ("+(/^(P|C)$/.test(c.phase)?PHASES[c.phase].toLowerCase():c.phase==="R"?"récupération":c.phase==="R0"?"reprise":"charge "+ch+"/5")+")"; if(c.dmode==="haut") return "haut de fourchette (charge "+ch+"/5)"; return ""; }
+function adaptDos(t,c,T){ let d=pickRange(t,c.dmode); const m=modeTxt(c); if(m&&d!==t) d+=" · "+m;
+  if(c.crois&&T&&/FOR|PUI|MIX|VIT|RSA/.test(T.type)) d+=" · pic de croissance : volume réduit d'un tiers, rien de lourd"; return d; }
+const defNiv=a=>a<=7?[1,1]:a<=10?[1,2]:a<=12?[2,2]:a<=15?[2,3]:[3,4];
+const inNiv=(e,B)=>{ const n=B.t?.niv; return !n||(e.v>=n[0]&&e.v<=n[1]); };
+function zoneHit(e,B,c){ if(B.prev) return false; tx(e); return c.zones.some(z=>ZR[z]?.test(e._td)); }
+/* durée : blocs dans l'ordre de la trame, mis à l'échelle ; s'il faut couper, on retire d'abord les blocs les plus courts (les plus tardifs à égalité), jamais le bloc principal */
+function fitBlocs(B,target,L){
+  let keep=B.map((b,i)=>({b,i,d:+b.duree||8,w:(b.lignes||[]).some(l=>L.includes(l))?1.2:1})); const drop=[];
+  const sum=()=>keep.reduce((a,x)=>a+x.d*x.w,0), minN=target<20?1:2;
+  while(keep.length>minN&&sum()*0.65>target){ const mx=Math.max(...keep.map(x=>x.d*x.w)); const v=keep.filter(x=>x.d*x.w<mx).sort((a,b)=>a.d*a.w-b.d*b.w||b.i-a.i)[0]||keep.slice().sort((a,b)=>b.i-a.i)[0]; if(!v) break; drop.push(v.b); keep=keep.filter(x=>x!==v); }
+  const S=sum(), f=Math.min(1.5,target/S); const mins=keep.map(x=>Math.max(3,Math.round(x.d*x.w*f)));
+  let diff=Math.min(target,Math.round(S*1.5))-mins.reduce((a,b)=>a+b,0), g=200; const ord=keep.map((x,i)=>i).sort((a,b)=>keep[b].d-keep[a].d); let r=0;
+  while(diff!==0&&g--){ const i=ord[r++%ord.length]; if(diff>0){ mins[i]++; diff--; } else if(mins[i]>3){ mins[i]--; diff++; } }
+  return {keep:keep.map(x=>x.b),drop,mins};
+}
+function structureTrame(s,c,T){
+  s.tid=T.id; s.tt=T.type; const D=+s.duree||60;
+  const E=T.blocs.find(b=>b.code==="ECH"), F=T.blocs.find(b=>b.code==="RAC"), body=T.blocs.filter(b=>b.code!=="ECH"&&b.code!=="RAC");
+  const tot=T.blocs.reduce((a,b)=>a+(+b.duree||0),0)||D, r=Math.min(1.25,Math.max(0.6,D/tot));
+  const wT=Math.max(5,Math.min(Math.round((E?.duree||10)*r),Math.round(D/3))), fT=Math.max(3,Math.round((F?.duree||6)*r));
+  s.wuCible=wT; s.cdCible=fT;
+  const wR=RP(s,"E")?Math.round(+s.warmup.min||wT):wT, fR=RP(s,"F")?Math.round(+s.cooldown.min||fT):fT;
+  const {keep,drop,mins}=fitBlocs(body,Math.max(10,D-wR-fR),[...(s.lignes||[]),...(c.fav||[])]);
+  s.tdrop=drop.map(b=>b.titre);
+  const ch=+s.charge||3;
+  return keep.map((b,i)=>{ const [a,z]=b.nb_exos||[1,2]; let n=ch>=4?z:ch<=2?a:Math.round((a+z)/2-0.01); if(mins[i]<(+b.duree||mins[i])*0.7) n=a; if(mins[i]<5) n=Math.min(n,2);
+    return box(b.titre,"C",{L:(b.lignes||[]).filter(isLine),f:b.familles||[],min:mins[i],prev:(b.familles||[]).some(f=>/^5\.2\.[234]$/.test(f))||T.type==="PRE"?1:0,
+      t:{code:b.code,tid:T.id,obj:b.objectif||"",dos:adaptDos(b.dosage||"",c,T),dos0:b.dosage||"",int:b.intensite||"",cons:b.consignes||[],excl:b.exclure||"",cles:b.exos_cles||[],nb:Math.max(1,n),niv:b.niveau||defNiv(c.tage)}}); });
+}
+/* dosage d'un exo qui tient dans le temps du bloc : séries, sprints, passages ou blocs ramenés à ce que la durée permet (récupérations gardées) */
+function fitTime(d,nEx,mn){ if(!d||!mn) return d; const T=mn*60/Math.max(1,nEx);
+  let m=/^(\d+)(?:\s*à\s*(\d+))?\s*min\b/.exec(d);
+  if(m){ if(+m[1]*60>T*1.1){ const v=Math.max(1,Math.round(T/60)); return d.replace(m[0],v+" min").replace(/\s*ou\s+\d+(\s*à\s*\d+)?\s*×\s*\d+\s*min/,""); } return d; }
+  m=/(\d+)(\s*à\s*(\d+))?(\s*)(×|sprints|passages|blocs|départs|séries)/.exec(d); if(!m) return d;
+  const S=+(m[3]||m[1]), R=/récup|repos/.test(d)?recupOf(d):30, after=d.slice(m.index+m[0].length); let W=30;
+  if(m[5]==="×"){ const ms=/^\s*(\d+)(?:\s*à\s*(\d+))?\s*s\b/.exec(after); if(ms) W=+(ms[2]||ms[1]); if(/par (jambe|côté|bras)/.test(d)) W*=2; }
+  else if(m[5]==="sprints"||m[5]==="départs") W=6; else if(m[5]==="passages") W=10; else if(m[5]==="blocs"){ const mb=/de\s*(\d+)(?:\s*à\s*(\d+))?\s*min/.exec(after); W=mb?+(mb[2]||mb[1])*60:180; }
+  const per=W+R; if(S*per<=T*1.15) return d; const n=Math.max(1,Math.round(T/per)); if(n>=+m[1]) return d;
+  return d.slice(0,m.index)+n+m[4]+(n===1&&m[5]!=="×"?m[5].replace(/s$/,""):m[5])+after; }
+/* dosage par exo d'un bloc de trame : si le bloc donne un dosage « par exercice / par poste / par situation », il s'applique à chaque exo ; sinon dosage de l'exo ramené au temps du bloc */
+function perExo(t){ const C=String(t||"").split(" · ")[0].split(/\s*;\s*/); const i=C.findIndex(x=>/par (exercice|exo|poste|situation|atelier)s?\b/.test(x)); if(i<0) return null;
+  const a=C[i].replace(/\s*par (exercice|exo|poste|situation|atelier)s?\b.*$/,"").replace(/^au choix\s*:\s*/i,""); const r=C.slice(i+1).find(x=>/récup|repos|entre/.test(x)); return a+(r?", "+r:""); }
+const doseB=(e,c,B,n)=>{ if(!B||!B.t||e.dos) return dose(e,c); return perExo(B.t.dos)||fitTime(dose(e,c),n||B.t.nb||1,+B.min||0); };
+/* remplissage d'un bloc de trame : exos clés d'abord, puis familles (âge, niveau, lieu, matériel, zones fragiles, croissance, lignes faibles) */
+function fillTrame(B,c,used){
+  const n=B.t.nb||1; let k=0; const have=()=>B.ex.filter(Boolean).length;
+  const P=pool(B,c,used).filter(p=>!used.has(p.e.id)&&!(c.crois&&heavy(p.e)));
+  const pass=f=>{ for(const p of P){ if(have()>=n) break; if(used.has(p.e.id)||!f(p.e)) continue; B.ex.push({id:p.e.id,d:doseB(p.e,c,B,n)}); used.add(p.e.id); k++; } };
+  pass(e=>!zoneHit(e,B,c)&&(B.t.cles.includes(e.id)||inNiv(e,B)));
+  pass(e=>!zoneHit(e,B,c));
+  pass(()=>true);
+  return k;
+}
+function trameFor(s){ return s&&s.tid?TRAMES[s.tid]||null:null; }
+const phK=p=>p==="S"||p==="P"||p==="C"?p:"G", chK=c=>{ c=+c||3; return c<=2?"1":c>=4?"5":"3"; };
+const sent=(t,n)=>{ const m=String(t||"").match(/[^.!?]+[.!?]+/g)||[String(t||"")]; return m.slice(0,n).join(" ").trim(); };
+function pourquoiHtml(s,c){
+  const T=trameFor(s); if(!T) return "";
+  const ch=+s.charge||null, ph=s.phase||"G", S7=c.s47;
+  const phT=ph==="R"?"Récupération : volume bas, intensité modérée, rien de nouveau.":ph==="R0"?"Reprise : "+(T.phases.G||"")+" Bas de fourchette.":T.phases[phK(ph)]||"";
+  const third=c.crois?`<p><b>Croissance.</b> ${esc(T.croissance)}</p>`:c.sexe==="F"&&T.fille_garcon?`<p><b>Fille.</b> ${esc(sent(T.fille_garcon,2))}</p>`:"";
+  return `<section class="why" id="why"><div class="whyh"><b>Pourquoi cette séance</b><span class="badge">${esc(T.nom)}</span></div>
+   <p>${esc(sent(T.principes,2))}</p>
+   <p><b>${esc(PHASES[ph]||"Phase")}.</b> ${esc(phT)} <b>Charge ${ch?ch+"/5":"non précisée"}.</b> ${esc(T.charge[chK(ch)]||"")}</p>${third}
+   ${S7?`<p class="msg">Saison de référence ${esc(S7.code)}, semaine ${S7.n}${S7.m?" · "+esc(S7.m.nom):""}${S7.w?.t?" : « "+esc(S7.w.t)+" »":""}${S7.pq?" · "+esc(S7.pq):""}</p>`:""}
+   <p class="msg">Type ${esc(s.tdeduit||"")} · âge ${c.tage} ans${c.bioUsed?" (biologique)":""}${joueursDe(s).length>1?", le plus jeune du groupe":""} · durée conseillée ${T.duree[0]}-${T.duree[1]} min${s.tdrop?.length?` · retiré faute de temps : ${esc(s.tdrop.join(", "))}`:""}</p>
+   <details class="noprint"><summary>Tous les principes de la trame</summary><p>${esc(T.principes)}</p><p><b>Croissance.</b> ${esc(T.croissance)}</p><p><b>Filles et garçons.</b> ${esc(T.fille_garcon)}</p>${S7?.vig?.length?`<p><b>Vigilance (saison ${esc(S7.code)}).</b> ${esc(S7.vig.join(" "))}</p>`:""}</details>
+   <div class="tools noprint"><button type="button" class="ib sm" id="ctype">Changer le type de séance</button></div></section>`;
+}
+function piedHtml(s){ const T=trameFor(s); if(!T) return "";
+  return `<section class="sec tfoot"><h2>Pour réussir la séance</h2><div class="card"><div><b>Erreurs à éviter</b><ul>${(T.erreurs||[]).map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div><div><b>Indicateurs de réussite</b><p>${esc(T.indicateurs||"")}</p></div></div></section>`; }
+function typeSheet(s){
+  const c=ctxOf(s), b=bandOf(c.tage), cur=s.tid?TRAMES[s.tid]?.type:null, petits=c.tage<=7;
+  const L=petits?["MOT"]:TORD.filter(k=>TRAMES["T-"+k+"-"+b]);
+  const auto=petits?null:deduceType({...s,ttype:null},c);
+  openSheet(`<div class="shh"><b>Type de séance · ${esc(bandTxt(c.tage))}</b><button class="ib" data-close type="button" aria-label="Fermer">×</button></div>
+   <p class="msg">La séance est reconstruite avec la trame choisie (blocs, dosages, exos). L'échauffement et le retour au calme que tu as choisis sont gardés.${petits?" De 4 à 7 ans, la séance est une séance de motricité.":""}</p>
+   <div class="alts">${petits?"":`<button type="button" class="altb${!s.ttype?" used":""}" data-tt=""><b>Automatique</b><span>${esc(TNOM[auto.k])} · ${esc(auto.why)}</span></button>`}
+   ${L.map(k=>{ const T=TRAMES["T-"+k+"-"+b]; return `<button type="button" class="altb" data-tt="${k}" aria-pressed="${cur===k}"><b>${esc(TNOM[k])}${cur===k?" ✓":""}</b><span>${esc(sent(T?.principes||"",1))}</span><em>${T?T.duree[0]+"-"+T.duree[1]+" min conseillées · "+T.blocs.filter(x=>/^B/.test(x.code)).length+" blocs":""}</em></button>`; }).join("")}</div>`);
+  $$("[data-tt]",sheet).forEach(x=>x.onclick=()=>{ s.ttype=x.dataset.tt||null; if(s.ttype&&(s.type==="TC"||s.type==="PM")) s.type=s.gid?"PPC":"PPI"; if(s.ttype&&s.type==="TI"&&!/GES|DEP|MOT/.test(s.ttype)) s.type=s.gid?"PPC":"PPI";
+    reconstruire(s); closeSheet(); upd(s); toast("Séance reconstruite : "+(TRAMES[s.tid]?.nom||TYPES[s.type].n)); });
+}
+function reconstruire(s){ if(s.warmup?.auto){ s.warmup=null; s.wmode="simple"; } if(s.cooldown?.auto){ s.cooldown=null; s.cmode="simple"; } s.boxes=structure(s); autoFill(s); s.prerempli=true; s.maj=todayIso(); }
 
 /* ---------- modèles de structure (trame d'échauffement : 2.14.1 et 2.14.3 ; ordre des contenus : documents « séances types ») ---------- */
 function box(nom,part,o){ return {id:uid(),nom,part,min:0,ex:[],at:null,...o}; }
@@ -537,17 +712,13 @@ function wuMinutes(s,c){
   return Math.max(5,Math.min(w,Math.round(D*0.33)));
 }
 function structure(s){
-  const c=ctxOf(s), D=+s.duree||60, T=s.type, tennis=T==="TI"||T==="TC"||T==="PM";
+  const c0=ctxOf(s), TR=trameOf(s,c0); if(TR) return structureTrame(s,c0,TR);
+  s.tid=null; s.tt=null; s.tdrop=null;
+  const c=c0, D=+s.duree||60, T=s.type, tennis=T==="TI"||T==="TC"||T==="PM";
   const L=s.lignes||[], PPL=L.filter(l=>/^(PP|DE)/.test(l)), GEL=L.filter(l=>/^GE/.test(l)), DEL=L.filter(l=>/^DE/.test(l));
   const boxes=[];
-  const wT=wuMinutes(s,c);
-  boxes.push(box("Mise en route","E",{f:["5.6.1","5.2.1","5.2.6"],kw:"trot|marche|course|footing|navette|mise en route|jumping|corde|poursuite",low:1}));
-  boxes.push(box("Mobilité","E",{f:["5.6.2","5.1.21","5.1.22","5.1.23"],low:1}));
-  boxes.push(box("Activation et prévention","E",{f:["5.6.3","5.2.2","5.2.3","5.2.4","5.1.5","5.2.9"],prev:1,low:1}));
-  boxes.push(box("Gammes et vitesse","E",{f:["5.6.4","5.6.6","5.2.1","5.1.16","5.1.11","5.4.1"],kw:"gamme|montee|talons|pas chasse|skipping|depart|griffe|rythme",low:1}));
-  const specL=tennis?[...GEL,...DEL]:PPL;
-  boxes.push(box("Spécifique au thème","E",tennis?{f:["5.6.5","5.3.7","5.3.14","5.3.15","5.4.1"],L:specL,low:1}:{f:specL.flatMap(famsOfLine),L:specL,low:1}));
-  const W=[0.2,0.25,0.2,0.2,0.15]; let acc=0; boxes.forEach((b,i)=>{ b.min=i<4?Math.max(1,Math.round(wT*W[i])):0; acc+=b.min; }); boxes[4].min=Math.max(1,wT-acc);
+  /* l'échauffement n'est plus construit ici : il se choisit dans Choose your warm-up (s.warmup) ; wT = durée visée pour le choisir */
+  const wT=s.warmup&&s.wmode==="routine"?Math.round(+s.warmup.min||wuMinutes(s,c)):wuMinutes(s,c); s.wuCible=wuMinutes(s,c);
   const nC=D<=40?2:D<=60?3:D<=80?4:5, corps=[];
   if(T==="PPI"||T==="PPC"){
     for(const l of PPL) corps.push(box(lineName(l),"C",{L:[l],f:famsOfLine(l)}));
@@ -574,20 +745,24 @@ function structure(s){
     corps.push(box("Perception et décision","C",{f:["5.5.1","5.2.8"]}));
   }
   const C2=corps.slice(0,nC);
-  const fT=D<=45?6:D<=75?8:10, fin=[box("Récupération active","F",{f:["5.2.5"],low:1}),box("Étirements et mobilité","F",{f:["5.1.24","5.1.21","5.1.22"],low:1})];
-  if(c.zones.length||T==="PPI"||T==="PPC") fin.push(box("Prévention","F",{f:["5.2.2","5.2.3","5.2.4"],prev:1,low:1}));
-  fin.forEach((b,i)=>b.min=Math.floor(fT/fin.length)+(i<fT%fin.length?1:0));
+  /* le retour au calme se choisit aussi dans la bibliothèque (s.cooldown) ; fT = durée visée */
+  s.cdCible=D<=45?6:D<=75?8:10; const fT=RP(s,"F")?Math.round(+s.cooldown.min||s.cdCible):s.cdCible, fin=[];
   const cT=Math.max(10,D-wT-fT); C2.forEach((b,i)=>b.min=Math.floor(cT/C2.length)+(i<cT%C2.length?1:0));
   return [...boxes,...C2,...fin];
 }
+/* séance sur trame : quand l'échauffement et le retour au calme choisis n'ont pas la durée visée, le corps de séance est réajusté (ordre gardé, 3 min mini par bloc) */
+function refitC(s){ const C=s.boxes.filter(b=>b.part==="C"); if(!C.length) return; const tgt=Math.max(10,(+s.duree||60)-partMin(s,"E")-partMin(s,"F")), S=C.reduce((a,b)=>a+(+b.min||0),0)||1;
+  C.forEach(b=>b.min=Math.max(3,Math.round(b.min*tgt/S))); let d=tgt-C.reduce((a,b)=>a+b.min,0), g=100, i=0; const o=C.slice().sort((a,b)=>b.min-a.min);
+  while(d!==0&&g--){ const b=o[i++%o.length]; if(d>0){ b.min++; d--; } else if(b.min>3){ b.min--; d++; } } }
 /* pré-remplissage : chaque case vide reçoit le meilleur exo classé (2 si la case dure 16 min ou plus), dosage selon l'âge */
 function autoFill(s,c){
-  c||=ctxOf(s); const used=new Set(s.boxes.flatMap(b=>b.ex.filter(Boolean).map(x=>x.id))); let n=0;
+  c||=ctxOf(s); const hadE=!!RP(s,"E"), hadF=!!RP(s,"F"); if(!hadE) wuAuto(s,c); if(!hadF) cdAuto(s); if(s.tid&&((!hadE&&RP(s,"E"))||(!hadF&&RP(s,"F")))) refitC(s); const used=new Set(s.boxes.flatMap(b=>b.ex.filter(Boolean).map(x=>x.id))); let n=0;
   for(const B of s.boxes){
-    if(B.part==="E"&&s.wmode==="routine"&&s.warmup) continue;
+    if(RP(s,B.part)) continue;
+    if(B.t&&!B.at){ n+=fillTrame(B,c,used); continue; }
     if(B.at){ for(let i=0;i<B.at.n;i++){ if(B.ex[i]) continue; const p=pool(B,c,used).find(p=>!used.has(p.e.id)); if(!p) break; B.ex[i]={id:p.e.id,d:dose(p.e,c)}; used.add(p.e.id); n++; } continue; }
     const want=B.part==="C"&&B.min>=16?2:1;
-    while(B.ex.length<want){ const p=pool(B,c,used).find(p=>!used.has(p.e.id)); if(!p) break; B.ex.push({id:p.e.id,d:dose(p.e,c)}); used.add(p.e.id); n++; }
+    while(B.ex.length<want){ const p=pool(B,c,used).find(p=>!used.has(p.e.id)&&!(c.noKids&&isKid(p.e))); if(!p) break; B.ex.push({id:p.e.id,d:dose(p.e,c)}); used.add(p.e.id); n++; }
   }
   return n;
 }
@@ -612,6 +787,7 @@ function dose(e,c){
     depl:"4 à 6 passages de 20 à 30 s, récup 40 s", jeu:"2 à 3 manches de 6 à 8 min", match:"1 set court ou 2 × 10 min"
   };
   let t=D[e.k]||"À régler";
+  if(c.tid){ if(c.dmode) t=pickRange(t,c.dmode); if(c.crois&&/force|halte|puis/.test(e.k)) t+=" · volume réduit d'un tiers"; return t; }
   if(light&&/force|halte|puis|aero|rsa|tech|jeu/.test(e.k)) t+=" · volume réduit d'un tiers";
   return t;
 }
@@ -686,23 +862,61 @@ function nouvelle(q){
   if(q.get("date")) o.date=q.get("date");
   const s=newSeance(o); location.replace("#/r/"+s.id);
 }
-/* Create my warm-up : on part avec la situation, on revient avec la routine complète */
+/* Choose your warm-up : on part avec la situation (durée, ce qui suit, lieu, matériel), on revient avec l'échauffement CHOISI dans la bibliothèque */
 function apresDe(s){ const t=norm(s.theme+" "+s.nom); if(/test|bilan|evaluation/.test(t)) return "bilan"; if(/match|tournoi/.test(t)) return "match"; return /PPI|PPC/.test(s.type)?"pp":"tennis"; }
 const lieuWU=l=>l==="gym"||l==="salle"?"salle":l==="ext"?"ext":"court";
-function wuMinOfBoxes(s){ return s.boxes.filter(b=>b.part==="E").reduce((a,b)=>a+(+b.min||0),0); }
-function versWarmup(s){
+function wuMinOfBoxes(s){ return (s.boxes||[]).filter(b=>b.part==="E").reduce((a,b)=>a+(+b.min||0),0); }
+function wuCible(s){ return (s.wmode==="routine"&&s.warmup?.min)||s.wuCible||wuMinutes(s,ctxOf(s))||10; }
+function versWarmup(s,hash,fam){
   const c=ctxOf(s), sel=joueursDe(s), r=relaisActif();
   ST.relaisProg=r&&r.sid===s.id?{...r.h}:null; ST.wuSid=s.id; saveNow();
   GRUN.relais.envoyer({de:"seances",vers:"warmup",retour:GRUN.href("seances","#/s/"+s.id),sid:s.id,jid:sel.length===1?sel[0].id:(sel[0]?.id||null),gid:s.gid||null,jids:sel.map(j=>j.id),
-    age:c.age,sexe:c.sexe,n:c.n,duree:(s.wmode==="routine"&&s.warmup?.min)||wuMinOfBoxes(s)||10,apres:apresDe(s),sous:s.theme||s.nom||"",lieu:lieuWU(s.lieu),mat:s.mat||[],
-    zones:c.zones,crois:c.crois,routine:s.warmup?.routine||null,rid:s.warmup?.id||null,titre:"Échauffement · "+(s.nom||"séance")});
-  GRUN.go("warmup","#/nouveau");
+    age:c.age,sexe:c.sexe,n:c.n,duree:wuCible(s),apres:apresDe(s),sous:s.theme||s.nom||"",lieu:lieuWU(s.lieu),mat:s.mat||[],
+    zones:c.zones,crois:c.crois,routine:s.warmup?.routine||null,rid:s.warmup?.id||null,titre:"Échauffement · "+(s.nom||"séance"),
+    ...(fam==="cooldown"?{famille:"cooldown",duree:(RP(s,"F")?.min)||s.cdCible||8,kw:cdKw(s),routine:s.cooldown?.routine||null,rid:s.cooldown?.id||null,titre:"Retour au calme · "+(s.nom||"séance")}:{})});
+  GRUN.go("warmup",hash||"#/nouveau");
+}
+/* bibliothèque des échauffements (modèles d'origine + « Mes échauffements ») pour le choix d'office */
+let WULIB=[];
+async function loadWuLib(){ let M=[]; try{ const r=await fetch("data-warmup.json",{cache:"no-store"}); if(r.ok) M=((await r.json()).modeles)||[]; }catch(e){}
+  const mine=((GRUN.load(GRUN.K.routines,{})||{}).routines||[]).filter(x=>x&&x.v===3&&Array.isArray(x.situations)&&x.situations.length&&!x.recu);
+  WULIB=[...M.map(m=>({...m,orig:true})),...mine]; }
+const wuSec=m=>(m.situations||[]).reduce((a,x)=>a+(+x.duree||0),0);
+const TQ={VIT:"pp_vitesse",PUI:"pp_vitesse",COD:"pp_vitesse",RSA:"pp_vitesse",MIX:"pp_vitesse",DEP:"pp_vitesse",FOR:"pp_force",GAI:"pp_force",PRE:"pp_force",GES:"pp_force"};
+function wuQuand(s){ const ap=apresDe(s), t=norm(s.theme+" "+s.nom); if(s.tt&&ap!=="match") return [TQ[s.tt]||"entrainement"]; if(ap==="match") return ["match","tournoi_reprise"]; if(ap==="tennis") return ["entrainement"]; return /vitesse|plio|saut|sprint|appui|explos|test|bilan/.test(t)||(s.lignes||[]).some(l=>/^PP(4|6|7)$/.test(l))?["pp_vitesse"]:["pp_force"]; }
+function wuRoutine(m){ const S=(m.situations||[]).map(x=>({id:x.id,n:x.n,duree:+x.duree||0,phase:x.phase,de:x.de||"",consignes:x.consignes||[],exo:x.exo||null}));
+  const cd=m.type==="cooldown", PN={MR:"Mise en route",MO:cd?"Mobilité douce":"Mobilité",AC:"Activation",CV:"Coordination et vitesse",PO:"Mise en tension",ST:"Spécifique tennis",RA:"Retour progressif",ET:"Étirements",AM:"Auto-massage",RE:"Respiration",PR:"Prévention"}, blocs=[];
+  for(const x of S){ const j={id:x.id,n:x.n,nom:x.n,sec:x.duree,de:x.de,but:nomCourt(x.de,90),co:x.consignes,exo:x.exo}; const l=blocs[blocs.length-1]; if(l&&l.et===x.phase){ l.jeux.push(j); l.min+=x.duree/60; } else blocs.push({et:x.phase,etape:x.phase,nom:PN[x.phase]||"Échauffement",min:x.duree/60,jeux:[j]}); }
+  const d=Math.round(wuSec(m)/30)/2; return {id:m.id,type:cd?"cooldown":"warmup",nom:m.nom,titre:m.nom,duree:d,dureeTotale:d,situations:S,logique:m.resume||"",blocs,lien:"warmup.html#/m/"+m.id}; }
+function wuAuto(s,c){
+  if(!WULIB.length) return false; const D=s.wuCible||wuMinutes(s,c||ctxOf(s)), Q=wuQuand(s), L=lieuWU(s.lieu), mat=new Set(s.mat||[]);
+  const sc=m=>{ let x=-Math.abs(wuSec(m)/60-D)*0.8; if((m.quand||[]).some(q=>Q.includes(q))) x+=4; if(!m.lieu||!m.lieu.length||m.lieu.includes(L)) x+=2; if((m.materiel||[]).every(k=>mat.has(k)||(k==="balles"&&mat.has("rb")))) x+=2; if(m.orig) x+=0.3; if(/haut du corps/i.test(m.nom)&&!(s.lignes||[]).some(l=>/^(PP2|PP5|GE)/.test(l))&&s.tt!=="GES") x-=4; const ag=(c||ctxOf(s)).age, mn=m.ages&&m.ages.conseille?+m.ages.conseille[0]:11; if(ag&&ag<mn) x-=(mn-ag)*1.5+((m.intensite_fin||"").match(/[89]\/10/)?3:0); return x; };
+  const best=WULIB.filter(m=>m.type!=="cooldown").sort((a,b)=>sc(b)-sc(a))[0]; if(!best) return false;
+  const rt=wuRoutine(best); s.warmup={routine:rt,id:best.id,min:rt.duree,at:todayIso(),auto:true}; s.wmode="routine"; return true;
+}
+/* retour au calme choisi d'office : type de séance, intensité, ce qui suit */
+const TCD={REC:"recup_active",VIT:"pp_vitesse sauts",PUI:"pp_vitesse sauts",COD:"pp_vitesse",MIX:"pp_vitesse",DEP:"pp_vitesse",AER:"pp_endurance",RSA:"pp_endurance rsa",FOR:"pp_force force",GAI:"pp_force",PRE:"pp_force",GES:"pp_force",MOB:"recup_active",COO:"entrainement",EQU:"entrainement",MOT:"entrainement"};
+function cdKw(s){ const t=norm(s.theme+" "+s.nom), L=s.lignes||[], ap=apresDe(s);   /* clés « quand » des retours au calme + mots du nom */
+  if(s.tt&&ap!=="match"&&!/tournoi|soir|chaud|chaleur|canicule/.test(t)) return TCD[s.tt]||"entrainement";
+  if(/tournoi|soir/.test(t)) return "tournoi soir";
+  if(ap==="match") return /deux|2e|suivant|entre/.test(t)?"entre_matchs match":"match";
+  if(/chaud|chaleur|canicule/.test(t)) return "chaleur";
+  if(/recup|regener|repos/.test(t)) return "recup_active";
+  if(/vitesse|plio|saut|sprint|explos/.test(t)||L.some(l=>/^PP(4|5|6|7)$/.test(l))) return "pp_vitesse sauts";
+  if(/endurance|rsa|aerob|intermit|fractionn/.test(t)||L.some(l=>/^PP(8|9)$/.test(l))) return "pp_endurance rsa";
+  if(/PPI|PPC/.test(s.type)) return "pp_force force";
+  return "entrainement court"; }
+function cdAuto(s){
+  const C=WULIB.filter(m=>m.type==="cooldown"); if(!C.length) return false;
+  const ag=ctxOf(s).age, D=Math.min(s.cdCible||8, ag&&ag<8?5:ag&&ag<11?6:99), K=norm(cdKw(s)).split(/\s+/), L=lieuWU(s.lieu);
+  const sc=m=>{ const Q=m.quand||[], t=norm(m.nom+" "+(m.resume||"")); let x=-Math.abs(wuSec(m)/60-D)*0.5; x+=K.filter(k=>Q.includes(k)).length*5+K.filter(k=>t.includes(k)).length*1.5; if(!m.lieu||!m.lieu.length||m.lieu.includes(L)) x+=1; if(m.orig) x+=0.3; return x; };
+  const best=C.sort((a,b)=>sc(b)-sc(a))[0]; const rt=wuRoutine(best); s.cooldown={routine:rt,id:best.id,min:rt.duree,at:todayIso(),auto:true}; s.cmode="routine"; return true;
 }
 const fmtMin=m=>String(Math.round((+m||0)*2)/2).replace(".",",");
 function wuBlocs(rt){
   const B=rt?.blocks||rt?.blocs||[];
   return B.map((b,i)=>{ let J=b.jeux||b.games||(b.slots?b.slots.map(x=>x&&x.g?{id:x.g,sec:x.sec}:null).filter(Boolean):[]); if(!J.length&&b.g) J=[b.g];
-    J=J.map(j=>typeof j==="string"?{id:j}:{id:j.id||j.g,n:j.n,sec:j.sec||(j.dur?j.dur*60:null)||(j.min?j.min*60:null),de:j.de,but:j.but}).filter(j=>j.id||j.n);
+    J=J.map(j=>typeof j==="string"?{id:j}:{id:j.id||j.g,n:j.n,sec:j.sec||(j.dur?j.dur*60:null)||(j.min?j.min*60:null),de:j.de,but:j.but,co:j.co||j.consignes||null,exo:j.exo||null}).filter(j=>j.id||j.n);
     return {nom:b.nom||b.t||b.titre||ETN[b.et]||("Bloc "+(i+1)),et:b.et,min:+(b.min??b.duree??b.dur)||0,jeux:J}; });
 }
 function wuMin(rt){ return +rt?.duree||wuBlocs(rt).reduce((a,b)=>a+b.min,0); }
@@ -710,7 +924,7 @@ function retourWarmup(){
   let sid=null, attached=false;
   const r=GRUN.relais.resultat("seances");
   if(r&&r.vers==="warmup"){ sid=r.sid||ST.wuSid; const s=getS(sid); const res=r.res||{}; const rt=res.routine||(res.blocks||res.blocs?res:null);
-    if(s&&rt&&wuBlocs(rt).length){ s.warmup={routine:rt,id:rt.id||res.id||null,min:wuMin(rt),at:todayIso()}; s.wmode="routine"; s.maj=todayIso(); attached=true; } }
+    if(s&&rt&&wuBlocs(rt).length){ const X={routine:rt,id:rt.id||res.id||null,min:wuMin(rt),at:todayIso(),auto:false}; if(rt.type==="cooldown"){ s.cooldown=X; s.cmode="routine"; } else { s.warmup=X; s.wmode="routine"; } s.maj=todayIso(); attached=true; } }
   else { const h=GRUN.relais.lire(); if(h&&h.de==="seances"&&h.vers==="warmup"&&!h.res){ sid=h.sid; GRUN.relais.vider(); } }
   if(sid&&ST.relaisProg){ const {t,res,tr,...rest}=ST.relaisProg; ST.relaisProg=null; GRUN.relais.envoyer(rest); const nh=GRUN.relais.lire(); if(nh) ST.relais={t:nh.t,sid:ST.relais?.sid||sid,de:rest.de}; }
   if(sid){ ST.wuSid=null; saveNow(); }
@@ -828,6 +1042,7 @@ function showReglages(id){
    <div class="f"><label for="sn">Nom</label><input id="sn" value="${esc(s.nom)}" placeholder="Ex. Vitesse et freinage"></div>
    <div class="row"><div class="f"><label for="sd">Date</label><input type="date" id="sd" value="${s.date}"></div><div class="f"><label for="sdu">Durée (min)</label><input type="number" id="sdu" min="15" max="180" step="5" value="${s.duree}"></div></div>
    <div class="f"><label>Type</label><div class="chips">${Object.entries(TYPES).map(([k,t])=>`<button type="button" class="tg" data-ty="${k}" aria-pressed="${s.type===k}">${t.n}</button>`).join("")}</div></div>
+   <div class="f"><label for="stt">Contenu (trame haute performance)</label><select id="stt"><option value="">Automatique : d'après le thème et les lignes</option>${[...TORD,"MOT"].map(k=>`<option value="${k}"${s.ttype===k?" selected":""}>${esc(TNOM[k])}</option>`).join("")}</select></div>
    <div class="f"><label for="sth">Thème précis</label><textarea id="sth" rows="2" placeholder="Ex. Freinage en deux appuis puis relance latérale">${esc(s.theme)}</textarea></div>
    <div class="f"><label>Phase</label><div class="chips">${Object.entries(PHASES).map(([k,n])=>`<button type="button" class="tg" data-ph="${k}" aria-pressed="${s.phase===k}">${n}</button>`).join("")}</div></div>
   </div></section>
@@ -847,6 +1062,7 @@ function showReglages(id){
   $("#sd").onchange=e=>{ s.date=e.target.value; up(); };
   $("#sdu").onchange=e=>{ s.duree=Math.max(15,Math.min(180,+e.target.value||60)); up(); };
   $("#sth").oninput=e=>{ s.theme=e.target.value; up(); };
+  $("#stt").onchange=e=>{ s.ttype=e.target.value||null; up(); };
   const tog=(sel,fn)=>$$(sel).forEach(b=>b.onclick=()=>{ fn(b); up(); });
   const syncJ=()=>{ $$("[data-j]").forEach(x=>x.setAttribute("aria-pressed",s.joueurs.includes(x.dataset.j))); $$("[data-g]").forEach(x=>x.setAttribute("aria-pressed",s.gid===x.dataset.g)); $("#lib").hidden=!!s.joueurs.length; $("#ext").hidden=!s.joueurs.length; };
   tog("[data-g]",b=>{ const g=GRUN.groupes.get(b.dataset.g); if(s.gid===g.id){ s.gid=null; s.joueurs=[]; } else { s.gid=g.id; s.joueurs=[...g.jids]; } syncJ(); });
@@ -868,7 +1084,8 @@ function showReglages(id){
 
 /* ---------- ÉDITEUR DE SÉANCE ---------- */
 const PARTS={E:"Échauffement",C:"Corps de séance",F:"Retour au calme"};
-function partMin(s,p){ if(p==="E"&&s.wmode==="routine"&&s.warmup) return +s.warmup.min||0; return s.boxes.filter(b=>b.part===p).reduce((a,b)=>a+(+b.min||0),0); }
+function RP(s,p){ return p==="E"?(s.wmode==="routine"&&s.warmup?s.warmup:null):p==="F"?(s.cmode==="routine"&&s.cooldown?s.cooldown:null):null; }
+function partMin(s,p){ const X=RP(s,p); if(X) return +X.min||0; return s.boxes.filter(b=>b.part===p).reduce((a,b)=>a+(+b.min||0),0); }
 function showSeance(id){
   const s=getS(id); if(!s){ main.innerHTML=`<div class="empty">Séance introuvable.</div>`; return; }
   if(!COACH()) return showSeanceJoueur(s);
@@ -886,10 +1103,12 @@ function showSeance(id){
   ${s.prerempli?`<p class="note info">Séance pré-remplie : chaque case a reçu l'exo le mieux classé et un dosage pour ${c.al}. Touche « Changer » pour voir toute la liste. <button type="button" class="lnk" id="okp">Compris</button></p>`:""}
   ${s.modeleNote?`<p class="note">${esc(s.modeleNote)} <button type="button" class="lnk" id="okm">Compris</button></p>`:""}
   ${s.progNote?`<p class="note info">${esc(s.progNote)} <button type="button" class="lnk" id="okg">Compris</button></p>`:""}
+  ${pourquoiHtml(s,c)}
   <div class="tbar noprint"><b>${tot} / ${s.duree} min</b> <span class="${rest<0?"neg":""}">${rest===0?"temps complet":rest>0?"reste "+rest+" min":"dépasse de "+(-rest)+" min"}</span>${c.zones.length||c.crois?` · vigilance : ${[...c.zones.map(z=>ZN[z]||z),...(c.crois?["croissance"]:[])].join(", ")}`:""} <button type="button" class="lnk" id="fill">Remplir les cases vides</button></div>
   ${["E","C","F"].map(p=>`<section class="sec part" id="part${p}"><h2>${PARTS[p]} <small class="sm2">${partMin(s,p)} min</small></h2>
-   ${p==="E"?wuPart(s,c):""}
-   ${p==="E"&&s.wmode==="routine"&&s.warmup?"":s.boxes.map((b,bi)=>b.part===p?boxHtml(s,b,bi,c,used):"").join("")+`<button class="ib noprint addb" type="button" data-addp="${p}">+ Ajouter une case</button>`}</section>`).join("")}
+   ${p==="E"?wuPart(s,c):p==="F"?cdPart(s,c):""}
+   ${p==="E"||RP(s,p)?"":s.boxes.map((b,bi)=>b.part===p?boxHtml(s,b,bi,c,used):"").join("")+`<button class="ib noprint addb" type="button" data-addp="${p}">+ Ajouter une case</button>`}</section>`).join("")}
+  ${piedHtml(s)}
   ${R.length?`<section class="sec"><h2>Retours des joueurs</h2><div class="list">${R.map(r=>`<div class="li"><span class="code">${frD(r.date).slice(0,5)}</span><span class="tt">${esc(GRUN.joueurs.get(r.jid)?.nom||"?")} · ${r.rpe!=null?r.rpe+"/10":"–"} · ${r.duree||"?"} min${r.douleur?` · <b class="neg">douleur ${esc(ZONES_RETOUR[r.douleur.zone]||r.douleur.zone)} ${r.douleur.int}/10</b>`:""}<small>${r.fait===true?"faite":r.fait==="partiel"?"en partie":"non faite"}${r.comment?" · "+esc(r.comment):""}</small></span></div>`).join("")}</div></section>`:""}
   <section class="sec noprint"><h2>Réutiliser</h2>
    <div class="tools"><button class="ib" id="prg" type="button">⬆ Dupliquer en progression</button><button class="ib" id="mod" type="button">★ Enregistrer comme modèle</button><button class="ib" id="dup" type="button">Dupliquer</button><button class="ib" id="del" type="button">Supprimer</button></div>
@@ -899,6 +1118,8 @@ function showSeance(id){
   $("#okg")&&($("#okg").onclick=()=>{ s.progNote=null; upd(s); });
   $("#prt").onclick=()=>pdfSeance(s);
   $("#snd").onclick=()=>envoyerSeance(s);
+  $("#ctype")&&($("#ctype").onclick=()=>typeSheet(s));
+  $$("[data-bdos]").forEach(i=>i.onchange=()=>{ const B=s.boxes[+i.dataset.bdos]; if(B.t){ B.t.dos=i.value; s.maj=todayIso(); save(); } });
   $("#fill").onclick=()=>{ const n=autoFill(s,c); upd(s); toast(n?n+" case"+(n>1?"s":"")+" remplie"+(n>1?"s":""):"Aucune case vide."); };
   bindWu(s);
   $$("[data-pick]").forEach(b=>b.onclick=()=>picker(s,+b.dataset.pick,b.dataset.slot!=null?+b.dataset.slot:null,b.dataset.rep==="1"));
@@ -922,36 +1143,62 @@ function showSeance(id){
 }
 function upd(s){ s.maj=todayIso(); saveNow(); const y=scrollY; showSeance(s.id); scrollTo(0,y); }
 let TT=null; function toast(t){ let el=$("#toast"); if(!el){ el=document.createElement("div"); el.id="toast"; el.setAttribute("role","status"); document.body.appendChild(el); } el.textContent=t; el.hidden=false; clearTimeout(TT); TT=setTimeout(()=>el.hidden=true,2200); }
-/* échauffement : routine du warm-up attachée, ou échauffement simple en 5 étapes */
-function wuPart(s,c){
-  const W=s.warmup;
-  if(s.wmode==="routine"&&W){
-    const B=wuBlocs(W.routine);
-    return `<div class="box wu"><div class="boxh"><div><b>${esc(W.routine.nom||"Échauffement Create my warm-up")}</b><br><small class="msg">${B.length} blocs · ${B.reduce((a,b)=>a+b.jeux.length,0)} jeux · ${fmtMin(W.min)} min · construit le ${frD(W.at)}</small></div></div>
-     ${B.map(b=>`<div class="wub"><div class="boxh"><b>${esc(b.nom)}</b><span class="mn">${fmtMin(b.min)} min</span></div>${b.jeux.length?b.jeux.map(j=>{ const e=EX[j.id]; return `<button type="button" class="jeu" data-fiche="${esc(j.id)}">${esc(e?.n||j.n||j.id)}<small>${esc((e?.w?.but)||e?.ob||j.but||"")}</small></button>`; }).join(""):`<p class="msg">Aucun jeu choisi.</p>`}</div>`).join("")}
-     <div class="boxf noprint"><button type="button" class="go sm" data-wu="go">Modifier dans Create my warm-up</button><span class="sp"></span><button type="button" class="lnk" data-wu="simple">Échauffement simple (5 étapes)</button><button type="button" class="lnk" data-wu="del">Détacher</button></div></div>`;
+/* échauffement : CHOISI dans Choose your warm-up (relais vers la bibliothèque) ; les anciennes cases d'échauffement restent lisibles */
+function tConseil(s,code){ const T=trameFor(s), b=T&&T.blocs.find(x=>x.code===code); if(!b) return "";
+  const t=code==="ECH"?b.conseil:[b.objectif,b.dosage].filter(Boolean).join(" · "); return t?`<p class="msg tcons">Conseil de la trame : ${esc(t)}</p>`:""; }
+function wuPart(s,c){ return tConseil(s,"ECH")+wuPart0(s,c); }
+function wuPart0(s,c){
+  const W=s.wmode==="routine"&&s.warmup;
+  if(W){ const B=wuBlocs(W.routine), J=B.flatMap(b=>b.jeux);
+    return `<div class="box wu"><div class="boxh"><div><b>${esc(W.routine.nom||"Échauffement")}</b><br><small class="msg">${fmtMin(W.min)} min · ${J.length} situation${J.length>1?"s":""}${W.auto?" · choisi d'office pour cette séance":""}</small></div></div>
+     <ol class="wul" style="margin:8px 0 0;padding-left:22px">${J.map(j=>{ const e=EX[j.id]; return `<li><button type="button" class="jeu" data-fiche="${esc(j.id)}">${esc(e?.n||j.n||"Situation")}<small>${j.sec?fmtSec(j.sec)+" · ":""}${esc(nomCourt(j.de||j.but||e?.w?.but||"",80))}</small></button></li>`; }).join("")}</ol>
+     <div class="boxf noprint"><button type="button" class="go sm" data-wu="go">Changer</button><button type="button" class="ib sm" data-wu="voir">Voir / modifier dans Choose your warm-up</button><span class="sp"></span><button type="button" class="lnk" data-wu="del">Retirer</button></div></div>`;
   }
-  return `<div class="wucall noprint"><div><b>Échauffement sur mesure</b><span>Create my warm-up construit la routine complète (blocs, jeux, durées) pour ${c.al}, ${wuMinOfBoxes(s)} min, avant ${({pp:"une séance de PP",tennis:"du tennis",match:"un match",bilan:"des tests"})[apresDe(s)]}.</span></div>
-    <button type="button" class="go sm" data-wu="go">Construire l'échauffement avec Create my warm-up</button>${W?`<button type="button" class="ib sm" data-wu="routine">Reprendre le warm-up attaché (${fmtMin(W.min)} min)</button>`:""}</div>`;
+  const old=(s.boxes||[]).filter(b=>b.part==="E"&&b.ex.some(Boolean));
+  return `${old.length?`<div class="box wu"><div class="boxh"><b>Échauffement enregistré avant la bibliothèque</b><small class="msg">${fmtMin(wuMinOfBoxes(s))} min · lecture seule</small></div>${old.map(b=>`<div class="wub"><div class="boxh"><b>${esc(b.nom)}</b><span class="mn">${fmtMin(b.min)} min</span></div>${b.ex.filter(Boolean).map(x=>{ const e=exoOf(x); return e?`<button type="button" class="jeu" data-fiche="${esc(e.id)}">${esc(e.n)}</button>`:""; }).join("")}</div>`).join("")}</div>`:""}
+   <div class="wucall noprint"><div><b>${old.length?"Remplacer par un échauffement de la bibliothèque":"Échauffement"}</b><span>Les échauffements performance prêts à lancer : les mieux adaptés à cette séance (${fmtMin(wuCible(s))} min, ${esc((LIEUX[s.lieu]||"").toLowerCase())}) en premier.</span></div>
+    <button type="button" class="go sm" data-wu="go">${old.length?"Choisir un échauffement":"Choisir l'échauffement"}</button></div>`;
 }
+function cdPart(s,c){ return tConseil(s,"RAC")+cdPart0(s,c); }
+function cdPart0(s,c){
+  const W=RP(s,"F");
+  if(W){ const J=wuBlocs(W.routine).flatMap(b=>b.jeux);
+    return `<div class="box wu cd"><div class="boxh"><div><b>${esc(W.routine.nom||"Retour au calme")}</b><br><small class="msg">${fmtMin(W.min)} min · ${J.length} situation${J.length>1?"s":""}${W.auto?" · choisi d'office pour cette séance":""}</small></div></div>
+     <ol class="wul" style="margin:8px 0 0;padding-left:22px">${J.map(j=>{ const e=EX[j.id]; return `<li><button type="button" class="jeu" data-fiche="${esc(j.id)}">${esc(e?.n||j.n||"Situation")}<small>${j.sec?fmtSec(j.sec)+" · ":""}${esc(nomCourt(j.de||j.but||"",80))}</small></button></li>`; }).join("")}</ol>
+     <div class="boxf noprint"><button type="button" class="go sm" data-cd="go">Changer</button><button type="button" class="ib sm" data-cd="voir">Voir / modifier dans Choose your warm-up</button><span class="sp"></span><button type="button" class="lnk" data-cd="del">Retirer</button></div></div>`; }
+  return `<div class="wucall noprint"><div><b>Retour au calme</b><span>Les retours au calme de référence : les mieux adaptés à cette séance en premier.${(s.boxes||[]).some(b=>b.part==="F")?" Les cases ci-dessous restent utilisables.":""}</span></div>
+    <button type="button" class="go sm" data-cd="go">Choisir le retour au calme</button>${WULIB.some(m=>m.type==="cooldown")?`<button type="button" class="ib sm" data-cd="auto">Choisir pour moi</button>`:""}</div>`;
+}
+const fmtSec=t=>{ t=Math.round(+t||0); const m=Math.floor(t/60), r=t%60; return m?m+" min"+(r?" "+String(r).padStart(2,"0"):""):r+" s"; };
 function bindWu(s){
   $$("[data-wu]").forEach(b=>b.onclick=()=>{ const k=b.dataset.wu;
-    if(k==="go") return versWarmup(s);
-    if(k==="simple"){ s.wmode="simple"; } else if(k==="routine"){ s.wmode="routine"; } else if(k==="del"){ if(!b.dataset.ok){ b.dataset.ok=1; b.textContent="Confirmer"; return; } s.warmup=null; s.wmode="simple"; }
+    if(k==="go") return versWarmup(s,"#/nouveau");
+    if(k==="voir") return versWarmup(s,"#/m/"+encodeURIComponent(s.warmup?.id||""));
+    if(k==="del"){ if(!b.dataset.ok){ b.dataset.ok=1; b.textContent="Confirmer"; return; } s.warmup=null; s.wmode="simple"; }
+    upd(s); });
+  $$("[data-cd]").forEach(b=>b.onclick=()=>{ const k=b.dataset.cd;
+    if(k==="go") return versWarmup(s,"#/nouveau","cooldown");
+    if(k==="voir") return versWarmup(s,"#/m/"+encodeURIComponent(s.cooldown?.id||""),"cooldown");
+    if(k==="auto"){ s.cdCible||=s.duree<=45?6:s.duree<=75?8:10; cdAuto(s); }
+    if(k==="del"){ if(!b.dataset.ok){ b.dataset.ok=1; b.textContent="Confirmer"; return; } s.cooldown=null; s.cmode="simple"; }
     upd(s); });
 }
 function boxHtml(s,b,bi,c,used){
   const at=b.at, per=at?Math.round((b.min||0)/at.n):0, grp=at?Math.ceil(c.n/at.n):0;
   const exRow=(x,ei)=>{ const e=exoOf(x);
     if(!e) return `<div class="exr empty2">${at?`<b>Atelier ${ei+1}</b> `:""}<button type="button" class="ib sm noprint" data-pick="${bi}" data-slot="${ei}">Choisir un exo</button>${x?`<small class="msg">exo ${esc(x.id)} introuvable</small>`:""}</div>`;
-    const w=x.ok?null:warnEx(e,c), alt=w?altFor(e,b,c,used):null, md=upLevel(e,b,c), up=md&&e.v===md+1;
+    const w=x.ok?null:(warnEx(e,c,b)||(b.part==="C"&&zoneHit(e,b,c)?"zone fragile ("+c.zones.map(z=>ZN[z]||z).join(", ")+") : à surveiller":null)), alt=w?altFor(e,b,c,used):null, md=upLevel(e,b,c), up=md&&e.v===md+1;
     return `<div class="exr">${at?`<b class="atl">Atelier ${ei+1}</b>`:""}<div class="exm"><button type="button" class="exn" data-fiche="${esc(e.id)}">${esc(e.n)}</button>${x.up?` <span class="badge up" title="Progression">⬆ ${x.up==="exo"?"version plus dure":"dosage +1 cran"}</span>`:up?` <span class="badge up" title="${esc(RULE_HIST)}">⬆ niv. ${e.v}</span>`:""}${e.perso?` <span class="badge">perso</span>`:""}
       <div class="exd"><input aria-label="Dosage" data-dose="${bi}:${ei}" value="${esc(x.d)}"><span class="pdose">${esc(x.d)}</span></div>
       <small>${e.L.map(chip).join("")} niv. ${e.v} · ${esc(String(e.ma||"").replace(/\.$/,""))}</small>
       ${w?`<div class="warn noprint">⚠ ${esc(w)}${alt?` · remplaçant proposé : <b>${esc(alt.n)}</b> <button type="button" class="ib sm" data-alt="${bi}:${ei}:${esc(alt.id)}">Remplacer</button>`:""}<button type="button" class="lnk" data-keep="${bi}:${ei}">Garder</button></div>`:""}</div>
       <div class="exa noprint"><button type="button" class="ib sm" data-pick="${bi}" data-slot="${ei}" data-rep="1">Changer</button>${at?"":`<button type="button" class="ib sm" data-mv="${bi}:${ei}:-1" aria-label="Monter">↑</button><button type="button" class="ib sm" data-mv="${bi}:${ei}:1" aria-label="Descendre">↓</button>`}<button type="button" class="ib sm" data-rm="${bi}:${ei}" aria-label="Retirer">×</button></div></div>`; };
-  return `<div class="box"><div class="boxh"><div><b>${esc(b.nom)}</b>${b.L?.length?" "+b.L.map(chip).join(""):""}</div>
-    <label class="mn"><input type="number" min="0" max="120" data-min="${bi}" value="${b.min}" aria-label="Minutes"> min</label></div>
+  const T=b.t, tb=T?`<div class="tbloc">${T.obj?`<p class="bobj">${esc(T.obj)}</p>`:""}
+     <div class="bdos"><label for="bd${bi}">Dosage du bloc</label><textarea id="bd${bi}" rows="2" data-bdos="${bi}">${esc(T.dos)}</textarea><span class="pdose">${esc(T.dos)}</span></div>
+     ${T.int?`<p class="msg"><b>Intensité :</b> ${esc(T.int)} · ${T.nb} exo${T.nb>1?"s":""} conseillé${T.nb>1?"s":""}</p>`:""}
+     ${T.cons?.length||T.excl?`<details class="bcons"><summary>Consignes${T.excl?" et ce qu'on ne met pas ici":""}</summary>${T.cons?.length?`<ul>${T.cons.map(x=>`<li>${esc(x)}</li>`).join("")}</ul>`:""}${T.excl?`<p class="msg"><b>À ne pas mettre ici :</b> ${esc(T.excl)}</p>`:""}</details>`:""}</div>`:"";
+  return `<div class="box${T?" tb":""}"><div class="boxh"><div>${T?`<span class="bcode">${esc(T.code)}</span> `:""}<b>${esc(b.nom)}</b>${b.L?.length?" "+b.L.map(chip).join(""):""}</div>
+    <label class="mn"><input type="number" min="0" max="120" data-min="${bi}" value="${b.min}" aria-label="Minutes"> min</label></div>${tb}
    ${at?`<p class="msg atx">Ateliers : <input type="number" class="nb noprint" min="2" max="8" data-atn="${bi}" value="${at.n}"><span class="pdose">${at.n}</span> ateliers · ${per} min chacun · groupes de ${grp} joueur${grp>1?"s":""} · rotation au signal</p>`:""}
    ${b.ex.map(exRow).join("")}
    <div class="boxf noprint">${at?"":`<button type="button" class="go sm" data-pick="${bi}">+ Choisir un exo</button>`}
@@ -979,18 +1226,20 @@ function showSeanceJoueur(s){
    <p class="lead">${frD(s.date)} · ${s.duree} min${s.theme?" · "+esc(s.theme):""}</p>
    ${s.faite?`<p class="note ok">✓ Faite le ${frD(s.faite.date)}${s.faite.rpe!=null?" · dureté "+s.faite.rpe+"/10":""}</p>`:""}
    <div class="tools" style="margin:12px 0"><a class="go big" href="#/terrain/${s.id}">▶ C'est parti</a></div>
-   ${["E","C","F"].map(p=>`<section class="sec part"><h2>${PARTS[p]} <small class="sm2">${partMin(s,p)} min</small></h2>${p==="E"&&W?wuBlocs(W.routine).map(b=>`<div class="box"><div class="boxh"><b>${esc(b.nom)}</b><span class="mn">${fmtMin(b.min)} min</span></div>${b.jeux.map(j=>`<button type="button" class="jeu" data-fiche="${esc(j.id)}">${esc(EX[j.id]?.n||j.n||j.id)}</button>`).join("")}</div>`).join(""):s.boxes.filter(b=>b.part===p&&b.ex.some(Boolean)).map(b=>`<div class="box"><div class="boxh"><b>${esc(b.nom)}</b><span class="mn">${fmtMin(b.min)} min</span></div>${exs(b)}</div>`).join("")}</section>`).join("")}`;
+   ${["E","C","F"].map(p=>`<section class="sec part"><h2>${PARTS[p]} <small class="sm2">${partMin(s,p)} min</small></h2>${RP(s,p)?wuBlocs(RP(s,p).routine).map(b=>`<div class="box"><div class="boxh"><b>${esc(b.nom)}</b><span class="mn">${fmtMin(b.min)} min</span></div>${b.jeux.map(j=>`<button type="button" class="jeu" data-fiche="${esc(j.id)}">${esc(EX[j.id]?.n||j.n||j.id)}</button>`).join("")}</div>`).join(""):s.boxes.filter(b=>b.part===p&&b.ex.some(Boolean)).map(b=>`<div class="box"><div class="boxh"><b>${esc(b.nom)}</b><span class="mn">${fmtMin(b.min)} min</span></div>${b.t?.obj?`<p class="bobj">${esc(b.t.obj)}</p>`:""}${b.t?.dos?`<p class="msg"><b>Dosage :</b> ${esc(b.t.dos)}</p>`:""}${exs(b)}</div>`).join("")}</section>`).join("")}`;
   $$("[data-fiche]").forEach(b=>b.onclick=()=>fiche(b.dataset.fiche));
 }
 
 /* ---------- CHOIX D'UN EXO (liste complète) + création à la volée ---------- */
 function picker(s,bi,slot,replace){
   const B=s.boxes[bi], c=ctxOf(s), used=new Set(s.boxes.flatMap(b=>b.ex.filter(Boolean).map(x=>x.id)));
-  const P=pool(B,c,used); const fams=[...new Set(P.map(x=>x.e.f))];
+  let jeux=!!picker.jeux; const P0=pool(B,c,used), PJ=c.noKids?pool(B,c,used,{jeux:true}):P0; let P=jeux?PJ:P0; const fams=[...new Set(PJ.map(x=>x.e.f))];
   let q="", ff="", lv="", shown=40;
   openSheet(`<div class="shh"><b>${replace?"Changer · ":""}${esc(B.nom)}${slot!=null&&B.at?" · atelier "+(slot+1):""}</b><button class="ib" data-close type="button" aria-label="Fermer">×</button></div>
    <p class="msg">${P.length} exos possibles (âge ${c.al}, ${(LIEUX[c.lieu]||"").toLowerCase()}, ton matériel). Les plus adaptés sont en haut. ${c.done.ids.size?RULE_HIST:""}</p>
    <div class="tools"><button type="button" class="ib" id="pnew">+ Créer un exo pour cette case</button></div>
+   ${c.noKids&&PJ.length>P0.length?`<label class="chk"><input type="checkbox" id="pj"${jeux?" checked":""}> Afficher aussi les jeux (jeux d'échauffement et jeux physiques, ${PJ.length-P0.length})</label>`:""}
+   ${B.t?.cles?.length?`<p class="msg">En tête : les exos clés de la trame pour ce bloc, puis les familles du bloc (niveau ${B.t.niv.join(" à ")}).</p>`:""}
    <input class="srch" id="pq" type="search" placeholder="Rechercher dans ces exos">
    <div class="row"><div class="f grow"><label for="pf">Famille</label><select id="pf"><option value="">Toutes</option>${fams.map(f=>`<option value="${f}">${esc(FAM[f]?.t||f)}</option>`).join("")}</select></div>
    <div class="f"><label for="pv">Niveau</label><select id="pv"><option value="">Tous</option>${[1,2,3,4].map(v=>`<option>${v}</option>`).join("")}</select></div></div>
@@ -1001,15 +1250,16 @@ function picker(s,bi,slot,replace){
     const qq=norm(q).split(/\s+/).filter(Boolean);
     const L=P.filter(({e})=>(!ff||e.f===ff)&&(!lv||e.v==lv)&&(!qq.length||qq.every(w=>tx(e)._t.includes(w))));
     const filt=q||ff||lv;
-    const item=({e})=>{ const md=upLevel(e,B,c); return `<div class="pit${used.has(e.id)?" used":""}"><button type="button" class="padd" data-add="${esc(e.id)}"><b>${esc(e.n)}${md&&e.v===md+1?` <span class="badge up">⬆ un cran au-dessus</span>`:""}${e.perso?` <span class="badge">perso</span>`:""}</b><span>${esc(e.ob||e.de||"")}</span><small>${e.L.map(chip).join("")} niv. ${e.v} · dès ${e.a} ans · ${esc(String(e.ma||"").replace(/\.$/,""))}${used.has(e.id)?" · <em>déjà dans la séance</em>":""}</small></button><button type="button" class="ib sm" data-inf="${esc(e.id)}" aria-label="Voir la fiche">ⓘ</button></div>`; };
+    const item=({e})=>{ const md=upLevel(e,B,c); return `<div class="pit${used.has(e.id)?" used":""}"><button type="button" class="padd" data-add="${esc(e.id)}"><b>${esc(e.n)}${B.t?.cles?.includes(e.id)?` <span class="badge ok">clé de la trame</span>`:""}${isKid(e)&&c.noKids?` <span class="badge">jeu</span>`:""}${md&&e.v===md+1?` <span class="badge up">⬆ un cran au-dessus</span>`:""}${e.perso?` <span class="badge">perso</span>`:""}</b><span>${esc(e.ob||e.de||"")}</span><small>${e.L.map(chip).join("")} niv. ${e.v} · dès ${e.a} ans · ${esc(String(e.ma||"").replace(/\.$/,""))}${used.has(e.id)?" · <em>déjà dans la séance</em>":""}</small></button><button type="button" class="ib sm" data-inf="${esc(e.id)}" aria-label="Voir la fiche">ⓘ</button></div>`; };
     $("#pl").innerHTML=!L.length?`<div class="empty">Aucun exo. Vérifie le matériel, le lieu ou l'âge dans les réglages, ou crée ton exo.</div>`:
       filt?L.slice(0,shown).map(item).join(""):
       `<h3 class="alt">Les plus adaptés</h3>${L.slice(0,12).map(item).join("")}${L.length>12?`<h3 class="alt">Tous les autres possibles (${L.length-12})</h3>${L.slice(12,shown).map(item).join("")}`:""}`;
     if(L.length>shown) $("#pl").insertAdjacentHTML("beforeend",`<button type="button" class="ib" id="more">Voir plus (${L.length-shown} restants)</button>`);
     $("#more")&&($("#more").onclick=()=>{ shown+=60; draw(); });
-    $$("[data-add]",sheet).forEach(b=>b.onclick=()=>{ const e=EX[b.dataset.add]; put({id:e.id,d:dose(e,c)}); });
+    $$("[data-add]",sheet).forEach(b=>b.onclick=()=>{ const e=EX[b.dataset.add]; put({id:e.id,d:doseB(e,c,B,Math.max(1,B.ex.filter(Boolean).length+(replace||B.at?0:1)))}); });
     $$("[data-inf]",sheet).forEach(b=>b.onclick=()=>fiche(b.dataset.inf,()=>picker(s,bi,slot,replace)));
   };
+  $("#pj")&&($("#pj").onchange=e=>{ jeux=picker.jeux=e.target.checked; P=jeux?PJ:P0; shown=40; draw(); });
   $("#pq").oninput=e=>{ q=e.target.value; shown=40; draw(); };
   $("#pf").onchange=e=>{ ff=e.target.value; shown=40; draw(); };
   $("#pv").onchange=e=>{ lv=e.target.value; shown=40; draw(); };
@@ -1068,7 +1318,7 @@ function modeleSheet(s){
   openSheet(`<div class="shh"><b>Enregistrer comme modèle</b><button class="ib" data-close type="button">×</button></div>
    <p class="msg">Le modèle garde la structure, les exos, les dosages et le warm-up. Tu pourras l'appliquer à un autre joueur ou groupe : dosages recalculés pour son âge, exos inadaptés signalés avec un remplaçant.</p>
    <div class="f"><label for="mn">Nom du modèle</label><input id="mn" value="${esc(s.nom||"Modèle")}"></div><div class="tools"><button class="go" id="mok" type="button">Enregistrer</button></div>`);
-  $("#mok").onclick=()=>{ const c=ctxOf(s); const m={id:uid(),nom:$("#mn").value.trim()||s.nom||"Modèle",type:s.type,theme:s.theme,lignes:[...s.lignes],phase:s.phase,duree:s.duree,lieu:s.lieu,mat:[...(s.mat||[])],boxes:clone(s.boxes).map(b=>({...b,ex:b.ex.map(x=>x?{id:x.id,d:x.d,snap:x.snap}:null)})),warmup:s.warmup?clone(s.warmup):null,wmode:s.wmode,age:c.age,de:s.id,cree:todayIso()};
+  $("#mok").onclick=()=>{ const c=ctxOf(s); const m={id:uid(),nom:$("#mn").value.trim()||s.nom||"Modèle",type:s.type,theme:s.theme,lignes:[...s.lignes],phase:s.phase,duree:s.duree,lieu:s.lieu,mat:[...(s.mat||[])],boxes:clone(s.boxes).map(b=>({...b,ex:b.ex.map(x=>x?{id:x.id,d:x.d,snap:x.snap}:null)})),warmup:s.warmup?clone(s.warmup):null,wmode:s.wmode,cooldown:s.cooldown?clone(s.cooldown):null,cmode:s.cmode||"simple",age:c.age,de:s.id,cree:todayIso()};
     ST.modeles.push(m); saveNow(); closeSheet(); toast("Modèle enregistré"); };
 }
 function showModeles(){
@@ -1091,12 +1341,12 @@ function appliquerSheet(m){
   $("#aok").onclick=()=>{ const s=appliquerModele(m,tgt,+$("#aa").value||null,$("#ad").value); closeSheet(); go("#/s/"+s.id); };
 }
 function appliquerModele(m,tgt,age,date){
-  const o={nom:m.nom,type:m.type,theme:m.theme,lignes:[...m.lignes],phase:m.phase,duree:m.duree,lieu:m.lieu,mat:[...m.mat],date:date||todayIso(),modele:m.id,wmode:m.wmode||"simple",warmup:m.warmup?clone(m.warmup):null};
+  const o={nom:m.nom,type:m.type,theme:m.theme,lignes:[...m.lignes],phase:m.phase,duree:m.duree,lieu:m.lieu,mat:[...m.mat],date:date||todayIso(),modele:m.id,wmode:m.wmode||"simple",warmup:m.warmup?clone(m.warmup):null,cmode:m.cmode||"simple",cooldown:m.cooldown?clone(m.cooldown):null};
   if(tgt&&tgt[0]==="g"){ const g=GRUN.groupes.get(tgt.slice(2)); o.gid=g.id; o.joueurs=[...g.jids]; } else if(tgt) o.joueurs=[tgt.slice(2)];
   else { const A=age||+m.age||13; o.libre={n:1,age:Math.max(4,Math.min(18,A)),niv:0,zones:[],crois:false,extra:0,sexe:"G"}; }
   const s=newSeance(o); s.boxes=clone(m.boxes).map(b=>({...b,id:uid()}));
   const c=ctxOf(s); let bad=0;
-  for(const b of s.boxes) for(const x of b.ex){ if(!x) continue; const e=exoOf(x); if(!e) continue; x.d=dose(e,c); if(warnEx(e,c)) bad++; }
+  for(const b of s.boxes) for(const x of b.ex){ if(!x) continue; const e=exoOf(x); if(!e) continue; x.d=dose(e,c); if(warnEx(e,c,b)) bad++; }
   s.modeleNote=`Modèle appliqué : dosages recalculés pour ${c.al}.`+(bad?` ${bad} exo${bad>1?"s":""} inadapté${bad>1?"s":""} à l'âge : remplaçant proposé sous chacun.`:" Tous les exos conviennent à cet âge.");
   saveNow(); return s;
 }
@@ -1142,16 +1392,20 @@ async function pdfSeance(s){
   if(s.theme) d.para("Thème : "+s.theme,{size:11,bold:true,after:2});
   if(s.lignes.length) d.para("Lignes : "+s.lignes.map(l=>l+" "+lineName(l)).join(" · "),{size:9,color:"#5D6675"});
   if(c.zones.length||c.crois) d.para("Vigilance : "+[...c.zones.map(z=>ZN[z]||z),...(c.crois?["croissance"]:[])].join(", "),{size:9,color:"#B91C1C"});
+  const TR=trameFor(s); if(TR){ d.y+=4; d.para("Pourquoi cette séance · "+TR.nom,{size:10.5,bold:true,after:1}); d.para(sent(TR.principes,2),{size:9.5,color:"#333333",after:1});
+    const ph=s.phase||"G"; d.para((PHASES[ph]||"")+" : "+(TR.phases[phK(ph)]||"")+" Charge "+(s.charge||"–")+"/5 : "+(TR.charge[chK(s.charge)]||""),{size:9,color:"#5D6675",after:1});
+    if(c.crois) d.para("Croissance : "+TR.croissance,{size:9,color:"#B91C1C",after:1}); }
   d.y+=6;
   for(const p of ["E","C","F"]){
-    const wu=p==="E"&&s.wmode==="routine"&&s.warmup;
-    const bx=wu?wuBlocs(s.warmup.routine).map(b=>({nom:b.nom,min:b.min,jeux:b.jeux})):s.boxes.filter(b=>b.part===p); if(!bx.length) continue;
+    const wu=RP(s,p);
+    const bx=wu?wuBlocs(wu.routine).map(b=>({nom:b.nom,min:b.min,jeux:b.jeux})):s.boxes.filter(b=>b.part===p); if(!bx.length) continue;
     d.need(40); d.rect(M,d.y,W,20,{fill:COL[p]}); d.text(M+8,d.y+5,PARTS[p],{size:12,bold:true,color:"#FFFFFF"});
     const mt=partMin(s,p)+" min"; d.text(M+W-8-MiniPDF.width(mt,11,true),d.y+5,mt,{size:11,bold:true,color:"#FFFFFF"}); d.y+=26;
     for(const B of bx){
       d.need(34); const mn=(B.min||0)+" min";
       d.text(M,d.y,B.nom,{size:11.5,bold:true}); d.text(M+W-MiniPDF.width(mn,10.5,true),d.y,mn,{size:10.5,bold:true,color:COL[p]}); d.y+=16;
       if(wu){ for(const j of B.jeux){ const e=EX[j.id]; d.need(24); d.para(e?.n||j.n||j.id,{size:10.5,bold:true,x:M+10,after:0}); const t=e?.w?.but||e?.ob; if(t) d.para(t,{size:9,color:"#333333",x:M+10,after:4}); } d.line(M,d.y,M+W,d.y); d.y+=8; continue; }
+      if(B.t){ if(B.t.obj) d.para(B.t.obj,{size:9.5,x:M+10,after:0}); if(B.t.dos) d.para("Dosage du bloc : "+B.t.dos,{size:9.5,bold:true,color:COL[p],x:M+10,after:0}); if(B.t.int) d.para("Intensité : "+B.t.int,{size:9,color:"#5D6675",x:M+10,after:0}); if(B.t.cons?.length) d.para("Consignes : "+B.t.cons.join(" ; "),{size:9,color:"#333333",x:M+10,after:3}); }
       if(B.at) d.para(`${B.at.n} ateliers · ${Math.round((B.min||0)/B.at.n)} min chacun · groupes de ${Math.ceil(c.n/B.at.n)} · rotation au signal`,{size:9,color:"#5D6675",x:M+10});
       const L=B.ex.map((x,i)=>[x,i]).filter(([x])=>exoOf(x));
       if(!L.length) d.para("(aucun exo choisi)",{size:9,color:"#8A94A3",x:M+10});
@@ -1165,6 +1419,7 @@ async function pdfSeance(s){
     }
     d.y+=4;
   }
+  if(TR){ d.need(40); d.para("Erreurs à éviter",{size:11,bold:true,after:1}); for(const x of TR.erreurs||[]) d.para("· "+x,{size:9.5,x:M+8,after:0}); d.y+=4; d.para("Indicateurs de réussite",{size:11,bold:true,after:1}); d.para(TR.indicateurs||"",{size:9.5,x:M+8}); }
   const r=await MiniPDF.deliver(d.out(),`Séance ${(s.nom||"").replace(/[\\/:*?"<>|]/g,"").slice(0,40)} ${frD(s.date).replace(/\//g,"-")}.pdf`);
   b.textContent=r==="download"?"PDF téléchargé":"Imprimer / PDF";
   }catch(e){ b.textContent="Erreur PDF"; console.error(e); }
@@ -1176,12 +1431,13 @@ let TIMER=null, RTIMER=null, ACX=null, WL=null;
 function beep(n=3){ try{ ACX||=new (window.AudioContext||window.webkitAudioContext)(); for(let i=0;i<n;i++){ const t=i*0.25, o=ACX.createOscillator(), g=ACX.createGain(); o.frequency.value=i<n-1?880:1320; o.connect(g); g.connect(ACX.destination); g.gain.setValueAtTime(0.25,ACX.currentTime+t); g.gain.exponentialRampToValueAtTime(0.001,ACX.currentTime+t+0.2); o.start(ACX.currentTime+t); o.stop(ACX.currentTime+t+0.22); } }catch(e){} try{ navigator.vibrate&&navigator.vibrate([300,100,300]); }catch(e){} }
 function steps(s){
   const S=[];
-  if(s.wmode==="routine"&&s.warmup) wuBlocs(s.warmup.routine).forEach((b,bi)=>{ const n=b.jeux.length||1; b.jeux.forEach((j,ji)=>S.push({k:"wu",key:`w${bi}.${ji}`,part:"E",cas:b.nom,id:j.id,n:j.n,sec:j.sec||Math.max(20,Math.round((b.min||3)*60/n))})); });
-  (s.boxes||[]).forEach((b,bi)=>{ if(b.part==="E"&&s.wmode==="routine"&&s.warmup) return;
+  if(s.wmode==="routine"&&s.warmup) wuBlocs(s.warmup.routine).forEach((b,bi)=>{ const n=b.jeux.length||1; b.jeux.forEach((j,ji)=>S.push({k:"wu",key:`w${bi}.${ji}`,part:"E",cas:b.nom,id:j.id,n:j.n,de:j.de,co:j.co,exo:j.exo,sec:j.sec||Math.max(20,Math.round((b.min||3)*60/n))})); });
+  (s.boxes||[]).forEach((b,bi)=>{ if(RP(s,b.part)) return;
     const ex=b.ex.map((x,ei)=>({x,ei})).filter(({x})=>x);
     if(!ex.length){ S.push({k:"box",key:`b${bi}`,part:b.part,cas:b.nom,sec:(+b.min||0)*60}); return; }
     ex.forEach(({x,ei},i)=>S.push({k:"ex",key:`b${bi}.${ei}`,part:b.part,cas:b.nom,bi,ei,id:x.id,d:x.d,at:b.at?ei+1:null,sec:Math.max(30,Math.round((+b.min||0)*60/(b.at?1:ex.length))),rot:b.at?Math.round((+b.min||0)*60/b.at.n):null}));
   });
+  if(RP(s,"F")) wuBlocs(s.cooldown.routine).forEach((b,bi)=>{ const n=b.jeux.length||1; b.jeux.forEach((j,ji)=>S.push({k:"cd",key:`c${bi}.${ji}`,part:"F",cas:b.nom,id:j.id,n:j.n,de:j.de,co:j.co,exo:j.exo,sec:j.sec||Math.max(20,Math.round((b.min||3)*60/n))})); });
   return S;
 }
 const seriesOf=d=>{ const m=/(\d+)\s*(?:à\s*\d+\s*)?×/.exec(d||""); return m?Math.min(10,+m[1]):0; };
@@ -1207,9 +1463,10 @@ function showTerrain(id,k){
    <div class="clock" id="clk"></div>
    <div class="tools"><button class="go big" id="st" type="button">Démarrer</button><button class="ib" id="rz" type="button" aria-label="Remettre le chrono">⟲ ${mmss(x.sec)}</button><span id="vb"></span></div>
    ${x.rot?`<p class="msg">Ateliers : rotation toutes les ${mmss(x.rot)} au signal.</p>`:""}
+   ${x.bi!=null&&s.boxes[x.bi]?.t?(()=>{ const T=s.boxes[x.bi].t; return `<div class="terx tb">${T.obj?`<p><b>Objectif du bloc.</b> ${esc(T.obj)}</p>`:""}${T.dos?`<p><b>Dosage du bloc.</b> ${esc(T.dos)}</p>`:""}${T.int?`<p class="msg"><b>Intensité.</b> ${esc(T.int)}</p>`:""}${T.cons?.length?`<ul class="cos">${T.cons.map(t=>`<li>${esc(t)}</li>`).join("")}</ul>`:""}</div>`; })():""}
    ${nSer?`<div class="ser"><b>Série <span id="sn">1</span> / ${nSer}</b><button type="button" class="go sm" id="sdone">Série faite → récup ${mmss(rec)}</button><span class="clock sm" id="rclk" hidden></span></div>`:""}
    <div id="vid"></div>
-   ${e?`<div class="terx">${e.co?`<p><b>Consignes.</b> ${esc(arr(e.co))}</p>`:""}${e.de?`<p class="msg"><b>Déroulement.</b> ${esc(e.de)}</p>`:""}${e.ma&&!/^aucun/.test(e.ma)?`<p class="msg"><b>Matériel.</b> ${esc(e.ma)}</p>`:""}</div>`:x.k==="box"?`<div class="empty">Aucun exo choisi dans cette case : fais-la librement.</div>`:""}
+   ${(wu||x.k==="cd")&&!e&&(x.co?.length||x.de)?`<div class="terx">${x.co?.length?`<ul class="cos">${x.co.map(t=>`<li>${esc(t)}</li>`).join("")}</ul>`:""}${x.de?`<p class="msg"><b>Déroulement.</b> ${esc(x.de)}</p>`:""}</div>`:e?`<div class="terx">${e.co?`<p><b>Consignes.</b> ${esc(arr(e.co))}</p>`:""}${e.de?`<p class="msg"><b>Déroulement.</b> ${esc(e.de)}</p>`:""}${e.ma&&!/^aucun/.test(e.ma)?`<p class="msg"><b>Matériel.</b> ${esc(e.ma)}</p>`:""}</div>`:x.k==="box"?`<div class="empty">Aucun exo choisi dans cette case : fais-la librement.</div>`:""}
    <div class="tools tfin"><button class="go big" id="ok" type="button">✓ Fait${nx?", suivant":""}</button><button class="ib" id="sk" type="button">Sauter</button>${k?`<a class="ib" href="#/terrain/${s.id}/${k-1}">‹ Précédent</a>`:""}</div>
    ${nx?`<p class="msg">Ensuite : ${esc((nx.id&&(exoOf({id:nx.id})||{}).n)||nx.n||nx.cas)}${nx.k==="wu"||x.k!=="wu"?"":" (fin de l'échauffement)"}</p>`:`<p class="msg">Dernier exo : ensuite, le retour.</p>`}</div>`;
   clearInterval(TIMER); clearInterval(RTIMER); let left=x.sec, run=false;
@@ -1221,7 +1478,7 @@ function showTerrain(id,k){
       RTIMER=setInterval(()=>{ r--; rc.textContent=mmss(r); if(r<=0){ clearInterval(RTIMER); beep(3); sn++; $("#sn").textContent=sn; rc.hidden=true; $("#sdone").disabled=false; $("#sdone").textContent=sn>=nSer?"Dernière série faite":"Série faite → récup "+mmss(rec); } },1000); }; }
   const mark=v=>{ ST.run.etat[x.key]=v; saveNow(); clearInterval(TIMER); clearInterval(RTIMER); go(k+1>=S.length?"#/retour/"+s.id:"#/terrain/"+s.id+"/"+(k+1)); };
   $("#ok").onclick=()=>mark("fait"); $("#sk").onclick=()=>mark("saute");
-  if(x.id) videoOf(x.id).then(v=>{ if(!v||!$("#vb")) return; $("#vb").innerHTML=`<button type="button" class="ib" id="vbt">▶ Vidéo</button>`; $("#vbt").onclick=()=>{ const el=$("#vid"); if(el.innerHTML) el.innerHTML=""; else { el.innerHTML=vidHtml(v); if(!v.u&&!/\.(mp4|mov|webm|m4v)/i.test(v.l)) window.open(v.l,"_blank","noopener"); } }; });
+  if(x.id) videoOf(x.id).then(v=>v||(x.exo?videoOf(x.exo):null)).then(v=>{ if(!v||!$("#vb")) return; $("#vb").innerHTML=`<button type="button" class="ib" id="vbt">▶ Vidéo</button>`; $("#vbt").onclick=()=>{ const el=$("#vid"); if(el.innerHTML) el.innerHTML=""; else { el.innerHTML=vidHtml(v); if(!v.u&&!/\.(mp4|mov|webm|m4v)/i.test(v.l)) window.open(v.l,"_blank","noopener"); } }; });
 }
 /* RETOUR : dureté ressentie, durée réelle, douleur, commentaire → journal de chaque joueur */
 function showRetour(id){
@@ -1292,12 +1549,12 @@ function rerender(){ if(document.body.classList.contains("terrain")) return; if(
 async function boot(){
   try{ const rg=GRUN.load(GRUN.K.reglages,{})||{}; if(rg.theme==="light"||rg.theme==="dark") document.documentElement.dataset.theme=rg.theme; }catch(e){}
   GRUN.nav("create");
-  try{ await loadBanque(); }
+  try{ await loadBanque(); await Promise.all([loadWuLib(),loadTrames()]); }
   catch(e){ console.error(e); main.innerHTML=`<div class="empty">Impossible de charger la banque d'exercices. Ouvre l'appli une fois avec une connexion.</div>`; return; }
   const sid=retourWarmup();
   if(sid&&parseHash().a!=="s") location.replace("#/s/"+sid);
   route();
-  if(sid) toast("Échauffement attaché à la séance");
+  if(sid) toast("Choix attaché à la séance");
   GRUN.on("grun:banque",async()=>{ await loadBanque(); rerender(); });
   GRUN.on("grun:joueurs",rerender);
   GRUN.on(SK,()=>{ ST=loadST(); rerender(); });

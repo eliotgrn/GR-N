@@ -49,7 +49,7 @@
     joueurs: { f: "index.html", h: "#/joueurs", t: "Individualisation", pole: "ind" },
     prog: { f: "prog.html", t: "Create my prog", pole: "create", s: "Programmation adaptée au joueur : semaine, cycle ou saison" },
     seances: { f: "seances.html", t: "Create my séance", pole: "create", s: "Structure automatique, exos choisis dans la banque" },
-    warmup: { f: "warmup.html", t: "Create my warm-up", pole: "create", s: "L'échauffement parfait selon l'âge, la durée et ce qui suit" },
+    warmup: { f: "warmup.html", t: "Choose your warm-up", pole: "create", s: "30 échauffements performance prêts à lancer, modifiables" },
     veille: { f: "veille.html", t: "Veille de connaissances", pole: "res", s: "291 documents : âge, préparation physique, biomécanique, entraîner" },
     banque: { f: "banque.html", t: "Banque d'exercices", pole: "res", s: "Tous les exercices, jeux et situations, plus les tiens" },
     saisons: { f: "saisons.html", t: "Référentiel de programmation", pole: "res", s: "Les saisons de référence de la méthode, 4 à 18 ans" },
