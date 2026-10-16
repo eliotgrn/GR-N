@@ -62,8 +62,153 @@ html.grun-simple .cx{display:none!important}
 .grun-pdf:disabled{opacity:.6}
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .grun-pdf{color:#2DD4BF;border-color:#2DD4BF}}
 :root[data-theme="dark"] .grun-pdf{color:#2DD4BF;border-color:#2DD4BF}
+
+/* ===================== SOCLE 1.1 « chemin ultra intuitif » =====================
+   RÈGLES DE MISE EN PAGE (toutes les pages) :
+   - retour « ‹ » en haut à gauche (#back) ; joueur en cours + « ? » en haut à droite (.grun-topx, injectés par GRUN.nav) ;
+   - action principale EN BAS, grande, dans la zone du pouce : <div class="grun-actbar"><button class="gs-btn main">…</button></div> ;
+   - options secondaires repliées : <details class="grun-plus"><summary>Plus d'options</summary><div class="grun-plusb">…</div></details> ;
+   - « + » unique au centre de la barre du bas (#grun-plus) ; créations dans une feuille (.grun-ov > .grun-sheet). */
+:root{--grun-hi:#0F766E;--grun-on:#fff}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--grun-hi:#2DD4BF;--grun-on:#0B1117}}
+:root[data-theme="dark"]{--grun-hi:#2DD4BF;--grun-on:#0B1117}
+/* « + » au centre de la barre du bas */
+#grun-nav #grun-plus{flex:0 0 64px;border:0;background:none;padding:0;display:flex;align-items:center;justify-content:center;min-height:var(--nav-h);cursor:pointer}
+#grun-nav #grun-plus span{width:48px;height:48px;border-radius:16px;background:var(--grun-hi);color:var(--grun-on);display:flex;align-items:center;justify-content:center;box-shadow:0 3px 10px rgba(15,118,110,.35)}
+#grun-nav #grun-plus svg{width:26px;height:26px;stroke-width:2.6;stroke:currentColor}
+#grun-nav #grun-plus:active span{transform:scale(.94)}
+@media (max-width:380px){#grun-nav a{font-size:10.5px}#grun-nav #grun-plus{flex-basis:56px}}
+/* barre du haut : joueur en cours + aide */
+.grun-topx{display:inline-flex;gap:6px;align-items:center;flex:0 0 auto}
+.grun-chip{display:inline-flex;align-items:center;gap:6px;min-height:36px;max-width:118px;padding:0 10px 0 4px;border:1px solid var(--line,#D9DDE3);border-radius:999px;background:var(--panel,#fff);color:var(--ink,#16202E);font:600 14px/1 var(--ui,system-ui,sans-serif);cursor:pointer}
+.grun-chip .gc-nm{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+.gc-av{flex:0 0 28px;width:28px;height:28px;border-radius:50%;background:var(--grun-hi);color:var(--grun-on);display:inline-flex;align-items:center;justify-content:center;font-weight:800;font-size:13px}
+.gc-av.g{border-radius:8px;background:#6D3FC0;color:#fff}
+.gc-av.vide{background:var(--soft,#ECEFF3);color:var(--mute,#5D6675)}
+.grun-q{width:36px;height:36px;border-radius:50%;border:1px solid var(--line,#D9DDE3);background:var(--panel,#fff);color:var(--mute,#5D6675);font:800 17px/1 var(--ui,system-ui,sans-serif);cursor:pointer;padding:0}
+@media (max-width:430px){.grun-chip{max-width:92px;padding-right:8px}.grun-chip .gc-nm{font-size:13px}}
+@media (max-width:360px){.grun-chip .gc-nm{display:none}.grun-chip{padding:0 4px}}
+/* feuille (bottom sheet) */
+.grun-ov{position:fixed;inset:0;z-index:200;background:rgba(10,16,24,.42);display:flex;align-items:flex-end;justify-content:center;opacity:0;transition:opacity .16s ease}
+.grun-ov.in{opacity:1}.grun-ov.out{opacity:0}
+.grun-sheet{width:100%;max-width:560px;max-height:min(90vh,calc(100vh - env(safe-area-inset-top,0px) - 24px));display:flex;flex-direction:column;background:var(--panel,#fff);color:var(--ink,#16202E);border-radius:18px 18px 0 0;box-shadow:0 -10px 40px rgba(0,0,0,.25);transform:translateY(24px);transition:transform .18s ease;font-family:var(--ui,system-ui,sans-serif);font-size:16px;line-height:1.4}
+.grun-sheet.large{max-width:720px}
+.grun-ov.in .grun-sheet{transform:none}
+@media (min-width:700px){.grun-ov{align-items:center}.grun-sheet{border-radius:18px;max-height:86vh}}
+.gs-h{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:14px 16px 8px;border-bottom:1px solid var(--line,#D9DDE3)}
+.gs-h b{font-family:var(--display,"Barlow Condensed",system-ui,sans-serif);font-size:1.45em;font-weight:700;line-height:1.1}
+.gs-x{width:40px;height:40px;border-radius:50%;border:0;background:var(--soft,#ECEFF3);color:var(--ink,#16202E);font-size:24px;line-height:1;cursor:pointer;flex:0 0 auto}
+.gs-b{padding:12px 16px 14px;overflow-y:auto;-webkit-overflow-scrolling:touch;display:flex;flex-direction:column;gap:12px;flex:1 1 auto;min-height:0}
+.gs-f{display:flex;gap:8px;padding:10px 16px calc(12px + env(safe-area-inset-bottom,0px));border-top:1px solid var(--line,#D9DDE3)}
+.gs-btn{min-height:52px;border-radius:13px;border:1px solid var(--line,#D9DDE3);background:var(--panel,#fff);color:var(--ink,#16202E);font:700 16px/1.1 var(--ui,system-ui,sans-serif);padding:0 16px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;text-decoration:none;gap:6px}
+.gs-btn.main{flex:1;background:var(--grun-hi);border-color:var(--grun-hi);color:var(--grun-on)}
+.gs-btn.sec{flex:0 1 auto}
+.gs-btn.sm{min-height:40px;font-size:14.5px;border-radius:10px;padding:0 12px;flex:0 0 auto}
+.gs-btn:disabled{opacity:.5}
+.grun-ov.danger .gs-btn.main{background:#B91C1C;border-color:#B91C1C;color:#fff}
+.gs-form{display:flex;flex-direction:column;gap:12px;margin:0}
+.gs-l{display:flex;flex-direction:column;gap:5px;font-weight:600;font-size:14.5px;color:var(--ink,#16202E);min-width:0}
+.gs-l small{font-weight:500;color:var(--mute,#5D6675)}
+.gs-inp{min-height:48px;border:1px solid var(--line,#D9DDE3);border-radius:11px;background:var(--bg,#F4F5F7);color:var(--ink,#16202E);padding:0 12px;font:500 17px/1.2 var(--ui,system-ui,sans-serif);width:100%;max-width:100%;box-sizing:border-box}
+.gs-ta{padding:10px 12px;min-height:84px;resize:vertical;line-height:1.4}
+.gs-inp:focus{outline:2px solid var(--grun-hi);outline-offset:1px}
+.gs-seg{display:flex;border:1px solid var(--line,#D9DDE3);border-radius:11px;overflow:hidden;background:var(--bg,#F4F5F7)}
+.gs-seg button{flex:1;min-height:46px;border:0;background:none;color:var(--ink,#16202E);font:600 16px/1 var(--ui,system-ui,sans-serif);cursor:pointer}
+.gs-seg button+button{border-left:1px solid var(--line,#D9DDE3)}
+.gs-seg button[aria-checked=true]{background:var(--grun-hi);color:var(--grun-on)}
+.gs-chips{display:flex;flex-wrap:wrap;gap:6px}
+.gs-chip{min-height:40px;border:1px solid var(--line,#D9DDE3);background:var(--panel,#fff);color:var(--ink,#16202E);border-radius:999px;padding:0 14px;font:600 15px/1 var(--ui,system-ui,sans-serif);cursor:pointer;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.gs-chips.big .gs-chip{min-height:46px;font-size:16px}
+.gs-chip.g{border-style:dashed}
+.gs-chip[aria-pressed=true]{background:var(--grun-hi);border-color:var(--grun-hi);color:var(--grun-on)}
+.gs-err{color:#B91C1C;font-weight:600;margin:0;min-height:0}
+.gs-err:empty{display:none}
+.gs-m{color:var(--mute,#5D6675);font-size:14.5px;margin:0}
+.gs-p{margin:0;font-size:16.5px;line-height:1.5}
+.gs-sert{color:var(--grun-hi);font-weight:600;font-size:13px}
+.gs-lien{align-self:flex-start;border:0;background:none;color:var(--grun-hi);font:700 15.5px/1.2 var(--ui,system-ui,sans-serif);padding:6px 0;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+.gs-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.gs-n .gs-inp{font-variant-numeric:tabular-nums}
+.gs-c{display:flex;gap:10px;align-items:flex-start;font-weight:600;font-size:15px}
+.gs-c input{width:22px;height:22px;flex:0 0 auto;margin-top:1px}
+.gs-c small{font-weight:500;color:var(--mute,#5D6675)}
+.gs-cp fieldset{border:1px solid var(--line,#D9DDE3);border-radius:13px;padding:10px 12px 12px;margin:0;display:flex;flex-direction:column;gap:10px;min-width:0}
+.gs-cp legend{font-weight:800;font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:var(--mute,#5D6675);padding:0 4px}
+.gs-cp legend small{text-transform:none;letter-spacing:0;font-weight:500}
+details.gs-plus>summary{cursor:pointer;color:var(--grun-hi);font-weight:700;padding:4px 0;list-style:none}
+details.gs-plus>summary::-webkit-details-marker{display:none}
+details.gs-plus[open]>summary{margin-bottom:8px}
+.gs-list{border:1px solid var(--line,#D9DDE3);border-radius:11px;overflow:hidden}
+.gs-row{display:flex;flex-wrap:wrap;gap:2px 10px;align-items:baseline;padding:8px 12px;border-top:1px solid var(--line,#D9DDE3)}
+.gs-row:first-child{border-top:0}
+.gs-row span{color:var(--mute,#5D6675);font-size:14px}
+.gs-row small{flex-basis:100%;color:#B91C1C;font-weight:600}
+.gs-row.ko b{color:#B91C1C}
+.gs-menu{display:flex;flex-direction:column;gap:8px}
+.gs-menu.plus{display:grid;grid-template-columns:minmax(0,1fr);gap:6px}
+@media (min-width:560px){.gs-menu.plus{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.gs-it{display:grid;grid-template-columns:auto minmax(0,1fr);gap:1px 12px;align-items:center;text-align:left;min-height:60px;padding:9px 12px;border:1px solid var(--line,#D9DDE3);border-radius:13px;background:var(--panel,#fff);color:var(--ink,#16202E);text-decoration:none;cursor:pointer;font:inherit}
+.gs-it b{font-size:16.5px;grid-column:2}
+.gs-it span{grid-column:2;color:var(--mute,#5D6675);font-size:13.5px;line-height:1.3}
+.gs-it:not(:has(.pi)){grid-template-columns:minmax(0,1fr)}.gs-it:not(:has(.pi)) b,.gs-it:not(:has(.pi)) span{grid-column:1}
+.gs-it.x{border-color:var(--grun-hi);border-width:1.5px}
+.gs-it.st{cursor:default}
+.gs-it.st .gs-seg{grid-column:1/-1;margin-top:6px}
+.gs-it:active{background:var(--soft,#ECEFF3)}
+.pi{grid-row:1/3;width:38px;height:38px;border-radius:11px;background:var(--soft,#ECEFF3);position:relative}
+.pi::after{content:"";position:absolute;inset:9px;background:var(--grun-hi);-webkit-mask:var(--m) center/contain no-repeat;mask:var(--m) center/contain no-repeat}
+.pi-joueur{--m:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.2'%3E%3Ccircle cx='12' cy='8' r='4'/%3E%3Cpath d='M4 21c0-4 4-6 8-6s8 2 8 6'/%3E%3C/svg%3E")}
+.pi-groupe{--m:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.2'%3E%3Ccircle cx='8' cy='9' r='3'/%3E%3Ccircle cx='16' cy='9' r='3'/%3E%3Cpath d='M2 20c0-3 3-5 6-5s6 2 6 5M12 20c0-3 2-5 4-5s6 2 6 5'/%3E%3C/svg%3E")}
+.pi-session{--m:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='black'%3E%3Cpath d='M8 5v14l11-7z'/%3E%3C/svg%3E")}
+.pi-test{--m:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.2'%3E%3Cpath d='M12 3l8.5 6.2-3.2 10H6.7L3.5 9.2z'/%3E%3C/svg%3E")}
+.pi-exo{--m:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.2'%3E%3Cpath d='M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2z'/%3E%3Cpath d='M4 19V5'/%3E%3C/svg%3E")}
+.pi-note{--m:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.2'%3E%3Cpath d='M4 20h4L19 9l-4-4L4 16z'/%3E%3C/svg%3E")}
+.pi-wu{--m:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.2'%3E%3Cpath d='M12 3c2 3 5 5 5 9a5 5 0 0 1-10 0c0-2 1-3 2-4 0 2 1 3 2 3 0-3-1-5 1-8z'/%3E%3C/svg%3E")}
+.gs-cur{display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center;padding:10px 12px;border-radius:13px;background:var(--soft,#ECEFF3)}
+.gs-cur b{font-size:17px}.gs-cur span{color:var(--mute,#5D6675);font-size:14px;flex:1}
+.gs-bar{display:flex;flex-direction:column;gap:5px}
+.gs-bar>div,.gc-bar{display:block;height:8px;border-radius:99px;background:var(--soft,#ECEFF3);overflow:hidden}
+.gs-bar i,.gc-bar i{display:block;height:100%;background:var(--grun-hi);border-radius:99px;transition:width .3s}
+/* toast avec « Annuler » */
+#grun-toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(var(--nav-h,62px) + 14px + env(safe-area-inset-bottom,0px));z-index:260;display:flex;gap:12px;align-items:center;max-width:calc(100vw - 32px);background:var(--ink,#16202E);color:var(--bg,#fff);padding:8px 8px 8px 16px;border-radius:13px;box-shadow:0 8px 28px rgba(0,0,0,.28);font:600 15px/1.3 var(--ui,system-ui,sans-serif)}
+#grun-toast:not(:has(button)){padding:11px 16px}
+#grun-toast button{min-height:40px;border:0;border-radius:9px;background:var(--grun-hi);color:var(--grun-on);font:800 15px/1 var(--ui,system-ui,sans-serif);padding:0 14px;cursor:pointer;white-space:nowrap}
+body:not(.grun-has-nav) #grun-toast{bottom:calc(16px + env(safe-area-inset-bottom,0px))}
+#grun-saved{position:fixed;top:calc(8px + env(safe-area-inset-top,0px));right:12px;z-index:270;background:var(--grun-hi);color:var(--grun-on);font:700 13px/1 var(--ui,system-ui,sans-serif);padding:7px 11px;border-radius:99px;opacity:0;transform:translateY(-6px);transition:opacity .2s,transform .2s;pointer-events:none}
+#grun-saved.on{opacity:1;transform:none}
+/* barre de complétude (dossier) */
+.grun-compl{border:1px solid var(--line,#D9DDE3);border-radius:13px;background:var(--panel,#fff);padding:10px 12px;display:flex;flex-direction:column;gap:6px}
+.grun-compl .gc-h{display:flex;gap:10px;align-items:center}.grun-compl .gc-h b{white-space:nowrap}.grun-compl .gc-bar{flex:1}
+.grun-compl ul{margin:0;padding-left:18px;font-size:14.5px;color:var(--mute,#5D6675)}
+.grun-compl ul b{color:var(--ink,#16202E);font-weight:600}
+.grun-compl .gs-btn{align-self:flex-start}
+.grun-compl.ok{padding:8px 12px}
+/* action principale en bas (zone du pouce), au-dessus de la barre du bas */
+.grun-actbar{position:sticky;bottom:calc(var(--nav-h,62px) + env(safe-area-inset-bottom,0px) + 8px);z-index:20;display:flex;gap:8px;margin-top:16px}
+body:not(.grun-has-nav) .grun-actbar{bottom:calc(8px + env(safe-area-inset-bottom,0px))}
+.grun-actbar>*{flex:1;min-height:52px;box-shadow:0 6px 18px rgba(0,0,0,.14)}
+/* visite guidée, schéma */
+.gv h3{font-family:var(--display,"Barlow Condensed",system-ui,sans-serif);font-size:1.6em;margin:4px 0 6px;line-height:1.1}
+.gv-dots{display:flex;gap:5px}.gv-dots i{width:22px;height:5px;border-radius:9px;background:var(--line,#D9DDE3)}.gv-dots i.vu{background:var(--mute,#5D6675)}.gv-dots i.on{background:var(--grun-hi)}
+.grun-schema{width:100%;max-width:440px;display:block;margin:10px auto 0;font-family:var(--ui,system-ui,sans-serif)}
+.grun-schema rect{stroke-width:2}
+.grun-schema .s-ind{fill:rgba(15,118,110,.12);stroke:#0F766E}.grun-schema .s-tests{fill:rgba(109,63,192,.12);stroke:#6D3FC0}.grun-schema .s-res{fill:rgba(29,78,216,.10);stroke:#1D4ED8}.grun-schema .s-create{fill:rgba(194,65,12,.10);stroke:#C2410C}
+.grun-schema .s-d1{fill:rgba(194,65,12,.14);stroke:#C2410C}.grun-schema .s-d2{fill:rgba(194,65,12,.22);stroke:#C2410C}.grun-schema .s-d3{fill:#C2410C;stroke:#C2410C}
+.grun-schema text{fill:var(--ink,#16202E);text-anchor:middle}.grun-schema .s-t{font-weight:800;font-size:15px}.grun-schema .s-s{font-size:12px;fill:var(--mute,#5D6675)}
+.grun-schema .s-k{font-size:11px;font-weight:700;text-anchor:start}.grun-schema .s-k.c{text-anchor:middle;fill:#fff}
+.grun-doll{margin-top:8px}.grun-doll div{border:2px solid #C2410C;border-radius:12px;padding:8px 10px 10px;font-weight:800;color:#C2410C;background:rgba(194,65,12,.07)}.grun-doll div div{margin-top:6px;background:rgba(194,65,12,.12)}.grun-doll div div div{background:#C2410C;color:#fff}
+.grun-demo-bar{display:flex;gap:14px;align-items:center;justify-content:center;margin-top:8px}
+.grun-chip.demo{pointer-events:none}
+.grun-plus-demo{width:48px;height:48px;border-radius:16px;background:var(--grun-hi);color:var(--grun-on);display:inline-flex;align-items:center;justify-content:center;font:800 30px/1 var(--ui,system-ui,sans-serif)}
+html.grun-sheet-on body{overflow:hidden}
+@media print{.grun-topx,#grun-toast,#grun-saved,.grun-ov,.grun-actbar{display:none!important}}
+/* barre du haut des modules sur téléphone : le joueur en cours se réduit à son initiale, le titre s'abrège */
+html.grun-mod .topin .brand{min-width:0;overflow:hidden;text-overflow:ellipsis;flex:0 1 auto}
+@media (max-width:430px){html.grun-mod .grun-chip .gc-nm{display:none}html.grun-mod .grun-chip{padding:0 3px;max-width:none}.grun-topx{gap:4px}.grun-q{width:34px;height:34px}}
+.grun-chip:has(.gc-av.vide){max-width:none}.grun-chip:has(.gc-av.vide) .gc-nm{overflow:visible}
 </style>
-<script src="grun.js?v=1"></script>
+<script src="grun.js?v=1.4"></script>
+<script src="assistant.js?v=1.4"></script>
 <meta name="grun-module" content="accueil"></head><body><title>GRÜN</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Barlow:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
 <style>
@@ -106,7 +251,7 @@ button{cursor:pointer}
 .topin{max-width:1100px;margin:0 auto;padding:8px 16px;display:flex;gap:8px;align-items:center}
 .ib{min-width:40px;min-height:40px;border:1px solid var(--line);background:var(--panel);border-radius:9px;display:inline-flex;align-items:center;justify-content:center;gap:6px;font-weight:600;padding:0 12px;white-space:nowrap;text-decoration:none;font-size:.95rem}
 .ib svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
-.ib.sm{min-height:34px;min-width:34px;padding:0 10px;font-size:.88rem;border-radius:8px}
+.ib.sm{min-height:34px;min-width:34px;padding:0 10px;font-size:.88rem;border-radius:8px;flex-shrink:0}
 .ib.dang{color:var(--bad)}
 .ib[aria-pressed=true]{border-color:var(--acc);color:var(--acc);box-shadow:inset 0 0 0 1px var(--acc)}
 .brand{font-family:var(--display);font-weight:700;font-size:1.45rem;letter-spacing:.06em;white-space:nowrap;text-decoration:none;color:var(--ink)}
@@ -304,7 +449,7 @@ details.more>summary::-webkit-details-marker{display:none}
 .five.four{grid-template-columns:repeat(4,minmax(0,1fr))}
 .b5{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-height:84px;padding:8px 2px;border-radius:12px;border:none;background:var(--acc);color:#fff;text-decoration:none;text-align:center}
 .b5 svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
-.b5 b{font-size:.84rem;line-height:1.1;font-weight:700;hyphens:manual}
+.b5 b{font-size:.84rem;line-height:1.1;font-weight:700;hyphens:manual;max-width:100%;overflow-wrap:break-word}
 .facts .fact{flex:1 1 30%}
 .b5 small{font-size:.72rem;opacity:.85}
 :root[data-theme="dark"] .b5{color:#0B1117}
@@ -353,6 +498,111 @@ details.more>summary::-webkit-details-marker{display:none}
 ul.notes{margin:8px 0 0;padding-left:18px}
 ul.notes li{margin:3px 0}
 .rads svg,.agesv{touch-action:pan-y pinch-zoom}
+
+/* Socle 1.1 : accueil compact, prochaine action, frise, premier lancement */
+@media (max-width:430px){.top .brand{display:none}.topin{gap:6px;padding:8px 12px}}
+h1.auj{font-size:1.9rem;display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 10px}
+h1.auj small{display:inline;margin:0;font-size:.95rem}
+.sec.s1{margin-top:10px}
+.h2s{font-family:var(--ui);font-size:.74rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--mute);margin:0 0 5px}
+.card.rien{margin-top:10px;display:flex;align-items:center;gap:10px;padding:8px 10px 8px 14px;min-height:52px}
+.card.rien>span:nth-child(2){flex:1;min-width:0;color:var(--mute)}
+.card.rien .dot{width:10px;height:10px;border-radius:50%;background:var(--line);flex:0 0 auto}
+.list.sug .li{min-height:46px;padding:6px 10px 6px 14px}
+.list.sug .tt{font-size:.96rem}
+.card.rep{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:10px;align-items:center;margin-top:10px;padding:9px 14px;text-decoration:none;min-height:46px;width:100%;text-align:left;font:inherit;color:var(--ink);cursor:pointer}
+.card.rep+.card.rep{margin-top:6px}
+.card.rep .lab{color:var(--acc)}
+.card.rep .tt{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.jrow{display:flex;gap:6px;overflow-x:auto;margin-top:12px;padding-bottom:2px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.jrow::-webkit-scrollbar{display:none}
+.jrow .tg{flex:0 0 auto;white-space:nowrap}
+.jrow .tg.grp{border-style:dashed}
+.jrow .tg.add{min-width:44px;font-size:1.3rem;justify-content:center;color:var(--acc)}
+.folds{margin-top:12px;display:flex;flex-direction:column;gap:6px}
+details.fold{background:var(--panel);border:1px solid var(--line);border-radius:12px}
+details.fold>summary{list-style:none;cursor:pointer;display:flex;gap:10px;align-items:baseline;padding:0 14px;min-height:48px;align-items:center}
+details.fold>summary::-webkit-details-marker{display:none}
+details.fold>summary::before{content:"+";width:1em;color:var(--acc);font-weight:700;font-size:1.1rem}
+details.fold[open]>summary::before{content:"–"}
+details.fold>summary b{font-family:var(--display);font-size:1.25rem;line-height:1.1}
+details.fold>summary span{color:var(--mute);font-size:.86rem;margin-left:auto;text-align:right}
+.foldb{padding:0 12px 12px}
+.nxa{display:flex;gap:12px;align-items:center;justify-content:space-between;margin-top:10px;padding:10px 12px 10px 14px;border:1px solid var(--line);border-left:4px solid var(--acc);border-radius:12px;background:var(--panel)}
+.nxa>div{min-width:0;display:flex;flex-direction:column}
+.nxa .lab{font-size:.68rem;color:var(--acc)}
+.nxa b{font-size:1.04rem;line-height:1.25;overflow-wrap:anywhere}
+.nxa small{color:var(--mute);font-size:.84rem}
+.nxa .go{flex:0 0 auto;min-height:44px}
+.frise{margin-top:10px;border-left:2px solid var(--line);margin-left:6px;padding-left:12px}
+.frise .fm{font-size:.74rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--mute);margin:14px 0 6px}
+.frise .fm:first-child{margin-top:4px}
+.fr{position:relative;display:grid;grid-template-columns:54px minmax(0,1fr);gap:10px;padding:7px 10px;margin-bottom:6px;border:1px solid var(--line);border-radius:10px;background:var(--panel);text-decoration:none}
+.fr::before{content:"";position:absolute;left:-19px;top:14px;width:10px;height:10px;border-radius:50%;background:var(--fc);box-shadow:0 0 0 3px var(--bg)}
+.fr .fd{font-weight:700;font-size:.86rem;font-variant-numeric:tabular-nums;color:var(--fc)}
+.fr .fd small{display:block;color:var(--mute);font-weight:500;font-size:.74rem}
+.fr .tt{font-size:.95rem;overflow-wrap:anywhere}
+.fr .tt small{display:block;color:var(--mute);font-size:.84rem}
+.onbd{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin:10px 0}
+.onbd i{width:28px;height:6px;border-radius:9px;background:var(--line)}
+.onbd i.on{background:var(--acc)}.onbd i.vu{background:var(--mute)}
+.onbd span{font-size:.84rem;color:var(--mute);margin-left:6px}
+.res.act{border-left:4px solid var(--ind)}
+.res.act .t{font-weight:700}
+button.res{width:100%;text-align:left;font:inherit;color:var(--ink);cursor:pointer}
+.res.ask{border-style:dashed;margin-top:12px}
+.rgrp>h2+.res.ask{margin-top:0}
+
+/* Accueil 1.3 : 1 ligne Agenda · en cours · 4 pôles · Assistant (un écran d'iPhone) */
+h1.hh{font-size:1.45rem;margin:2px 0 0;padding-right:84px;display:flex;flex-wrap:wrap;align-items:baseline;gap:2px 10px}
+h1.hh small{display:inline;margin:0;font-size:.92rem;font-weight:500}
+.agl{margin-top:10px;position:relative}
+.hh+.agl .agt,.agt{position:absolute;right:0;top:-34px;font-family:var(--ui);font-size:.74rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--mute);text-decoration:none;padding:4px 0}
+.agr{display:flex;gap:6px;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none;margin:0 -16px;padding:0 16px 2px}
+.agr::-webkit-scrollbar{display:none}
+.agd{flex:0 0 calc((100% - 18px) / 3.3);min-width:0;min-width:104px;max-width:170px;scroll-snap-align:start;display:flex;flex-direction:column;gap:4px;min-height:80px;padding:5px 6px 6px;border:1px solid var(--line);border-radius:12px;background:var(--panel)}
+.agd.auj{border-color:var(--acc)}
+.agh{font-size:.78rem;font-weight:700;color:var(--mute);text-decoration:none;padding:2px 2px 0;min-height:22px;text-transform:capitalize}
+.agd.auj .agh{color:var(--acc)}
+.agh i{font-style:normal;font-weight:600}
+.agp{display:block;text-align:left;border:0;border-left:3px solid var(--ec,var(--mute));background:var(--soft);border-radius:6px;padding:3px 6px;font:inherit;font-size:.8rem;line-height:1.2;color:var(--ink);text-decoration:none;cursor:pointer;min-height:34px;overflow:hidden;white-space:nowrap;width:100%}
+.agp .l1,.agp small{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.agp small{color:var(--mute);font-size:.72rem}
+.agp.fait{opacity:.55}
+.hcur{margin-top:10px;display:flex;align-items:center;gap:8px;width:100%;border:1px solid var(--line);border-radius:14px;background:var(--panel);padding:6px 6px 6px 10px;min-height:62px;font:inherit;color:inherit;text-align:left;cursor:pointer}
+.hcur .hc-a{flex:1;min-width:0;display:flex;align-items:center;gap:10px;text-decoration:none;color:inherit;min-height:48px}
+.hcur .tt{flex:1;min-width:0;display:flex;flex-direction:column}
+.hcur .tt b{font-size:1.05rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.hcur .tt small{color:var(--mute);font-size:.82rem}
+.hcur .gc-av{width:38px;height:38px;border-radius:50%;background:var(--ind);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;flex:0 0 auto}
+.hcur .gc-av.g{border-radius:10px}
+.hcur .gc-av.vide{background:var(--soft);color:var(--mute);border:1px dashed var(--line)}
+.hc-x{border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:10px;min-height:44px;padding:0 12px;font:inherit;font-size:.9rem;font-weight:600;cursor:pointer}
+.htiles{margin-top:10px;display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.htile{position:relative;display:flex;flex-direction:column;gap:2px;padding:10px 12px 10px;min-height:84px;border:1px solid var(--line);border-radius:16px;background:var(--panel);text-decoration:none;color:var(--ink)}
+.htile svg{width:26px;height:26px;fill:none;stroke:var(--tc);stroke-width:2;stroke-linecap:round;stroke-linejoin:round;margin-bottom:2px}
+.htile b{font-size:1rem;line-height:1.2;overflow-wrap:break-word;hyphens:auto}
+.htile small{color:var(--mute);font-size:.82rem;line-height:1.25}
+.htile em{position:absolute;top:12px;right:12px;font-style:normal;font-size:.72rem;font-weight:700;color:var(--warn);background:var(--soft);border-radius:999px;padding:2px 8px}
+.hask{margin-top:10px;display:flex;align-items:center;gap:10px;width:100%;min-height:52px;border:1px solid var(--line);border-radius:999px;background:var(--panel);color:var(--mute);padding:0 16px;font:inherit;font-size:.95rem;cursor:pointer;text-align:left}
+.hask svg{width:20px;height:20px;fill:none;stroke:var(--mute);stroke-width:2;flex:0 0 auto}
+.hask span{overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.steps{margin-top:16px;display:flex;flex-direction:column;gap:10px}
+.step{display:flex;align-items:center;gap:12px;width:100%;min-height:76px;border:1px solid var(--line);border-radius:16px;background:var(--panel);color:var(--ink);padding:10px 14px;font:inherit;text-align:left;cursor:pointer}
+.step .n{width:36px;height:36px;border-radius:50%;background:var(--ind);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;flex:0 0 auto}
+.step.ok .n{background:var(--soft);color:var(--ind);border:1.5px solid var(--ind)}
+.step.ok b{color:var(--mute)}
+.step .tt{flex:1;min-width:0;display:flex;flex-direction:column}
+.step .tt b{font-size:1.08rem}.step .tt small{color:var(--mute);font-size:.85rem}
+.step .end{color:var(--mute);font-size:1.3rem}
+.hm{margin-top:12px;display:flex;gap:8px}.hm .ib{flex:1;min-width:0;font-size:.9rem;padding:0 8px}
+.agp,.hcur,.hc-x,.htile,.hask,.step,.agh,.agt{transition:transform .08s ease,background-color .08s ease;-webkit-tap-highlight-color:transparent}
+.agp:active,.hcur:active,.hc-x:active,.htile:active,.hask:active,.step:active{transform:scale(.97);background:var(--soft)}
+@media (prefers-color-scheme:dark){:root:not([data-theme=light]) .hcur .gc-av:not(.vide),:root:not([data-theme=light]) .step .n{color:#0B1117}}
+:root[data-theme=dark] .hcur .gc-av:not(.vide),:root[data-theme=dark] .step:not(.ok) .n{color:#0B1117}
+@media (min-width:700px){.htiles{grid-template-columns:repeat(4,1fr)}.agd{flex-basis:calc((100% - 36px) / 7);max-width:none}.agr{margin:0;padding:0}}
+#sico svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2}
+html.grun-home .top .brand{display:inline-flex}
+html.grun-home #back{display:none}
 </style>
 
 <div id="splash" aria-hidden="true"><div class="w">GRÜN</div><div class="l"></div><div class="s">Performance tennis</div></div>
@@ -360,8 +610,9 @@ ul.notes li{margin:3px 0}
   <button class="ib" id="back" type="button" aria-label="Retour">‹</button>
   <a class="brand" href="#/" aria-label="Accueil GRÜN">GR<i>Ü</i>N</a>
   <div class="sbox" id="sbox"><svg viewBox="0 0 24 24" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
-    <input id="q" type="search" placeholder="Chercher : joueur, exo, test, document…" autocomplete="off" enterkeyhint="search" aria-label="Recherche globale"></div>
+    <input id="q" type="search" placeholder="Chercher…" autocomplete="off" enterkeyhint="search" aria-label="Recherche globale"></div>
   <span class="sp" id="tsp" hidden></span>
+  <button class="ib" id="sico" type="button" aria-label="Chercher" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg></button>
   <a class="ib" id="cfg" href="#/reglages" aria-label="Réglages"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></a>
 </div></header>
 <main id="main"><div class="load">Chargement…</div></main>
@@ -447,7 +698,7 @@ const LN0 = {
   DE: ["Position d'attention", "Allègement et reprise d'appuis", "Démarrage et premiers pas", "Déplacements latéraux", "Déplacements vers l'avant et vers l'arrière", "Pas d'ajustement et mise à distance", "Appuis de frappe", "Freinage et décélération", "Changement de direction et réaccélération", "Replacement", "Enchaînements et liaison des actions"]
 };
 const DOMS = ["PP", "GE", "DE"], DOMN = { PP: "Préparation physique", GE: "Geste", DE: "Déplacement" }, DOMC = { PP: "var(--pp)", GE: "var(--ge)", DE: "var(--de)" };
-const KN = { PPI: "PP individuelle", PPC: "PP collective", TI: "Tennis individuel", TC: "Tennis collectif", PM: "Préparation mentale" };
+const KN = { PPI: "Préparation physique individuelle", PPC: "Préparation physique collective", TI: "Tennis individuel", TC: "Tennis collectif", PM: "Préparation mentale" };
 const PHN = { G: "Préparation générale", S: "Préparation spécifique", P: "Pré-compétition", C: "Compétition", R: "Récupération", T: "Transition" };
 const CLASSEMENTS = ["NC", "40", "30/5", "30/4", "30/3", "30/2", "30/1", "30", "15/5", "15/4", "15/3", "15/2", "15/1", "15", "5/6", "4/6", "3/6", "2/6", "1/6", "0", "-2/6", "-4/6", "-15", "-30", "Top 60", "Top 40"];
 const ZONES = { dos: "Dos", genou: "Genou", talon: "Talon, cheville", epaule: "Épaule", poignet: "Poignet, coude", hanche: "Hanche", autre: "Autre" };
@@ -455,8 +706,8 @@ const zn = z => ZONES[z] || z || "";
 const TYPN = { tournoi: "Tournoi", bilan: "Bilan", seance: "Séance", plan: "Séance du plan", repos: "Repos", autre: "Autre" };
 const TYPC = { tournoi: "var(--bad)", bilan: "var(--tests)", seance: "var(--create)", plan: "var(--create)", repos: "var(--low)", autre: "var(--mute)" };
 const RTYP = { seance: "Séance", warmup: "Échauffement", tennis: "Tennis", match: "Match", autre: "Autre" };
-const APRES = { tennis: "entraînement tennis", pp: "séance de PP", match: "match", bilan: "bilan" };
-const FF = [["sommeil", "Sommeil", "Très mal dormi", "Très bien dormi"], ["fatigue", "Énergie", "Épuisé", "Plein d'énergie"], ["courbatures", "Courbatures", "Très courbaturé", "Aucune"], ["stress", "Stress", "Très stressé", "Serein"], ["humeur", "Humeur", "Au plus bas", "Au top"]];
+const APRES = { tennis: "entraînement tennis", pp: "séance de préparation physique", match: "match", bilan: "bilan" };
+const FF = [["sommeil", "Sommeil", "Très mal dormi", "Très bien dormi"], ["fatigue", "Énergie", "Épuisé", "Plein d'énergie"], ["courbatures", "Courbatures", "Très courbaturé", "Aucune"], ["stress", "Stress", "Très stressé", "Serein"], ["humeur", "Humeur", "Au plus bas", "Excellente"]];
 const RPEN = ["Repos", "Très très facile", "Très facile", "Facile", "Modéré", "Un peu dur", "Dur", "Très dur", "Très très dur", "Presque maximal", "Maximal"];
 const POLEC = { ind: "var(--ind)", create: "var(--create)", res: "var(--res)", tests: "var(--tests)" };
 
@@ -516,7 +767,7 @@ function evJoueur(j, a, b) {
   for (const s of S) {
     if (s.src && s.src.plan && s.src.key) built.add(s.src.plan + "|" + s.src.key);
     if (!isoOk(s.date) || s.date < a || s.date > b || !seanceJids(s).includes(jid)) continue;
-    out.push({ date: s.date, type: "seance", titre: s.nom || s.theme || "Séance", sous: [KN[s.type], s.duree ? s.duree + " min" : ""].filter(Boolean).join(" · "), href: G.href("seances", "#/s/" + s.id), terrain: G.href("seances", "#/terrain/" + s.id), ref: s.id, fait: !!(s.fait || s.faite), duree: s.duree, gid: grpOk(s.gid) ? s.gid : null, k: "s|" + s.id });
+    out.push({ date: s.date, type: "seance", titre: s.nom || s.theme || "Séance", sous: [KN[s.type], s.duree ? s.duree + " min" : ""].filter(Boolean).join(" · "), href: G.href("seances", "#/s/" + s.id), terrain: G.href("seances", "#/terrain/" + s.id), ref: s.id, fait: !!(s.fait || s.faite), duree: s.duree, kk: s.type, heure: s.heure || s.h || "", gid: grpOk(s.gid) ? s.gid : null, k: "s|" + s.id });
   }
   for (const p of PROG().plans) {
     if (!planJids(p).includes(jid)) continue;
@@ -631,15 +882,19 @@ function route() {
   const raw = location.hash.replace(/^#\/?/, ""), parts = raw.split("/").map(x => { try { return decodeURIComponent(x); } catch (e) { return x; } });
   const [a, b, c] = parts; const J = G.isJoueur();
   $("#back").style.visibility = a ? "visible" : "hidden";   // rien à remonter depuis l'accueil
-  $("#sbox").hidden = J; $("#tsp").hidden = !J;
+  const home = !a; document.documentElement.classList.toggle("grun-home", home);
+  $("#sbox").hidden = J || home; $("#tsp").hidden = !(J || home); $("#sico").hidden = J || !home;   /* accueil : la grande ligne « Demander ou chercher » + une loupe en haut */
   if (J) {
     if (a === "reglages") { navActive(""); return vReglages(); }
+    if (a === "comment") { navActive(""); return vComment(); }
     if (a === "pole" && b === "create") { navActive("create"); return vJoueurMode("seance"); }
     if (a === "pole" && b === "tests") { navActive("tests"); return vJoueurMode("tests"); }
     navActive("acc"); return vJoueurMode("");
   }
   const rg = REG();
+  if (a === "comment") { navActive(""); return vComment(); }
   if (!rg.profil && a !== "reglages" && !G.joueurs.all().length) { navActive("acc"); return vBienvenue(); }
+  if ((rg.onb === 2 || rg.onb === 3) && rg.profil === "coach" && a !== "reglages") { navActive("acc"); return vOnb(rg.onb); }
   if (auto()) {
     const m = moi();
     if (a === "reglages") { navActive(""); return vReglages(); }
@@ -651,6 +906,7 @@ function route() {
   if (a === "recherche") { navActive("acc"); return vRecherche(parts.slice(1).join("/")); }
   if (a === "pole" && G.POLES.some(p => p.id === b)) { navActive(b); return vPole(b); }
   if (a === "joueurs") { navActive("ind"); return vJoueurs(b); }
+  if (a === "semaine" || a === "agenda") { navActive("acc"); return vSemaine(b); }
   if (a === "j" && b) { navActive("ind"); return vDossier(b, c); }
   if (a === "g" && b) { navActive("ind"); return vGroupe(b, c); }
   if (a === "reglages") { navActive(""); return vReglages(); }
@@ -659,6 +915,7 @@ function route() {
 function render(keep) { const y = scrollY; route(); if (keep) scrollTo(0, y); }
 addEventListener("hashchange", () => { TABJ = { jid: null, t: "resume" }; render(false); scrollTo(0, 0); });
 wide.addEventListener && wide.addEventListener("change", () => render(true));
+$("#sico").onclick = () => { location.hash = "#/recherche/"; setTimeout(() => { const q = $("#q"); q && q.focus(); }, 60); };
 $("#back").onclick = () => { if (history.length > 1) history.back(); else location.hash = "#/"; };
 const busy = () => { const a = document.activeElement; return a && /^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName) && main.contains(a); };
 const refresh = () => { if (mute || DEMO.busy) return; if (busy()) { pending = true; return; } render(true); };
@@ -672,27 +929,30 @@ function pcard(j) {
   const m = matur(j), b = bilans(j)[0], al = alertes(j).sort((x, y) => NIVO[x.n] - NIVO[y.n])[0];
   const grs = G.groupes.de(j.id).map(g => g.nom);
   return `<a class="pc" href="#/j/${esc(j.id)}" style="border-left-color:${j.sexe === "F" ? "var(--tests)" : "var(--ind)"}"><div class="nm"><span>${esc(j.nom)}</span>${al && al.n !== "info" ? badge(al.n, al.n === "haute" ? "!" : "à surveiller") : ""}</div>
-    <div class="meta">${j.sexe === "F" ? "Fille" : "Garçon"}${ageTxt(j) ? " · " + ageTxt(j) : ""}${m ? " · âge bio " + nf(m.bio) : ""}${grs.length ? " · " + esc(grs.join(", ")) : ""}</div>
+    <div class="meta">${j.sexe === "F" ? "Fille" : "Garçon"}${ageTxt(j) ? " · " + ageTxt(j) : ""}${m ? " · âge biologique " + nf(m.bio) : ""}${grs.length ? " · " + esc(grs.join(", ")) : ""}</div>
     <div class="xp"><div class="meta">${b ? "Bilan du " + G.frD(b.date) : "Pas encore de bilan"}</div>${b ? moysHTML(j, b) : ""}</div>${al && al.n !== "info" ? `<div class="meta" style="color:var(--${al.n === "haute" ? "bad" : "warn"})">${esc(al.t)}</div>` : ""}</a>`;
 }
-/* une ligne « Aujourd'hui / Demain » : ce qui est prévu + un gros bouton (Lancer une séance prête, Construire une séance de la prog) */
+/* une ligne « Aujourd'hui / Demain » : ce qui est prévu + un gros bouton (Lancer une séance prête, Construire une séance de la programmation) */
 function evAction(e, jid) {
   if (e.type === "seance") return e.fait ? badge("ok", "Faite") : `<a class="go acc big" href="${esc(e.terrain)}">Lancer</a>`;
   if (e.type === "plan") return e.key ? `<button class="go acc big" data-a="construire" data-plan="${esc(e.plan)}" data-key="${esc(e.key)}">Construire</button>` : `<a class="go acc big" href="${esc(e.href)}">Construire</a>`;
   return "";
 }
-function jourHTML(d, titre, max) {
+function evsJour(d) {
   const M = new Map();
   for (const j of G.joueurs.all()) for (const e of evJoueur(j, d, d)) {
     const k = e.k; if (!M.has(k)) M.set(k, { ...e, noms: [], jids: [] });
     const x = M.get(k); x.noms.push(prenom(j)); x.jids.push(j.id);
   }
-  const L = [...M.values()].sort((a, b) => (a.type === "tournoi" ? -1 : a.type === "seance" ? 0 : 1) - (b.type === "tournoi" ? -1 : b.type === "seance" ? 0 : 1));
+  return [...M.values()].sort((a, b) => (a.type === "tournoi" ? -1 : a.type === "seance" ? 0 : 1) - (b.type === "tournoi" ? -1 : b.type === "seance" ? 0 : 1));
+}
+function jourHTML(d, titre, max, sansTitre) {
+  const L = evsJour(d);
   const row = e => { const g = e.gid && G.groupes.get(e.gid), who = g ? g.nom : e.noms.length > 3 ? e.noms.slice(0, 3).join(", ") + " +" + (e.noms.length - 3) : e.noms.join(", ");
     const lien = e.type === "seance" ? e.href : e.type === "tournoi" ? (e.jids.length === 1 ? "#/j/" + e.jids[0] + "/agenda" : null) : (e.jids.length === 1 && !e.gid ? "#/j/" + e.jids[0] : null);
     return `<div class="td" style="--ec:${TYPC[e.type]}"><span class="dot"></span><${lien ? `a href="${esc(lien)}"` : "span"} class="tt">${esc(e.titre)}<small>${esc(who)} · ${e.type === "tournoi" ? "Tournoi" + (e.fin ? " jusqu'au " + dCourt(e.fin) : "") : e.type === "plan" ? "à construire" : "prête"}${e.type !== "tournoi" && KN[e.kk || ""] ? " · " + esc(KN[e.kk]) : ""}</small></${lien ? "a" : "span"}><span class="end">${e.gid && e.date <= G.today() && (e.type === "seance" || e.type === "plan") ? `<a class="ib sm" href="#/g/${esc(e.gid)}/presences">Présences</a>` : ""}${evAction(e)}</span></div>`; };
   const vis = L.slice(0, max), reste = L.slice(max);
-  return `<div class="day"><h3 class="${titre === "Aujourd'hui" ? "auj" : ""}"><span>${titre ? titre + " · " : ""}${dLong(d)}</span><span>${L.length || ""}</span></h3>
+  return `<div class="day">${sansTitre ? "" : `<h3 class="${titre === "Aujourd'hui" ? "auj" : ""}"><span>${titre ? titre + " · " : ""}${dLong(d)}</span><span>${L.length || ""}</span></h3>`}
     ${L.length ? vis.map(row).join("") : `<div class="td"><span class="dot" style="--ec:var(--line)"></span><span class="tt msg">Rien de prévu.</span><span></span></div>`}
     ${reste.length ? `<details class="more"><summary>Voir les ${reste.length} autres</summary>${reste.map(row).join("")}</details>` : ""}</div>`;
 }
@@ -727,33 +987,89 @@ function alertesHTML(js) {
   if (bil.length) { const sb = semaineBilan(G.today()); h += `<a class="al" href="#/pole/tests">${badge("info")}<span class="tt"><b>Bilans à faire</b>${sb ? " · " + esc(sb.bilan) + " (semaine " + sb.n + ")" : ""} · ${bil.map(j => esc(prenom(j))).join(", ")}</span></a>`; }
   return h ? `<div class="list">${h}</div>` : empty("Aucune alerte. Charge, douleurs, forme, croissance et bilans à refaire sont surveillés ici.");
 }
+/* 1 à 3 actions conseillées pour l'accueil (« Tom pas testé depuis 3 mois », « Léa : charge très haute ») */
+function suggestions(js) {
+  const t = G.today(), S = [];
+  for (const j of js) {
+    for (const a of alertes(j)) if (!a.bil && (a.n === "haute" || a.n === "attention")) S.push({ p: a.n === "haute" ? 0 : 1, n: a.n, t: `<b>${esc(prenom(j))}</b> : ${esc(a.t.charAt(0).toLowerCase() + a.t.slice(1))}`, h: "#/j/" + j.id + "/" + a.s, b: "Voir" });
+    const b = bilans(j)[0], n = b ? ecart(t, b.date) : null;
+    if (n == null) S.push({ p: 3, n: "info", t: `<b>${esc(prenom(j))}</b> pas encore testé`, h: G.href("grilles", "#/joueur/" + j.id + "/bilan/nouveau"), b: "Bilan" });
+    else if (n > 90) S.push({ p: 2, n: "info", t: `<b>${esc(prenom(j))}</b> pas testé depuis ${Math.round(n / 30.4)} mois`, h: G.href("grilles", "#/joueur/" + j.id + "/bilan/nouveau"), b: "Bilan" });
+  }
+  if (S.length < 3) for (const j of js) { const c = G.completude(j); if (c.pct < 70) S.push({ p: 4, n: "info", t: `Profil de <b>${esc(prenom(j))}</b> complet à ${c.pct} %`, h: null, attrs: `data-grun="completer" data-jid="${esc(j.id)}"`, b: "Compléter" }); }
+  return S.sort((a, b) => a.p - b.p).slice(0, 3);
+}
+const sugHTML = S => S.length ? `<div class="list sug">${S.map(x => `<div class="li n2c"><span class="tt">${x.n !== "info" ? badge(x.n, x.n === "haute" ? "!" : "À surveiller") + " " : ""}${x.t}</span><span class="end">${x.h ? `<a class="ib sm" href="${esc(x.h)}">${x.b}</a>` : `<button class="ib sm" type="button" ${x.attrs}>${x.b}</button>`}</span></div>`).join("")}</div>` : "";
+const fold2 = (id, titre, res, body) => `<details class="fold" data-sx="${id}" ${OPEN.has(id) ? "open" : ""}><summary><b>${titre}</b><span>${res || ""}</span></summary><div class="foldb">${body}</div></details>`;
+/* ---------- ACCUEIL (§10, 16 oct. 15 h 50) : 1 ligne Agenda · joueur/groupe en cours · 4 pôles · 1 ligne Assistant ----------
+   Pas de bloc « à faire » : actions conseillées → dossier (« Prochaine action conseillée ») et page Agenda (#/semaine). */
+const KC = { PPI: "Préparation physique", PPC: "Préparation physique collective", TI: "Tennis", TC: "Tennis collectif", PM: "Préparation mentale" };
+const heureDe = (e, d) => { if (e.heure) return e.heure; const dw = (new Date(P(d)).getUTCDay() + 6) % 7, c = G.reglages.coach().creneaux.filter(x => +x.j === dw).sort((a, b) => String(a.h).localeCompare(String(b.h)))[0]; return c && c.h ? c.h : ""; };
+const quiEv = e => { const g = e.gid && G.groupes.get(e.gid); return g ? g.nom : e.noms.length > 2 ? e.noms.slice(0, 2).join(", ") + " +" + (e.noms.length - 2) : e.noms.join(", "); };
+/* une séance dans la ligne Agenda : toucher = Lancer (séance prête) ou Construire (séance du plan) */
+function agPill(e, d) {
+  const h = heureDe(e, d), ty = e.type === "tournoi" ? "Tournoi" : e.type === "plan" ? "à construire" : (KC[e.kk] || "Séance"), lab = `<span class="l1">${h ? `<b>${esc(h)}</b> ` : ""}${esc(quiEv(e))}</span><small>${esc(ty)}</small>`;
+  const st = `style="--ec:${TYPC[e.type]}"`;
+  if (e.type === "seance" && !e.fait) return `<a class="agp" ${st} href="${esc(e.terrain)}" aria-label="Lancer : ${esc(e.titre)}">${lab}</a>`;
+  if (e.type === "plan") return e.key ? `<button type="button" class="agp" ${st} data-a="construire" data-plan="${esc(e.plan)}" data-key="${esc(e.key)}" aria-label="Construire : ${esc(e.titre)}">${lab}</button>` : `<a class="agp" ${st} href="${esc(e.href)}">${lab}</a>`;
+  return `<a class="agp${e.fait ? " fait" : ""}" ${st} href="${esc(e.href || "#/semaine/" + d)}">${lab}</a>`;
+}
+function agendaLigne(nj) {
+  const t = G.today();
+  const cells = [...Array(nj)].map((_, i) => { const d = add(t, i), L = evsJour(d), dt = new Date(P(d));
+    return `<div class="agd${i === 0 ? " auj" : ""}"><a class="agh" href="#/semaine/${d}">${i === 0 ? "Auj." : i === 1 ? "Dem." : JC[dt.getUTCDay()]} ${dt.getUTCDate()}${L.length > 2 ? ` <i>+${L.length - 2}</i>` : ""}</a>${L.slice(0, 2).map(e => agPill(e, d)).join("")}</div>`; }).join("");
+  return `<section class="agl" aria-label="Agenda des prochains jours"><a class="agt" href="#/semaine" aria-label="Ouvrir l'agenda complet">Agenda ›</a><div class="agr">${cells}</div></section>`;
+}
 function vAccueil() {
   setAcc("var(--ind)"); document.title = "GRÜN";
   const r = REG(), js = G.joueurs.all(), gs = G.groupes.all(), t = G.today();
-  let h = `<h1 class="auj">${r.nomCoach ? "Bonjour " + esc(r.nomCoach) : "Aujourd'hui"}</h1>`;
-  /* écran vide : un seul appel à l'action */
-  if (!js.length) {
-    h += `<div class="card vide"><b>Bienvenue dans GRÜN.</b><p class="msg">Tout part du joueur : crée ton premier joueur, son dossier se remplit ensuite tout seul.</p>
-      <a class="go acc big wide" href="#/joueurs">Crée ton premier joueur</a>
-      <button class="ib wide" data-a="demo"${DEMO.busy ? " disabled" : ""}>Charger la démonstration</button><p class="msg" id="demom" role="status">${esc(DEMO.msg)}</p></div>`;
-    main.innerHTML = h; return;
-  }
-  const sel = JOURSEL && JOURSEL >= t && JOURSEL <= add(t, 6) ? JOURSEL : t;
-  h += `<section class="sec"><h2>Ma semaine</h2>${semaineStrip(sel)}${sel === t ? jourHTML(t, "Aujourd'hui", 4) + jourHTML(add(t, 1), "Demain", 4) : jourHTML(sel, sel === add(t, 1) ? "Demain" : "", 8)}
-    <details class="more" style="margin-top:8px"><summary>Toute la semaine, jour par jour</summary>${semaine(0)}</details></section>`;
-  h += `<section class="sec"><h2>Mes joueurs <a href="#/joueurs">+ Créer un joueur</a></h2><div class="pgrid">${js.map(pcard).join("")}</div></section>`;
-  h += `<section class="sec"><h2>Mes groupes <a href="#/joueurs/groupe">+ Créer un groupe</a></h2>${gs.length ? `<div class="list">${gs.map(g => { const m = G.groupes.joueurs(g.id); return li("#/g/" + g.id, null, esc(g.nom), esc(m.map(prenom).join(", ")) || "aucun joueur", "›"); }).join("")}</div>` : empty("Aucun groupe pour l'instant.")}</section>`;
+  let h = `<h1 class="hh">${r.nomCoach ? "Bonjour " + esc(r.nomCoach) : "Bonjour"}<small>${dLong(t)}</small></h1>`;
+  const aProg = PROG().plans.length > 0, aSea = SEANCES().length > 0;
+  /* appli vide : 3 grandes étapes guidées */
+  if (!js.length || (!aProg && !aSea)) {
+    const E = [[js.length > 0, "Ajouter mes joueurs", js.length ? js.length + " joueur" + (js.length > 1 ? "s" : "") + " · ajouter d'autres" : "Prénom, sexe, naissance. Un ou plusieurs.", `data-a="plus" data-v="${js.length ? "joueurs" : "joueur"}"`],
+      [aProg, "Créer une programmation", "Sa saison, semaine par semaine.", `data-a="etape" data-v="prog"`],
+      [aSea, "Lancer une séance", "Construite pour lui, prête à lancer.", `data-a="plus" data-v="session"`]];
+    h += `<div class="steps">${E.map(([ok, ti, s, at], i) => `<button type="button" class="step${ok ? " ok" : ""}" ${at}><span class="n">${ok ? "✓" : i + 1}</span><span class="tt"><b>${ti}</b><small>${s}</small></span><span class="end">›</span></button>`).join("")}</div>`;
+    if (!js.length) h += `<div class="hm"><button class="ib" data-a="demo"${DEMO.busy ? " disabled" : ""}>Charger la démonstration</button><button class="ib" data-a="visite">Visite guidée (2 min)</button></div><p class="msg" id="demom" role="status">${esc(DEMO.msg)}</p>`;
+  } else h += agendaLigne(matchMedia("(min-width:700px)").matches ? 7 : 5);
+  /* joueur ou groupe en cours */
+  if (js.length) { const c = G.courant.get();
+    h += c ? `<div class="hcur"><a class="hc-a" href="#/${c.t === "g" ? "g" : "j"}/${esc(c.id)}"><span class="gc-av${c.t === "g" ? " g" : ""}">${esc((c.nom || "?").slice(0, 1).toUpperCase())}</span><span class="tt"><b>${esc(c.nom)}</b><small>${c.t === "g" ? "groupe en cours · " + G.groupes.joueurs(c.id).length + " joueurs" : "joueur en cours" + (ageTxt(c.joueur) ? " · " + ageTxt(c.joueur) : "")}</small></span></a><button type="button" class="hc-x" data-a="courant">Changer</button></div>`
+      : `<button type="button" class="hcur vide" data-a="courant"><span class="gc-av vide">+</span><span class="tt"><b>Choisir mon joueur ou mon groupe</b><small>Il sera repris partout : séance, bilan, programmation, note</small></span></button>`; }
+  /* 4 pôles */
+  const nAl = js.reduce((a, j) => a + alertes(j).filter(x => !x.bil && x.n !== "info").length, 0);
+  const T = [["ind", "#/joueurs", "Individualisation", js.length ? js.length + " joueur" + (js.length > 1 ? "s" : "") + (gs.length ? " · " + gs.length + " groupe" + (gs.length > 1 ? "s" : "") : "") : "Dossiers et groupes", nAl ? nAl + " alerte" + (nAl > 1 ? "s" : "") : ""],
+    ["create", "#/pole/create", "Create", "Programmation, séance, échauffement", ""], ["res", "#/pole/res", "Ressources et savoirs", "Veille, exercices, saisons", ""], ["tests", "#/pole/tests", "Tests et profilage", "Bilans, grilles, radar", ""]];
+  if (js.length) h += `<nav class="htiles" aria-label="Les 4 pôles">${T.map(([k, href, ti, s, al]) => `<a class="htile" href="${href}" style="--tc:${POLEC[k]}"><svg viewBox="0 0 24 24" aria-hidden="true">${HICO[k]}</svg><b>${ti}</b><small>${esc(s)}</small>${al ? `<em>${esc(al)}</em>` : ""}</a>`).join("")}</nav>`;
+  /* une ligne Assistant / recherche */
+  h += `<button type="button" class="hask" data-a="assistant" data-src="accueil"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><span>Demander ou chercher (F12, Tom…)</span></button>`;
+  main.innerHTML = h;
+}
+const HICO = { ind: '<circle cx="12" cy="8" r="4"/><path d="M4 21c1-4.5 4.5-7 8-7s7 2.5 8 7"/>', create: '<rect x="3" y="3" width="18" height="18" rx="3"/><path d="M12 7v10M7 12h10"/>', res: '<path d="M4 4h6a3 3 0 0 1 3 3v13a2 2 0 0 0-2-2H4z"/><path d="M20 4h-6a3 3 0 0 0-3 3v13a2 2 0 0 1 2-2h7z"/>', tests: '<path d="M12 3l8.5 6.2-3.2 10H6.7L3.5 9.2z"/><path d="M12 8l4 3-1.5 4.5h-5L8 11z"/>' };
+
+/* ================= AGENDA COMPLET « Ma semaine » (#/semaine[/date]) : semaine, actions conseillées, Reprendre, alertes ================= */
+function vSemaine(dsel) {
+  setAcc("var(--ind)"); document.title = "Ma semaine · GRÜN";
+  const js = G.joueurs.all(), t = G.today(), sel = isoOk(dsel) && dsel >= t && dsel <= add(t, 6) ? dsel : (JOURSEL && JOURSEL >= t && JOURSEL <= add(t, 6) ? JOURSEL : t);
+  let h = `<div class="crumb"><a href="#/">Accueil</a></div><h1 style="color:var(--ind)">Ma semaine<small>Séances prévues, à construire, tournois · ce qui est conseillé</small></h1>`;
+  h += `<section class="sec">${semaineStrip(sel)}${jourHTML(sel, sel === t ? "Aujourd'hui" : sel === add(t, 1) ? "Demain" : "", 12)}${sel === t ? jourHTML(add(t, 1), "Demain", 6) : ""}
+    <div class="tools" style="margin-top:10px"><button class="go acc" data-a="plus" data-v="session">+ Nouvelle séance</button><a class="ib" href="${G.href("prog")}">Mes programmations</a></div></section>`;
+  const S = suggestions(js), dn = G.courant.dernier();
+  h += `<section class="sec"><h2>Actions conseillées</h2>${S.length ? sugHTML(S) : empty("Rien d'urgent. Les bilans à refaire, les charges et les profils à compléter s'affichent ici.")}</section>`;
+  if (dn && dn.href) h += `<a class="card rep" href="${esc(dn.href)}"><span class="lab">Reprendre</span><span class="tt">${esc(dn.titre)}</span><span>›</span></a>`;
   h += `<section class="sec"><h2>Alertes</h2>${alertesHTML(js)}</section>`;
+  h += `<section class="sec">${sx("h-semj", "Toute la semaine, jour par jour", "", semaine(0))}</section>`;
   main.innerHTML = h;
 }
 
 /* ================= PAGE D'UN PÔLE ================= */
 const RACC = {
-  prog: [["Nouvelle prog", "prog", "#/nouveau"], ["Saisons de référence", "saisons", null]],
-  seances: [["Nouvelle séance", "seances", "#/nouvelle"]],
-  warmup: [["Nouveau warm-up", "warmup", "#/nouveau"]],
+  prog: [["Créer une programmation", "prog", "#/nouveau"], ["Saisons de référence", "saisons", null]],
+  seances: [["Créer une séance", "seances", "#/nouvelle"]],
+  warmup: [["Créer un échauffement", "warmup", "#/nouveau"]],
   veille: [["Ouvrir la veille", "veille", null]],
-  banque: [["Nouvel exercice", "banque", "#/nouveau"], ["Familles", "banque", "#familles"]],
+  banque: [["Créer un exercice", "banque", "#/nouveau"], ["Familles", "banque", "#familles"]],
   saisons: [["Toutes les saisons", "saisons", null]],
   grilles: [["Tous les tests", "grilles", "#p/3"], ["Mode d'emploi", "grilles", "#p/4"]]
 };
@@ -761,8 +1077,8 @@ function vPole(id) {
   const p = G.POLES.find(x => x.id === id); setAcc(POLEC[id]); document.title = p.t + " · GRÜN";
   if (id === "ind") { location.replace("#/joueurs"); return; }
   const mods = Object.entries(G.MODS).filter(([k, m]) => m.pole === id && m.f !== "index.html"), js = auto() ? [moi()].filter(Boolean) : G.joueurs.all(), gs = auto() ? [] : G.groupes.all();
-  const selJ = js.length ? `<select class="inp" id="pj" aria-label="Joueur"><option value="">Choisir un joueur…</option>${js.map(j => `<option value="${esc(j.id)}">${esc(j.nom)}</option>`).join("")}</select>` : "";
-  const selG = gs.length ? `<select class="inp" id="pg" aria-label="Groupe"><option value="">Choisir un groupe…</option>${gs.map(g => `<option value="${esc(g.id)}">${esc(g.nom)}</option>`).join("")}</select>` : "";
+  const selJ = js.length ? `<select class="inp" id="pj" aria-label="Joueur"><option value="">Choisir un joueur…</option>${js.map(j => `<option value="${esc(j.id)}"${j.id === G.courant.jid() ? " selected" : ""}>${esc(j.nom)}</option>`).join("")}</select>` : "";
+  const selG = gs.length ? `<select class="inp" id="pg" aria-label="Groupe"><option value="">Choisir un groupe…</option>${gs.map(g => `<option value="${esc(g.id)}"${g.id === G.courant.gid() ? " selected" : ""}>${esc(g.nom)}</option>`).join("")}</select>` : "";
   let h = `<h1 style="color:${POLEC[id]}">${esc(p.t)}</h1><p class="lead">${esc(p.s)}</p>`;
   const big = (href, k, t, sub, attrs) => `<a class="big" href="${esc(href)}" ${attrs || ""} style="--bc:${POLEC[id]}"><span class="k">${esc(k)}</span><b>${esc(t)}</b><span>${esc(sub)}</span></a>`;
   const chipsJ = (f, lab) => js.length ? `<div class="chips">${js.map(j => `<a class="tg big2" href="${esc(f(j))}">${esc(j.nom)}</a>`).join("")}</div>` : `<p class="msg" style="margin:0">Crée d'abord tes joueurs dans <a href="#/joueurs">Mes joueurs</a>.</p>`;
@@ -771,27 +1087,27 @@ function vPole(id) {
      <div class="tools">${mods.flatMap(([k]) => RACC[k] || []).map(([t, mod, hs]) => `<a class="ib" href="${G.href(mod, hs)}">${esc(t)}</a>`).join("")}</div>`;
   if (id === "create") {
     h += `<div class="sec bigs">${big(G.href("warmup"), "Choose your warm-up", "Lancer un échauffement", "Choisis un échauffement prêt, lance : tout s'enchaîne seul.")}
-      ${big(G.href("seances", "#/nouvelle"), "Create my session", "Créer une séance", "La structure se construit seule, tu choisis les exos.")}
-      ${big(G.href("prog", "#/nouveau"), "Create my prog", "Créer une prog", "Une semaine, un cycle ou une saison, séance par séance.")}</div>`;
-    h += modsPlus + `<div class="sub">Pour un joueur ou un groupe</div><p class="msg" style="margin:0">Le plus simple : ouvre le dossier du joueur et touche Séance, Échauffement ou Prog.</p>
-     ${js.length ? `<div class="form"><div class="f w">${selJ}</div><button class="ib" data-a="relais" data-vers="prog" data-src="pj">Créer une prog</button><button class="ib" data-a="relais" data-vers="seances" data-src="pj">Créer une séance</button><button class="ib" data-a="relais" data-vers="warmup" data-src="pj">Échauffement</button></div>` : ""}
-     ${gs.length ? `<div class="form"><div class="f w">${selG}</div><button class="ib" data-a="relais" data-vers="prog" data-src="pg">Prog de groupe</button><button class="ib" data-a="relais" data-vers="seances" data-src="pg">Séance de groupe</button><button class="ib" data-a="relais" data-vers="warmup" data-src="pg">Échauffement de groupe</button></div>` : ""}</div></details>`;
+      ${big(G.href("seances", "#/nouvelle"), "Create my session", "Créer une séance", "La structure se construit seule, tu choisis les exercices.")}
+      ${big(G.href("prog", "#/nouveau"), "Create my prog", "Créer une programmation", "Une semaine, un cycle ou une saison, séance par séance.")}</div>`;
+    h += `<section class="sec"><h2>Pour un joueur ou un groupe</h2><p class="msg" style="margin:0 0 6px">Le joueur en cours est déjà choisi en haut ; sinon choisis ici.</p>
+     ${js.length ? `<div class="form"><div class="f w">${selJ}</div><button class="ib" data-a="relais" data-vers="prog" data-src="pj">Créer une programmation</button><button class="ib" data-a="relais" data-vers="seances" data-src="pj">Créer une séance</button><button class="ib" data-a="relais" data-vers="warmup" data-src="pj">Échauffement</button></div>` : ""}
+     ${gs.length ? `<div class="form"><div class="f w">${selG}</div><button class="ib" data-a="relais" data-vers="prog" data-src="pg">Programmation de groupe</button><button class="ib" data-a="relais" data-vers="seances" data-src="pg">Séance de groupe</button><button class="ib" data-a="relais" data-vers="warmup" data-src="pg">Échauffement de groupe</button></div>` : ""}</section>` + modsPlus + `</div></details>`;
   }
   if (id === "tests") {
     h += `<section class="sec"><h2>Profil radar d'un joueur</h2>${chipsJ(j => G.href("grilles", "#/joueur/" + j.id + "/radar"))}</section>
-      <section class="sec"><h2>Faire un bilan</h2>${chipsJ(j => G.href("grilles", "#/joueur/" + j.id + "/bilan"))}
+      <section class="sec"><h2>Faire un bilan</h2>${chipsJ(j => G.href("grilles", "#/joueur/" + j.id + "/bilan/nouveau"))}
       ${gs.length ? `<div class="chips" style="margin-top:8px">${gs.map(g => `<button class="tg big2" data-a="bilangrp" data-gid="${esc(g.id)}">Bilan de groupe · ${esc(g.nom)}</button>`).join("")}</div>` : ""}</section>`;
     const af = js.map(j => ({ j, a: alertes(j).find(x => x.bil) })).filter(x => x.a);
     h += `<div class="sec bigs">${big(G.href("grilles"), "Grilles et tests", "Les grilles et les tests", "Les grilles de 4 à 18 ans, filles et garçons, et toutes les fiches de tests.")}</div>`;
-    if (af.length) h += `<section class="sec"><h2>Bilans à faire</h2><div class="list">${af.map(({ j, a }) => li(G.href("grilles", "#/joueur/" + j.id + "/bilan"), null, esc(j.nom), esc(a.t), "Créer le bilan ›")).join("")}</div></section>`;
+    if (af.length) h += `<section class="sec"><h2>Bilans à faire</h2><div class="list">${af.map(({ j, a }) => li(G.href("grilles", "#/joueur/" + j.id + "/bilan/nouveau"), null, esc(j.nom), esc(a.t), "Créer le bilan ›")).join("")}</div></section>`;
     h += modsPlus + `</div></details>`;
   }
   if (id === "res") {
-    h += `<div class="sec bigs">${big(G.href("banque"), "Banque d'exercices", "Trouver un exo", "Tous les exercices, rangés par qualité travaillée.")}
-      ${big(G.href("banque", "#/nouveau"), "Banque d'exercices", "Créer un exo", "Ton exercice, avec vidéo et photo, utilisable partout.")}
+    h += `<div class="sec bigs">${big(G.href("banque"), "Banque d'exercices", "Trouver un exercice", "Tous les exercices, rangés par qualité travaillée.")}
+      <a class="big" href="#" data-a="plus" data-v="exo" style="--bc:${POLEC[id]}"><span class="k">Banque d'exercices</span><b>Créer un exercice</b><span>Ton exercice, avec vidéo et photo, utilisable partout.</span></a>
       ${big(G.href("veille"), "Veille de connaissances", "Comprendre", "Les documents de la méthode : âge, physique, geste, entraîner.")}
       ${big(G.href("saisons"), "Référentiel de programmation", "Les saisons types", "Une saison de référence par âge, de 4 à 18 ans.")}</div>
-      <p class="msg">Astuce : la recherche en haut de l'accueil trouve tout (exos, documents, tests, joueurs).</p>`;
+      <p class="msg">Astuce : la recherche en haut de l'accueil trouve tout (exercices, documents, tests, joueurs).</p>`;
     h += modsPlus + `</div></details>`;
   }
   main.innerHTML = h;
@@ -800,26 +1116,17 @@ function vPole(id) {
 /* ================= MES JOUEURS ================= */
 function vJoueurs(ouvrir) {
   setAcc("var(--ind)"); document.title = "Joueurs · GRÜN";
-  if (ouvrir === "groupe") OPEN.add("ng");
   const js = G.joueurs.all(), gs = G.groupes.all(), L = FILTRE && G.groupes.get(FILTRE) ? G.groupes.joueurs(FILTRE).sort((a, b) => a.nom.localeCompare(b.nom, "fr")) : js;
   let h = `<div class="crumb"><a href="#/">Accueil</a></div><h1 style="color:var(--ind)">Mes joueurs<small>${js.length} joueur${js.length > 1 ? "s" : ""} · ${gs.length} groupe${gs.length > 1 ? "s" : ""} · un dossier complet pour chacun</small></h1>`;
-  h += `<section class="sec">${ sxForm("nj", "+ Créer un joueur", "", `<form class="form" data-f="joueur">
-      <div class="f w"><label for="jn">Prénom et nom</label><input id="jn" name="nom" autocomplete="off" required></div>
-      <div class="f"><label for="jsx">Sexe</label><select id="jsx" name="sexe"><option value="G">Garçon</option><option value="F">Fille</option></select></div>
-      <div class="f"><label for="jnai">Naissance (facultatif)</label><input id="jnai" name="naissance" type="date"></div>
-      <div class="f"><label for="jgr">Groupe</label><select id="jgr" name="gid"><option value="">Aucun</option>${gs.map(g => `<option value="${esc(g.id)}">${esc(g.nom)}</option>`).join("")}<option value="+">+ Nouveau groupe…</option></select></div>
-      <div class="f" id="jngw" hidden><label for="jng">Nom du groupe</label><input id="jng" name="ngroupe" placeholder="Groupe 1, 13-14 ans…"></div>
-      <button class="go acc" type="submit">Créer</button></form>`, !js.length)}</section>`;
+  h += `<div class="tools" style="margin-top:12px"><button class="go acc big" data-a="plus" data-v="joueur">+ Nouveau joueur</button><button class="ib" data-a="plus" data-v="joueurs">Ajouter plusieurs joueurs</button><button class="ib" data-a="plus" data-v="groupe">+ Nouveau groupe</button></div>`;
   h += `<section class="sec"><h2>Joueurs</h2>${gs.length && js.length ? `<div class="chips" style="margin-bottom:10px"><button class="tg" data-a="filtre" data-g="" aria-pressed="${!FILTRE}">Tous</button>${gs.map(g => `<button class="tg" data-a="filtre" data-g="${esc(g.id)}" aria-pressed="${FILTRE === g.id}">${esc(g.nom)}</button>`).join("")}</div>` : ""}
-    ${L.length ? `<div class="pgrid">${L.map(pcard).join("")}</div>` : empty(js.length ? "Personne dans ce groupe." : "Aucun joueur. Crée ton premier joueur ci-dessus : rien n'est créé à l'avance.")}</section>`;
+    ${L.length ? `<div class="pgrid">${L.map(pcard).join("")}</div>` : empty(js.length ? "Personne dans ce groupe." : "Aucun joueur. Touche « + Nouveau joueur » : prénom, sexe et naissance suffisent.")}</section>`;
   h += `<section class="sec"><h2>Mes groupes</h2>${gs.length ? `<div class="list">${gs.map(g => { const m = G.groupes.joueurs(g.id); return li("#/g/" + g.id, null, esc(g.nom), esc(m.map(prenom).join(", ")) || "aucun membre", "›"); }).join("")}</div>` : empty("Aucun groupe.")}
-    <div style="margin-top:10px">${sxForm("ng", "+ Créer un groupe", "", `<form class="form" data-f="groupe"><div class="f w"><label for="gn">Nom du groupe</label><input id="gn" name="nom" required autocomplete="off"></div>
-      ${js.length ? `<div class="f full"><span class="lab">Membres</span><div class="chips">${js.map(j => `<button type="button" class="tg" data-a="tg" data-v="${esc(j.id)}" aria-pressed="false">${esc(j.nom)}</button>`).join("")}</div></div>` : ""}
-      <button class="go acc" type="submit">Créer</button></form>`, ouvrir === "groupe")}</div></section>`;
+    <div class="tools" style="margin-top:10px"><button class="ib" data-a="plus" data-v="groupe">+ Nouveau groupe</button></div></section>`;
   const AR = G.joueurs.archives ? G.joueurs.archives() : [];
   if (AR.length) h += `<section class="sec">${sx("arch", "Joueurs archivés", AR.length + " · tu ne les entraînes plus", `<div class="list">${AR.map(j => li(null, j.sexe === "F" ? "Fille" : "Garçon", `<a href="#/j/${esc(j.id)}">${esc(j.nom)}</a>`, (j.archiveLe ? "archivé le " + G.frD(j.archiveLe) : "archivé") + (ageTxt(j) ? " · " + ageTxt(j) : ""), `<button class="ib sm" data-a="archiver" data-v="0" data-jid="${esc(j.id)}">Réactiver</button><a class="ib sm dang" href="#/j/${esc(j.id)}/fin">Supprimer définitivement</a>`)).join("")}</div>`, "var(--mute)")}</section>`;
   main.innerHTML = h;
-  if (ouvrir === "groupe") { const x = $("#sx-ng"); if (x) setTimeout(() => x.scrollIntoView({ block: "start" }), 60); }
+  if (ouvrir === "groupe" || ouvrir === "nouveau" || ouvrir === "plusieurs") { history.replaceState(null, "", "#/joueurs"); setTimeout(() => ouvrir === "groupe" ? G.ui.nouveauGroupe() : G.ui.nouveauJoueur({ multiple: ouvrir === "plusieurs" }), 80); }
 }
 function sxForm(id, t, res, body, open) { if (open) OPEN.add(id); return sx(id, t, res, body, "var(--ind)"); }
 
@@ -827,7 +1134,7 @@ function sxForm(id, t, res, body, open) { if (open) OPEN.add(id); return sx(id, 
 function factsJ(j) {
   const a = ageJ(j.naissance), m = matur(j), gc = G.grilleConseillee(j), ch = G.journal.charge(j.id);
   const f = (lab, v, s) => `<div class="fact"><span class="lab">${lab}</span><b>${v}${s ? ` <small>${s}</small>` : ""}</b></div>`;
-  return `<div class="facts">${f("Âge", a != null ? a + " ans" : "–", m ? "âge bio " + nf(m.bio) : "")}${f("Charge", ch.ratio != null ? nf(ch.ratio, 2) : "–", ch.ratio != null ? ({ ok: "bonne", attention: "en hausse", haute: "très haute", basse: "basse" }[ch.alerte]) : "pas encore assez de retours")}${f("Classement", esc(j.classement || "NC"))}${(() => { const T = G.presences.taux(j.id); return T.total ? f("Assiduité", T.pct + " %", T.present + "/" + T.total + " séances") : ""; })()}
+  return `<div class="facts">${f("Âge", a != null ? a + " ans" : "–", m ? "âge biologique " + nf(m.bio) : "")}${f("Charge", ch.ratio != null ? nf(ch.ratio, 2) : "–", ch.ratio != null ? ({ ok: "bonne", attention: "en hausse", haute: "très haute", basse: "basse" }[ch.alerte]) : "pas encore assez de retours")}${f("Classement", esc(j.classement || "NC"))}${(() => { const T = G.presences.taux(j.id); return T.total ? f("Assiduité", T.pct + " %", T.present + "/" + T.total + " séances") : ""; })()}
     <span class="xp" style="display:contents">${f("Âge précis", a != null ? nf(G.ageDec(j.naissance)) + " ans" : "–")}${f("Âge biologique", m ? nf(m.bio) + " ans" : "–", m ? m.avance : "à mesurer")}${f("Grille conseillée", gc != null ? gc + " ans" : "–", m ? "âge bio" : "âge civil")}${f("Maturation", m ? esc(m.statut) : "–")}${f("Main · revers", (j.main === "G" ? "Gaucher" : "Droitier") + " · " + (j.revers === "1" ? "1 main" : "2 mains"))}</span></div>`;
 }
 /* les 5 gros boutons du dossier : tout part du joueur */
@@ -842,19 +1149,22 @@ function cinq(j) {
   const t = G.today(), E = evJoueur(j, t, t), sP = E.find(e => e.type === "seance" && !e.fait), pP = E.find(e => e.type === "plan" && e.key);
   const pl = plansDe(j.id).filter(p => (!p.debut || p.debut <= t) && (!p.fin || p.fin >= t)).sort((a, b) => (a.jid === j.id ? -1 : 1) - (b.jid === j.id ? -1 : 1))[0];
   const b5 = (ic, lab, sub, attrs) => `<${/href=/.test(attrs) ? "a" : "button"} class="b5" ${attrs}><svg viewBox="0 0 24 24" aria-hidden="true">${ICO5[ic]}</svg><b>${lab}</b><small>${sub}</small></${/href=/.test(attrs) ? "a" : "button"}>`;
+  /* échauffement « Lancer » : son favori, sinon le dernier fait ; sinon « Choisir » (liste « Pour lui, maintenant », ▶ en 1 touche) */
+  const wuLance = arr(j.favWarmup)[0] || (G.journal.retours(j.id).find(x => x.type === "warmup" && x.ref) || {}).ref || null;
   const se = sP ? b5("seance", "Séance", "Lancer", `href="${esc(sP.terrain)}"`)
     : pP ? b5("seance", "Séance", "Construire", `type="button" data-a="construire" data-plan="${esc(pP.plan)}" data-key="${esc(pP.key)}"`)
     : b5("seance", "Séance", "Créer", `type="button" data-a="relais" data-vers="seances" data-jid="${esc(j.id)}"`);
   return `<div class="five">${se}
-    ${b5("wu", "Échauf&shy;fement", "Lancer", `href="${G.href("warmup", "#/joueur/" + j.id)}"`)}
-    ${b5("bilan", "Bilan", "Créer", `href="${G.href("grilles", "#/joueur/" + j.id + "/bilan")}"`)}
+    ${wuLance ? b5("wu", "Échauf&shy;fement", "Lancer", `href="${G.href("warmup", "#/go/" + encodeURIComponent(wuLance) + "?j=" + encodeURIComponent(j.id))}"`) : b5("wu", "Échauf&shy;fement", "Choisir", `href="${G.href("warmup", "#/joueur/" + j.id)}"`)}
+    ${b5("bilan", "Bilan", bilans(j).length ? "Nouveau" : "Créer", `href="${G.href("grilles", "#/joueur/" + j.id + "/bilan/nouveau")}"`)}
     ${b5("radar", "Profil radar", "Voir", `href="${G.href("grilles", "#/joueur/" + j.id + "/radar")}"`)}
-    ${pl ? b5("prog", "Prog", "Voir", `href="${G.href("prog", "#p/" + pl.id)}"`) : b5("prog", "Prog", "Créer", `type="button" data-a="relais" data-vers="prog" data-jid="${esc(j.id)}"`)}</div>`;
+    ${pl ? b5("prog", "Program&shy;mation", "Voir", `href="${G.href("prog", "#p/" + pl.id)}"`) : b5("prog", "Program&shy;mation", "Créer", `type="button" data-a="relais" data-vers="prog" data-jid="${esc(j.id)}"`)}</div>`;
 }
 function vDossier(jid, ouvrir) {
   const j = G.joueurs.get(jid);
   if (!j) { main.innerHTML = `<div class="crumb"><a href="#/">Accueil</a> › <a href="#/joueurs">Joueurs</a></div>` + empty("Ce joueur n'existe pas (ou plus) sur cet appareil."); return; }
   setAcc("var(--ind)"); document.title = j.nom + " · GRÜN"; CURJ = j.id;
+  if (!auto() && !j.archive) { const c0 = G.courant.get(); if (!c0 || c0.id !== j.id) G.courant.set("j", j.id); G.courant.vu("Dossier de " + j.nom, "index.html#/j/" + j.id); }
   /* onglet : demandé par l'adresse (#/j/<jid>/<onglet ou section>), sinon celui qu'on regardait, sinon Résumé (l'essentiel) */
   let tab = null;
   if (ouvrir && TABS.some(x => x[0] === ouvrir)) { tab = ouvrir; ouvrir = null; }
@@ -868,6 +1178,7 @@ function vDossier(jid, ouvrir) {
   const AU = auto();
   let h = (AU ? `<div class="crumb"><span>Mon dossier</span></div>` : `<div class="crumb"><a href="#/">Accueil</a>›<a href="#/joueurs">Joueurs</a>${grs.map(g => `›<a href="#/g/${esc(g.id)}">${esc(g.nom)}</a>`).join("")}</div>`) + `
     <div class="head"><h1>${esc(j.nom)}<small>${j.sexe === "F" ? "Fille" : "Garçon"}${ageTxt(j) ? " · " + ageTxt(j) : ""}${j.naissance ? " · né" + (j.sexe === "F" ? "e" : "") + " le " + G.frD(j.naissance) : ""}${grs.length ? " · " + grs.map(g => esc(g.nom)).join(", ") : ""}</small></h1>${pdfBtn(`data-a="pdfj" data-jid="${esc(j.id)}"`)}</div>
+    ${j.archive ? "" : actionConseillee(j)}
     <div class="tabs" role="tablist" aria-label="Dossier de ${esc(j.nom)}">${TABS.map(([k, t]) => `<button role="tab" data-a="tab" data-v="${k}" aria-selected="${k === tab}">${t}</button>`).join("")}</div>`;
   if (j.archive && !AU) h = `<div class="card" style="border-color:var(--warn);margin-bottom:10px"><b>Joueur archivé</b>${j.archiveLe ? " le " + G.frD(j.archiveLe) : ""} : tu ne l'entraînes plus, il n'apparaît plus dans les listes. <button class="ib sm" data-a="archiver" data-v="0" data-jid="${esc(j.id)}">Réactiver</button></div>` + h;
   /* iPad / grand écran : 2 colonnes (section principale à gauche) ; une seule section = toute la largeur */
@@ -877,23 +1188,64 @@ function vDossier(jid, ouvrir) {
     h += `${cinq(j)}
     ${al.length ? `<div class="chips" style="margin-top:10px">${al.map(x => `<a href="#/j/${esc(j.id)}/${x.s}" style="text-decoration:none">${badge(x.n, x.t)}</a>`).join("")}</div>` : ""}
     ${factsJ(j)}
+    <div style="margin-top:10px">${G.ui.completudeHTML(j)}</div>
     <div class="acts"><a class="ib" href="#/j/${esc(j.id)}/retour">Noter un retour</a><a class="ib" href="#/j/${esc(j.id)}/journal">Forme du jour</a>${AU ? "" : `<a class="ib" href="#/j/${esc(j.id)}/fiche">Modifier la fiche</a>`}</div>
     ${sObjectifs(j)}`;
     h += `<h2 class="h2" style="margin-top:22px">Fiche, agenda et blessures</h2>` + col([sAgenda(j), sBlessures(j), sFiche(j), sFin(j)]);
-    if (!AU) h += `<details class="grun-plus"><summary>Plus d'options</summary><div class="grun-plusb"><div class="tools"><button class="ib" data-a="modej" data-jid="${esc(j.id)}">Mode joueur sur cet appareil</button><a class="ib" href="${G.href("grilles", "#/joueur/" + j.id)}">Ouvrir dans Grilles et tests</a><a class="ib" href="${G.href("seances", "#/joueur/" + j.id)}">Ses séances</a><a class="ib" href="${G.href("prog", "#/joueur/" + j.id)}">Ses progs</a></div></div></details>`;
+    if (!AU) h += `<details class="grun-plus"><summary>Plus d'options</summary><div class="grun-plusb"><div class="tools"><button class="ib" data-a="modej" data-jid="${esc(j.id)}">Mode joueur sur cet appareil</button><a class="ib" href="${G.href("grilles", "#/joueur/" + j.id)}">Ouvrir dans Grilles et tests</a><a class="ib" href="${G.href("seances", "#/joueur/" + j.id)}">Ses séances</a><a class="ib" href="${G.href("prog", "#/joueur/" + j.id)}">Ses programmations</a></div></div></details>`;
   }
   if (tab === "seances") h += wide.matches ? `<div class="dos" style="margin-top:12px"><div class="dcol">${ouvre(sSeances(j))}</div><div class="dcol">${sPresences(j)}${sWarmup(j)}</div></div>` : col([ouvre(sSeances(j)), sPresences(j), sWarmup(j)]);
   if (tab === "tests") h += col([ouvre(sGrilles(j)), sCroissance(j)]);
   if (tab === "prog") h += col([ouvre(sProg(j))]);
+  if (tab === "frise") h += sFrise(j);
   if (tab === "journal") h += col([ouvre(sJournal(j))]);
   main.innerHTML = h;
   if (ouvrir) { const d = $(cible); if (d) setTimeout(() => d.scrollIntoView({ block: "start", behavior: "smooth" }), 60); history.replaceState(null, "", auto() ? "#/" : "#/j/" + j.id); }
   else if (location.hash.split("/").length > 3) history.replaceState(null, "", auto() ? "#/" : "#/j/" + j.id);
 }
 
+/* ---------- prochaine action conseillée (en tête du dossier) ---------- */
+function actionConseillee(j) {
+  const t = G.today(), E = evJoueur(j, t, t), sP = E.find(e => e.type === "seance" && !e.fait), pP = E.find(e => e.type === "plan" && e.key);
+  const al = alertes(j).filter(x => !x.bil).sort((x, y) => NIVO[x.n] - NIVO[y.n])[0], b = bilans(j)[0], nb = b ? ecart(t, b.date) : null;
+  const M = arr(j.mesures).filter(x => x && x.taille && isoOk(x.date)).sort((a, c) => a.date < c.date ? 1 : -1)[0], nm = M ? ecart(t, M.date) : null;
+  const futur = seancesDe(j.id).some(s => isoOk(s.date) && s.date >= t && ecart(s.date, t) <= 7) || evJoueur(j, t, add(t, 7)).some(e => e.type === "plan");
+  const P = j.sexe === "F" ? "la" : "le", pn = esc(prenom(j));
+  let x;
+  if (sP) x = { t: "Lancer la séance du jour", s: sP.titre, btn: `<a class="go acc" href="${esc(sP.terrain)}">Lancer</a>` };
+  else if (pP) x = { t: "Construire la séance du jour", s: pP.titre, btn: `<button class="go acc" data-a="construire" data-plan="${esc(pP.plan)}" data-key="${esc(pP.key)}">Construire</button>` };
+  else if (al && al.n === "haute") x = { t: al.t, s: "À regarder avant la prochaine séance", btn: `<a class="go acc" href="#/j/${esc(j.id)}/${al.s}">Voir</a>` };
+  else if (nb == null) x = { t: "Faire son premier bilan", s: "Les tests conseillés pour son âge : son profil radar apparaît ensuite", btn: `<a class="go acc" href="${G.href("grilles", "#/joueur/" + j.id + "/bilan/nouveau")}">Bilan</a>` };
+  else if (nb > 90) x = { t: "Refaire un bilan", s: "Le dernier date de " + Math.round(nb / 30.4) + " mois", btn: `<a class="go acc" href="${G.href("grilles", "#/joueur/" + j.id + "/bilan/nouveau")}">Bilan</a>` };
+  else if (nm == null || nm > 90) x = { t: nm == null ? "Mesurer " + pn : "Mesurer " + pn + " à nouveau", s: nm == null ? "Taille, taille assise, poids : âge biologique et croissance" : "Dernière mesure il y a " + Math.round(nm / 30.4) + " mois (tous les 3 mois)", btn: `<button class="go acc" data-grun="completer" data-jid="${esc(j.id)}" data-focus="taille">Mesurer</button>` };
+  else if (al) x = { t: al.t, s: "À surveiller", btn: `<a class="go acc" href="#/j/${esc(j.id)}/${al.s}">Voir</a>` };
+  else if (!futur) x = { t: "Préparer sa prochaine séance", s: "Rien de prévu dans les 7 jours", btn: `<button class="go acc" data-a="relais" data-vers="seances" data-jid="${esc(j.id)}">Créer</button>` };
+  else x = { t: "Noter un retour ou la forme du jour", s: "10 secondes : la charge et la forme se suivent toutes seules", btn: `<button class="go acc" data-a="plus" data-v="note" data-jid="${esc(j.id)}">Noter</button>` };
+  return `<div class="nxa"><div><span class="lab">Prochaine action conseillée</span><b>${esc(x.t)}</b><small>${esc(x.s || "")}</small></div>${x.btn}</div>`;
+}
+/* ---------- FRISE : tests, séances, blessures, notes, objectifs, mesures, tournois sur une seule ligne du temps ---------- */
+let FRISEF = "tout";
+const FRISEK = [["tout", "Tout"], ["test", "Tests"], ["seance", "Séances"], ["blessure", "Blessures"], ["note", "Notes"], ["objectif", "Objectifs"], ["mesure", "Mesures"]];
+function sFrise(j) {
+  const t = G.today(), E = [];
+  for (const b of bilans(j)) E.push({ k: "test", d: b.date, t: "Bilan" + (b.note ? " · " + b.note : ""), s: DOMS.map(d => DOMC2[d] + " " + nf(moy(j, b, d))).join(" · "), h: G.href("grilles", "#/joueur/" + j.id + "/bilan/nouveau"), c: "var(--tests)" });
+  for (const s of seancesDe(j.id)) if (isoOk(s.date)) E.push({ k: "seance", d: s.date.slice(0, 10), t: s.nom || s.theme || "Séance", s: [KN[s.type], s.duree ? s.duree + " min" : "", s.date > t ? "à venir" : ""].filter(Boolean).join(" · "), h: G.href("seances", "#/s/" + s.id), c: "var(--create)" });
+  for (const r of G.journal.retours(j.id)) E.push({ k: r.note || r.type === "autre" ? "note" : "seance", d: r.date, t: (r.note ? "Note" : "Retour") + " · " + (r.titre || RTYP[r.type] || ""), s: [r.duree ? r.duree + " min" : "", r.rpe != null ? "dureté " + r.rpe + "/10" : "", r.douleur && r.douleur.int ? "douleur " + zn(r.douleur.zone).toLowerCase() + " " + r.douleur.int + "/10" : "", r.comment || ""].filter(Boolean).join(" · "), h: "#/j/" + j.id + "/journal", c: "var(--ind)" });
+  for (const b of arr(j.blessures)) { E.push({ k: "blessure", d: b.debut || t, t: "Blessure · " + (zn(b.zone) || b.desc || ""), s: [b.desc, b.statut === "guerie" ? "guérie" : "en cours"].filter(Boolean).join(" · "), h: "#/j/" + j.id + "/blessures", c: "var(--bad)" }); if (b.fin && b.statut === "guerie") E.push({ k: "blessure", d: b.fin, t: "Reprise · " + (zn(b.zone) || ""), s: "blessure guérie", h: "#/j/" + j.id + "/blessures", c: "var(--ok)" }); }
+  for (const o of G.objectifs.de(j.id)) { E.push({ k: "objectif", d: o.cree || t, t: "Objectif · " + o.txt, s: G.OBJ_STATUTS[o.statut] + (o.ech ? " · échéance " + G.frD(o.ech) : ""), h: "#/j/" + j.id + "/objectifs", c: "var(--warn)" }); }
+  for (const m of arr(j.mesures)) if (m && isoOk(m.date)) { const mm = G.maturite(j, m.taille ? m : null); E.push({ k: "mesure", d: m.date, t: "Mesure" + (m.taille ? " · " + nf(+m.taille) + " cm" : ""), s: [m.assise ? "assise " + nf(+m.assise) : "", m.poids ? nf(+m.poids) + " kg" : "", mm ? "âge biologique " + nf(mm.bio) : ""].filter(Boolean).join(" · "), h: "#/j/" + j.id + "/croissance", c: "var(--ind)" }); }
+  for (const a of arr(j.agenda)) if (a && a.type === "tournoi" && isoOk(a.date)) E.push({ k: "seance", d: a.date, t: "Tournoi · " + (a.titre || ""), s: a.fin ? "jusqu'au " + G.frD(a.fin) : "", h: "#/j/" + j.id + "/agenda", c: "var(--bad)" });
+  const L = E.filter(e => FRISEF === "tout" || e.k === FRISEF).sort((a, b) => a.d < b.d ? 1 : a.d > b.d ? -1 : 0);
+  const row = e => `<a class="fr" href="${esc(e.h)}" style="--fc:${e.c}"><span class="fd">${esc(dCourt(e.d))}<small>${e.d.slice(0, 4)}</small></span><span class="tt">${esc(e.t)}${e.s ? `<small>${esc(e.s)}</small>` : ""}</span></a>`;
+  let mois = "", h = "";
+  for (const e of L.slice(0, 80)) { const m = MOIS[+e.d.slice(5, 7) - 1] + " " + e.d.slice(0, 4); if (m !== mois) { h += `<div class="fm">${e.d > t ? "À venir · " : ""}${m}</div>`; mois = m; } h += row(e); }
+  return `<div class="chips" style="margin-top:12px">${FRISEK.map(([k, l]) => `<button class="tg" data-a="frisef" data-v="${k}" aria-pressed="${FRISEF === k}">${l}</button>`).join("")}</div>
+    <div class="frise">${h || empty("Rien encore. Bilans, séances, notes, blessures, objectifs et mesures s'affichent ici dans l'ordre du temps.")}</div>${L.length > 80 ? `<p class="msg">Les 80 plus récents. Les autres sont dans les onglets Séances, Tests et Journal.</p>` : ""}`;
+}
+
 /* ================= DOSSIER : ONGLETS, OBJECTIFS, ASSIDUITÉ ================= */
-const TABS = [["resume", "Résumé"], ["seances", "Séances"], ["tests", "Tests"], ["prog", "Prog"], ["journal", "Journal"]];
-const TABDE = { seances: "seances", warmup: "seances", presences: "seances", grilles: "tests", croissance: "tests", tests: "tests", programmation: "prog", prog: "prog", journal: "journal", retour: "journal", agenda: "resume", blessures: "resume", fiche: "resume", fin: "resume", objectifs: "resume", resume: "resume" };
+const TABS = [["resume", "Résumé"], ["frise", "Frise"], ["seances", "Séances"], ["tests", "Tests"], ["prog", "Programmation"], ["journal", "Journal"]];
+const TABDE = { seances: "seances", warmup: "seances", presences: "seances", grilles: "tests", croissance: "tests", tests: "tests", programmation: "prog", prog: "prog", journal: "journal", retour: "journal", agenda: "resume", blessures: "resume", fiche: "resume", fin: "resume", objectifs: "resume", resume: "resume", frise: "frise", historique: "frise" };
 let TABJ = { jid: null, t: "resume" };
 const ouvre = html => html.replace('<details class="sx"', '<details open class="sx"');
 const PDFICO = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M12 11v6M9 14l3 3 3-3"/></svg>';
@@ -941,7 +1293,7 @@ function presencesHTML(g) {
       <div class="chips">${M.map(j => { const v = p[j.id]; return `<button class="pr ${v === true ? "oui" : v === false ? "non" : ""}" data-a="pres" data-k="${esc(e.k)}" data-d="${esc(e.date)}" data-t="${esc(e.titre)}" data-gid="${esc(g.id)}" data-jid="${esc(j.id)}" aria-label="${esc(j.nom)} : ${v === true ? "présent" : v === false ? "absent" : "non pointé"}">${v === true ? "✓ " : v === false ? "✗ " : ""}${esc(prenom(j))}</button>`; }).join("")}</div></div>`; };
   const taux = M.map(j => { const T = G.presences.taux(j.id); return T.total ? `<span class="mo">${esc(prenom(j))} <b>${T.pct} %</b></span>` : ""; }).join("");
   return `<section class="sec" id="sx-g-presences"><h2>Présences</h2>${taux ? `<div class="moys" style="margin-bottom:8px">${taux}</div>` : ""}
-    ${L.length ? `<div class="card">${L.slice(0, 3).map(row).join("")}${L.length > 3 ? `<details class="more"><summary>Voir les ${Math.min(L.length, 12) - 3} séances d'avant</summary>${L.slice(3, 12).map(row).join("")}</details>` : ""}</div><p class="msg" style="margin:6px 0 0">Touche un prénom : présent (✓), encore : absent (✗), encore : effacé. Séances du groupe des 3 dernières semaines et séances déjà pointées.</p>` : empty("Aucune séance du groupe ces 3 dernières semaines. Crée une séance ou une prog pour le groupe : chaque séance passée ou du jour pourra être pointée ici.")}</section>`;
+    ${L.length ? `<div class="card">${L.slice(0, 3).map(row).join("")}${L.length > 3 ? `<details class="more"><summary>Voir les ${Math.min(L.length, 12) - 3} séances d'avant</summary>${L.slice(3, 12).map(row).join("")}</details>` : ""}</div><p class="msg" style="margin:6px 0 0">Touche un prénom : présent (✓), encore : absent (✗), encore : effacé. Séances du groupe des 3 dernières semaines et séances déjà pointées.</p>` : empty("Aucune séance du groupe ces 3 dernières semaines. Crée une séance ou une programmation pour le groupe : chaque séance passée ou du jour pourra être pointée ici.")}</section>`;
 }
 function agesGroupe(M) {
   const D = M.map(j => ({ j, a: j.naissance ? Math.min(18.99, G.ageDec(j.naissance)) : null, m: matur(j) })).filter(x => x.a != null);
@@ -961,7 +1313,7 @@ function agesGroupe(M) {
   if (eA >= 3) notes.push(`Groupe d'âges mixtes (${nf(eA)} ans d'écart) : prévois une variante par âge dans chaque exercice.`);
   if (eB != null && eB >= 2) notes.push(`Écart de maturation de ${nf(eB)} ans : compare et dose selon l'âge biologique (charges, sauts, volume), pas l'âge civil.`);
   D.filter(x => x.m && /pic/.test(x.m.statut) && /autour/.test(x.m.statut)).forEach(x => notes.push(`${prenom(x.j)} est autour du pic de croissance : zone sensible (sauts, charges lourdes, coordination qui baisse un temps).`));
-  D.filter(x => x.m && x.m.avance !== "dans la moyenne").forEach(x => notes.push(`${prenom(x.j)} : maturation ${x.m.avance} (âge bio ${nf(x.m.bio)} ans pour ${nf(x.a)} ans).`));
+  D.filter(x => x.m && x.m.avance !== "dans la moyenne").forEach(x => notes.push(`${prenom(x.j)} : maturation ${x.m.avance} (âge biologique ${nf(x.m.bio)} ans pour ${nf(x.a)} ans).`));
   const gr = [...new Set(D.map(x => G.grilleConseillee(x.j)).filter(v => v != null))].sort((a, b) => a - b);
   return `<section class="sec"><h2>Âges et maturation</h2><div class="card">
     <div class="kpi"><div><span class="lab">Tranche d'âge</span><b>${Math.floor(Math.min(...ac))}${Math.floor(Math.max(...ac)) !== Math.floor(Math.min(...ac)) ? " à " + Math.floor(Math.max(...ac)) : ""} ans</b></div>
@@ -1048,12 +1400,12 @@ async function rapportPDF(jid) {
   kv("Assiduité", T.total ? T.pct + " % (" + T.present + " présences sur " + T.total + " séances pointées)" : "pas encore pointée");
   const BL = arr(j.blessures).filter(x => x && x.statut !== "guerie");
   if (BL.length) kv("Blessures en cours", BL.map(x => zn(x.zone) + (x.desc ? " (" + x.desc + ")" : "") + (x.debut ? " depuis le " + G.frD(x.debut) : "")).join(" ; "));
-  /* prog */
+  /* programmation */
   titre("Programmation en cours", "#C2410C");
   const t = G.today(), act = plansDe(j.id).filter(p => (!p.debut || p.debut <= t) && (!p.fin || p.fin >= t));
-  if (!act.length) D.para("Aucune prog en cours.", { size: 9.5, color: GRIS });
+  if (!act.length) D.para("Aucune programmation en cours.", { size: 9.5, color: GRIS });
   for (const p of act) { const w = semaineCourante(p), gp = grpOk(p.gid) ? G.groupes.get(p.gid) : null;
-    kv("Prog", (p.nom || "Plan") + (gp ? " (groupe " + gp.nom + ")" : "") + (p.debut ? " · du " + G.frD(p.debut) + " au " + G.frD(p.fin) : ""));
+    kv("Programmation", (p.nom || "Plan") + (gp ? " (groupe " + gp.nom + ")" : "") + (p.debut ? " · du " + G.frD(p.debut) + " au " + G.frD(p.fin) : ""));
     if (w) { kv("Semaine en cours", "du " + dCourt(w.d1) + " au " + dCourt(add(w.d1, 6)) + (w.ph ? " · " + (PHN[w.ph] || w.ph) : "") + (w.mi ? " · " + w.mi : ""));
       w.ses.forEach(s => D.para("• " + dJour(s.date) + " : " + (s.t || KN[s.k] || "Séance") + (KN[s.k] && s.t ? " (" + KN[s.k] + ")" : "") + (arr(s.l).length ? " · " + arr(s.l).map(ligneNom).join(", ") : ""), { x: M + 156, size: 9, after: 0 })); D.y += 4; }
     const tc = arr(p.compets).filter(c => c && isoOk(c.d1) && c.d1 >= t).slice(0, 4); if (tc.length) kv("Prochains tournois", tc.map(c => (c.nom || "Tournoi") + " le " + G.frD(c.d1)).join(" ; ")); }
@@ -1078,7 +1430,9 @@ function sFiche(j) {
     ${fld("main", "Main", sel("main", [["D", "Droitier"], ["G", "Gaucher"]], j.main))}
     ${fld("revers", "Revers", sel("revers", [["2", "2 mains"], ["1", "1 main"]], j.revers))}
     ${fld("classement", "Classement FFT", sel("classement", CLASSEMENTS.map(c => [c, c]), j.classement || "NC"))}
-    ${fld("dpp", "PP / semaine", `<input id="fi-dpp" type="number" min="0" max="20" step="0.5" inputmode="decimal" data-fiche="dispo.pp" value="${d.pp != null ? esc(d.pp) : ""}" placeholder="séances">`)}
+    ${fld("dpp", "Préparation physique par semaine", `<input id="fi-dpp" type="number" min="0" max="20" step="0.5" inputmode="decimal" data-fiche="dispo.pp" value="${d.pp != null ? esc(d.pp) : ""}" placeholder="séances">`)}
+    ${fld("pere", "Taille du père (cm)", `<input id="fi-pere" type="number" min="130" max="230" step="0.5" inputmode="decimal" data-fiche="parents.pere" value="${j.parents && j.parents.pere ? esc(j.parents.pere) : ""}">`)}
+    ${fld("mere", "Taille de la mère (cm)", `<input id="fi-mere" type="number" min="120" max="220" step="0.5" inputmode="decimal" data-fiche="parents.mere" value="${j.parents && j.parents.mere ? esc(j.parents.mere) : ""}">`)}
     ${fld("dten", "Tennis / semaine", `<input id="fi-dten" type="number" min="0" max="30" step="0.5" inputmode="decimal" data-fiche="dispo.tennis" value="${d.tennis != null ? esc(d.tennis) : ""}" placeholder="séances">`)}
     </div>
     <label class="chk"><input type="checkbox" data-fiche="croissance" ${j.croissance ? "checked" : ""}> Pic de croissance en cours (charges et sauts plafonnés dans Create)</label>
@@ -1112,7 +1466,7 @@ function sCroissance(j) {
   const M = arr(j.mesures).filter(x => x && isoOk(x.date)).slice().sort((a, b) => a.date < b.date ? 1 : -1), m = G.maturite(j), v = G.vitesseCroissance(j), d = M[0];
   const k = (lab, val, s) => `<div><span class="lab">${lab}</span><b>${val}</b>${s ? ` <small class="msg">${s}</small>` : ""}</div>`;
   const body = `${d ? `<div class="kpi">${k("Taille", d.taille ? nf(+d.taille) + " cm" : "–")}${k("Taille assise", d.assise ? nf(+d.assise) + " cm" : "–")}${k("Poids", d.poids ? nf(+d.poids) + " kg" : "–")}${k("Envergure", d.envergure ? nf(+d.envergure) + " cm" : "–")}</div>
-    <div class="kpi">${k("Âge biologique", m ? nf(m.bio) + " ans" : "–")}${k("Âge du pic", m ? nf(m.aphv) + " ans" : "–")}${k("Vitesse", v != null ? nf(v) + " cm/an" : "–", v != null && v > 7 ? "rapide" : "")}${k("Statut", m ? esc(m.statut) : "–")}</div>
+    <div class="kpi">${k("Âge biologique", m ? nf(m.bio) + " ans" : "–")}${k("Âge du pic", m ? nf(m.aphv) + " ans" : "–")}${k("Vitesse", v != null ? nf(v) + " cm/an" : "–", v != null && v > 7 ? "rapide" : "")}${k("Statut", m ? esc(m.statut) : "–")}${G.tailleAdulte(j) ? k("Taille adulte prévue", nf(G.tailleAdulte(j)) + " cm", "d'après les parents") : ""}</div>
     ${m ? `<p class="msg" style="margin:0">${m.avance === "précoce" ? "Maturation précoce" : m.avance === "tardif" ? "Maturation tardive" : "Maturation dans la moyenne"} · estimation par ${esc(m.methode)} · grille conseillée ${m.grille} ans.</p>` : `<p class="msg" style="margin:0">${j.naissance ? "Ajoute la taille assise et le poids (garçon) ou la taille (fille) pour estimer l'âge biologique." : "Renseigne la date de naissance dans la fiche pour calculer l'âge biologique."}</p>`}` : ""}
     ${courbe(j, m)}
     <form class="form" data-f="mesure" data-jid="${esc(j.id)}"><div class="f"><label>Date</label><input type="date" name="date" value="${G.today()}" required></div>
@@ -1121,9 +1475,9 @@ function sCroissance(j) {
       <div class="f"><label>Poids (kg)</label><input type="number" name="poids" step="0.1" min="10" max="150" inputmode="decimal"></div>
       <div class="f"><label>Envergure (cm)</label><input type="number" name="envergure" step="0.1" min="60" max="240" inputmode="decimal"></div>
       <button class="go acc" type="submit">Ajouter la mesure</button></form>
-    ${M.length ? `<div class="inner">${M.map(x => li(null, G.frD(x.date).slice(0, 5) + "<br>" + x.date.slice(0, 4), [x.taille ? nf(+x.taille) + " cm" : "", x.assise ? "assise " + nf(+x.assise) : "", x.poids ? nf(+x.poids) + " kg" : "", x.envergure ? "envergure " + nf(+x.envergure) : ""].filter(Boolean).join(" · "), (() => { const mm = G.maturite(j, x.taille ? x : null); return mm ? "âge bio " + nf(mm.bio) : ""; })(), `<button class="ib sm" data-a="delmes" data-jid="${esc(j.id)}" data-v="${esc(x.date)}" aria-label="Supprimer la mesure">×</button>`)).join("")}</div>` : ""}
+    ${M.length ? `<div class="inner">${M.map(x => li(null, G.frD(x.date).slice(0, 5) + "<br>" + x.date.slice(0, 4), [x.taille ? nf(+x.taille) + " cm" : "", x.assise ? "assise " + nf(+x.assise) : "", x.poids ? nf(+x.poids) + " kg" : "", x.envergure ? "envergure " + nf(+x.envergure) : ""].filter(Boolean).join(" · "), (() => { const mm = G.maturite(j, x.taille ? x : null); return mm ? "âge biologique " + nf(mm.bio) : ""; })(), `<button class="ib sm" data-a="delmes" data-jid="${esc(j.id)}" data-v="${esc(x.date)}" aria-label="Supprimer la mesure">×</button>`)).join("")}</div>` : ""}
     <p class="msg" style="margin:0">L'âge biologique situe la maturité du corps : il dit quelle grille utiliser et quand protéger. Autour du pic de croissance (± 1 an), on plafonne les charges, les sauts et les volumes, et on surveille genou, talon et dos. Mesure tous les 3 mois, le matin, sans chaussures.</p>`;
-  return sx("j-croissance", "Croissance", d && d.taille ? nf(+d.taille) + " cm" + (m ? " · âge bio " + nf(m.bio) : "") : "aucune mesure", body, "var(--ind)");
+  return sx("j-croissance", "Croissance", d && d.taille ? nf(+d.taille) + " cm" + (m ? " · âge biologique " + nf(m.bio) : "") : "aucune mesure", body, "var(--ind)");
 }
 
 /* --- Grilles et tests --- */
@@ -1138,7 +1492,7 @@ function axesHTML(j, b, cond, vide) {
   const L = [], sxx = j.sexe === "F" ? "F" : "G", age = bAge(j, b);
   for (const d of DOMS) { const mk = mask(j, b, d); vOf(b, d).forEach((v, i) => { if (v != null && v !== "" && mk[i] && cond(+v)) L.push({ l: d + (i + 1), v: +v, d }); }); }
   if (!L.length) return `<p class="msg" style="margin:0">${vide}</p>`;
-  return `<div class="inner">${L.map(x => `<div class="li n2c"><span class="tt"><span class="msg" style="color:${DOMC[x.d]};font-weight:600">${DOMC2[x.d]} · </span><a href="${G.href("grilles", "#/ligne/" + x.l + "/" + sxx + "/" + age)}" style="text-decoration:none">${esc(ligneNom(x.l))}</a><small><a href="${G.href("banque", "#/l/" + x.l + "?a=" + age)}" style="color:var(--acc);font-weight:600;text-decoration:none">Exos de la ligne ›</a></small></span><span class="end">${lvB(x.v)}</span></div>`).join("")}</div>`;
+  return `<div class="inner">${L.map(x => `<div class="li n2c"><span class="tt"><span class="msg" style="color:${DOMC[x.d]};font-weight:600">${DOMC2[x.d]} · </span><a href="${G.href("grilles", "#/ligne/" + x.l + "/" + sxx + "/" + age)}" style="text-decoration:none">${esc(ligneNom(x.l))}</a><small><a href="${G.href("banque", "#/l/" + x.l + "?a=" + age)}" style="color:var(--acc);font-weight:600;text-decoration:none">Exercices de la ligne ›</a></small></span><span class="end">${lvB(x.v)}</span></div>`).join("")}</div>`;
 }
 function sGrilles(j) {
   const B = bilans(j), b = B[0], pv = B[1];
@@ -1171,7 +1525,7 @@ function sProg(j) {
     if (w.ph) res = (PHN[w.ph] || "") + (w.mi ? " · " + w.mi : "");
   }
   body += L.length ? `<div class="sub">Plans</div><div class="inner">${L.map(p => { const gp = grpOk(p.gid) ? G.groupes.get(p.gid) : null; return li(G.href("prog", "#p/" + p.id), p.debut ? G.frD(p.debut).slice(0, 5) + "<br>" + p.debut.slice(0, 4) : "", esc(p.nom || "Plan"), (p.debut ? G.frD(p.debut) + " → " + G.frD(p.fin) : "") + (gp ? " · groupe " + esc(gp.nom) : "") + (arr(p.compets).length ? " · " + arr(p.compets).length + " tournoi" + (arr(p.compets).length > 1 ? "s" : "") : ""), (!p.fin || p.fin >= t) && (!p.debut || p.debut <= t) ? badge("ok", "en cours") : ""); }).join("")}</div>` : empty("Pas encore de plan pour ce joueur ni pour ses groupes.");
-  body += `<div class="tools"><button class="go acc" data-a="relais" data-vers="prog" data-jid="${esc(j.id)}">Nouvelle prog</button><a class="ib" href="${G.href("prog", "#/joueur/" + j.id)}">Ouvrir Create my prog</a></div>`;
+  body += `<div class="tools"><button class="go acc" data-a="relais" data-vers="prog" data-jid="${esc(j.id)}">Nouvelle programmation</button><a class="ib" href="${G.href("prog", "#/joueur/" + j.id)}">Ouvrir Create my prog</a></div>`;
   return sx("j-programmation", "Programmation", esc(res), body, "var(--create)");
 }
 
@@ -1230,7 +1584,7 @@ function retourForm(j, joueur) {
     <div class="form"><div class="f"><label>Date</label><input type="date" name="date" value="${esc(pr.date || t)}"></div>
       <div class="f"><label>Type</label><select name="type">${Object.entries(RTYP).map(([k, v]) => `<option value="${k}"${(pr.type || "seance") === k ? " selected" : ""}>${v}</option>`).join("")}</select></div>
       ${recent.length ? `<div class="f w"><label>Séance</label><select name="ref" data-refsel="1"><option value="">— autre —</option>${recent.map(s => `<option value="${esc(s.id)}" data-t="${esc(s.nom || s.theme || "Séance")}" data-d="${esc(s.duree || "")}" data-date="${esc(s.date)}"${pr.ref === s.id ? " selected" : ""}>${dCourt(s.date)} · ${esc(s.nom || s.theme || "Séance")}</option>`).join("")}</select></div>` : ""}
-      <div class="f w"><label>Titre</label><input name="titre" value="${esc(pr.titre || "")}" placeholder="Séance PP, entraînement…"></div>
+      <div class="f w"><label>Titre</label><input name="titre" value="${esc(pr.titre || "")}" placeholder="Séance de préparation physique, entraînement…"></div>
       <div class="f"><label>Durée (min)</label><input type="number" name="duree" min="0" max="400" inputmode="numeric" value="${esc(pr.duree || 60)}"></div>
       <div class="f"><label>${joueur ? "Tu l'as faite ?" : "Faite"}</label><select name="fait"><option value="oui">Oui</option><option value="partiel">En partie</option><option value="non">Non</option></select></div></div>
     ${rng("rpe", joueur ? "C'était dur comment ?" : "Dureté ressentie (RPE)", 0, 10, 5, "0 · repos", "10 · maximal", RPEN)}
@@ -1240,7 +1594,7 @@ function retourForm(j, joueur) {
 }
 function sJournal(j) {
   const ch = G.journal.charge(j.id), R = G.journal.retours(j.id), F = G.journal.forme(j.id);
-  const body = `<div class="kpi"><div><span class="lab">Charge 7 jours</span><b>${Math.round(ch.aigu)} UA</b></div><div><span class="lab">Moyenne 4 sem.</span><b>${Math.round(ch.chronique)} UA</b></div><div><span class="lab">Ratio aigu/chronique</span>${chargeBadge(ch)}</div></div>
+  const body = `<div class="kpi"><div><span class="lab">Charge 7 jours</span><b>${Math.round(ch.aigu)} UA</b></div><div><span class="lab">Moyenne sur 4 semaines</span><b>${Math.round(ch.chronique)} UA</b></div><div><span class="lab">Ratio aigu/chronique</span>${chargeBadge(ch)}</div></div>
     ${chargeSVG(ch)}<p class="msg" style="margin:0">Charge d'une séance = dureté ressentie (0-10) × durée. Ratio entre 0,8 et 1,3 : bonne zone ; au-delà de 1,3 la charge monte trop vite (orange), au-delà de 1,5 risque élevé (rouge). Pointillés : moyenne des 4 semaines.</p>
     <div class="sub">Forme du jour</div>${formeForm(j)}
     <div class="sub" id="retour-${esc(j.id)}">Retour après séance</div>${retourForm(j)}
@@ -1260,7 +1614,7 @@ function sAgenda(j, joueur) {
   const t = G.today(), next = evJoueur(j, t, add(t, 120)).find(e => e.type === "tournoi" || e.src === "agenda");
   const body = `<form class="form" data-f="agenda" data-jid="${esc(j.id)}"><div class="f"><label>Type</label><select name="type"><option value="tournoi">Tournoi</option><option value="bilan">Bilan</option><option value="repos">Repos</option><option value="autre">Autre</option></select></div>
       <div class="f"><label>Du</label><input type="date" name="date" value="${t}" required></div><div class="f"><label>Au</label><input type="date" name="fin"></div>
-      <div class="f w"><label>Titre</label><input name="titre" placeholder="TMC Mérignac, stage…"></div><button class="go acc" type="submit">Ajouter</button></form>
+      <div class="f w"><label>Titre</label><input name="titre" placeholder="Tournoi multi-chances, stage…"></div><button class="go acc" type="submit">Ajouter</button></form>
     ${agendaListe(j, lundi(t), add(lundi(t), 55))}
     <details class="sx" style="--sc:var(--line)"><summary><b style="font-size:1.05rem">4 semaines passées</b></summary><div class="sxb">${agendaListe(j, add(lundi(t), -28), add(t, -1))}</div></details>`;
   return sx("j-agenda", joueur ? "Mon agenda" : "Agenda", next ? esc(TYPN[next.type]) + " · " + dCourt(next.date) : "", body, "var(--ind)");
@@ -1297,7 +1651,7 @@ function sFin(j) {
     <div class="tools"><button class="ib sm dang" data-a="delask" data-jid="${esc(j.id)}">Supprimer définitivement…</button></div>
     <div id="delbox" hidden class="card" style="margin-top:10px;border-color:var(--bad)"><p style="margin-top:0"><b>Tout sera effacé de cet appareil, sans retour possible :</b></p><ul>${aEffacer(j).filter(x => !/^0 /.test(x)).map(x => `<li>${esc(x)}</li>`).join("")}</ul>
       <p class="msg">Conseil : fais d'abord une sauvegarde. Les séances et routines partagées avec d'autres joueurs sont gardées (il en est seulement retiré).</p>
-      <div class="tools"><button class="ib" data-a="export">Tout sauvegarder d'abord</button><button class="go" style="background:var(--bad);color:#fff" data-a="deljoueur" data-jid="${esc(j.id)}">Oui, supprimer définitivement</button></div><p class="msg" id="impm"></p></div>`, "var(--mute)");
+      <div class="tools"><button class="ib" data-a="export">Tout sauvegarder</button><button class="go" style="background:var(--bad);color:#fff" data-a="deljoueur" data-jid="${esc(j.id)}">Oui, supprimer définitivement</button></div><p class="msg" id="impm"></p></div>`, "var(--mute)");
 }
 
 /* ================= DOSSIER DE GROUPE ================= */
@@ -1305,27 +1659,28 @@ function vGroupe(gid, ouvrir) {
   const g = G.groupes.get(gid);
   if (!g) { main.innerHTML = `<div class="crumb"><a href="#/">Accueil</a>›<a href="#/joueurs">Joueurs</a></div>` + empty("Ce groupe n'existe pas (ou plus)."); return; }
   setAcc("var(--ind)"); document.title = g.nom + " · GRÜN";
+  { const c0 = G.courant.get(); if (!c0 || c0.id !== gid) G.courant.set("g", gid); G.courant.vu("Groupe " + g.nom, "index.html#/g/" + gid); }
   const M = G.groupes.joueurs(gid).sort((a, b) => a.nom.localeCompare(b.nom, "fr")), autres = G.joueurs.all().filter(j => !g.jids.includes(j.id));
   const PL = PROG().plans.filter(p => p.gid === gid), SE = SEANCES().filter(s => (s.gid || s.groupe) === gid).sort((a, b) => (a.date || "") < (b.date || "") ? 1 : -1), RO = ROUT().routines.filter(r => r.gid === gid);
   let h = `<div class="crumb"><a href="#/">Accueil</a>›<a href="#/joueurs">Joueurs</a></div><h1>${esc(g.nom)}<small>Groupe · ${M.length} joueur${M.length > 1 ? "s" : ""}${(() => { const A = M.map(j => ageJ(j.naissance)).filter(x => x != null); return A.length ? " · " + (Math.min(...A) === Math.max(...A) ? A[0] + " ans" : Math.min(...A) + " à " + Math.max(...A) + " ans") : ""; })()}</small></h1>
     <div class="five four"><button class="b5" type="button" data-a="relais" data-vers="seances" data-gid="${esc(gid)}"><svg viewBox="0 0 24 24" aria-hidden="true">${ICO5.seance}</svg><b>Séance</b><small>Créer</small></button>
       <button class="b5" type="button" data-a="relais" data-vers="warmup" data-gid="${esc(gid)}"><svg viewBox="0 0 24 24" aria-hidden="true">${ICO5.wu}</svg><b>Échauf&shy;fement</b><small>Choisir</small></button>
       <button class="b5" type="button" data-a="bilangrp" data-gid="${esc(gid)}"><svg viewBox="0 0 24 24" aria-hidden="true">${ICO5.bilan}</svg><b>Bilan</b><small>De groupe</small></button>
-      ${PL.length ? `<a class="b5" href="${G.href("prog", "#p/" + PL[0].id)}"><svg viewBox="0 0 24 24" aria-hidden="true">${ICO5.prog}</svg><b>Prog</b><small>Voir</small></a>` : `<button class="b5" type="button" data-a="relais" data-vers="prog" data-gid="${esc(gid)}"><svg viewBox="0 0 24 24" aria-hidden="true">${ICO5.prog}</svg><b>Prog</b><small>Créer</small></button>`}</div>`;
+      ${PL.length ? `<a class="b5" href="${G.href("prog", "#p/" + PL[0].id)}"><svg viewBox="0 0 24 24" aria-hidden="true">${ICO5.prog}</svg><b>Program&shy;mation</b><small>Voir</small></a>` : `<button class="b5" type="button" data-a="relais" data-vers="prog" data-gid="${esc(gid)}"><svg viewBox="0 0 24 24" aria-hidden="true">${ICO5.prog}</svg><b>Program&shy;mation</b><small>Créer</small></button>`}</div>`;
   h += `<section class="sec"><h2>Tableau comparatif</h2>${M.length ? `<div class="tw"><table class="cmp"><thead><tr><th>Joueur</th><th>Âge</th><th>Bilan</th>${DOMS.map(d => `<th style="text-align:center">${DOMC2[d]}</th>`).join("")}<th>Charge</th><th>Alertes</th></tr></thead><tbody>${M.map(j => { const b = bilans(j)[0], ch = G.journal.charge(j.id), al = alertes(j).filter(x => x.n !== "info"), m = matur(j), a = ageJ(j.naissance);
-      return `<tr><td><a href="#/j/${esc(j.id)}" style="font-weight:600;text-decoration:none">${esc(j.nom)}</a></td><td>${a != null ? a : "–"}${m ? ` <span class="msg">(bio ${nf(m.bio)})</span>` : ""}</td><td>${b ? G.frD(b.date) : "–"}</td>${DOMS.map(d => { const v = moy(j, b, d); return `<td class="n">${v != null ? lvB(v) : "–"}</td>`; }).join("")}<td>${ch.ratio != null ? chargeBadge(ch) : "–"}</td><td>${al.length ? al.map(x => badge(x.n, x.t)).join(" ") : "–"}</td></tr>`; }).join("")}</tbody></table></div>` : empty("Ajoute des joueurs : « Plus d'options », en bas de la page.")}</section>`;
+      return `<tr><td><a href="#/j/${esc(j.id)}" style="font-weight:600;text-decoration:none">${esc(j.nom)}</a></td><td>${a != null ? a : "–"}${m ? ` <span class="msg">(biologique ${nf(m.bio)})</span>` : ""}</td><td>${b ? G.frD(b.date) : "–"}</td>${DOMS.map(d => { const v = moy(j, b, d); return `<td class="n">${v != null ? lvB(v) : "–"}</td>`; }).join("")}<td>${ch.ratio != null ? chargeBadge(ch) : "–"}</td><td>${al.length ? al.map(x => badge(x.n, x.t)).join(" ") : "–"}</td></tr>`; }).join("")}</tbody></table></div>` : empty("Ajoute des joueurs : touche « + Prénom » dans « Joueurs », plus bas.")}</section>`;
   h += presencesHTML(g) + agesGroupe(M);
-  h += `<div class="cols"><section class="sec"><h2>Joueurs</h2>${M.length ? `<div class="list">${M.map(j => { const m = matur(j), T = G.presences.taux(j.id); return li("#/j/" + j.id, null, esc(j.nom), (j.sexe === "F" ? "Fille" : "Garçon") + (ageTxt(j) ? " · " + ageTxt(j) : "") + (m ? " · âge bio " + nf(m.bio) + " (" + esc(m.avance) + ")" : "") + (T.total ? " · assiduité " + T.pct + " %" : ""), "›"); }).join("")}</div>` : ""}</section>
-    <section class="sec"><h2>Progs, séances et échauffements du groupe</h2>
+  h += `<div class="cols"><section class="sec"><h2>Joueurs</h2><div class="chips" style="margin-bottom:8px">${M.map(j => `<button class="tg" data-a="grm" data-gid="${esc(gid)}" data-v="${esc(j.id)}" aria-pressed="true" title="Toucher pour retirer du groupe">${esc(prenom(j))} ×</button>`).join("")}${autres.map(j => `<button class="tg" data-a="gadd" data-gid="${esc(gid)}" data-v="${esc(j.id)}">+ ${esc(prenom(j))}</button>`).join("")}<button class="tg" data-a="plus" data-v="joueur">+ Nouveau joueur</button></div>${M.length ? `<div class="list">${M.map(j => { const m = matur(j), T = G.presences.taux(j.id); return li("#/j/" + j.id, null, esc(j.nom), (j.sexe === "F" ? "Fille" : "Garçon") + (ageTxt(j) ? " · " + ageTxt(j) : "") + (m ? " · âge biologique " + nf(m.bio) + " (" + esc(m.avance) + ")" : "") + (T.total ? " · assiduité " + T.pct + " %" : ""), "›"); }).join("")}</div>` : ""}</section>
+    <section class="sec"><h2>Programmations, séances et échauffements du groupe</h2>
       ${PL.length ? `<div class="list">${PL.map(p => li(G.href("prog", "#p/" + p.id), "Plan", esc(p.nom || "Plan"), p.debut ? G.frD(p.debut) + " → " + G.frD(p.fin) : "", "›")).join("")}</div>` : ""}
       ${SE.length ? `<div class="list" style="margin-top:8px">${SE.slice(0, 10).map(s => li(G.href("seances", "#/s/" + s.id), isoOk(s.date) ? G.frD(s.date).slice(0, 5) : "Séance", esc(s.nom || s.theme || "Séance"), esc(KN[s.type] || ""), "›")).join("")}</div>` : ""}
       ${RO.length ? `<div class="list" style="margin-top:8px">${RO.map(r => li(G.href("warmup", "#/r/" + r.id), "Échauff.", esc(r.nom || "Échauffement"), r.duree ? r.duree + " min" : "", "›")).join("")}</div>` : ""}
-      ${!PL.length && !SE.length && !RO.length ? empty("Rien pour l'instant. Utilise les boutons en haut pour créer une prog, une séance ou un échauffement pour tout le groupe.") : ""}
+      ${!PL.length && !SE.length && !RO.length ? empty("Rien pour l'instant. Utilise les boutons en haut pour créer une programmation, une séance ou un échauffement pour tout le groupe.") : ""}
       </section></div>`;
-  h += `<details class="grun-plus"><summary>Plus d'options</summary><div class="grun-plusb"><div class="tools"><a class="ib" href="${G.href("prog", "#/groupe/" + gid)}">Les progs du groupe</a><a class="ib" href="${G.href("seances", "#/groupe/" + gid)}">Les séances du groupe</a></div><div class="sub">Modifier le groupe</div><div class="sub">Joueurs du groupe</div>${M.length ? `<div class="chips">${M.map(j => `<button class="tg" data-a="grm" data-gid="${esc(gid)}" data-v="${esc(j.id)}">Retirer ${esc(j.nom)}</button>`).join("")}</div>` : ""}
-      ${autres.length ? `<div class="chips">${autres.map(j => `<button class="tg" data-a="gadd" data-gid="${esc(gid)}" data-v="${esc(j.id)}">+ ${esc(j.nom)}</button>`).join("")}</div>` : ""}<div><form class="form" data-f="grnom" data-gid="${esc(gid)}"><div class="f w"><label>Nom</label><input name="nom" value="${esc(g.nom)}"></div><div class="f full"><label>Notes</label><textarea name="notes">${esc(g.notes || "")}</textarea></div><button class="go acc" type="submit">Enregistrer</button></form>
+  h += `<details class="grun-plus"><summary>Plus d'options</summary><div class="grun-plusb"><div class="tools"><a class="ib" href="${G.href("prog", "#/groupe/" + gid)}">Les programmations du groupe</a><a class="ib" href="${G.href("seances", "#/groupe/" + gid)}">Les séances du groupe</a></div><div class="sub">Modifier le groupe</div><div><form class="form" data-f="grnom" data-gid="${esc(gid)}"><div class="f w"><label>Nom</label><input name="nom" value="${esc(g.nom)}"></div><div class="f full"><label>Notes</label><textarea name="notes">${esc(g.notes || "")}</textarea></div><p class="msg" style="margin:0">Enregistré automatiquement.</p></form>
     <div class="tools" style="margin-top:10px"><button class="ib sm dang" data-a="delgrp" data-gid="${esc(gid)}">Supprimer le groupe</button></div><p class="msg">Supprimer le groupe ne supprime pas les joueurs ni leurs dossiers.</p></div></div></details>`;
   main.innerHTML = h;
+  G.ui.autosave($('form[data-f="grnom"]'), F => { const g2 = G.groupes.get(gid); if (!g2) return false; g2.nom = String(F.get("nom") || "").trim() || g2.nom; g2.notes = F.get("notes") || ""; quiet(() => G.groupes.save(g2)); const h1 = $("h1"); if (h1 && h1.firstChild) h1.firstChild.nodeValue = g2.nom; });
   if (ouvrir === "presences") { const d = $("#sx-g-presences"); if (d) setTimeout(() => d.scrollIntoView({ block: "start", behavior: "smooth" }), 60); history.replaceState(null, "", "#/g/" + gid); }
 }
 
@@ -1345,19 +1700,19 @@ function vJoueurMode(onglet) {
     h = `<h1>Mes tests<small>${b ? "Dernier bilan le " + G.frD(b.date) : "Pas encore de bilan"}</small></h1>`;
     if (b) h += `<section class="sec"><h2>Mes progrès</h2><div class="card">${radars(j, b, pv)}${pv ? `<p class="msg" style="margin:6px 0 0">Les pointillés, c'est ton bilan d'avant (${G.frD(pv.date)}). Le cercle vert, c'est le niveau 3 : celui des meilleurs de ton âge.</p>` : ""}</div></section>
       <section class="sec"><h2>Mes résultats</h2>${testsHTML(j, b)}</section>
-      <div class="cols"><section class="sec"><h2>Mes points forts</h2>${axesHTML(j, b, v => v >= 3.5, "Ça arrive : continue comme ça !")}</section><section class="sec"><h2>Ce que je travaille</h2>${axesHTML(j, b, v => v < 3, "Rien sous le niveau 3, bravo !")}</section></div>`;
+      <div class="cols"><section class="sec"><h2>Mes points forts</h2>${axesHTML(j, b, v => v >= 3.5, "Ils apparaîtront avec tes prochains bilans.")}</section><section class="sec"><h2>Ce que je travaille</h2>${axesHTML(j, b, v => v < 3, "Aucune ligne sous le niveau 3.")}</section></div>`;
     else h += `<div class="sec">` + empty("Ton coach fera bientôt ton premier bilan : tu verras ici ton profil et tes progrès.") + `</div>`;
     main.innerHTML = h; return;
   }
   if (onglet === "seance") {
     const S = seancesDe(j.id).filter(s => isoOk(s.date) && s.date >= t).sort((a, b) => a.date < b.date ? -1 : 1);
-    h = `<h1>Ma séance<small>${dLong(t)}</small></h1><div class="sec bigs">${nxCard(j, nx)}<a class="big" href="#" data-a="monwu" style="--bc:var(--create)"><span class="k">Mon échauffement</span><b>Prépare ton échauffement</b><span>Durée, ce qui suit, lieu : 3 choix et c'est parti.</span></a></div>
+    h = `<h1>Ma séance<small>${dLong(t)}</small></h1><div class="sec bigs">${nxCard(j, nx)}<a class="big" href="#" data-a="monwu" style="--bc:var(--create)"><span class="k">Mon échauffement</span><b>Prépare ton échauffement</b><span>Durée, ce qui suit, lieu : trois choix suffisent.</span></a></div>
       <section class="sec"><h2>Mes prochaines séances</h2>${S.length ? `<div class="list">${S.slice(0, 8).map(s => li(G.href("seances", "#/terrain/" + s.id), dJour(s.date).replace(" ", "<br>"), esc(s.nom || s.theme || "Séance"), esc([KN[s.type], s.duree ? s.duree + " min" : ""].filter(Boolean).join(" · ")), "Terrain ›")).join("")}</div>` : empty("Pas de séance prévue pour l'instant.")}</section>
       <section class="sec"><h2>Retour après séance</h2><div class="card">${retourForm(j, true)}</div></section>`;
     main.innerHTML = h; return;
   }
   h = `<h1>Salut ${esc(prenom(j))} !<small>${dLong(t)}${ageTxt(j) ? " · " + ageTxt(j) : ""}</small></h1>
-    <div class="sec bigs">${nxCard(j, nx)}<a class="big" href="#" data-a="monwu" style="--bc:var(--create)"><span class="k">Mon échauffement</span><b>Prépare ton échauffement</b><span>Durée, ce qui suit, lieu : 3 choix et c'est parti.</span></a></div>
+    <div class="sec bigs">${nxCard(j, nx)}<a class="big" href="#" data-a="monwu" style="--bc:var(--create)"><span class="k">Mon échauffement</span><b>Prépare ton échauffement</b><span>Durée, ce qui suit, lieu : trois choix suffisent.</span></a></div>
     <div class="cols"><section class="sec"><h2>Ma forme du jour</h2><div class="card">${fj ? `<p style="margin:0 0 8px"><b>Merci, c'est noté !</b> <span class="msg">${nf(formeScore(fj))} / 5 · tu peux corriger si besoin.</span></p>` : `<p class="msg" style="margin:0 0 8px">30 secondes pour dire à ton coach comment tu te sens.</p>`}${formeForm(j, true)}</div></section>
     <section class="sec"><h2>Retour après séance</h2><div class="card">${retourForm(j, true)}</div></section></div>`;
   if (b) h += `<section class="sec"><h2>Mes progrès <a href="#/pole/tests">Mes tests ›</a></h2><div class="card">${radars(j, b, pv)}</div></section>`;
@@ -1373,12 +1728,59 @@ function nxCard(j, e) {
 /* ================= PREMIER LANCEMENT · JOUEUR AUTONOME ================= */
 function vBienvenue() {
   setAcc("var(--ind)"); document.title = "GRÜN";
-  main.innerHTML = `<div class="hero"><div><p class="word">GR<i>Ü</i>N</p><p class="lead">La méthode de préparation physique et de biomécanique du joueur de tennis, de 4 à 18 ans.</p></div></div>
-    <section class="sec"><h2>Tu es…</h2><div class="bigs">
+  main.innerHTML = `<div class="onb"><div class="hero"><div><p class="word">GR<i>Ü</i>N</p><p class="lead">La méthode de préparation physique et de biomécanique du joueur de tennis, de 4 à 18 ans.</p></div></div>
+    ${onbDots(1)}
+    <section class="sec"><h2>1 · Tu es…</h2><div class="bigs">
       <a class="big" href="#" data-a="profil" data-v="coach" style="--bc:var(--ind)"><span class="k">Je suis coach</span><b>Mes joueurs, mes groupes</b><span>Un dossier complet par joueur et par groupe, Create, ressources, tests et profilage.</span></a>
       <a class="big" href="#" data-a="profil" data-v="autonome" style="--bc:var(--create)"><span class="k">Je suis joueur</span><b>Je suis mon propre coach</b><span>Ton dossier, tes séances, tes échauffements, tes tests et ton profil, pour toi.</span></a></div>
     <p class="msg" style="margin-top:10px">Tu pourras changer ce choix dans les réglages.</p></section>
-    <section class="sec"><div class="card"><b>Une présentation à faire ?</b><p class="msg" style="margin:4px 0 10px">Charge la démonstration : 3 joueurs fictifs avec leurs bilans, plans, séances, journal et agenda, retirables d'un geste.</p><button class="ib" data-a="demo">Charger la démonstration</button><p class="msg" id="demom" role="status"></p></div></section>`;
+    <section class="sec"><h2>Affichage</h2><div class="card"><div class="seg">${[["0", "Simple"], ["1", "Expert"]].map(([k, t]) => `<button data-a="expert" data-v="${k}" aria-pressed="${(G.expert() ? "1" : "0") === k}">${t}</button>`).join("")}</div>
+      <p class="msg">Simple : l'essentiel, un gros bouton par écran. Expert : tout (codes, barèmes détaillés, réglages fins). Rien n'est jamais retiré ; tu changes quand tu veux.</p></div></section>
+    <div class="tools" style="margin-top:14px"><button class="ib" data-a="visite">Visite guidée (2 min)</button><a class="ib" href="#/comment">Comment ça marche</a><button class="ib" data-a="profil" data-v="coach">Passer</button></div>
+    <section class="sec"><div class="card"><b>Une présentation à faire ?</b><p class="msg" style="margin:4px 0 10px">Charge la démonstration : 3 joueurs fictifs avec leurs bilans, plans, séances, journal et agenda, retirables d'un geste.</p><button class="ib" data-a="demo">Charger la démonstration</button><p class="msg" id="demom" role="status"></p></div></section></div>`;
+}
+const onbDots = n => `<div class="onbd" aria-label="Étape ${n} sur 3">${[1, 2, 3].map(i => `<i class="${i === n ? "on" : i < n ? "vu" : ""}"></i>`).join("")}<span>Étape ${n} sur 3 · chaque étape peut être passée</span></div>`;
+/* accueil du premier lancement, étapes 2 (mes joueurs, plusieurs d'un coup) et 3 (créneaux, matériel) */
+function vOnb(n) {
+  setAcc("var(--ind)"); document.title = "Bienvenue · GRÜN";
+  if (n === 2) { const js = G.joueurs.all();
+    /* étape 2 : la VRAIE feuille Nouveau joueur (G.ui.nouveauJoueur), ouverte en mode « Ajouter plusieurs joueurs » — même composant que partout */
+    main.innerHTML = `<div class="onb">${onbDots(2)}<h1>2 · Tes joueurs<small>Ajoute-les d'un coup : un par ligne, prénom, sexe (F ou G) et naissance (date ou année). Tu peux coller une liste.</small></h1>
+      <section class="sec"><div class="card">
+      <div class="tools"><button class="go acc big" data-a="onbadd" data-v="1">Ajouter plusieurs joueurs</button><button class="ib" data-a="onbadd" data-v="0">Ajouter un seul joueur</button></div>
+      ${js.length ? `<p class="msg">Déjà là (${js.length}) : ${js.map(j => esc(j.nom)).join(", ")}.</p>` : ""}<p class="msg">Le reste (main, classement, taille…) se complète plus tard dans chaque dossier.</p>
+      <div class="tools" style="margin-top:10px">${js.length ? `<button class="go acc" data-a="onb" data-v="3">Continuer</button>` : ""}<button class="ib" data-a="onb" data-v="3">Passer</button></div></div></section></div>`;
+    return; }
+  main.innerHTML = `<div class="onb">${onbDots(3)}<h1>3 · Tes habitudes<small>Créneaux, lieu, durée et matériel : ils préremplissent chaque création.</small></h1>${coachHTML()}
+    <div class="tools" style="margin-top:14px"><button class="go acc big" data-a="onb" data-v="fini">Terminer</button><button class="ib" data-a="onb" data-v="fini">Passer</button></div></div>`;
+}
+/* réglages coach par défaut (Réglages et premier lancement) */
+function coachHTML() {
+  const C = G.reglages.coach();
+  if (!BQ && !BQload) BQload = G.banque.load().then(b => { BQ = b; if (/^#\/(reglages)?$|^$/.test(location.hash) || location.hash === "#/reglages") render(true); }).catch(() => { BQ = { ex: [], mat: [] }; });
+  const mat = BQ && arr(BQ.mat).length ? arr(BQ.mat) : [];
+  return `<section class="sec"><h2>Mes habitudes de coach</h2><div class="card"><div class="form" style="flex-direction:column;align-items:stretch">
+    <div class="f"><span class="lab">Lieu habituel</span><div class="chips">${Object.entries(G.LIEUX).map(([k, t]) => `<button class="tg" data-a="clieu" data-v="${k}" aria-pressed="${C.lieu === k}">${t}</button>`).join("")}</div></div>
+    <div class="f"><span class="lab">Durée habituelle d'une séance</span><div class="chips">${[30, 45, 60, 75, 90, 120].map(d => `<button class="tg" data-a="cduree" data-v="${d}" aria-pressed="${C.duree === d}">${d} min</button>`).join("")}<input id="cdur" type="number" class="inp" min="10" max="240" step="5" value="${C.duree}" style="width:84px" aria-label="Autre durée (min)"></div></div>
+    <div class="f"><span class="lab">Créneaux habituels</span>${C.creneaux.length ? `<div class="inner">${C.creneaux.map((c, i) => `<div class="li n2c"><span class="tt"><select data-cr="${i}" data-k="j" class="inp" style="width:auto;display:inline-block" aria-label="Jour">${G.JOURS.map((d, k) => `<option value="${k}"${+c.j === k ? " selected" : ""}>${d}</option>`).join("")}</select> <input data-cr="${i}" data-k="h" type="time" class="inp" value="${esc(c.h || "")}" style="width:auto;display:inline-block" aria-label="Heure"> <input data-cr="${i}" data-k="duree" type="number" class="inp" min="10" max="240" step="5" value="${+c.duree || C.duree}" style="width:76px;display:inline-block" aria-label="Durée (min)"> min</span><span class="end"><button class="ib sm" data-a="crdel" data-v="${i}" aria-label="Retirer ce créneau">×</button></span></div>`).join("")}</div>` : ""}
+      <div class="tools" style="margin-top:6px"><select id="crj" class="inp" style="width:auto" aria-label="Jour du nouveau créneau">${G.JOURS.map((d, k) => `<option value="${k}"${k === 2 ? " selected" : ""}>${d}</option>`).join("")}</select><input id="crh" type="time" class="inp" value="17:30" style="width:auto" aria-label="Heure"><button class="ib" data-a="cradd">+ Ajouter le créneau</button></div></div>
+    <div class="f"><span class="lab">Matériel disponible</span>${mat.length ? `<div class="chips">${mat.map(([k, t]) => `<button class="tg" data-a="cmat" data-v="${esc(k)}" aria-pressed="${C.materiel.includes(k)}">${esc(t)}</button>`).join("")}</div>` : `<p class="msg" style="margin:0">Chargement de la liste du matériel…</p>`}</div>
+    <p class="msg" style="margin:0">Enregistré tout de suite. Create my session et Choose your warm-up reçoivent ces valeurs à chaque création (durée et date du prochain créneau, lieu, matériel).</p></div></div></section>`;
+}
+/* ================= COMMENT ÇA MARCHE ================= */
+function vComment() {
+  setAcc("var(--ind)"); document.title = "Comment ça marche · GRÜN";
+  const P = [["ind", "Individualisation", "Tout part du joueur : son dossier rassemble fiche, croissance, tests, programmations, séances, journal, blessures et objectifs. Le groupe a le sien.", "#/joueurs"],
+    ["create", "Create", "Create my prog (la saison, semaine par semaine) ⊃ Create my session (la séance) ⊃ Choose your warm-up (l'échauffement). Chacun marche seul ou s'emboîte.", "#/pole/create"],
+    ["res", "Ressources et savoirs", "La veille (les documents de la méthode), la banque d'exercices et le référentiel des saisons types : tout ce que Create propose vient de là.", "#/pole/res"],
+    ["tests", "Tests et profilage", "Un test = une mesure. Un bilan = une batterie de tests. Les résultats placent le joueur sur sa grille et dessinent son profil radar.", "#/pole/tests"]];
+  main.innerHTML = `<div class="crumb"><a href="#/">Accueil</a></div><h1>Comment ça marche<small>GRÜN en une page : 4 pôles et une poupée russe.</small></h1>
+    <section class="sec"><div class="card">${G.SCHEMA}</div></section>
+    <section class="sec"><div class="bigs">${P.map(([k, t, x, h]) => `<a class="big" href="${h}" style="--bc:${POLEC[k]}"><span class="k">Pôle</span><b>${t}</b><span>${x}</span></a>`).join("")}</div></section>
+    <section class="sec"><h2>La poupée russe</h2><div class="card"><div class="grun-doll"><div>Programmation · la saison, semaine par semaine<div>Séance · construite pour le joueur ce jour-là<div>Échauffement · adapté à ce qui suit</div></div></div></div>
+      <p class="msg">Depuis la programmation, « Construire » ouvre la séance déjà remplie ; depuis la séance, l'échauffement se choisit puis revient dans la séance ; « Valider et revenir » te ramène à la programmation.</p></div></section>
+    <section class="sec"><h2>3 gestes à retenir</h2><div class="list">${li(null, null, "<b>Le joueur en cours</b>, en haut", "Choisi une fois, repris partout : séance, échauffement, bilan, programmation, note.")}${li(null, null, "<b>Le « + »</b>, au centre en bas", "Joueur, groupe, séance, test ou bilan, exercice, note, échauffement : tout se crée d'ici, et tu restes où tu étais.")}${li(null, null, "<b>Le « ? »</b>, en haut", "À quoi sert l'écran, et l'assistant.")}</div></section>
+    <div class="tools" style="margin-top:14px"><button class="go acc big" data-a="visite">Visite guidée (2 min)</button><a class="ib" href="#/reglages">Réglages</a></div>`;
 }
 function vCreerMoi() {
   setAcc("var(--create)"); document.title = "Mon profil · GRÜN";
@@ -1399,9 +1801,38 @@ function marque(txt, ts) {
   H.sort((a, b) => a[0] - b[0]); let o = "", last = 0; for (const [s, x] of H) { if (s < last) continue; const pre = e.slice(last, s); if (/&[a-z#0-9]*$/i.test(pre)) continue; o += pre + "<mark>" + e.slice(s, x) + "</mark>"; last = x; } return o + e.slice(last);
 }
 function extrait(txt, ts, n = 170) { const f = fold(txt); let p = -1; for (const t of ts) { const k = f.indexOf(t); if (k >= 0 && (p < 0 || k < p)) p = k; } const a = Math.max(0, p - 50); return (a ? "…" : "") + txt.slice(a, a + n) + (a + n < txt.length ? "…" : ""); }
+/* actions comprises par la recherche : codes (F12, G 15), prénoms, verbes (« nouveau joueur », « tester Tom », « créer séance ») */
+function actionsRecherche(q) {
+  const fq = fold(q).trim().replace(/\s+/g, " "), A = [], js = auto() ? [moi()].filter(Boolean) : G.joueurs.all();
+  const act = (t, w, attrs, h) => A.push({ t, w, h: h || "#", attrs, act: true });
+  const mG = /^(f|g|fille|filles|garcon|garcons)\s?-?\s?(\d{1,2})(\s?ans)?$/.exec(fq);
+  if (mG && +mG[2] >= 4 && +mG[2] <= 18) { const sx = mG[1][0] === "f" ? "F" : "G", a = +mG[2], lab = (sx === "F" ? "filles " : "garçons ") + a + " ans";
+    DOMS.forEach(d => act("Grille " + (d === "PP" ? "préparation physique" : d === "GE" ? "du geste" : "du déplacement") + " · " + lab, "Grille de compétences", "", G.href("grilles", "#d/" + sx + pad(a) + "_" + d)));
+    act("Saison de référence · " + lab, "Référentiel de programmation", "", G.href("saisons", "#/s/" + sx + pad(a))); }
+  const mots = fq.split(" "), qui = js.filter(j => mots.some(m => m.length >= 2 && (fold(prenom(j)) === m || (m.length >= 3 && fold(prenom(j)).startsWith(m))))), j1 = qui[0];
+  const V = (re) => re.test(fq);
+  const nomJ = j => esc(prenom(j));
+  if (V(/\b(nouveau|nouvelle|creer|cree|ajouter|ajoute|ajout)\b.*\b(joueurs|plusieurs)\b/)) act("Ajouter plusieurs joueurs", "Une liste : prénom, sexe, naissance par ligne", `data-a="plus" data-v="joueurs"`);
+  else if (V(/\b(nouveau|nouvelle|creer|cree|ajouter|ajoute|ajout)\b.*\b(joueur|joueuse)\b/) || fq === "joueur") act("Nouveau joueur", "Prénom, sexe, naissance", `data-a="plus" data-v="joueur"`);
+  if (V(/\b(nouveau|creer|cree|ajouter)\b.*\bgroupe\b/)) act("Nouveau groupe", "Un nom, ses joueurs", `data-a="plus" data-v="groupe"`);
+  if (V(/\b(nouvel|nouveau|creer|cree|ajouter)\b.*\bexo/)) act("Nouvel exercice", "Ton exercice dans la banque", `data-a="plus" data-v="exo"`);
+  if (V(/\b(seance|session|seances)\b/) && (V(/\b(creer|cree|nouvelle|faire|lancer|construire|preparer)\b/) || j1 || mots.length === 1)) act("Créer une séance" + (j1 ? " pour " + nomJ(j1) : ""), "Create my session" + (j1 ? "" : " pour le joueur en cours"), j1 ? `data-a="relais" data-vers="seances" data-jid="${esc(j1.id)}"` : `data-a="plus" data-v="session"`);
+  if (V(/\b(tester|teste|test|tests|bilan|evaluer|evaluation)\b/) && j1) act("Faire un bilan pour " + nomJ(j1), "Les tests conseillés pour son âge", "", G.href("grilles", "#/joueur/" + j1.id + "/bilan/nouveau"));
+  if (V(/\b(radar|profil)\b/) && j1) act("Profil radar de " + nomJ(j1), "Grilles et tests", "", G.href("grilles", "#/joueur/" + j1.id + "/radar"));
+  if (V(/\b(echauffement|echauffer|warm ?up|warmup)\b/) && (j1 || V(/\b(lancer|creer|faire)\b/))) act("Échauffement" + (j1 ? " pour " + nomJ(j1) : ""), "Choose your warm-up", j1 ? `data-a="relais" data-vers="warmup" data-jid="${esc(j1.id)}"` : `data-a="plus" data-v="wu"`);
+  if (V(/\b(prog|programmation|plan)\b/) && (j1 || V(/\b(creer|nouvelle|faire)\b/))) act("Créer une programmation" + (j1 ? " pour " + nomJ(j1) : ""), "Create my prog", `data-a="relais" data-vers="prog"${j1 ? ` data-jid="${esc(j1.id)}"` : ""}`);
+  if (V(/\b(note|noter|retour|journal)\b/)) act("Note de journal" + (j1 ? " pour " + nomJ(j1) : ""), "En 10 secondes", `data-a="plus" data-v="note"${j1 ? ` data-jid="${esc(j1.id)}"` : ""}`);
+  if (V(/\b(mesurer|mesure|taille|completer|profil complet)\b/) && j1) act("Compléter le profil de " + nomJ(j1), "Taille, taille assise, poids, main, classement…", `data-grun="completer" data-jid="${esc(j1.id)}"`);
+  if (V(/\b(reglage|reglages|parametre|creneau|creneaux|materiel)\b/)) act("Réglages", "Affichage, mode, habitudes de coach, sauvegarde", "", "#/reglages");
+  if (V(/\b(visite|aide|comment|tutoriel|demo|demonstration)\b/)) { act("Visite guidée (2 min)", "Les 4 pôles et la poupée russe", `data-a="visite"`); act("Comment ça marche", "GRÜN en une page", "", "#/comment"); }
+  /* un prénom seul : ouvrir son dossier en premier */
+  if (j1 && !A.some(x => x.t.includes(prenom(j1)))) qui.slice(0, 3).forEach(j => act("Ouvrir le dossier de " + esc(j.nom), (j.sexe === "F" ? "Fille" : "Garçon") + (ageJ(j.naissance) != null ? " · " + ageJ(j.naissance) + " ans" : ""), "", "#/j/" + j.id));
+  return A;
+}
 function chercher(q) {
   const ts = termes(q), G2 = [];
   if (!ts.length) return G2;
+  const AR = actionsRecherche(q); if (AR.length) G2.push({ t: "Actions", col: "var(--ind)", items: AR, n: AR.length });
   const grp = (t, col, items, all) => { if (items.length) G2.push({ t, col, items, n: all || items.length }); };
   const sc = (title, ts) => ts.reduce((a, t) => a + (fold(title).includes(t) ? 10 : 0), 0) + (fold(title).startsWith(ts[0]) ? 5 : 0);
   const top = (L, n) => L.sort((a, b) => b.s - a.s).slice(0, n);
@@ -1416,7 +1847,7 @@ function chercher(q) {
   grp("Échauffements", "var(--create)", ro.slice(0, 15), ro.length);
   const dv = RD.docs.filter(d => hit([d.c, d.t, d.d, d.k].join(" "), ts)).map(d => ({ s: sc(d.t, ts) + (hit(d.t, ts) ? 20 : 0), h: G.href("veille", "#d/" + d.c), t: d.t, w: String(d.p).replace(/^\d+\s*/, "").toLowerCase() + " › " + d.d.replace(/^\d+(\.\d+)*\s/, ""), x: extrait(d.k, ts) }));
   if (!auto()) grp("Veille", "var(--res)", top(dv, 12), dv.length);
-  const tp = G.tests.perso().map(t => ({ id: t.id, n: t.nom, l: "Test perso", dom: t.dom }));
+  const tp = G.tests.perso().map(t => ({ id: t.id, n: t.nom, l: "Test personnel", dom: t.dom }));
   const tt = [...RD.tests, ...tp].filter(t => hit([t.id, t.n, t.l].join(" "), ts)).map(t => ({ s: sc(t.n, ts), h: G.href("grilles", "#/test/" + t.id), t: t.n, w: t.l }));
   grp("Tests", "var(--tests)", top(tt, 12), tt.length);
   /* grilles et lignes de grille : la même page que dans Grilles et tests (grilles.html#d/F12_PP, #/ligne/PP6/F/12) */
@@ -1426,7 +1857,7 @@ function chercher(q) {
   grp("Grilles", "var(--tests)", ng.slice(0, 12), ng.length);
   const lg = []; DOMS.forEach(d => LN(d).forEach((n, i) => { if (hit(n, ts)) lg.push({ s: sc(n, ts), h: G.href("grilles", "#/ligne/" + d + (i + 1) + "/"), t: n, w: "Ligne de grille · " + DOMN[d] + " · voir la grille", x: "" }); }));
   grp("Lignes des grilles", "var(--tests)", top(lg, 8), lg.length);
-  if (BQ) { const ex = BQ.ex.filter(e => hit([e.id, e.n, e.s, e.li, e.ob, arr(e.L).join(" ")].join(" "), ts)).map(e => ({ s: sc(e.n || "", ts) + (e.perso ? 3 : 0), h: G.href("banque", "#/ex/" + e.id), t: e.n || e.id, w: [e.perso ? "mon exo" : "", e.s].filter(Boolean).join(" · "), x: e.ob ? extrait(e.ob, ts, 140) : "" }));
+  if (BQ) { const ex = BQ.ex.filter(e => hit([e.id, e.n, e.s, e.li, e.ob, arr(e.L).join(" ")].join(" "), ts)).map(e => ({ s: sc(e.n || "", ts) + (e.perso ? 3 : 0), h: G.href("banque", "#/ex/" + e.id), t: e.n || e.id, w: [e.perso ? "mon exercice" : "", e.s].filter(Boolean).join(" · "), x: e.ob ? extrait(e.ob, ts, 140) : "" }));
     grp("Exercices", "var(--res)", top(ex, 15), ex.length); }
   const fa = RD.fams.filter(f => hit([f.c, f.t, f.d].join(" "), ts)).map(f => ({ h: G.href("banque", "#f/" + f.c), t: f.t, w: "famille de la banque" }));
   grp("Familles de la banque", "var(--res)", fa.slice(0, 10), fa.length);
@@ -1438,23 +1869,24 @@ function vRecherche(q) {
   setAcc("var(--ink)"); document.title = "Recherche · GRÜN";
   const inp = $("#q"); if (document.activeElement !== inp) inp.value = q;
   const ts = termes(q);
-  if (!ts.length) { main.innerHTML = `<h1>Recherche</h1><p class="lead">Tape au moins 2 lettres : joueur, groupe, séance, prog, échauffement, document de la veille, test, exercice, famille, saison.</p>`; return; }
+  if (!ts.length) { main.innerHTML = `<h1>Recherche</h1><p class="lead">Tape au moins 2 lettres : joueur, groupe, séance, programmation, échauffement, document de la veille, test, exercice, famille, saison. Tu peux aussi taper un code (« F12 ») ou une action (« nouveau joueur », « tester Tom »).</p>`; return; }
   if (!BQ && !BQload) BQload = G.banque.load().then(b => { BQ = b; if (location.hash.startsWith("#/recherche/")) render(true); }).catch(() => { BQ = { ex: [] }; });
   const R = chercher(q), n = R.reduce((a, g) => a + g.n, 0);
   let h = `<h1>Recherche</h1><p class="lead">${n ? n + " résultat" + (n > 1 ? "s" : "") + " pour « " + esc(q) + " »" : "Rien pour « " + esc(q) + " ». Essaie un mot plus court ou un synonyme."}${!BQ ? " · chargement de la banque…" : ""}</p>`;
-  h += R.map(g => `<div class="rgrp" style="--rc:${g.col}"><h2>${esc(g.t)} <small>${g.n > g.items.length ? g.items.length + " sur " + g.n : g.n}</small></h2>${g.items.map(r => `<a class="res" href="${esc(r.h)}"><div class="t">${marque(r.t, ts)}</div><div class="w">${esc(r.w || "")}</div>${r.x ? `<div class="s">${marque(r.x, ts)}</div>` : ""}</a>`).join("")}</div>`).join("");
+  h += `<button class="res ask" data-a="assistant" data-src="recherche" data-q="${esc(q)}"><div class="t">Demander à l'assistant : « ${esc(q)} »</div><div class="w">Il répond aux questions sur la méthode et sur l'appli, hors connexion.</div></button>`;
+  h += R.map(g => `<div class="rgrp" style="--rc:${g.col}"><h2>${esc(g.t)} <small>${g.n > g.items.length ? g.items.length + " sur " + g.n : g.n}</small></h2>${g.items.map(r => r.act ? `<a class="res act" href="${esc(r.h)}" ${r.attrs || ""}><div class="t">${r.t}</div><div class="w">${esc(r.w || "")}</div></a>` : `<a class="res" href="${esc(r.h)}"><div class="t">${marque(r.t, ts)}</div><div class="w">${esc(r.w || "")}</div>${r.x ? `<div class="s">${marque(r.x, ts)}</div>` : ""}</a>`).join("")}</div>`).join("");
   if (!auto()) h += `<div class="sec tools"><a class="ib" href="${G.href("veille", "#s/" + encodeURIComponent(q))}">Chercher « ${esc(q)} » dans le texte complet de la veille ›</a></div>`;
   main.innerHTML = h;
 }
 let qT;
 $("#q").addEventListener("input", e => { clearTimeout(qT); const v = e.target.value.trim(); qT = setTimeout(() => { if (v.length >= 2) { history.replaceState(null, "", "#/recherche/" + encodeURIComponent(v)); navActive("acc"); vRecherche(v); } else if (!v && location.hash.startsWith("#/recherche")) location.hash = "#/"; }, 220); });
-$("#q").addEventListener("keydown", e => { if (e.key === "Enter") e.target.blur(); });
+$("#q").addEventListener("keydown", e => { if (e.key === "Enter") { clearTimeout(qT); const v = e.target.value.trim(); if (v.length >= 2) { if (!location.hash.startsWith("#/recherche/")) history.replaceState(null, "", "#/recherche/" + encodeURIComponent(v)); navActive("acc"); vRecherche(v); const f = $("#main .res.act"); e.target.blur(); if (f) f.click(); } else e.target.blur(); } });
 
 /* ================= RÉGLAGES ================= */
 function vReglages() {
   setAcc("var(--ind)"); document.title = "Réglages · GRÜN";
   const r = REG(), J = G.isJoueur(), js = G.joueurs.all();
-  let h = `<div class="crumb"><a href="#/">${J ? "Mon dossier" : "Accueil"}</a></div><h1>Réglages</h1>`;
+  let h = `<div class="crumb"><a href="#/">${J ? "Mon dossier" : "Accueil"}</a></div><h1>Réglages<small>GRÜN ${esc(G.version)} · ${esc(G.versionDate || "")}</small></h1>`;
   h += `<section class="sec"><h2>Affichage</h2><div class="card"><div class="form"><div class="f"><span class="lab">Thème</span><div class="seg">${[["auto", "Auto"], ["light", "Clair"], ["dark", "Sombre"]].map(([k, t]) => `<button data-a="theme" data-v="${k}" aria-pressed="${(r.theme || "auto") === k}">${t}</button>`).join("")}</div></div>
     <div class="f"><span class="lab">Taille du texte</span><div class="tools"><button class="ib" data-a="fs" data-v="-5" aria-label="Texte plus petit">A−</button><span class="ib" style="border:none;background:none">${r.fs || 100} %</span><button class="ib" data-a="fs" data-v="5" aria-label="Texte plus grand">A+</button></div></div>
     ${J ? "" : `<div class="f w"><label for="rnc">Nom du coach</label><input id="rnc" data-reg="nomCoach" value="${esc(r.nomCoach || "")}" placeholder="Ton prénom"></div>`}</div></div></section>`;
@@ -1466,20 +1898,22 @@ function vReglages() {
     main.innerHTML = h; return;
   }
   const m0 = moi();
+  h += coachHTML();
+  h += `<section class="sec"><h2>Aide et présentation</h2><div class="card"><div class="tools"><button class="go acc" data-a="visite">Visite guidée (2 min)</button><a class="ib" href="#/comment">Comment ça marche</a><button class="ib" data-a="assistant" data-src="reglages">Assistant</button><button class="ib" data-a="onb" data-v="2">Revoir l'accueil en 3 étapes</button></div><p class="msg">Le « ? » en haut de chaque écran dit à quoi il sert.</p></div></section>`;
   h += `<section class="sec"><h2>Profil d'utilisation</h2><div class="card"><div class="seg">${[["coach", "Je suis coach"], ["autonome", "Je suis joueur"]].map(([k, t]) => `<button data-a="profil" data-v="${k}" aria-pressed="${(r.profil || "coach") === k}">${t}</button>`).join("")}</div>
     <p class="msg">${auto() ? "Joueur autonome : tu es ton propre coach. GRÜN s'ouvre sur ton dossier" + (m0 ? " (<a href=\"#/\">" + esc(m0.nom) + "</a>)" : "") + " et tu as Create, les tests et le profilage pour toi." : "Coach : tes joueurs, tes groupes et tous les outils."}</p></div></section>`;
   if (!auto()) h += `<section class="sec"><h2>Mode joueur</h2><div class="card"><p class="msg" style="margin-top:0">Donne l'appareil à un joueur : il ne voit que son dossier (séance du jour, échauffement, forme, retour, progrès, tests, agenda). Pas de veille, pas de modification de la banque ni du référentiel.</p>
     <div class="form"><div class="f"><label for="rcode">Code coach (4 chiffres)</label><input id="rcode" data-reg="code" inputmode="numeric" maxlength="4" pattern="[0-9]{4}" value="${esc(r.code || "")}" style="width:110px" autocomplete="off"></div>
     ${js.length ? `<div class="f w"><label for="rmj">Joueur</label><select id="rmj"><option value="">Choisir…</option>${js.map(j => `<option value="${esc(j.id)}">${esc(j.nom)}</option>`).join("")}</select></div><button class="go acc" data-a="modej" data-src="rmj">Passer en mode joueur</button>` : `<p class="msg">Crée d'abord un joueur.</p>`}</div>
     <p class="msg">Honnêtement : ce code évite qu'un joueur repasse en mode coach par erreur, ce n'est pas une sécurité (les données restent lisibles sur l'appareil). Les vrais comptes coach et joueur arrivent bientôt.</p></div></section>`;
-  h += `<section class="sec"><h2>Sauvegarde</h2><div class="card"><p class="msg" style="margin-top:0">Tout reste sur cet appareil. Une seule sauvegarde contient toute l'appli : joueurs, groupes, journal, bilans, plans, séances, routines, exos et tests perso, favoris et notes de la veille, de la banque et du référentiel.</p>
+  h += `<section class="sec"><h2>Sauvegarde</h2><div class="card"><p class="msg" style="margin-top:0">Tout reste sur cet appareil. Une seule sauvegarde contient toute l'appli : joueurs, groupes, journal, bilans, plans, séances, routines, exercices et tests personnels, favoris et notes de la veille, de la banque et du référentiel.</p>
     <div class="tools"><button class="go acc" data-a="export">Tout sauvegarder</button><label class="ib" for="fimp">Restaurer ou importer…</label><input id="fimp" type="file" accept=".json,application/json" multiple hidden></div>
     <p class="msg" id="impm"></p>
     <p class="msg">La restauration fusionne avec ce qui est déjà là (rien n'est effacé). Elle reconnaît aussi les anciennes sauvegardes des applis séparées : Grilles et tests, Banque d'exercices, Programmation, Séances, Routines, Veille, Référentiel des saisons, Profil radar.</p></div></section>`;
   if (!auto()) h += demoSection();
   h += `<section class="sec"><h2>À propos de GRÜN</h2><div class="card note"><p style="margin-top:0"><b>GRÜN</b> réunit en une seule appli la méthode Gruner de préparation physique et de biomécanique du tennis : la science du joueur de tennis de 4 à 18 ans : préparation physique, biomécanique, physiologie, de la méthode de formation jusqu'à la séance. Notre modèle haute performance : le niveau 3, c'est être dans les temps du haut niveau de sa génération.</p>
-    <p>Quatre pôles : <b>Individualisation</b> (le dossier complet de chaque joueur et de chaque groupe), <b>Create</b> (prog, séance, échauffement construits pour le joueur), <b>Ressources et savoirs</b> (veille, banque d'exercices, référentiel de programmation) et <b>Tests et profilage</b> (grilles, tests, profil radar).</p>
-    <p class="msg" style="margin-bottom:0">Version ${esc(G.version)} · données sur l'appareil · hors connexion.</p></div></section>`;
+    <p>Quatre pôles : <b>Individualisation</b> (le dossier complet de chaque joueur et de chaque groupe), <b>Create</b> (programmation, séance, échauffement construits pour le joueur), <b>Ressources et savoirs</b> (veille, banque d'exercices, référentiel de programmation) et <b>Tests et profilage</b> (grilles, tests, profil radar).</p>
+    <p class="msg" style="margin-bottom:0">Version ${esc(G.version)} · ${esc(G.versionDate || "")} · données sur l'appareil · hors connexion.</p></div></section>`;
   main.innerHTML = h;
 }
 
@@ -1535,13 +1969,16 @@ main.addEventListener("change", async e => {
     for (const f of fs) { try { out.push("✓ " + f.name + " : " + importer(JSON.parse(await f.text()), f.name)); } catch (x) { out.push("✗ " + f.name + " : fichier non reconnu"); } }
     render(true); const m = $("#impm"); if (m) { m.innerHTML = out.map(esc).join("<br>"); m.className = "msg ok"; } return;
   }
-  if (t.dataset.reg) { const v = t.value.trim(); if (t.dataset.reg === "code" && v && !/^\d{4}$/.test(v)) { toast("Le code doit faire 4 chiffres."); return; } setReg({ [t.dataset.reg]: v }); toast("Enregistré"); return; }
+  if (t.dataset.reg) { const v = t.value.trim(); if (t.dataset.reg === "code" && v && !/^\d{4}$/.test(v)) { toast("Le code doit faire 4 chiffres."); return; } setReg({ [t.dataset.reg]: v }); G.ui.enregistre(); return; }
+  if (t.dataset.cr != null) { const C = G.reglages.coach(), cr = C.creneaux.slice(), i = +t.dataset.cr; if (!cr[i]) return; cr[i] = { ...cr[i], [t.dataset.k]: t.dataset.k === "h" ? t.value : +t.value }; quiet(() => G.reglages.setCoach({ creneaux: cr, demo: false })); G.ui.enregistre(); return; }
+  if (t.id === "cdur") { quiet(() => G.reglages.setCoach({ duree: Math.max(10, Math.min(240, +t.value || 60)), demo: false })); G.ui.enregistre(); render(true); return; }
   if (t.dataset.fiche) {
     const j = G.joueurs.get(CURJ || ""); if (!j) return;
     const k = t.dataset.fiche, v = t.type === "checkbox" ? t.checked : t.type === "number" ? (t.value === "" ? null : +t.value) : t.value;
     if (k === "nom" && !String(v).trim()) { t.value = j.nom; return; }
-    if (k.startsWith("dispo.")) { j.dispo = { ...(j.dispo || {}) }; j.dispo[k.slice(6)] = v; } else j[k] = typeof v === "string" ? v.trim() : v;
-    quiet(() => G.joueurs.save(j)); const m = $("#fimsg"); if (m) { m.textContent = "Enregistré."; m.className = "msg ok"; }
+    if (k.startsWith("dispo.")) { j.dispo = { ...(j.dispo || {}) }; j.dispo[k.slice(6)] = v; } else if (k.startsWith("parents.")) { j.parents = { ...(j.parents || {}) }; j.parents[k.slice(8)] = v; } else j[k] = typeof v === "string" ? v.trim() : v;
+    if (["main", "revers", "classement"].includes(k)) j.ok = { ...(j.ok || {}), [k === "revers" ? "main" : k]: 1 }; if (k === "naissance") delete j.naissanceApprox;
+    quiet(() => G.joueurs.save(j)); G.ui.enregistre(); const m = $("#fimsg"); if (m) { m.textContent = "Enregistré."; m.className = "msg ok"; }
     if (["nom", "sexe", "naissance", "main", "revers", "classement"].includes(k)) { const y = scrollY; render(true); scrollTo(0, y); }
     return;
   }
@@ -1606,12 +2043,10 @@ main.addEventListener("submit", e => { const f = e.target.closest("form[data-f]"
 
 /* ---------- actions ---------- */
 function confirmer(b, txt) { if (b.dataset.ok) return true; b.dataset.ok = "1"; const o = b.textContent; b.textContent = txt || "Toucher encore pour confirmer"; setTimeout(() => { if (b.isConnected) { delete b.dataset.ok; b.textContent = o; } }, 3500); return false; }
+/* joueur ET groupe : même relais (G.ui.session / echauffement / programmation : joueur ou groupe + réglages coach + retour ici) → séance construite en 1 touche */
 function relais(vers, jid, gid) {
-  const retour = "index.html" + (jid ? "#/j/" + jid : gid ? "#/g/" + gid : "");
-  const j = jid && G.joueurs.get(jid);
-  G.relais.envoyer({ de: "accueil", vers, retour, jid: jid || null, gid: gid || null, age: j ? G.grilleConseillee(j) : null });
-  const H = { prog: jid ? "#/nouveau/" + jid : gid ? "#/groupe/" + gid : "#/nouveau", seances: gid && !jid ? "#/groupe/" + gid : "#/nouvelle", warmup: "#/nouveau" };
-  G.go(vers, H[vers]);
+  const f = { seances: G.ui.session, warmup: G.ui.echauffement, prog: G.ui.prog }[vers];
+  f({ jid: jid || null, gid: jid ? null : (gid || null), relais: { de: "accueil", retour: "index.html" + (jid ? "#/j/" + jid : gid ? "#/g/" + gid : "") } });
 }
 /* « Construire » : la séance du plan part directement dans Create my session (mêmes informations que depuis Create my prog) */
 const PHS = { G: "G", S: "S", P: "P", C: "C", R: "R", T: "R" };
@@ -1629,34 +2064,50 @@ function construire(planId, key) {
   G.go("seances", "#/nouvelle");
 }
 const ACT = {
+  plus(b, e) { e && e.preventDefault(); const k = b.dataset.v; if (k === "note" && b.dataset.jid) return G.ui.noteJournal({ jid: b.dataset.jid }); if (k === "session" && b.dataset.jid) return G.ui.session({ jid: b.dataset.jid, gid: null }); G.plus.faire(k); },
+  visite(b, e) { e && e.preventDefault(); G.visite(); },
+  assistant(b, e) { e && e.preventDefault(); G.aide.ouvrir(b.dataset.q || "", b.dataset.src || "accueil"); },
+  frisef(b) { FRISEF = b.dataset.v; render(true); },
+  clieu(b) { const C = G.reglages.coach(); quiet(() => G.reglages.setCoach({ lieu: C.lieu === b.dataset.v ? "" : b.dataset.v, demo: false })); G.ui.enregistre(); render(true); },
+  cduree(b) { quiet(() => G.reglages.setCoach({ duree: +b.dataset.v, demo: false })); G.ui.enregistre(); render(true); },
+  cmat(b) { const C = G.reglages.coach(), k = b.dataset.v; quiet(() => G.reglages.setCoach({ materiel: C.materiel.includes(k) ? C.materiel.filter(x => x !== k) : [...C.materiel, k], demo: false })); b.setAttribute("aria-pressed", b.getAttribute("aria-pressed") !== "true"); G.ui.enregistre(); },
+  cradd(b) { const C = G.reglages.coach(); quiet(() => G.reglages.setCoach({ creneaux: [...C.creneaux, { j: +($("#crj") || {}).value || 0, h: ($("#crh") || {}).value || "17:30", duree: C.duree }], demo: false })); G.ui.enregistre(); render(true); },
+  crdel(b) { const C = G.reglages.coach(); quiet(() => G.ui.annulable("Créneau retiré", [G.K.reglages], () => G.reglages.setCoach({ creneaux: C.creneaux.filter((_, i) => i !== +b.dataset.v) }))); render(true); },
+  onb(b, e) { e && e.preventDefault(); const v = b.dataset.v; if (v === "fini") { setReg({ onb: "fini" }); location.hash = "#/"; render(false); if (!REG().visite) setTimeout(() => G.visite(), 250); return; } setReg({ onb: +v }); render(false); scrollTo(0, 0); },
+  onbadd(b) { G.ui.nouveauJoueur({ multiple: b.dataset.v !== "0", courant: false }).then(r => { const L = Array.isArray(r) ? r : r ? [r] : []; if (!L.length) return; setReg({ onb: 3 }); render(false); scrollTo(0, 0); }); },
   tab(b) { TABJ.t = b.dataset.v; const y = $(".tabs") ? $(".tabs").getBoundingClientRect().top + scrollY - 70 : 0; render(false); if (scrollY > y) scrollTo(0, Math.max(0, y)); },
-  jour(b) { JOURSEL = b.dataset.d; render(true); },
+  jour(b) { JOURSEL = b.dataset.d; if (/^#\/(semaine|agenda)/.test(location.hash)) { history.replaceState(null, "", "#/semaine/" + b.dataset.d); } render(true); },
+  courant(b, e) { e && e.preventDefault(); G.ui.choisirCourant(); },
+  etape(b, e) { e && e.preventDefault(); if (b.dataset.v === "prog") G.ui.choisirJoueur("Programmation pour qui ?", (jid, gid) => G.ui.prog({ jid, gid })); },
   pdfj(b) { if (b.disabled) return; b.disabled = true; const s0 = b.querySelector("span"); if (s0) s0.textContent = "Préparation…";
     Promise.resolve().then(() => rapportPDF(b.dataset.jid)).catch(e => { console.error(e); toast("Le PDF n'a pas pu être créé"); }).finally(() => { b.disabled = false; if (s0) s0.textContent = "Rapport PDF"; }); },
   objst(b) { const o = G.objectifs.de(CURJ).find(x => x.id === b.dataset.v); if (!o) return; const nx = { encours: "atteint", atteint: "abandonne", abandonne: "encours" }[o.statut] || "encours"; quiet(() => G.objectifs.update(o.id, { statut: nx })); toast("Objectif : " + G.OBJ_STATUTS[nx].toLowerCase()); render(true); },
-  objdel(b) { if (!confirmer(b, "Sûr ?")) return; quiet(() => G.objectifs.remove(b.dataset.v)); render(true); },
+  objdel(b) { quiet(() => G.ui.annulable("Objectif supprimé", [G.K.objectifs], () => G.objectifs.remove(b.dataset.v))); render(true); },
   pres(b) { const info = { cle: b.dataset.k, date: b.dataset.d, gid: b.dataset.gid, titre: b.dataset.t }, P0 = G.presences.get(info.cle), v = P0 ? P0.p[b.dataset.jid] : undefined;
     quiet(() => G.presences.set(info, b.dataset.jid, v === true ? false : v === false ? null : true)); render(true); },
   prtous(b) { const info = { cle: b.dataset.k, date: b.dataset.d, gid: b.dataset.gid, titre: b.dataset.t }; quiet(() => G.groupes.joueurs(info.gid).forEach(j => G.presences.set(info, j.id, true))); toast("Tout le monde est présent"); render(true); },
   construire(b) { construire(b.dataset.plan, b.dataset.key); },
   relais(b) { let jid = b.dataset.jid, gid = b.dataset.gid; if (b.dataset.src) { const v = $("#" + b.dataset.src).value; if (!v) { toast("Choisis d'abord " + (b.dataset.src === "pg" ? "un groupe." : "un joueur.")); return; } if (b.dataset.src === "pg") gid = v; else jid = v; } relais(b.dataset.vers, jid, gid); },
   bilan(b) { const v = $("#" + b.dataset.src).value; if (!v) { toast("Choisis d'abord un joueur."); return; } G.go("grilles", "#/joueur/" + v); },
-  bilangrp(b) { const gid = b.dataset.gid || ($("#" + b.dataset.src) || {}).value; if (!gid) { toast("Choisis d'abord un groupe."); return; } G.relais.envoyer({ de: "accueil", vers: "grilles", retour: "index.html#/g/" + gid, gid, jids: G.groupes.get(gid).jids, type: "bilan-groupe" }); G.go("grilles"); },
+  bilangrp(b) { const gid = b.dataset.gid || ($("#" + b.dataset.src) || {}).value; if (!gid) { toast("Choisis d'abord un groupe."); return; } G.ui.bilanGroupe(gid, "index.html#/g/" + gid); },
   filtre(b) { FILTRE = b.dataset.g; render(true); },
   tg(b) { b.setAttribute("aria-pressed", b.getAttribute("aria-pressed") !== "true"); },
   zone(b) { const j = G.joueurs.get(b.dataset.jid); const z = b.dataset.v; j.zones = arr(j.zones).includes(z) ? arr(j.zones).filter(x => x !== z) : [...arr(j.zones), z]; quiet(() => G.joueurs.save(j)); b.setAttribute("aria-pressed", j.zones.includes(z)); },
   jgrp(b) { const g = G.groupes.get(b.dataset.v), jid = b.dataset.jid; g.jids = g.jids.includes(jid) ? g.jids.filter(x => x !== jid) : [...g.jids, jid]; quiet(() => G.groupes.save(g)); render(true); },
   gadd(b) { const g = G.groupes.get(b.dataset.gid); if (!g.jids.includes(b.dataset.v)) g.jids.push(b.dataset.v); quiet(() => G.groupes.save(g)); render(true); },
-  grm(b) { const g = G.groupes.get(b.dataset.gid); g.jids = g.jids.filter(x => x !== b.dataset.v); quiet(() => G.groupes.save(g)); render(true); },
-  delgrp(b) { if (!confirmer(b)) return; quiet(() => G.groupes.remove(b.dataset.gid)); toast("Groupe supprimé"); location.hash = "#/joueurs"; },
-  deljoueur(b) { if (!confirmer(b, "Toucher encore : suppression définitive")) return; const j = G.joueurs.get(b.dataset.jid); quiet(() => G.joueurs.remove(b.dataset.jid)); toast((j ? j.nom : "Joueur") + " supprimé"); if (location.hash === "#/joueurs") render(true); else location.hash = "#/joueurs"; },
+  grm(b) { const g = G.groupes.get(b.dataset.gid), j = G.joueurs.get(b.dataset.v); quiet(() => G.ui.annulable((j ? prenom(j) : "Joueur") + " retiré du groupe", [G.K.groupes], () => { g.jids = g.jids.filter(x => x !== b.dataset.v); G.groupes.save(g); })); render(true); },
+  delgrp(b) { const g = G.groupes.get(b.dataset.gid); quiet(() => G.ui.annulable("Groupe « " + (g ? g.nom : "") + " » supprimé (ses joueurs sont gardés)", [G.K.groupes, G.K.presences, G.K.courant], () => G.groupes.remove(b.dataset.gid))); location.hash = "#/joueurs"; },
+  /* seule confirmation gardée : la suppression définitive d'un joueur (irréversible) */
+  deljoueur(b) { const j = G.joueurs.get(b.dataset.jid); if (!j) return;
+    G.ui.confirmer({ titre: "Supprimer " + prenom(j) + " définitivement ?", texte: "<b>" + esc(j.nom) + "</b> et tout son dossier (bilans, mesures, journal, programmations et séances individuelles, objectifs, présences) seront effacés de cet appareil.", detail: "Cette action ne peut pas être annulée. Pour garder son historique, utilise plutôt « Je ne l'entraîne plus » (archiver).", ok: "Supprimer définitivement", non: "Garder " + prenom(j) })
+      .then(ok => { if (!ok) return; quiet(() => G.joueurs.remove(j.id)); toast(j.nom + " supprimé"); if (location.hash === "#/joueurs") render(true); else location.hash = "#/joueurs"; }); },
   delask(b) { const x = $("#delbox"); if (x) { x.hidden = !x.hidden; if (!x.hidden) x.scrollIntoView({ block: "center", behavior: "smooth" }); } },
-  archiver(b) { const oui = b.dataset.v === "1"; if (oui && !confirmer(b, "Toucher encore pour archiver")) return; const j = quiet(() => G.joueurs.archiver(b.dataset.jid, oui)); toast(oui ? (j ? j.nom : "Joueur") + " archivé : il n'apparaît plus dans les listes" : (j ? j.nom : "Joueur") + " réactivé"); if (oui && location.hash.startsWith("#/j/")) location.hash = "#/joueurs"; else render(true); },
-  delmes(b) { const j = G.joueurs.get(b.dataset.jid); j.mesures = arr(j.mesures).filter(x => x.date !== b.dataset.v); quiet(() => G.joueurs.save(j)); render(true); },
-  delag(b, e) { e.preventDefault(); const j = G.joueurs.get(b.dataset.jid); j.agenda = arr(j.agenda).filter(x => x.id !== b.dataset.v); quiet(() => G.joueurs.save(j)); render(true); },
-  delbl(b) { if (!confirmer(b, "Sûr ?")) return; const j = G.joueurs.get(b.dataset.jid); j.blessures = arr(j.blessures).filter(x => x.id !== b.dataset.v); quiet(() => G.joueurs.save(j)); render(true); },
+  archiver(b) { const oui = b.dataset.v === "1", undo = G.ui.photo([G.K.joueurs, G.K.courant]); const j = quiet(() => G.joueurs.archiver(b.dataset.jid, oui)); if (oui && G.courant.jid() === b.dataset.jid) G.courant.set(null); G.ui.annuler(oui ? (j ? j.nom : "Joueur") + " archivé : il n'apparaît plus dans les listes" : (j ? j.nom : "Joueur") + " réactivé", undo); if (oui && location.hash.startsWith("#/j/")) location.hash = "#/joueurs"; else render(true); },
+  delmes(b) { const j = G.joueurs.get(b.dataset.jid); quiet(() => G.ui.annulable("Mesure supprimée", [G.K.joueurs], () => { j.mesures = arr(j.mesures).filter(x => x.date !== b.dataset.v); G.joueurs.save(j); })); render(true); },
+  delag(b, e) { e.preventDefault(); const j = G.joueurs.get(b.dataset.jid); quiet(() => G.ui.annulable("Retiré de l'agenda", [G.K.joueurs], () => { j.agenda = arr(j.agenda).filter(x => x.id !== b.dataset.v); G.joueurs.save(j); })); render(true); },
+  delbl(b) { const j = G.joueurs.get(b.dataset.jid); quiet(() => G.ui.annulable("Blessure supprimée", [G.K.joueurs], () => { j.blessures = arr(j.blessures).filter(x => x.id !== b.dataset.v); G.joueurs.save(j); })); render(true); },
   blst(b) { const j = G.joueurs.get(b.dataset.jid); const x = arr(j.blessures).find(y => y.id === b.dataset.v); if (!x) return; x.statut = x.statut === "guerie" ? "encours" : "guerie"; if (x.statut === "guerie" && !x.fin) x.fin = G.today(); quiet(() => G.joueurs.save(j)); render(true); },
-  deljr(b) { if (!confirmer(b, "Sûr ?")) return; quiet(() => G.journal.remove(b.dataset.v)); render(true); },
+  deljr(b) { quiet(() => G.ui.annulable("Supprimé du journal", [G.K.journal], () => G.journal.remove(b.dataset.v))); render(true); },
   forme(b) {
     const jid = b.dataset.jid, f2 = b.closest("form"), f1 = f2.parentElement.querySelector("form[data-f=forme]");
     const F1 = new FormData(f1), F2 = new FormData(f2), dz = F2.get("dzone"), di = +F2.get("dint") || 0;
@@ -1670,7 +2121,7 @@ const ACT = {
     if (!/^\d{4}$/.test(code)) { toast("Choisis d'abord un code coach à 4 chiffres."); location.hash = "#/reglages"; return; }
     setReg({ code }); G.setMode("joueur", jid); location.hash = "#/"; location.reload();
   },
-  profil(b, e) { e.preventDefault(); setReg({ profil: b.dataset.v }); location.hash = "#/"; render(false); },
+  profil(b, e) { e.preventDefault(); const onb = !!b.closest(".onb"); setReg({ profil: b.dataset.v, ...(onb ? { onb: b.dataset.v === "coach" ? 2 : "fini" } : {}) }); location.hash = "#/"; render(false); scrollTo(0, 0); },
   moi(b) { setReg({ profil: "autonome", jidMoi: b.dataset.v }); location.hash = "#/"; render(false); },
   coach() { G.setMode("coach"); location.hash = "#/"; location.reload(); },
   monwu(b, e) { e.preventDefault(); const jid = G.mode().jid; G.relais.envoyer({ de: "accueil", vers: "warmup", retour: "index.html", jid, mode: "joueur" }); G.go("warmup"); },
@@ -1692,7 +2143,7 @@ main.addEventListener("click", e => {
    Tout est généré ici, daté par rapport à aujourd'hui, et marqué demo:true (noms « … Démo ») : fiches, mesures, 2 bilans + tests ★,
    journal de 6 semaines (retours, forme), agenda, blessure, favoris warm-up, historique d'échauffements.
    Plans : écrits au format Create my prog, puis calculés par le VRAI moteur (prog.html#p/<id> dans un cadre caché → programmation_cache_v1).
-   Séances : construites par le VRAI Create my session (relais → seances.html#/nouvelle dans un cadre caché : trame, exos de la banque,
+   Séances : construites par le VRAI Create my session (relais → seances.html#/nouvelle dans un cadre caché : trame, exercices de la banque,
    échauffement et retour au calme choisis d'office dans la bibliothèque). Repli au bon format si un module ne répond pas.
    « Retirer la démonstration » : tout ce qui porte la marque disparaît ; les vrais joueurs ne sont pas touchés. */
 const DEMO_SEM11 = [[0, "PPI"], [0, "TC"], [1, "PM"], [1, "TI"], [2, "TC"], [3, "PPI"], [3, "TI"], [5, "PPC"], [5, "TC"]].map(([j, k]) => ({ j, k }));
@@ -1701,7 +2152,7 @@ const DEMO_SEM13 = [[0, "PPI"], [0, "TC"], [1, "PM"], [1, "TI"], [2, "TC"], [3, 
    tests ★ de leur grille [ligne, id] ; v1 / v2 = niveaux des 2 bilans (4 mois d'écart) ; les lignes testées reçoivent le niveau calculé du test. */
 const DEMO_J = [
   { k: "ninon", nom: "Ninon Démo", sexe: "F", ans: 12.53, grille: 12, main: "D", revers: "2", classement: "15/4", croissance: true, zones: ["genou"], dispo: { pp: 3, tennis: 5 },
-    objectifs: "Passer le pic de croissance sans blessure, garder la vitesse et les appuis. Viser le Championnat de Gironde 12 ans en décembre.",
+    objectifs: "Passer le pic de croissance sans blessure, garder la vitesse et les appuis. Viser le Championnat départemental 12 ans en décembre.",
     notes: "Grandit vite (plus de 8 cm par an) : sauts et volumes plafonnés, genoux surveillés. Très investie, adore les défis chronométrés. Joueuse fictive de démonstration.",
     mes: [[556, 141.5, 73.6, 32.5, 142], [465, 143.0, 74.3, 33.6, 143.5], [374, 144.8, 75.1, 35.0, 145.5], [283, 146.9, 76.0, 36.4, 147.5], [192, 149.0, 77.0, 38.0, 150], [101, 151.1, 78.0, 39.6, 152.5], [10, 153.2, 79.0, 41.0, 155]],
     tests: { PP: [[1, "T-PP-046"], [4, "T-PP-011"], [6, "T-PP-018"], [8, "T-PP-025"], [10, "T-PP-133"], [12, "T-PP-040"]], GE: [[4, "T-GE-131"]], DE: [[3, "T-DE-024"], [8, "T-DE-074"]] },
@@ -1709,10 +2160,10 @@ const DEMO_J = [
     v2: { PP: [3, 2.5, 3, 3, 2.5, 3, 3, 3, 3, 2, 3, 2], GE: [3, 3, 2.5, 3, 3, 2.5, 3, 3, 2.5, 3, 3, 2.5, 2.5], DE: [3, 3, 3, 3, 3, 3, 3, 2, 3, 3, 3] },
     n1: "Premier bilan · vitesse et coordination au-dessus de l'attendu", n2: "Bilan de suivi · coordination en baisse pendant la poussée de croissance (normal), freinage à travailler",
     fav: ["EWU-11", "EWU-07"],
-    sem: { 0: [["tennis", "Entraînement tennis", 90, 5]], 1: [["seance", "Séance PP", 60, 5]], 2: [["tennis", "Entraînement tennis", 90, 5]], 4: [["tennis", "Tennis : jeu dirigé", 75, 5]], 5: [["seance", "PP collective du samedi", 60, 4], ["match", "Match libre", 80, 6, 2]] },
+    sem: { 0: [["tennis", "Entraînement tennis", 90, 5]], 1: [["seance", "Séance de préparation physique", 60, 5]], 2: [["tennis", "Entraînement tennis", 90, 5]], 4: [["tennis", "Tennis : jeu dirigé", 75, 5]], 5: [["seance", "Préparation physique collective du samedi", 60, 4], ["match", "Match libre", 80, 6, 2]] },
     forme: [4, 4, 4, 4, 4], fj: 5 },
   { k: "malo", nom: "Malo Démo", sexe: "G", ans: 15.42, grille: 15, main: "G", revers: "2", classement: "15/1", croissance: false, zones: [], dispo: { pp: 3, tennis: 6 },
-    objectifs: "Gagner en puissance au service et en répétition d'efforts. Objectif : tableau final du tournoi jeunes de Mérignac.",
+    objectifs: "Gagner en puissance au service et en répétition d'efforts. Objectif : tableau final du Tournoi d'Automne.",
     notes: "Gaucher, gros service. Entorse de cheville guérie : proprioception gardée dans l'échauffement. Stage intensif de la Toussaint en cours. Joueur fictif de démonstration.",
     mes: [[190, 170.0, 86.5, 57.0, 174], [10, 173.0, 88.0, 60.0, 177.5]],
     tests: { PP: [[1, "T-PP-049"], [4, "T-PP-011"], [6, "T-PP-018"], [8, "T-PP-113"], [9, "T-PP-122"]], GE: [[1, "T-GE-010"]], DE: [[3, "T-DE-024"], [9, "T-DE-083"]] },
@@ -1720,7 +2171,7 @@ const DEMO_J = [
     v2: { PP: [3, 3, 3.5, 3, 3.5, 4, 3, 3, 2, 3, 3, 3], GE: [4, 3, 3, 3.5, 3, 3, 3, 3, 2.5, 3, 3, 3, 2.5], DE: [3, 3, 4, 3, 3, 3, 3, 3, 3, 3, 3] },
     n1: "Premier bilan · force et endurance sous l'attendu", n2: "Bilan de suivi · force et VMA au niveau 3, service plus rapide ; répétition de sprints à travailler",
     fav: ["EWU-10", "EWU-12"],
-    sem: { 0: [["tennis", "Entraînement tennis", 90, 5]], 1: [["seance", "Séance PP : force", 60, 6]], 2: [["tennis", "Entraînement tennis", 90, 6]], 3: [["seance", "Séance PP : vitesse", 60, 6]], 4: [["tennis", "Tennis : thème service-retour", 75, 5]], 5: [["match", "Match d'entraînement", 90, 7]] },
+    sem: { 0: [["tennis", "Entraînement tennis", 90, 5]], 1: [["seance", "Préparation physique : force", 60, 6]], 2: [["tennis", "Entraînement tennis", 90, 6]], 3: [["seance", "Préparation physique : vitesse", 60, 6]], 4: [["tennis", "Tennis : thème service-retour", 75, 5]], 5: [["match", "Match d'entraînement", 90, 7]] },
     forme: [4, 4, 4, 4, 4], fj: 5 },
   { k: "ysee", nom: "Ysée Démo", sexe: "F", ans: 9.45, grille: 9, main: "D", revers: "2", classement: "30/3", croissance: false, zones: [], dispo: { pp: 1, tennis: 2 },
     objectifs: "Construire la motricité et les appuis par le jeu ; premiers plateaux de sa catégorie.",
@@ -1731,7 +2182,7 @@ const DEMO_J = [
     v2: { PP: [3, 2.5, 3, 3, 2.5, 3, 3, 3, 2.5, 3, 3, 3], GE: [2.5, 2, 2, 3, 2.5, 2, 2.5, 2, 2, 2.5, 2, 2, 2], DE: [3, 3, 3, 3, 2.5, 3, 3, 2.5, 3, 2.5, 3] },
     n1: "Premier bilan · bases motrices en construction", n2: "Bilan de suivi · gros progrès en gainage, saut et vitesse",
     fav: [],
-    sem: { 0: [["seance", "PP collective : motricité", 45, 4]], 2: [["tennis", "Entraînement tennis", 60, 4]], 5: [["tennis", "Entraînement du samedi", 60, 4]] },
+    sem: { 0: [["seance", "Préparation physique collective : motricité", 45, 4]], 2: [["tennis", "Entraînement tennis", 60, 4]], 5: [["tennis", "Entraînement du samedi", 60, 4]] },
     forme: [5, 4, 5, 5, 5], fj: 3 }
 ];
 const demoJoueurs = () => G.joueurs.all({ archives: true }).filter(j => j && j.demo);
@@ -1824,18 +2275,18 @@ async function chargerDemo() {
       J[P0.k] = j;
     }
     J.malo.blessures.push({ id: G.uid(), zone: "talon", desc: "Entorse de la cheville droite (bénigne)", debut: add(t, -75), fin: add(t, -54), statut: "guerie" });
-    J.malo.agenda.push({ id: G.uid(), date: vend, fin: add(vend, 2), type: "tournoi", titre: "Tournoi jeunes de Mérignac · 15-16 ans" });
-    J.ninon.agenda.push({ id: G.uid(), date: sam14, fin: add(sam14, 1), type: "tournoi", titre: "TMC de Pessac · 12 ans" });
+    J.malo.agenda.push({ id: G.uid(), date: vend, fin: add(vend, 2), type: "tournoi", titre: "Tournoi d'Automne · 15-16 ans" });
+    J.ninon.agenda.push({ id: G.uid(), date: sam14, fin: add(sam14, 1), type: "tournoi", titre: "Tournoi de Printemps · 12 ans" });
     J.ysee.agenda.push({ id: G.uid(), date: prochain(t, 5, 20, 26), fin: add(prochain(t, 5, 20, 26), 7), type: "repos", titre: "Vacances en famille" });
     const gid = G.uid();
     quiet(() => {
       const s = G.load(G.K.joueurs, { joueurs: [] }) || {}; s.joueurs = arr(s.joueurs).concat(Object.values(J)); G.save(G.K.joueurs, s);
       G.groupes.save({ id: gid, nom: "Groupe démo", jids: Object.values(J).map(j => j.id), notes: "Groupe fictif de démonstration (Ninon, Malo, Ysée).", cree: add(t, -200), demo: true });
-      /* assiduité : 6 samedis passés pointés (PP collective du samedi) ; objectifs suivis */
+      /* assiduité : 6 samedis passés pointés (préparation physique collective du samedi) ; objectifs suivis */
       const abs = { ninon: [3], malo: [1], ysee: [0, 4] };
-      for (let w = 1; w <= 6; w++) { const d = add(lundi(t), 5 - 7 * w), info = { cle: "demo|" + gid + "|" + d, date: d, gid, titre: "PP collective du samedi" };
+      for (let w = 1; w <= 6; w++) { const d = add(lundi(t), 5 - 7 * w), info = { cle: "demo|" + gid + "|" + d, date: d, gid, titre: "Préparation physique collective du samedi" };
         for (const [k, jj] of Object.entries(J)) G.presences.set(info, jj.id, !(abs[k] || []).includes(w - 1)); }
-      const OBJ = { ninon: [["Réceptions de sauts stables et silencieuses (genoux dans l'axe)", 30, "encours"], ["Championnat de Gironde 12 ans : sortir des poules", 55, "encours"], ["Faire l'échauffement seule avant chaque match", -10, "atteint"]],
+      const OBJ = { ninon: [["Réceptions de sauts stables et silencieuses (genoux dans l'axe)", 30, "encours"], ["Championnat départemental 12 ans : sortir des poules", 55, "encours"], ["Faire l'échauffement seule avant chaque match", -10, "atteint"]],
         malo: [["Service : 2e balle liftée à 80 % de réussite", 40, "encours"], ["Répétition de sprints : niveau 3 au prochain bilan", 70, "encours"]],
         ysee: [["Sauter à la corde 30 fois sans faute", 25, "encours"]] };
       for (const [k, L] of Object.entries(OBJ)) if (J[k]) L.forEach(([txt, n, st]) => { const o = G.objectifs.add({ jid: J[k].id, txt, ech: add(t, n) }); if (o && st !== "encours") G.objectifs.update(o.id, { statut: st }); });
@@ -1844,10 +2295,10 @@ async function chargerDemo() {
     demoMsg("Create my prog calcule les plans…");
     const plan = (o) => ({ id: G.uid(), jid: null, gid: null, sem: [], compets: [], objs: [], coups: [], bilans: [], over: {}, edits: {}, built: {}, reprise: false, cree: add(t, -45), maj: t, demo: true, ...o });
     const pN = plan({ jid: J.ninon.id, nom: "Saison " + y + "-" + (y + 1), debut: y + "-09-01", fin: (y + 1) + "-06-30", sem: DEMO_SEM11, reprise: true,
-      compets: [{ nom: "Championnat de Gironde 12 ans", d1: y + "-12-05", d2: y + "-12-13" }, { nom: "Tournoi national jeunes", d1: (y + 1) + "-02-20", d2: (y + 1) + "-02-28" }, { nom: "Championnat régional 12 ans", d1: (y + 1) + "-05-15", d2: (y + 1) + "-05-23" }],
+      compets: [{ nom: "Championnat départemental 12 ans", d1: y + "-12-05", d2: y + "-12-13" }, { nom: "Tournoi national jeunes", d1: (y + 1) + "-02-20", d2: (y + 1) + "-02-28" }, { nom: "Championnat régional 12 ans", d1: (y + 1) + "-05-15", d2: (y + 1) + "-05-23" }],
       objs: [{ nom: "Championnat régional 12 ans", d: (y + 1) + "-05-22" }], coups: [{ nom: "Vacances de Noël", d1: y + "-12-21", d2: (y + 1) + "-01-03" }], bilans: [(y + 1) + "-01-12", (y + 1) + "-06-07"] });
     const d0 = add(lundi(t), -7);
-    const pM = plan({ jid: J.malo.id, nom: "Bloc 4 semaines · vers Mérignac", debut: d0, fin: add(d0, 27), sem: DEMO_SEM13, objs: [{ nom: "Tournoi jeunes de Mérignac", d: vend }] });
+    const pM = plan({ jid: J.malo.id, nom: "Bloc de 4 semaines · Tournoi d'Automne", debut: d0, fin: add(d0, 27), sem: DEMO_SEM13, objs: [{ nom: "Tournoi d'Automne", d: vend }] });
     quiet(() => { const s = G.load(G.K.prog, {}) || {}; s.profils ||= {}; s.plans = arr(s.plans).concat([pN, pM]); G.save(G.K.prog, s); });
     G.save(G.K.handoff, null);
     const fp = cadre("prog.html#p/" + pN.id); cadres.push(fp);
@@ -1922,6 +2373,8 @@ async function chargerDemo() {
       Jr.retours.push(...o.R); Jr.forme.push(...o.F); Rt.hist.push(...o.H);
     }
     quiet(() => { G.save(G.K.journal, Jr); G.save(G.K.routines, Rt); });
+    quiet(() => { const dj = demoJoueurs()[0]; if (dj) { G.courant.set("j", dj.id); G.courant.vu("Dossier de " + dj.nom, "index.html#/j/" + dj.id); }
+      const C = G.reglages.coach(); if (!C.creneaux.length && !C.lieu && !C.materiel.length) { const dg = G.groupes.all().find(x => x.demo); G.reglages.setCoach({ demo: true, lieu: "court", duree: 60, materiel: [], creneaux: [{ j: 2, h: "17:30", duree: 60 }, { j: 5, h: "10:00", duree: 75, gid: dg ? dg.id : null }] }); } });
     demoMsg(DEMO.ok ? "La démonstration est prête." : "La démonstration est chargée (un module n'a pas répondu à temps : son contenu est simplifié).");
   } catch (e) {
     console.error("démonstration", e); DEMO.ok = false; demoMsg("Le chargement a échoué : « Retirer la démonstration » nettoie ce qui a été ajouté.");
@@ -1949,6 +2402,8 @@ function retirerDemo() {
       const Jr = G.load(G.K.journal, null); if (Jr) { Jr.retours = arr(Jr.retours).filter(r => !r.demo && !ids.has(r.jid)); Jr.forme = arr(Jr.forme).filter(r => !r.demo && !ids.has(r.jid)); G.save(G.K.journal, Jr); }
       const Rt = G.load(G.K.routines, null); if (Rt && Array.isArray(Rt.hist)) { Rt.hist = Rt.hist.filter(h => !h.demo && !ids.has(h.who)); G.save(G.K.routines, Rt); }
       const H = G.relais.lire(); if (H && (ids.has(H.jid) || H.de === "demo")) G.save(G.K.handoff, null);
+      if (G.reglages.coach().demo) { const r = G.reglages(); delete r.coach; G.save(G.K.reglages, r); }
+      const Cu = G.load(G.K.courant, null); if (Cu && Cu.dernier && /Démo/.test(Cu.dernier.titre || "")) { Cu.dernier = null; G.save(G.K.courant, Cu); }
     });
   } finally { DEMO.busy = false; }
   return n;
@@ -1966,7 +2421,7 @@ function demoSection() {
 }
 Object.assign(ACT, {
   demo(b) { if (DEMO.busy) return; b.disabled = true; chargerDemo(); },
-  demoff(b) { if (DEMO.busy || !confirmer(b, "Toucher encore pour tout retirer")) return; const n = retirerDemo(); DEMO.msg = "Démonstration retirée (" + n + " joueurs fictifs et leur groupe)."; render(true); toast("Démonstration retirée"); },
+  demoff(b) { if (DEMO.busy) return; const undo = G.ui.photo(Object.values(G.K)); const n = retirerDemo(); DEMO.msg = "Démonstration retirée (" + n + " joueurs fictifs et leur groupe)."; render(true); G.ui.annuler("Démonstration retirée", () => { undo(); DEMO.msg = ""; render(true); }); },
   async demore(b) { if (DEMO.busy || !confirmer(b, "Toucher encore : recharger avec les dates du jour")) return; retirerDemo(); DEMO.msg = ""; render(true); await chargerDemo(); }
 });
 

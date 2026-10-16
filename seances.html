@@ -62,8 +62,153 @@ html.grun-simple .cx{display:none!important}
 .grun-pdf:disabled{opacity:.6}
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .grun-pdf{color:#2DD4BF;border-color:#2DD4BF}}
 :root[data-theme="dark"] .grun-pdf{color:#2DD4BF;border-color:#2DD4BF}
+
+/* ===================== SOCLE 1.1 « chemin ultra intuitif » =====================
+   RÈGLES DE MISE EN PAGE (toutes les pages) :
+   - retour « ‹ » en haut à gauche (#back) ; joueur en cours + « ? » en haut à droite (.grun-topx, injectés par GRUN.nav) ;
+   - action principale EN BAS, grande, dans la zone du pouce : <div class="grun-actbar"><button class="gs-btn main">…</button></div> ;
+   - options secondaires repliées : <details class="grun-plus"><summary>Plus d'options</summary><div class="grun-plusb">…</div></details> ;
+   - « + » unique au centre de la barre du bas (#grun-plus) ; créations dans une feuille (.grun-ov > .grun-sheet). */
+:root{--grun-hi:#0F766E;--grun-on:#fff}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--grun-hi:#2DD4BF;--grun-on:#0B1117}}
+:root[data-theme="dark"]{--grun-hi:#2DD4BF;--grun-on:#0B1117}
+/* « + » au centre de la barre du bas */
+#grun-nav #grun-plus{flex:0 0 64px;border:0;background:none;padding:0;display:flex;align-items:center;justify-content:center;min-height:var(--nav-h);cursor:pointer}
+#grun-nav #grun-plus span{width:48px;height:48px;border-radius:16px;background:var(--grun-hi);color:var(--grun-on);display:flex;align-items:center;justify-content:center;box-shadow:0 3px 10px rgba(15,118,110,.35)}
+#grun-nav #grun-plus svg{width:26px;height:26px;stroke-width:2.6;stroke:currentColor}
+#grun-nav #grun-plus:active span{transform:scale(.94)}
+@media (max-width:380px){#grun-nav a{font-size:10.5px}#grun-nav #grun-plus{flex-basis:56px}}
+/* barre du haut : joueur en cours + aide */
+.grun-topx{display:inline-flex;gap:6px;align-items:center;flex:0 0 auto}
+.grun-chip{display:inline-flex;align-items:center;gap:6px;min-height:36px;max-width:118px;padding:0 10px 0 4px;border:1px solid var(--line,#D9DDE3);border-radius:999px;background:var(--panel,#fff);color:var(--ink,#16202E);font:600 14px/1 var(--ui,system-ui,sans-serif);cursor:pointer}
+.grun-chip .gc-nm{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+.gc-av{flex:0 0 28px;width:28px;height:28px;border-radius:50%;background:var(--grun-hi);color:var(--grun-on);display:inline-flex;align-items:center;justify-content:center;font-weight:800;font-size:13px}
+.gc-av.g{border-radius:8px;background:#6D3FC0;color:#fff}
+.gc-av.vide{background:var(--soft,#ECEFF3);color:var(--mute,#5D6675)}
+.grun-q{width:36px;height:36px;border-radius:50%;border:1px solid var(--line,#D9DDE3);background:var(--panel,#fff);color:var(--mute,#5D6675);font:800 17px/1 var(--ui,system-ui,sans-serif);cursor:pointer;padding:0}
+@media (max-width:430px){.grun-chip{max-width:92px;padding-right:8px}.grun-chip .gc-nm{font-size:13px}}
+@media (max-width:360px){.grun-chip .gc-nm{display:none}.grun-chip{padding:0 4px}}
+/* feuille (bottom sheet) */
+.grun-ov{position:fixed;inset:0;z-index:200;background:rgba(10,16,24,.42);display:flex;align-items:flex-end;justify-content:center;opacity:0;transition:opacity .16s ease}
+.grun-ov.in{opacity:1}.grun-ov.out{opacity:0}
+.grun-sheet{width:100%;max-width:560px;max-height:min(90vh,calc(100vh - env(safe-area-inset-top,0px) - 24px));display:flex;flex-direction:column;background:var(--panel,#fff);color:var(--ink,#16202E);border-radius:18px 18px 0 0;box-shadow:0 -10px 40px rgba(0,0,0,.25);transform:translateY(24px);transition:transform .18s ease;font-family:var(--ui,system-ui,sans-serif);font-size:16px;line-height:1.4}
+.grun-sheet.large{max-width:720px}
+.grun-ov.in .grun-sheet{transform:none}
+@media (min-width:700px){.grun-ov{align-items:center}.grun-sheet{border-radius:18px;max-height:86vh}}
+.gs-h{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:14px 16px 8px;border-bottom:1px solid var(--line,#D9DDE3)}
+.gs-h b{font-family:var(--display,"Barlow Condensed",system-ui,sans-serif);font-size:1.45em;font-weight:700;line-height:1.1}
+.gs-x{width:40px;height:40px;border-radius:50%;border:0;background:var(--soft,#ECEFF3);color:var(--ink,#16202E);font-size:24px;line-height:1;cursor:pointer;flex:0 0 auto}
+.gs-b{padding:12px 16px 14px;overflow-y:auto;-webkit-overflow-scrolling:touch;display:flex;flex-direction:column;gap:12px;flex:1 1 auto;min-height:0}
+.gs-f{display:flex;gap:8px;padding:10px 16px calc(12px + env(safe-area-inset-bottom,0px));border-top:1px solid var(--line,#D9DDE3)}
+.gs-btn{min-height:52px;border-radius:13px;border:1px solid var(--line,#D9DDE3);background:var(--panel,#fff);color:var(--ink,#16202E);font:700 16px/1.1 var(--ui,system-ui,sans-serif);padding:0 16px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;text-decoration:none;gap:6px}
+.gs-btn.main{flex:1;background:var(--grun-hi);border-color:var(--grun-hi);color:var(--grun-on)}
+.gs-btn.sec{flex:0 1 auto}
+.gs-btn.sm{min-height:40px;font-size:14.5px;border-radius:10px;padding:0 12px;flex:0 0 auto}
+.gs-btn:disabled{opacity:.5}
+.grun-ov.danger .gs-btn.main{background:#B91C1C;border-color:#B91C1C;color:#fff}
+.gs-form{display:flex;flex-direction:column;gap:12px;margin:0}
+.gs-l{display:flex;flex-direction:column;gap:5px;font-weight:600;font-size:14.5px;color:var(--ink,#16202E);min-width:0}
+.gs-l small{font-weight:500;color:var(--mute,#5D6675)}
+.gs-inp{min-height:48px;border:1px solid var(--line,#D9DDE3);border-radius:11px;background:var(--bg,#F4F5F7);color:var(--ink,#16202E);padding:0 12px;font:500 17px/1.2 var(--ui,system-ui,sans-serif);width:100%;max-width:100%;box-sizing:border-box}
+.gs-ta{padding:10px 12px;min-height:84px;resize:vertical;line-height:1.4}
+.gs-inp:focus{outline:2px solid var(--grun-hi);outline-offset:1px}
+.gs-seg{display:flex;border:1px solid var(--line,#D9DDE3);border-radius:11px;overflow:hidden;background:var(--bg,#F4F5F7)}
+.gs-seg button{flex:1;min-height:46px;border:0;background:none;color:var(--ink,#16202E);font:600 16px/1 var(--ui,system-ui,sans-serif);cursor:pointer}
+.gs-seg button+button{border-left:1px solid var(--line,#D9DDE3)}
+.gs-seg button[aria-checked=true]{background:var(--grun-hi);color:var(--grun-on)}
+.gs-chips{display:flex;flex-wrap:wrap;gap:6px}
+.gs-chip{min-height:40px;border:1px solid var(--line,#D9DDE3);background:var(--panel,#fff);color:var(--ink,#16202E);border-radius:999px;padding:0 14px;font:600 15px/1 var(--ui,system-ui,sans-serif);cursor:pointer;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.gs-chips.big .gs-chip{min-height:46px;font-size:16px}
+.gs-chip.g{border-style:dashed}
+.gs-chip[aria-pressed=true]{background:var(--grun-hi);border-color:var(--grun-hi);color:var(--grun-on)}
+.gs-err{color:#B91C1C;font-weight:600;margin:0;min-height:0}
+.gs-err:empty{display:none}
+.gs-m{color:var(--mute,#5D6675);font-size:14.5px;margin:0}
+.gs-p{margin:0;font-size:16.5px;line-height:1.5}
+.gs-sert{color:var(--grun-hi);font-weight:600;font-size:13px}
+.gs-lien{align-self:flex-start;border:0;background:none;color:var(--grun-hi);font:700 15.5px/1.2 var(--ui,system-ui,sans-serif);padding:6px 0;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+.gs-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.gs-n .gs-inp{font-variant-numeric:tabular-nums}
+.gs-c{display:flex;gap:10px;align-items:flex-start;font-weight:600;font-size:15px}
+.gs-c input{width:22px;height:22px;flex:0 0 auto;margin-top:1px}
+.gs-c small{font-weight:500;color:var(--mute,#5D6675)}
+.gs-cp fieldset{border:1px solid var(--line,#D9DDE3);border-radius:13px;padding:10px 12px 12px;margin:0;display:flex;flex-direction:column;gap:10px;min-width:0}
+.gs-cp legend{font-weight:800;font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:var(--mute,#5D6675);padding:0 4px}
+.gs-cp legend small{text-transform:none;letter-spacing:0;font-weight:500}
+details.gs-plus>summary{cursor:pointer;color:var(--grun-hi);font-weight:700;padding:4px 0;list-style:none}
+details.gs-plus>summary::-webkit-details-marker{display:none}
+details.gs-plus[open]>summary{margin-bottom:8px}
+.gs-list{border:1px solid var(--line,#D9DDE3);border-radius:11px;overflow:hidden}
+.gs-row{display:flex;flex-wrap:wrap;gap:2px 10px;align-items:baseline;padding:8px 12px;border-top:1px solid var(--line,#D9DDE3)}
+.gs-row:first-child{border-top:0}
+.gs-row span{color:var(--mute,#5D6675);font-size:14px}
+.gs-row small{flex-basis:100%;color:#B91C1C;font-weight:600}
+.gs-row.ko b{color:#B91C1C}
+.gs-menu{display:flex;flex-direction:column;gap:8px}
+.gs-menu.plus{display:grid;grid-template-columns:minmax(0,1fr);gap:6px}
+@media (min-width:560px){.gs-menu.plus{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.gs-it{display:grid;grid-template-columns:auto minmax(0,1fr);gap:1px 12px;align-items:center;text-align:left;min-height:60px;padding:9px 12px;border:1px solid var(--line,#D9DDE3);border-radius:13px;background:var(--panel,#fff);color:var(--ink,#16202E);text-decoration:none;cursor:pointer;font:inherit}
+.gs-it b{font-size:16.5px;grid-column:2}
+.gs-it span{grid-column:2;color:var(--mute,#5D6675);font-size:13.5px;line-height:1.3}
+.gs-it:not(:has(.pi)){grid-template-columns:minmax(0,1fr)}.gs-it:not(:has(.pi)) b,.gs-it:not(:has(.pi)) span{grid-column:1}
+.gs-it.x{border-color:var(--grun-hi);border-width:1.5px}
+.gs-it.st{cursor:default}
+.gs-it.st .gs-seg{grid-column:1/-1;margin-top:6px}
+.gs-it:active{background:var(--soft,#ECEFF3)}
+.pi{grid-row:1/3;width:38px;height:38px;border-radius:11px;background:var(--soft,#ECEFF3);position:relative}
+.pi::after{content:"";position:absolute;inset:9px;background:var(--grun-hi);-webkit-mask:var(--m) center/contain no-repeat;mask:var(--m) center/contain no-repeat}
+.pi-joueur{--m:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.2'%3E%3Ccircle cx='12' cy='8' r='4'/%3E%3Cpath d='M4 21c0-4 4-6 8-6s8 2 8 6'/%3E%3C/svg%3E")}
+.pi-groupe{--m:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.2'%3E%3Ccircle cx='8' cy='9' r='3'/%3E%3Ccircle cx='16' cy='9' r='3'/%3E%3Cpath d='M2 20c0-3 3-5 6-5s6 2 6 5M12 20c0-3 2-5 4-5s6 2 6 5'/%3E%3C/svg%3E")}
+.pi-session{--m:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='black'%3E%3Cpath d='M8 5v14l11-7z'/%3E%3C/svg%3E")}
+.pi-test{--m:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.2'%3E%3Cpath d='M12 3l8.5 6.2-3.2 10H6.7L3.5 9.2z'/%3E%3C/svg%3E")}
+.pi-exo{--m:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.2'%3E%3Cpath d='M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2z'/%3E%3Cpath d='M4 19V5'/%3E%3C/svg%3E")}
+.pi-note{--m:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.2'%3E%3Cpath d='M4 20h4L19 9l-4-4L4 16z'/%3E%3C/svg%3E")}
+.pi-wu{--m:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.2'%3E%3Cpath d='M12 3c2 3 5 5 5 9a5 5 0 0 1-10 0c0-2 1-3 2-4 0 2 1 3 2 3 0-3-1-5 1-8z'/%3E%3C/svg%3E")}
+.gs-cur{display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center;padding:10px 12px;border-radius:13px;background:var(--soft,#ECEFF3)}
+.gs-cur b{font-size:17px}.gs-cur span{color:var(--mute,#5D6675);font-size:14px;flex:1}
+.gs-bar{display:flex;flex-direction:column;gap:5px}
+.gs-bar>div,.gc-bar{display:block;height:8px;border-radius:99px;background:var(--soft,#ECEFF3);overflow:hidden}
+.gs-bar i,.gc-bar i{display:block;height:100%;background:var(--grun-hi);border-radius:99px;transition:width .3s}
+/* toast avec « Annuler » */
+#grun-toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(var(--nav-h,62px) + 14px + env(safe-area-inset-bottom,0px));z-index:260;display:flex;gap:12px;align-items:center;max-width:calc(100vw - 32px);background:var(--ink,#16202E);color:var(--bg,#fff);padding:8px 8px 8px 16px;border-radius:13px;box-shadow:0 8px 28px rgba(0,0,0,.28);font:600 15px/1.3 var(--ui,system-ui,sans-serif)}
+#grun-toast:not(:has(button)){padding:11px 16px}
+#grun-toast button{min-height:40px;border:0;border-radius:9px;background:var(--grun-hi);color:var(--grun-on);font:800 15px/1 var(--ui,system-ui,sans-serif);padding:0 14px;cursor:pointer;white-space:nowrap}
+body:not(.grun-has-nav) #grun-toast{bottom:calc(16px + env(safe-area-inset-bottom,0px))}
+#grun-saved{position:fixed;top:calc(8px + env(safe-area-inset-top,0px));right:12px;z-index:270;background:var(--grun-hi);color:var(--grun-on);font:700 13px/1 var(--ui,system-ui,sans-serif);padding:7px 11px;border-radius:99px;opacity:0;transform:translateY(-6px);transition:opacity .2s,transform .2s;pointer-events:none}
+#grun-saved.on{opacity:1;transform:none}
+/* barre de complétude (dossier) */
+.grun-compl{border:1px solid var(--line,#D9DDE3);border-radius:13px;background:var(--panel,#fff);padding:10px 12px;display:flex;flex-direction:column;gap:6px}
+.grun-compl .gc-h{display:flex;gap:10px;align-items:center}.grun-compl .gc-h b{white-space:nowrap}.grun-compl .gc-bar{flex:1}
+.grun-compl ul{margin:0;padding-left:18px;font-size:14.5px;color:var(--mute,#5D6675)}
+.grun-compl ul b{color:var(--ink,#16202E);font-weight:600}
+.grun-compl .gs-btn{align-self:flex-start}
+.grun-compl.ok{padding:8px 12px}
+/* action principale en bas (zone du pouce), au-dessus de la barre du bas */
+.grun-actbar{position:sticky;bottom:calc(var(--nav-h,62px) + env(safe-area-inset-bottom,0px) + 8px);z-index:20;display:flex;gap:8px;margin-top:16px}
+body:not(.grun-has-nav) .grun-actbar{bottom:calc(8px + env(safe-area-inset-bottom,0px))}
+.grun-actbar>*{flex:1;min-height:52px;box-shadow:0 6px 18px rgba(0,0,0,.14)}
+/* visite guidée, schéma */
+.gv h3{font-family:var(--display,"Barlow Condensed",system-ui,sans-serif);font-size:1.6em;margin:4px 0 6px;line-height:1.1}
+.gv-dots{display:flex;gap:5px}.gv-dots i{width:22px;height:5px;border-radius:9px;background:var(--line,#D9DDE3)}.gv-dots i.vu{background:var(--mute,#5D6675)}.gv-dots i.on{background:var(--grun-hi)}
+.grun-schema{width:100%;max-width:440px;display:block;margin:10px auto 0;font-family:var(--ui,system-ui,sans-serif)}
+.grun-schema rect{stroke-width:2}
+.grun-schema .s-ind{fill:rgba(15,118,110,.12);stroke:#0F766E}.grun-schema .s-tests{fill:rgba(109,63,192,.12);stroke:#6D3FC0}.grun-schema .s-res{fill:rgba(29,78,216,.10);stroke:#1D4ED8}.grun-schema .s-create{fill:rgba(194,65,12,.10);stroke:#C2410C}
+.grun-schema .s-d1{fill:rgba(194,65,12,.14);stroke:#C2410C}.grun-schema .s-d2{fill:rgba(194,65,12,.22);stroke:#C2410C}.grun-schema .s-d3{fill:#C2410C;stroke:#C2410C}
+.grun-schema text{fill:var(--ink,#16202E);text-anchor:middle}.grun-schema .s-t{font-weight:800;font-size:15px}.grun-schema .s-s{font-size:12px;fill:var(--mute,#5D6675)}
+.grun-schema .s-k{font-size:11px;font-weight:700;text-anchor:start}.grun-schema .s-k.c{text-anchor:middle;fill:#fff}
+.grun-doll{margin-top:8px}.grun-doll div{border:2px solid #C2410C;border-radius:12px;padding:8px 10px 10px;font-weight:800;color:#C2410C;background:rgba(194,65,12,.07)}.grun-doll div div{margin-top:6px;background:rgba(194,65,12,.12)}.grun-doll div div div{background:#C2410C;color:#fff}
+.grun-demo-bar{display:flex;gap:14px;align-items:center;justify-content:center;margin-top:8px}
+.grun-chip.demo{pointer-events:none}
+.grun-plus-demo{width:48px;height:48px;border-radius:16px;background:var(--grun-hi);color:var(--grun-on);display:inline-flex;align-items:center;justify-content:center;font:800 30px/1 var(--ui,system-ui,sans-serif)}
+html.grun-sheet-on body{overflow:hidden}
+@media print{.grun-topx,#grun-toast,#grun-saved,.grun-ov,.grun-actbar{display:none!important}}
+/* barre du haut des modules sur téléphone : le joueur en cours se réduit à son initiale, le titre s'abrège */
+html.grun-mod .topin .brand{min-width:0;overflow:hidden;text-overflow:ellipsis;flex:0 1 auto}
+@media (max-width:430px){html.grun-mod .grun-chip .gc-nm{display:none}html.grun-mod .grun-chip{padding:0 3px;max-width:none}.grun-topx{gap:4px}.grun-q{width:34px;height:34px}}
+.grun-chip:has(.gc-av.vide){max-width:none}.grun-chip:has(.gc-av.vide) .gc-nm{overflow:visible}
 </style>
-<script src="grun.js?v=1"></script>
+<script src="grun.js?v=1.4"></script>
+<script src="assistant.js?v=1.4"></script>
 <meta name="grun-module" content="seances"></head><body><title>Create my session · GRÜN</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Barlow:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
 <style>
@@ -353,6 +498,17 @@ body.terrain.grun-has-nav{padding-bottom:0}
 .altb[aria-pressed=true]{border-color:var(--ink);box-shadow:inset 0 0 0 1px var(--ink)}
 .altb em{display:block;margin-top:2px}
 @media print{.bdos textarea{display:none}.why{border-color:#bbb}}
+
+/* Create my session 1.3 : résumé en tête, retour commun */
+.resume{display:flex;flex-direction:column;gap:6px;margin-top:12px;font-size:14.5px}
+.resume .rsr{display:flex;gap:10px;align-items:baseline;flex-wrap:wrap}
+.resume .rsl{flex:0 0 74px;color:var(--mute);font-size:12.5px;text-transform:uppercase;letter-spacing:.03em;font-weight:600}
+.resume .rsr>span:last-child{flex:1;min-width:0}
+.resume .neg{color:#B91C1C;font-weight:600}
+.retour .rpe{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:6px}
+.retour .rpe .tg{min-height:48px;font-size:18px}
+.retour details.rt-pj{margin-top:8px}.retour details.rt-pj>summary{cursor:pointer;font-weight:600;min-height:44px;display:flex;align-items:center}
+@media (max-width:640px){.prow{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.prow>b{grid-column:1/-1}.prow .pc{grid-column:1/-1}}
 </style>
 <header class="top"><div id="relais"></div><div class="topin">
   <button class="ib" id="back" type="button" aria-label="Retour">‹</button>
@@ -428,7 +584,7 @@ const Partage = (()=>{
   return {enc,dec,envoyer};
 })();
 
-/* ===== CREATE MY SÉANCE (GRÜN) : l'appli construit la structure, propose pour chaque case les exos de la banque, le coach choisit =====
+/* ===== CREATE MY SÉANCE (GRÜN) : l'appli construit la structure, propose pour chaque case les exercices de la banque, le coach choisit =====
    Poupée russe : dans Create my prog (relais) ; l'échauffement se CHOISIT dans Choose your warm-up (relais vers la bibliothèque, pas de constructeur ici).
    Données propres : seances_v1 {seances:[Seance], modeles:[Modele], mat, lieu, relais, relaisProg, run}. Joueurs, groupes, journal, banque : GRUN.* */
 function nomCourt(t,n=60){ t=String(t||"").trim(); if(t.length<=n) return t; const c=t.slice(0,n).replace(/\s+\S*$/,""); return c.replace(/[\s,;:·–-]+$/,"")+"…"; }
@@ -456,9 +612,17 @@ const COACH=()=>!GRUN.isJoueur();
 const MOI=()=>GRUN.isJoueur()?GRUN.mode().jid:null;
 
 /* ---------- référentiels ---------- */
-const TYPES={PPI:{n:"PP individuelle",c:"pp"},PPC:{n:"PP collective",c:"pp"},TI:{n:"Tennis individuel (biomécanique)",c:"tb"},TC:{n:"Tennis collectif",c:"ten"},PM:{n:"Préparation mentale",c:"pm"}};
+const TYPES={PPI:{n:"Préparation physique individuelle",c:"pp"},PPC:{n:"Préparation physique collective",c:"pp"},TI:{n:"Tennis individuel (biomécanique)",c:"tb"},TC:{n:"Tennis collectif",c:"ten"},PM:{n:"Préparation mentale",c:"pm"}};
 const PHASES={R0:"Reprise",G:"Préparation générale",S:"Préparation spécifique",P:"Affûtage",C:"Compétition",R:"Récupération"};
-const LIEUX={court:"Court de tennis",gym:"Gymnase",salle:"Salle de PP",ext:"Extérieur"};
+const LIEUX={court:"Court de tennis",gym:"Gymnase",salle:"Salle de préparation physique",ext:"Extérieur",maison:"À la maison"};
+/* lieux des réglages coach (G.LIEUX : court, salle, gymnase, exterieur, maison) → lieux de la séance */
+const lieuDeG=l=>({court:"court",salle:"salle",gymnase:"gym",gym:"gym",exterieur:"ext",ext:"ext",maison:"maison"})[l]||null;
+/* réglages coach par défaut (G.reglages.coach + prochain créneau) : préremplissent toute nouvelle séance */
+function defauts(){ let C={}, cr=null; try{ C=GRUN.reglages.coach()||{}; }catch(e){} try{ cr=GRUN.reglages.prochainCreneau(); }catch(e){}
+  return {lieu:lieuDeG(C.lieu), mat:Array.isArray(C.materiel)&&C.materiel.length?C.materiel.slice():null, duree:(cr&&+cr.duree)||+C.duree||null, date:cr?cr.date:null, h:cr?cr.h:null}; }
+const curJ=()=>{ try{ return GRUN.courant.jid(); }catch(e){ return null; } }, curG=()=>{ try{ return GRUN.courant.gid(); }catch(e){ return null; } };
+const aide=k=>{ try{ GRUN.aide.ecran("seances/"+k); }catch(e){} };
+const actbar=inner=>`<div class="grun-actbar noprint">${inner}</div>`;
 const LN={PP:["Force du bas du corps","Force du haut du corps","Gainage et stabilité du tronc","Puissance des jambes : sauts et pliométrie","Puissance du haut du corps et rotation","Vitesse et accélération","Freinage, changements de direction et agilité","Endurance aérobie","Répétition d'efforts intenses","Coordination, motricité fondamentale et rythme","Équilibre et proprioception","Mobilité et souplesse"],
  GE:["Service à plat","Service slicé","Service lifté","Coup droit lifté","Coup droit à plat","Coup droit slicé","Revers lifté","Revers à plat","Revers slicé","Volée de coup droit","Volée de revers","Smash","Amortie et touché de balle"],
  DE:["Position d'attention","Allègement et reprise d'appuis","Démarrage et premiers pas","Déplacements latéraux","Déplacements vers l'avant et vers l'arrière","Pas d'ajustement et mise à distance","Appuis de frappe","Freinage et décélération","Changement de direction et réaccélération","Replacement","Enchaînements et liaison des actions"]};
@@ -474,15 +638,15 @@ const ZPREV={dos:/rachis|dos|lomb|bassin/,genou:/genou/,talon:/pied|cheville|ten
 const ZN={dos:"Dos",genou:"Genou",talon:"Talon",epaule:"Épaule",poignet:"Poignet",hanche:"Hanche"};
 const ZONES_RETOUR={...ZN,cheville:"Cheville",cuisse:"Cuisse",mollet:"Mollet",coude:"Coude",nuque:"Nuque",autre:"Autre"};
 const ETN={MR:"Mise en route",MO:"Mobilité",AC:"Activation et prévention",CV:"Coordination et vitesse",ST:"Spécifique tennis",PO:"Mise en tension finale"};
-const RULE_PROG="Progression : chaque exo passe à sa version du niveau au-dessus (même sous-famille, mêmes lignes, adaptée à l'âge) ; s'il n'y en a pas, son dosage monte d'un cran.";
+const RULE_PROG="Progression : chaque exercice passe à sa version du niveau au-dessus (même sous-famille, mêmes lignes, adaptée à l'âge) ; s'il n'y en a pas, son dosage monte d'un cran.";
 const RULE_HIST="⬆ = un cran au-dessus de ce que le joueur a déjà fait sur cette ligne.";
 
-/* ---------- banque (GRUN.banque : base + exos perso + modifications ; les masqués ne sont pas proposés) ---------- */
+/* ---------- banque (GRUN.banque : base + exercices perso + modifications ; les masqués ne sont pas proposés) ---------- */
 function kOf(f){ const m=/^5\.(\d+)\.(\d+)/.exec(f||""); if(!m) return "jeu"; const a=+m[1], b=+m[2];
   if(a===1) return b<=3?"force":b===4?"halte":b<=7?"gain":b<=10?"puis":b===11?"vit":b<=13?"cod":b===14?"aero":b===15?"rsa":b<=18?"coord":b<=20?"equi":b<=22?"mob":b===23?"etd":"ets";
   if(a===2) return b===1?"ech":b<=4?"prev":b===5?"recup":b<=7?"jeuph":b===8?"visu":"routine";
   if(a===3) return "tech"; if(a===4) return "depl"; if(a===5) return b===6?"match":"jeu"; if(a===6) return "ech"; return "jeu"; }
-function normEx(e){ if(!Array.isArray(e.L)) e.L=e.L?[e.L]:[]; if(!Array.isArray(e.m)) e.m=[]; e.a=+e.a||4; e.v=+e.v||2; if(e.ax==null) e.ax=18; e.k||=kOf(e.f); e.n||="Exo sans nom"; e.dom||=(e.L[0]||"PP").slice(0,2); e.ma??=""; return e; }
+function normEx(e){ if(!Array.isArray(e.L)) e.L=e.L?[e.L]:[]; if(!Array.isArray(e.m)) e.m=[]; e.a=+e.a||4; e.v=+e.v||2; if(e.ax==null) e.ax=18; e.k||=kOf(e.f); e.n||="Exercice sans nom"; e.dom||=(e.L[0]||"PP").slice(0,2); e.ma??=""; return e; }
 async function loadBanque(){
   const B=await GRUN.banque.load();
   HIDE=new Set(B.hide||[]); EX={}; for(const e of B.ex){ normEx(e); EX[e.id]=e; }
@@ -536,11 +700,11 @@ function doneMap(s,sel){
   return out;
 }
 
-/* ---------- classement des exos pour une case ---------- */
+/* ---------- classement des exercices pour une case ---------- */
 function okEx(e,c){
   if((e.a||4)>c.age||(e.ax&&e.ax<c.age)) return false;
   if(e.c&&c.lieu!=="court") return false;
-  if(e.e&&c.lieu==="salle") return false;
+  if(e.e&&(c.lieu==="salle"||c.lieu==="maison")) return false;
   for(const m of e.m||[]) if(!c.mat.has(m)) return false;
   return true;
 }
@@ -587,7 +751,7 @@ function pool(box,c,used,opt){
   }
   return out.sort((a,b)=>b.s-a.s);
 }
-/* exo inadapté (âge, croissance) → message ; remplaçant = meilleur exo de la case, même sous-famille d'abord */
+/* exercice inadapté (âge, croissance) → message ; remplaçant = meilleur exercice de la case, même sous-famille d'abord */
 function warnEx(e,c,B){ if(!e) return null; if(c.noKids&&isKid(e)&&(!B||B.part==="C")) return "jeu d'enfant : pas dans le corps de séance dès 11 ans"; if((e.a||4)>c.age) return "prévu dès "+e.a+" ans"; if(e.ax&&e.ax<c.age) return "prévu jusqu'à "+e.ax+" ans"; if(c.crois&&heavy(e)) return "déconseillé pendant le pic de croissance"; return null; }
 function altFor(e,box,c,used){ const P=pool(box,c,used).filter(p=>p.e.id!==e.id&&!warnEx(p.e,c,box)); return (P.find(p=>p.e.s===e.s)||P[0])?.e||null; }
 
@@ -596,11 +760,11 @@ let LFAM={};
 function famsOfLine(l){ if(LFAM[l]) return LFAM[l]; const c={}; for(const e of DATA.ex) if(e.L.includes(l)) c[e.f]=(c[e.f]||0)+1; return LFAM[l]=Object.entries(c).filter(([,n])=>n>=4).map(([f])=>f); }
 
 /* ---------- TRAMES DE SÉANCE HAUTE PERFORMANCE (apps/seances/trames, data.json « trames ») ----------
-   Une séance = une trame (type × tranche d'âge) : blocs dans l'ordre neuromusculaire, objectif, dosage, intensité, consignes, exos clés.
-   Type déduit du thème, des lignes et du type de séance de la prog ; âge = biologique si mesuré, sinon civil (groupe : le plus jeune).
+   Une séance = une trame (type × tranche d'âge) : blocs dans l'ordre neuromusculaire, objectif, dosage, intensité, consignes, exercices clés.
+   Type déduit du thème, des lignes et du type de séance de la programmation ; âge = biologique si mesuré, sinon civil (groupe : le plus jeune).
    4-7 ans : motricité seulement (trames MOT construites à partir des saisons de référence F04…G07). */
 let TRAMES={}, S47={};
-const TNOM={FOR:"Force et musculation",PUI:"Puissance et pliométrie",VIT:"Vitesse et accélération",COD:"Freinage, changements de direction, agilité",RSA:"Répétition d'efforts intenses",AER:"Endurance aérobie",GAI:"Gainage et stabilité du tronc",COO:"Coordination, motricité, rythme",EQU:"Équilibre et proprioception",MOB:"Mobilité et souplesse",PRE:"Prévention des blessures",DEP:"Biomécanique du déplacement",GES:"Biomécanique du geste (PP au service du geste)",REC:"Récupération active",MIX:"Séance mixte (2-3 qualités compatibles)",MOT:"Motricité 4-7 ans"};
+const TNOM={FOR:"Force et musculation",PUI:"Puissance et pliométrie",VIT:"Vitesse et accélération",COD:"Freinage, changements de direction, agilité",RSA:"Répétition d'efforts intenses",AER:"Endurance aérobie",GAI:"Gainage et stabilité du tronc",COO:"Coordination, motricité, rythme",EQU:"Équilibre et proprioception",MOB:"Mobilité et souplesse",PRE:"Prévention des blessures",DEP:"Biomécanique du déplacement",GES:"Biomécanique du geste (préparation physique au service du geste)",REC:"Récupération active",MIX:"Séance mixte (2-3 qualités compatibles)",MOT:"Motricité 4-7 ans"};
 const TORD=["FOR","PUI","VIT","COD","RSA","AER","GAI","COO","EQU","MOB","PRE","DEP","GES","REC","MIX"];
 const BANDS=[[4,5,"0405"],[6,7,"0607"],[8,10,"810"],[11,12,"1112"],[13,13,"13"],[14,15,"1415"],[16,18,"1618"]];
 const bandOf=a=>(BANDS.find(b=>a>=b[0]&&a<=b[1])||BANDS[6])[2];
@@ -684,7 +848,7 @@ function structureTrame(s,c,T){
     return box(b.titre,"C",{L:(b.lignes||[]).filter(isLine),f:b.familles||[],min:mins[i],prev:(b.familles||[]).some(f=>/^5\.2\.[234]$/.test(f))||T.type==="PRE"?1:0,
       t:{code:b.code,tid:T.id,obj:b.objectif||"",dos:adaptDos(b.dosage||"",c,T),dos0:b.dosage||"",int:b.intensite||"",cons:b.consignes||[],excl:b.exclure||"",cles:b.exos_cles||[],nb:Math.max(1,n),niv:b.niveau||defNiv(c.tage)}}); });
 }
-/* dosage d'un exo qui tient dans le temps du bloc : séries, sprints, passages ou blocs ramenés à ce que la durée permet (récupérations gardées) */
+/* dosage d'un exercice qui tient dans le temps du bloc : séries, sprints, passages ou blocs ramenés à ce que la durée permet (récupérations gardées) */
 function fitTime(d,nEx,mn){ if(!d||!mn) return d; const T=mn*60/Math.max(1,nEx);
   let m=/^(\d+)(?:\s*à\s*(\d+))?\s*min\b/.exec(d);
   if(m){ if(+m[1]*60>T*1.1){ const v=Math.max(1,Math.round(T/60)); return d.replace(m[0],v+" min").replace(/\s*ou\s+\d+(\s*à\s*\d+)?\s*×\s*\d+\s*min/,""); } return d; }
@@ -694,11 +858,11 @@ function fitTime(d,nEx,mn){ if(!d||!mn) return d; const T=mn*60/Math.max(1,nEx);
   else if(m[5]==="sprints"||m[5]==="départs") W=6; else if(m[5]==="passages") W=10; else if(m[5]==="blocs"){ const mb=/de\s*(\d+)(?:\s*à\s*(\d+))?\s*min/.exec(after); W=mb?+(mb[2]||mb[1])*60:180; }
   const per=W+R; if(S*per<=T*1.15) return d; const n=Math.max(1,Math.round(T/per)); if(n>=+m[1]) return d;
   return d.slice(0,m.index)+n+m[4]+(n===1&&m[5]!=="×"?m[5].replace(/s$/,""):m[5])+after; }
-/* dosage par exo d'un bloc de trame : si le bloc donne un dosage « par exercice / par poste / par situation », il s'applique à chaque exo ; sinon dosage de l'exo ramené au temps du bloc */
+/* dosage par exercice d'un bloc de trame : si le bloc donne un dosage « par exercice / par poste / par situation », il s'applique à chaque exercice ; sinon dosage de l'exercice ramené au temps du bloc */
 function perExo(t){ const C=String(t||"").split(" · ")[0].split(/\s*;\s*/); const i=C.findIndex(x=>/par (exercice|exo|poste|situation|atelier)s?\b/.test(x)); if(i<0) return null;
   const a=C[i].replace(/\s*par (exercice|exo|poste|situation|atelier)s?\b.*$/,"").replace(/^au choix\s*:\s*/i,""); const r=C.slice(i+1).find(x=>/récup|repos|entre/.test(x)); return a+(r?", "+r:""); }
 const doseB=(e,c,B,n)=>{ if(!B||!B.t||e.dos) return dose(e,c); return perExo(B.t.dos)||fitTime(dose(e,c),n||B.t.nb||1,+B.min||0); };
-/* remplissage d'un bloc de trame : exos clés d'abord, puis familles (âge, niveau, lieu, matériel, zones fragiles, croissance, lignes faibles) */
+/* remplissage d'un bloc de trame : exercices clés d'abord, puis familles (âge, niveau, lieu, matériel, zones fragiles, croissance, lignes faibles) */
 function fillTrame(B,c,used){
   const n=B.t.nb||1; let k=0; const have=()=>B.ex.filter(Boolean).length;
   const P=pool(B,c,used).filter(p=>!used.has(p.e.id)&&!(c.crois&&heavy(p.e)));
@@ -731,7 +895,7 @@ function typeSheet(s){
   const L=petits?["MOT"]:TORD.filter(k=>TRAMES["T-"+k+"-"+b]);
   const auto=petits?null:deduceType({...s,ttype:null},c);
   openSheet(`<div class="shh"><b>Type de séance · ${esc(bandTxt(c.tage))}</b><button class="ib" data-close type="button" aria-label="Fermer">×</button></div>
-   <p class="msg">La séance est reconstruite avec la trame choisie (blocs, dosages, exos). L'échauffement et le retour au calme que tu as choisis sont gardés.${petits?" De 4 à 7 ans, la séance est une séance de motricité.":""}</p>
+   <p class="msg">La séance est reconstruite avec la trame choisie (blocs, dosages, exercices). L'échauffement et le retour au calme que tu as choisis sont gardés.${petits?" De 4 à 7 ans, la séance est une séance de motricité.":""}</p>
    <div class="alts">${petits?"":`<button type="button" class="altb${!s.ttype?" used":""}" data-tt=""><b>Automatique</b><span>${esc(TNOM[auto.k])} · ${esc(auto.why)}</span></button>`}
    ${L.map(k=>{ const T=TRAMES["T-"+k+"-"+b]; return `<button type="button" class="altb" data-tt="${k}" aria-pressed="${cur===k}"><b>${esc(TNOM[k])}${cur===k?" ✓":""}</b><span>${esc(sent(T?.principes||"",1))}</span><em>${T?T.duree[0]+"-"+T.duree[1]+" min conseillées · "+T.blocs.filter(x=>/^B/.test(x.code)).length+" blocs":""}</em></button>`; }).join("")}</div>`);
   $$("[data-tt]",sheet).forEach(x=>x.onclick=()=>{ s.ttype=x.dataset.tt||null; if(s.ttype&&(s.type==="TC"||s.type==="PM")) s.type=s.gid?"PPC":"PPI"; if(s.ttype&&s.type==="TI"&&!/GES|DEP|MOT/.test(s.ttype)) s.type=s.gid?"PPC":"PPI";
@@ -789,12 +953,12 @@ function structure(s){
   return [...boxes,...C2,...fin];
 }
 /* séance sur trame : quand l'échauffement et le retour au calme choisis n'ont pas la durée visée, le corps de séance est réajusté (ordre gardé, 3 min mini par bloc) */
-function refitC(s){ const C=s.boxes.filter(b=>b.part==="C"); if(!C.length) return; const tgt=Math.max(10,(+s.duree||60)-partMin(s,"E")-partMin(s,"F")), S=C.reduce((a,b)=>a+(+b.min||0),0)||1;
+function refitC(s){ const C=s.boxes.filter(b=>b.part==="C"); if(!C.length) return; const tgt=Math.max(10,Math.floor((+s.duree||60)-partMin(s,"E")-partMin(s,"F"))), S=C.reduce((a,b)=>a+(+b.min||0),0)||1;
   C.forEach(b=>b.min=Math.max(3,Math.round(b.min*tgt/S))); let d=tgt-C.reduce((a,b)=>a+b.min,0), g=100, i=0; const o=C.slice().sort((a,b)=>b.min-a.min);
   while(d!==0&&g--){ const b=o[i++%o.length]; if(d>0){ b.min++; d--; } else if(b.min>3){ b.min--; d++; } } }
-/* pré-remplissage : chaque case vide reçoit le meilleur exo classé (2 si la case dure 16 min ou plus), dosage selon l'âge */
+/* pré-remplissage : chaque case vide reçoit le meilleur exercice classé (2 si la case dure 16 min ou plus), dosage selon l'âge */
 function autoFill(s,c){
-  c||=ctxOf(s); const hadE=!!RP(s,"E"), hadF=!!RP(s,"F"); if(!hadE) wuAuto(s,c); if(!hadF) cdAuto(s); if(s.tid&&((!hadE&&RP(s,"E"))||(!hadF&&RP(s,"F")))) refitC(s); const used=new Set(s.boxes.flatMap(b=>b.ex.filter(Boolean).map(x=>x.id))); let n=0;
+  c||=ctxOf(s); const hadE=!!RP(s,"E"), hadF=!!RP(s,"F"); if(!hadE) wuAuto(s,c); if(!hadF) cdAuto(s); if((!hadE&&RP(s,"E"))||(!hadF&&RP(s,"F"))) refitC(s); const used=new Set(s.boxes.flatMap(b=>b.ex.filter(Boolean).map(x=>x.id))); let n=0;
   for(const B of s.boxes){
     if(RP(s,B.part)) continue;
     if(B.t&&!B.at){ n+=fillTrame(B,c,used); continue; }
@@ -852,10 +1016,10 @@ sheet.addEventListener("click",e=>{ if(e.target===sheet) closeSheet(); });
 
 /* ---------- relais (poupée russe) ---------- */
 function relaisActif(){ const h=GRUN.relais.lire(); if(h&&h.vers==="seances"&&!h.res&&ST.relais&&ST.relais.t===h.t&&getS(ST.relais.sid)) return {h,sid:ST.relais.sid}; return null; }
-const DE_N={prog:"la prog",veille:"la veille",banque:"la banque",accueil:"l'accueil",hub:"l'accueil",joueurs:"le dossier",grilles:"les grilles",saisons:"le référentiel"};
+const DE_N={prog:"la programmation",veille:"la veille",banque:"la banque",accueil:"l'accueil",hub:"l'accueil",joueurs:"le dossier",grilles:"les grilles",saisons:"le référentiel"};
 function bandeau(){
   const el=$("#relais"); if(!el) return; const r=COACH()?relaisActif():null; if(!r){ el.innerHTML=""; return; }
-  const s=getS(r.sid), nm=DE_N[r.h.de]||(r.h.de?"la page d'avant":"la prog");
+  const s=getS(r.sid), nm=DE_N[r.h.de]||(r.h.de?"la page d'avant":"la programmation");
   el.innerHTML=`<div class="grun-relais"><button type="button" id="rlb">← Retour à ${nm}</button><span class="rlt">${esc(s?.nom||"Séance")}</span><button type="button" id="rlv">Valider et revenir</button></div>`;
   $("#rlb").onclick=()=>{ const u=r.h.retour||GRUN.href(r.h.de||"prog"); ST.relais=null; saveNow(); GRUN.relais.vider(); location.href=u; };
   $("#rlv").onclick=()=>{ const s=getS(r.sid); saveNow();
@@ -874,11 +1038,11 @@ function depuisRelais(h){
     src:{plan:h.plan||null,key:h.cle||null,de:h.de||"prog"}};
   if(h.gid&&GRUN.groupes.get(h.gid)){ o.gid=h.gid; o.joueurs=[...(GRUN.groupes.get(h.gid).jids||[])]; } else if(h.jid) o.joueurs=[h.jid];
   libreDe(o,h);
-  if(h.lieu&&LIEUX[h.lieu]) o.lieu=h.lieu; if(/TI|TC|PM/.test(type)) o.lieu="court";
-  if(Array.isArray(h.mat)&&h.mat.length) o.mat=h.mat;
+  if(h.lieu&&lieuDeG(h.lieu)) o.lieu=lieuDeG(h.lieu); if(/TI|TC|PM/.test(type)) o.lieu="court";
+  if(Array.isArray(h.mat)&&h.mat.length) o.mat=h.mat; else if(Array.isArray(h.materiel)&&h.materiel.length) o.mat=h.materiel;
   const s=newSeance(o); s.boxes=structure(s); autoFill(s); s.prerempli=true; saveNow(); return s;
 }
-/* sans joueur : l'âge, le sexe, le niveau et la croissance transmis par le relais (veille, banque, prog) servent à la séance libre (sinon 13 ans par défaut) */
+/* sans joueur : l'âge, le sexe, le niveau et la croissance transmis par le relais (veille, banque, programmation) servent à la séance libre (sinon 13 ans par défaut) */
 function libreDe(o,h){ if(!h||(o.joueurs&&o.joueurs.length)) return; const a=Math.round(+h.age); if(!(a>=4)) return;
   o.libre={n:Math.max(1,+h.n||1),age:Math.max(4,Math.min(18,a)),niv:+h.niv||0,zones:Array.isArray(h.zones)?h.zones:[],crois:!!h.crois,extra:0,sexe:h.sexe==="F"?"F":"G"}; }
 function depuisExo(id,h){
@@ -900,14 +1064,21 @@ function nouvelle(q){
     const s=depuisRelais(h); ST.relais={t:h.t,sid:s.id,de:h.de}; saveNow(); location.replace("#/s/"+s.id); return;
   }
   const o={};
-  if(q.get("gid")&&GRUN.groupes.get(q.get("gid"))){ o.gid=q.get("gid"); o.joueurs=[...GRUN.groupes.get(o.gid).jids]; } else if(q.get("jid")) o.joueurs=[q.get("jid")];
+  if(q.get("gid")&&GRUN.groupes.get(q.get("gid"))){ o.gid=q.get("gid"); o.joueurs=[...GRUN.groupes.get(o.gid).jids]; } else if(q.get("jid")&&GRUN.joueurs.get(q.get("jid"))) o.joueurs=[q.get("jid")];
   if(q.get("exo")){ const s=depuisExo(q.get("exo"),{jid:o.joueurs?.[0],gid:o.gid}); location.replace("#/s/"+s.id); return; }
   if(q.get("date")) o.date=q.get("date");
+  if(q.get("duree")) o.duree=Math.max(15,Math.min(180,+q.get("duree")||60));
+  /* « en 1 touche » : joueur, groupe (adresse) ou joueur / groupe en cours → séance construite tout de suite ; sinon (« Choisir », sans joueur) → les réglages */
+  if(!o.joueurs&&!q.get("choisir")&&!q.get("libre")){ const cg=curG()&&GRUN.groupes.get(curG()), cj=curJ()&&GRUN.joueurs.get(curJ()); if(cj) o.joueurs=[cj.id]; else if(cg){ o.gid=cg.id; o.joueurs=[...cg.jids]; } }
+  if(o.joueurs&&o.joueurs.length){ const s=construire(o); location.replace("#/s/"+s.id); return; }
   const s=newSeance(o); location.replace("#/r/"+s.id);
 }
+/* séance construite d'office (structure de la trame + exercices + échauffement + retour au calme), réglages coach par défaut */
+function construire(o){ const s=newSeance(o); if(!s.nom) s.nom=s.theme?nomCourt(s.theme):TYPES[s.type].n+(o.gid&&GRUN.groupes.get(o.gid)?" · "+GRUN.groupes.get(o.gid).nom:o.joueurs&&o.joueurs.length===1&&GRUN.joueurs.get(o.joueurs[0])?" · "+GRUN.joueurs.get(o.joueurs[0]).nom.split(" ")[0]:"");
+  s.boxes=structure(s); autoFill(s); s.prerempli=true; saveNow(); return s; }
 /* Choose your warm-up : on part avec la situation (durée, ce qui suit, lieu, matériel), on revient avec l'échauffement CHOISI dans la bibliothèque */
 function apresDe(s){ const t=norm(s.theme+" "+s.nom); if(/test|bilan|evaluation/.test(t)) return "bilan"; if(/match|tournoi/.test(t)) return "match"; return /PPI|PPC/.test(s.type)?"pp":"tennis"; }
-const lieuWU=l=>l==="gym"||l==="salle"?"salle":l==="ext"?"ext":"court";
+const lieuWU=l=>l==="gym"||l==="salle"?"salle":l==="ext"?"ext":l==="maison"?"hotel":"court";
 function wuMinOfBoxes(s){ return (s.boxes||[]).filter(b=>b.part==="E").reduce((a,b)=>a+(+b.min||0),0); }
 function wuCible(s){ return (s.wmode==="routine"&&s.warmup?.min)||s.wuCible||wuMinutes(s,ctxOf(s))||10; }
 function versWarmup(s,hash,fam){
@@ -967,7 +1138,9 @@ function retourWarmup(){
   let sid=null, attached=false;
   const r=GRUN.relais.resultat("seances");
   if(r&&r.vers==="warmup"){ sid=r.sid||ST.wuSid; const s=getS(sid); const res=r.res||{}; const rt=res.routine||(res.blocks||res.blocs?res:null);
-    if(s&&rt&&wuBlocs(rt).length){ const X={routine:rt,id:rt.id||res.id||null,min:wuMin(rt),at:todayIso(),auto:false}; if(rt.type==="cooldown"){ s.cooldown=X; s.cmode="routine"; } else { s.warmup=X; s.wmode="routine"; } s.maj=todayIso(); attached=true; } }
+    if(s&&rt&&wuBlocs(rt).length){ const X={routine:rt,id:rt.id||res.id||null,min:wuMin(rt),at:todayIso(),auto:false}; if(rt.type==="cooldown"){ s.cooldown=X; s.cmode="routine"; } else { s.warmup=X; s.wmode="routine"; } s.maj=todayIso(); attached=true;
+      /* la durée visée reste tenue : si l'échauffement choisi fait dépasser, le corps de séance est réajusté */
+      if(s.boxes&&["E","C","F"].reduce((a,p)=>a+partMin(s,p),0)>(+s.duree||60)) refitC(s); } }
   else { const h=GRUN.relais.lire(); if(h&&h.de==="seances"&&h.vers==="warmup"&&!h.res){ sid=h.sid; GRUN.relais.vider(); } }
   if(sid&&ST.relaisProg){ const {t,res,tr,...rest}=ST.relaisProg; ST.relaisProg=null; GRUN.relais.envoyer(rest); const nh=GRUN.relais.lire(); if(nh) ST.relais={t:nh.t,sid:ST.relais?.sid||sid,de:rest.de}; }
   if(sid){ ST.wuSid=null; saveNow(); }
@@ -979,7 +1152,7 @@ const isDone=s=>!!s.faite;
 const byDateAsc=(a,b)=>(a.date||"")<(b.date||"")?-1:1, byDateDesc=(a,b)=>(a.date||"")<(b.date||"")?1:-1;
 function libRow(s){ const n=(s.boxes||[]).reduce((a,b)=>a+b.ex.filter(Boolean).length,0), J=joueursDe(s), g=s.gid&&GRUN.groupes.get(s.gid);
   const who=g?g.nom:J.map(j=>j.nom.split(" ")[0]).join(", ");
-  return `<a class="li" href="#/s/${s.id}"><span class="code">${frD(s.date).slice(0,5)}</span><span class="tt">${esc(s.nom||"Séance")} ${s.faite?`<span class="badge ok">✓ faite${s.faite.rpe!=null?" · "+s.faite.rpe+"/10":""}</span>`:""}${s.warmup&&s.wmode==="routine"?` <span class="badge">échauffement</span>`:""}<small>${TYPES[s.type]?.n||""} · ${s.duree} min · ${n} exo${n>1?"s":""}${who?" · "+esc(who):""}</small></span></a>`; }
+  return `<a class="li" href="#/s/${s.id}"><span class="code">${frD(s.date).slice(0,5)}</span><span class="tt">${esc(s.nom||"Séance")} ${s.faite?`<span class="badge ok">✓ faite${s.faite.rpe!=null?" · "+s.faite.rpe+"/10":""}</span>`:""}${s.warmup&&s.wmode==="routine"?` <span class="badge">échauffement</span>`:""}<small>${TYPES[s.type]?.n||""} · ${s.duree} min · ${n} exercice${n>1?"s":""}${who?" · "+esc(who):""}</small></span></a>`; }
 function listes(L,id){
   const av=L.filter(s=>!isDone(s)).sort(byDateAsc), fa=L.filter(isDone).sort((a,b)=>(a.faite.date||a.date)<(b.faite.date||b.date)?1:-1);
   return `<div class="tabs" role="tablist"><button type="button" class="tg" data-tab="${id}:a" aria-pressed="true">À venir (${av.length})</button><button type="button" class="tg" data-tab="${id}:f" aria-pressed="false">Faites (${fa.length})</button></div>
@@ -989,17 +1162,23 @@ function listes(L,id){
 function bindTabs(){ $$("[data-tab]").forEach(b=>b.onclick=()=>{ const [id,k]=b.dataset.tab.split(":"); $$(`[data-tab^="${id}:"]`).forEach(x=>x.setAttribute("aria-pressed",x===b)); $("#"+id+"a").hidden=k!=="a"; $("#"+id+"f").hidden=k!=="f"; }); }
 function showHome(){
   if(!COACH()) return showHomeJoueur();
+  aide("accueil");
   const cache=GRUN.load(CK,{})||{}, plans=(GRUN.load(PK,{plans:[]})||{}).plans||[], J=GRUN.joueurs.all(), Gs=GRUN.groupes.all();
+  const cj=curJ()&&GRUN.joueurs.get(curJ()), cg=!cj&&curG()&&GRUN.groupes.get(curG()), D=defauts();
   main.innerHTML=`<h1>Create my session</h1>
-  <p class="lead">GRÜN construit la séance pour ton joueur. Tu choisis les exos, tu lances.</p>
-  <div class="tools" style="margin-top:14px"><a class="go big" href="#/nouvelle">+ Créer une séance</a><a class="ib" href="#/modeles">Modèles (${ST.modeles.length})</a></div>
-  <section class="sec"><h2>Pour qui</h2>${J.length||Gs.length?`<div class="chips">${Gs.map(g=>`<a class="tg grp" href="#/groupe/${g.id}">👥 ${esc(g.nom)}</a>`).join("")}${J.map(j=>`<a class="tg" href="#/joueur/${j.id}">${esc(j.nom)}${ageTxt(j)}</a>`).join("")}</div>`:`<div class="empty">Crée tes joueurs et tes groupes dans <a href="index.html#/joueurs">Individualisation</a> : leur âge, leur croissance, leurs zones fragiles et leurs lignes faibles seront pris en compte.</div>`}</section>
+  <p class="lead">GRÜN construit la séance${cj?" de "+esc(cj.nom.split(" ")[0]):cg?" du groupe "+esc(cg.nom):" pour ton joueur"} en une touche${D.duree?" ("+D.duree+" min"+(D.lieu?", "+esc((LIEUX[D.lieu]||"").toLowerCase()):"")+")":""}. Tu touches un exercice pour le changer, tu lances.</p>
+  <div class="tools" style="margin-top:14px"><a class="ib" href="#/nouvelle?choisir=1">${cj||cg?"Pour un autre joueur ou sans profil":"Choisir pour qui, quoi, où"}</a><a class="ib" href="#/modeles">Modèles (${ST.modeles.length})</a></div>
+  <section class="sec"><h2>Pour qui</h2>${J.length||Gs.length?`<div class="chips">${Gs.map(g=>`<a class="tg grp" href="#/groupe/${g.id}"${cg&&cg.id===g.id?' aria-pressed="true"':""}>👥 ${esc(g.nom)}</a>`).join("")}${J.map(j=>`<a class="tg" href="#/joueur/${j.id}"${cj&&cj.id===j.id?' aria-pressed="true"':""}>${esc(j.nom)}${ageTxt(j)}</a>`).join("")}</div>`:`<div class="empty">Crée tes joueurs et tes groupes : leur âge, leur croissance, leurs zones fragiles et leurs lignes faibles seront pris en compte.</div>`}
+   <div class="tools" style="margin-top:8px"><button class="ib sm" type="button" id="nj">+ Nouveau joueur</button><button class="ib sm" type="button" id="ng">+ Nouveau groupe</button></div></section>
   ${plans.length?`<section class="sec"><h2>Depuis un plan</h2><div class="list">${plans.map(p=>{const j=GRUN.joueurs.get(p.jid), g=p.gid&&GRUN.groupes.get(p.gid);const ok=!!cache[p.id];return `<a class="li" href="${ok?"#/pl/"+p.id:GRUN.href("prog")}"><span class="code">${esc(j?j.nom.split(" ")[0]:g?"👥 "+g.nom.split(" ")[0]:"–")}</span><span class="tt">${esc(p.nom||"Plan")}<small>${frD(p.debut)} → ${frD(p.fin)}${ok?"":" · ouvre ce plan une fois dans Create my prog"}</small></span></a>`}).join("")}</div></section>`:""}
   <section class="sec"><h2>Mes séances</h2>${ST.seances.length?`<input class="srch" id="lq" type="search" placeholder="Rechercher une séance">`:""}${listes(ST.seances,"hm")}</section>
-  <details class="grun-plus"><summary>Plus d'options : sauvegarde</summary><div class="grun-plusb"><div class="tools"><button class="ib" id="exp" type="button">Sauvegarder tout GRÜN</button><label class="ib">Restaurer<input type="file" id="imp" accept=".json,application/json" hidden></label></div><p class="msg" id="smsg">Une seule sauvegarde pour toute l'appli. Les anciens fichiers « Séances » sont aussi acceptés.</p></div></details>`;
+  <details class="grun-plus"><summary>Plus d'options</summary><div class="grun-plusb"><div class="tools"><button class="ib" id="exp" type="button">${esc((GRUN.TXT||{}).sauver||"Tout sauvegarder")}</button><label class="ib">${esc((GRUN.TXT||{}).restaurer||"Restaurer une sauvegarde")}<input type="file" id="imp" accept=".json,application/json" hidden></label></div><p class="msg" id="smsg">Une seule sauvegarde pour toute l'appli. Les anciens fichiers « Séances » sont aussi acceptés.</p></div></details>
+  ${actbar(`<a class="gs-btn main" href="#/nouvelle">${cj?"Créer la séance de "+esc(cj.nom.split(" ")[0]):cg?"Créer la séance du groupe "+esc(cg.nom):"+ Créer une séance"}</a>`)}`;
   bindTabs();
+  $("#nj").onclick=()=>GRUN.ui.nouveauJoueur().then(j=>{ if(j) go("#/joueur/"+j.id); });
+  $("#ng").onclick=()=>GRUN.ui.nouveauGroupe().then(g=>{ if(g) go("#/groupe/"+g.id); });
   $("#lq")&&($("#lq").oninput=e=>{ const q=norm(e.target.value); $$("#hma .li,#hmf .li").forEach(a=>a.hidden=q&&!norm(a.textContent).includes(q)); });
-  $("#exp").onclick=()=>{ saveNow(); GRUN.telecharger(GRUN.exportAll(),`GRUN_${todayIso()}.json`); $("#smsg").textContent="Fichier créé : enregistre-le dans Fichiers."; };
+  $("#exp").onclick=()=>{ saveNow(); if(GRUN.sauvegarder) GRUN.sauvegarder(); else GRUN.telecharger(GRUN.exportAll(),`GRUN_sauvegarde_${todayIso()}.json`); $("#smsg").textContent="Fichier créé : enregistre-le dans Fichiers."; };
   $("#imp").onchange=e=>{ const f=e.target.files[0]; if(!f) return; const r=new FileReader(); r.onload=()=>{ try{ importer(JSON.parse(r.result)); $("#smsg").textContent="Restauration faite."; route(); }catch(x){ $("#smsg").textContent="Ce fichier n'est pas une sauvegarde de GRÜN ni de l'appli Séances."; } }; r.readAsText(f); };
 }
 function importer(d){
@@ -1015,7 +1194,8 @@ function showHomeJoueur(){
   bindTabs();
 }
 function newSeance(o={}){
-  const s={id:uid(),nom:"",date:todayIso(),type:"PPI",theme:"",lignes:[],phase:"G",duree:60,joueurs:[],gid:null,libre:{n:1,age:13,niv:0,zones:[],crois:false,extra:0,sexe:"G"},lieu:ST.lieu||"court",mat:ST.mat||DATA.mat.map(m=>m[0]),boxes:null,src:null,warmup:null,wmode:"simple",faite:null,cree:todayIso(),maj:todayIso(),...o};
+  const D=defauts();
+  const s={id:uid(),nom:"",date:D.date||todayIso(),type:"PPI",theme:"",lignes:[],phase:"G",duree:D.duree?Math.max(15,Math.min(180,D.duree)):60,joueurs:[],gid:null,libre:{n:1,age:13,niv:0,zones:[],crois:false,extra:0,sexe:"G"},lieu:D.lieu||ST.lieu||"court",mat:D.mat||ST.mat||DATA.mat.map(m=>m[0]),boxes:null,src:null,warmup:null,wmode:"simple",faite:null,cree:todayIso(),maj:todayIso(),...o};
   ST.seances.push(s); saveNow(); return s;
 }
 
@@ -1024,22 +1204,26 @@ function showJoueur(jid){
   const j=GRUN.joueurs.get(jid); if(!j){ main.innerHTML=`<div class="empty">Joueur introuvable.</div>`; return; }
   if(!COACH()&&jid!==MOI()){ go("#/"); return; }
   const L=ST.seances.filter(s=>concerne(s,jid)), a=ageOf(j), F=faiblesDe(j), ch=GRUN.journal.charge(jid), gs=GRUN.groupes.de(jid);
-  main.innerHTML=`<div class="crumb"><a href="#/">Séances</a> › Joueur</div><h1>${esc(j.nom)}</h1>
+  aide("joueur"); if(COACH()) try{ GRUN.courant.set("j",jid); }catch(e){}
+  main.innerHTML=`<div class="crumb"><a href="#/">Create my session</a> › Joueur</div><h1>${esc(j.nom)}</h1>
    <p class="lead">${a!=null?a+" ans · ":""}${j.sexe==="F"?"Fille":"Garçon"}${j.classement&&j.classement!=="NC"?" · "+esc(j.classement):""}${croisDe(j)?" · pic de croissance":""}${(j.zones||[]).length?" · zones : "+j.zones.map(z=>esc(ZN[z]||z)).join(", "):""}${gs.length?" · "+gs.map(g=>`<a href="#/groupe/${g.id}">${esc(g.nom)}</a>`).join(", "):""}</p>
    ${F.length?`<p>Lignes à travailler : ${F.map(chip).join(" ")}</p>`:""}
    ${ch&&(ch.aigu||ch.chronique)?`<p class="msg">Charge des 7 derniers jours : ${Math.round(ch.aigu)} UA${ch.alerte&&ch.alerte!=="ok"?" · charge "+({haute:"très haute",attention:"en hausse",basse:"basse"}[ch.alerte]||ch.alerte):""}${ch.ratio?`<span class="xp"> · rapport aigu/chronique ${ch.ratio.toFixed(2).replace(".",",")}</span>`:""}</p>`:""}
-   <div class="tools" style="margin-top:12px">${COACH()?`<a class="go big" href="#/nouvelle?jid=${jid}">+ Créer une séance pour ${esc(j.nom.split(" ")[0])}</a>`:""}<a class="ib" href="index.html#/j/${jid}">Dossier complet</a></div>
-   <section class="sec"><h2>Séances</h2>${listes(L,"jj")}</section>`;
+   <div class="tools" style="margin-top:12px"><a class="ib" href="index.html#/j/${jid}">Dossier complet</a></div>
+   <section class="sec"><h2>Séances</h2>${listes(L,"jj")}</section>
+   ${COACH()?actbar(`<a class="gs-btn main" href="#/nouvelle?jid=${jid}">+ Créer une séance pour ${esc(j.nom.split(" ")[0])}</a>`):""}`;
   bindTabs();
 }
 function showGroupe(gid){
   const g=GRUN.groupes.get(gid); if(!g){ main.innerHTML=`<div class="empty">Groupe introuvable.</div>`; return; }
   if(!COACH()){ go("#/"); return; }
   const J=GRUN.groupes.joueurs(gid), L=ST.seances.filter(s=>s.gid===gid);
-  main.innerHTML=`<div class="crumb"><a href="#/">Séances</a> › Groupe</div><h1>👥 ${esc(g.nom)}</h1>
+  aide("groupe"); try{ GRUN.courant.set("g",gid); }catch(e){}
+  main.innerHTML=`<div class="crumb"><a href="#/">Create my session</a> › Groupe</div><h1>👥 ${esc(g.nom)}</h1>
    <p class="lead">${J.length} joueur${J.length>1?"s":""} : ${J.map(j=>`<a href="#/joueur/${j.id}">${esc(j.nom)}</a>`).join(", ")||"aucun"}</p>
-   <div class="tools" style="margin-top:12px"><a class="go" href="#/nouvelle?gid=${gid}">+ Nouvelle séance pour le groupe</a><a class="ib" href="index.html#/g/${gid}">Dossier du groupe</a></div>
-   <section class="sec"><h2>Séances du groupe</h2>${listes(L,"gg")}</section>`;
+   <div class="tools" style="margin-top:12px"><a class="ib" href="index.html#/g/${gid}">Dossier du groupe</a></div>
+   <section class="sec"><h2>Séances du groupe</h2>${listes(L,"gg")}</section>
+   ${actbar(`<a class="gs-btn main" href="#/nouvelle?gid=${gid}">+ Nouvelle séance pour le groupe</a>`)}`;
   bindTabs();
 }
 
@@ -1049,7 +1233,8 @@ function showPlanList(pid){
   const J=GRUN.joueurs.get(P.jid), built=new Map(ST.seances.filter(s=>s.src?.plan===pid).map(s=>[s.src.key,s.id]));
   const now=Date.now(); let cur=P.W.findIndex(w=>now>=w.d1&&now<w.d1+7*864e5); if(cur<0) cur=0;
   const JC=["Lun","Mar","Mer","Jeu","Ven","Sam","Dim"];
-  main.innerHTML=`<div class="crumb"><a href="#/">Séances</a> › Plan</div><h1>${esc(P.nom)}</h1><p class="lead">${esc(J?.nom||"")} · touche une séance pour la construire.</p>
+  aide("plan");
+  main.innerHTML=`<div class="crumb"><a href="#/">Create my session</a> › Plan</div><h1>${esc(P.nom)}</h1><p class="lead">${esc(J?.nom||"")} · touche une séance pour la construire.</p>
   ${P.W.map(w=>`<details${w.i===cur?" open":""} id="pw${w.i}"><summary>S${w.i+1} · ${w.lab} <small class="sm2">${esc(w.mi)}</small></summary>${w.ses.length?`<div class="list">${w.ses.map(x=>{const b=built.get(x.key);return `<a class="li" href="${b?"#/s/"+b:"#/p/"+pid+"/"+encodeURIComponent(x.key)}"><span class="code">${JC[x.j]}</span><span class="tt">${esc(x.t)}<small>${TYPES[x.k]?.n||x.k}${b?" · ✓ construite":""}</small></span></a>`}).join("")}</div>`:`<p class="off">Pas de séance.</p>`}</details>`).join("")}`;
   setTimeout(()=>$("#pw"+cur)?.scrollIntoView({block:"start"}),30);
 }
@@ -1067,11 +1252,13 @@ function fromPlan(pid,key){
 function showReglages(id){
   const s=getS(id); if(!s){ main.innerHTML=`<div class="empty">Séance introuvable.</div>`; return; }
   const J=GRUN.joueurs.all(), Gs=GRUN.groupes.all(); s.libre||={n:1,age:13,niv:0,zones:[],crois:false,extra:0,sexe:"G"};
-  main.innerHTML=`<div class="crumb"><a href="#/">Séances</a> › ${s.boxes?"Modifier la séance":"Créer une séance"}</div><h1>${s.boxes?"Modifier la séance":"Créer une séance"}</h1>
-  <p class="lead">Pour qui, quoi, où : puis touche « Construire la séance ».</p>
+  aide("r");
+  main.innerHTML=`<div class="crumb"><a href="#/">Create my session</a> › ${s.boxes?"Modifier la séance":"Créer une séance"}</div><h1>${s.boxes?"Modifier la séance":"Créer une séance"}</h1>
+  <p class="lead">Pour qui, quoi, où : tout est enregistré tout de suite. Puis touche « ${s.boxes?"Reconstruire":"Construire"} la séance » en bas.</p>
   <section class="sec step"><h2><b>1</b> Joueurs</h2><div class="card">
    ${Gs.length?`<div class="f"><label>Groupe</label><div class="chips">${Gs.map(g=>`<button type="button" class="tg" data-g="${g.id}" aria-pressed="${s.gid===g.id}">👥 ${esc(g.nom)} (${g.jids.length})</button>`).join("")}</div></div>`:""}
-   ${J.length?`<div class="f"><label>Joueurs</label><div class="chips">${J.map(j=>`<button type="button" class="tg" data-j="${j.id}" aria-pressed="${s.joueurs.includes(j.id)}">${esc(j.nom)}${ageTxt(j)}</button>`).join("")}</div></div>`:`<p class="msg">Crée tes joueurs dans <a href="index.html#/joueurs">Individualisation</a> pour que leur profil soit pris en compte.</p>`}
+   ${J.length?`<div class="f"><label>Joueurs</label><div class="chips">${J.map(j=>`<button type="button" class="tg" data-j="${j.id}" aria-pressed="${s.joueurs.includes(j.id)}">${esc(j.nom)}${ageTxt(j)}</button>`).join("")}</div></div>`:`<p class="msg">Crée tes joueurs pour que leur profil soit pris en compte.</p>`}
+   <div class="tools"><button class="ib sm" type="button" id="rnj">+ Nouveau joueur</button><button class="ib sm" type="button" id="rng">+ Nouveau groupe</button></div>
    <p class="msg">Âge, croissance, zones fragiles et lignes faibles viennent de la fiche du joueur.</p>
    <div id="lib"${s.joueurs.length?" hidden":""}><p class="msg">${J.length?"Ou, sans profil :":"Sans profil :"}</p>
     <div class="row"><div class="f"><label for="ln">Nombre</label><input type="number" id="ln" min="1" max="40" value="${s.libre.n}"></div><div class="f"><label for="la">Âge (le plus jeune)</label><span class="agew"><input type="number" id="la" min="4" max="18" value="${Math.min(18,+s.libre.age||13)}"></span></div>
@@ -1097,10 +1284,14 @@ function showReglages(id){
    <details class="grun-plus"><summary>Matériel disponible (${s.mat.length} sur ${DATA.mat.length})</summary><div class="grun-plusb"><div class="chips">${DATA.mat.map(([k,n])=>`<button type="button" class="tg sm" data-m="${k}" aria-pressed="${s.mat.includes(k)}">${esc(n)}</button>`).join("")}</div>
    <div class="tools"><button class="ib sm" type="button" id="mall">Tout</button><button class="ib sm" type="button" id="mnone">Rien</button></div></div></details>
   </div></section>
-  <div class="card bigact"><label class="chk"><input type="checkbox" id="pre" checked> Pré-remplir chaque case avec l'exo le mieux adapté (tu pourras tout changer)</label>
-   <div class="tools"><button class="go big" id="build" type="button">${s.boxes?"Reconstruire la séance":"Construire la séance"}</button>${s.boxes?`<a class="ib" href="#/s/${s.id}">Garder la séance actuelle</a>`:""}</div>
-   ${s.boxes?`<p class="msg">Reconstruire remet les cases à zéro (les exos choisis sont retirés ; l'échauffement attaché est gardé).</p>`:""}</div>`;
-  const up=()=>{ s.maj=todayIso(); save(); };
+  <div class="card bigact"><label class="chk"><input type="checkbox" id="pre" checked> Pré-remplir chaque case avec l'exercice le mieux adapté (tu pourras tout changer)</label>
+   <div class="tools">${s.boxes?`<a class="ib" href="#/s/${s.id}">Garder la séance actuelle</a>`:""}</div>
+   ${s.boxes?`<p class="msg">Reconstruire remet les cases à zéro (les exercices choisis sont retirés ; l'échauffement attaché est gardé). « Annuler » pendant 10 s.</p>`:""}</div>
+  ${actbar(`<button class="gs-btn main" id="build" type="button">${s.boxes?"Reconstruire la séance":"Construire la séance"}</button>`)}`;
+  const ajouterJ=ids=>{ s.gid=null; for(const id of ids) if(!s.joueurs.includes(id)) s.joueurs.push(id); s.maj=todayIso(); saveNow(); showReglages(s.id); };
+  $("#rnj").onclick=()=>GRUN.ui.nouveauJoueur().then(j=>{ if(j) ajouterJ([j.id]); });
+  $("#rng").onclick=()=>GRUN.ui.nouveauGroupe({jids:s.joueurs}).then(g=>{ if(g){ s.gid=g.id; s.joueurs=[...g.jids]; s.maj=todayIso(); saveNow(); showReglages(s.id); } });
+  const up=()=>{ s.maj=todayIso(); save(); if(GRUN.ui&&GRUN.ui.enregistre) GRUN.ui.enregistre(); };
   $("#sn").oninput=e=>{ s.nom=e.target.value; up(); };
   $("#sd").onchange=e=>{ s.date=e.target.value; up(); };
   $("#sdu").onchange=e=>{ s.duree=Math.max(15,Math.min(180,+e.target.value||60)); up(); };
@@ -1122,7 +1313,8 @@ function showReglages(id){
   $("#ls").onchange=e=>{ s.libre.sexe=e.target.value; up(); };
   $("#lv").onchange=e=>{ s.libre.niv=+e.target.value; up(); }; $("#lc").onchange=e=>{ s.libre.crois=e.target.checked; up(); };
   $("#lx").onchange=e=>{ s.libre.extra=+e.target.value||0; up(); };
-  $("#build").onclick=()=>{ if(!s.nom) s.nom=s.theme?nomCourt(s.theme):TYPES[s.type].n; s.boxes=structure(s); if($("#pre").checked){ autoFill(s); s.prerempli=true; } saveNow(); go("#/s/"+s.id); };
+  $("#build").onclick=()=>{ const avant=s.boxes?clone(s):null; if(!s.nom) s.nom=s.theme?nomCourt(s.theme):TYPES[s.type].n; s.boxes=structure(s); if($("#pre").checked){ autoFill(s); s.prerempli=true; } saveNow(); go("#/s/"+s.id);
+    if(avant) GRUN.ui.annuler("Séance reconstruite", ()=>{ const i=ST.seances.findIndex(x=>x.id===s.id); if(i>=0){ ST.seances[i]=avant; saveNow(); route(); } }); };
 }
 
 /* ---------- ÉDITEUR DE SÉANCE ---------- */
@@ -1133,30 +1325,32 @@ function showSeance(id){
   const s=getS(id); if(!s){ main.innerHTML=`<div class="empty">Séance introuvable.</div>`; return; }
   if(!COACH()) return showSeanceJoueur(s);
   if(!s.boxes){ go("#/r/"+id); return; }
-  const c=ctxOf(s), tot=["E","C","F"].reduce((a,p)=>a+partMin(s,p),0), rest=s.duree-tot;
+  aide("s");
+  const c=ctxOf(s), tot=Math.round(["E","C","F"].reduce((a,p)=>a+partMin(s,p),0)*2)/2, rest=Math.round((s.duree-tot)*2)/2;
   const used=new Set(s.boxes.flatMap(b=>b.ex.filter(Boolean).map(x=>x.id)));
   const R=GRUN.journal.retours().filter(r=>r.ref===s.id);
-  main.innerHTML=`<div class="crumb"><a href="#/">Séances</a>${s.gid?` › <a href="#/groupe/${s.gid}">Groupe</a>`:joueursDe(s).length===1?` › <a href="#/joueur/${joueursDe(s)[0].id}">${esc(joueursDe(s)[0].nom)}</a>`:""} › Séance</div>
+  main.innerHTML=`<div class="crumb"><a href="#/">Create my session</a>${s.gid?` › <a href="#/groupe/${s.gid}">Groupe</a>`:joueursDe(s).length===1?` › <a href="#/joueur/${joueursDe(s)[0].id}">${esc(joueursDe(s)[0].nom)}</a>`:""} › Séance</div>
   <div class="dochead"><div><h1>${esc(s.nom||"Séance")}</h1>
    <p class="lead">${TYPES[s.type].n} · ${frD(s.date)} · ${PHASES[s.phase]||""} · ${whoTxt(s,c)} · ${c.al} · ${LIEUX[s.lieu]||""}</p>
    ${s.theme&&s.theme!==s.nom?`<p class="thm">${esc(s.theme)}</p>`:""}${s.lignes.length?`<p>${s.lignes.map(chip).join(" ")}</p>`:""}</div>
-   <div class="acts noprint"><a class="go big" href="#/terrain/${s.id}">▶ Lancer</a><a class="ib" href="#/r/${s.id}">Modifier</a></div></div>
+   <div class="acts noprint"><a class="ib" href="#/r/${s.id}">Modifier</a>${pdfBtn("prt","Séance PDF")}<button class="ib" id="snd" type="button">📲 Envoyer au joueur</button></div></div>
   ${s.recu?`<p class="note">Séance reçue${s.recu!==true?" pour "+esc(s.recu):""}.</p>`:""}
   ${s.faite?`<p class="note ok">✓ Faite le ${frD(s.faite.date)}${s.faite.duree?" · "+s.faite.duree+" min":""}${s.faite.rpe!=null?" · dureté ressentie "+s.faite.rpe+"/10":""}${s.faite.fait==="partiel"?" · faite en partie":""}</p>`:""}
-  ${s.prerempli?`<p class="note info">Séance pré-remplie : chaque case a reçu l'exo le mieux classé et un dosage pour ${c.al}. Touche « Changer » pour voir toute la liste. <button type="button" class="lnk" id="okp">Compris</button></p>`:""}
+  ${resumeHtml(s,c,tot,rest)}
+  ${s.prerempli?`<p class="note info">Séance pré-remplie : chaque case a reçu l'exercice le mieux classé et un dosage pour ${c.al}. Touche un exercice pour le modifier, le remplacer ou le déplacer. <button type="button" class="lnk" id="okp">Compris</button></p>`:""}
   ${s.modeleNote?`<p class="note">${esc(s.modeleNote)} <button type="button" class="lnk" id="okm">Compris</button></p>`:""}
   ${s.progNote?`<p class="note info">${esc(s.progNote)} <button type="button" class="lnk" id="okg">Compris</button></p>`:""}
   ${pourquoiHtml(s,c)}
-  <div class="tbar noprint"><b>${tot} / ${s.duree} min</b> <span class="${rest<0?"neg":""}">${rest===0?"temps complet":rest>0?"reste "+rest+" min":"dépasse de "+(-rest)+" min"}</span>${c.zones.length||c.crois?` · vigilance : ${[...c.zones.map(z=>ZN[z]||z),...(c.crois?["croissance"]:[])].join(", ")}`:""} <button type="button" class="lnk" id="fill">Remplir les cases vides</button></div>
+
   ${["E","C","F"].map(p=>`<section class="sec part" id="part${p}"><h2>${PARTS[p]} <small class="sm2">${partMin(s,p)} min</small></h2>
    ${p==="E"?wuPart(s,c):p==="F"?cdPart(s,c):""}
    ${p==="E"||RP(s,p)?"":s.boxes.map((b,bi)=>b.part===p?boxHtml(s,b,bi,c,used):"").join("")+`<button class="ib noprint addb" type="button" data-addp="${p}">+ Ajouter une case</button>`}</section>`).join("")}
   ${piedHtml(s)}
   ${R.length?`<section class="sec"><h2>Retours des joueurs</h2><div class="list">${R.map(r=>`<div class="li"><span class="code">${frD(r.date).slice(0,5)}</span><span class="tt">${esc(GRUN.joueurs.get(r.jid)?.nom||"?")} · ${r.rpe!=null?r.rpe+"/10":"–"} · ${r.duree||"?"} min${r.douleur?` · <b class="neg">douleur ${esc(ZONES_RETOUR[r.douleur.zone]||r.douleur.zone)} ${r.douleur.int}/10</b>`:""}<small>${r.fait===true?"faite":r.fait==="partiel"?"en partie":"non faite"}${r.comment?" · "+esc(r.comment):""}</small></span></div>`).join("")}</div></section>`:""}
-  <details class="grun-plus noprint"><summary>Plus d'options : imprimer, envoyer, dupliquer, modèle</summary><div class="grun-plusb">
-   <div class="tools">${pdfBtn("prt","Séance PDF")}<button class="ib" id="snd" type="button">📲 Envoyer au joueur</button></div>
+  <details class="grun-plus noprint"><summary>Plus d'options</summary><div class="grun-plusb">
    <div class="tools"><button class="ib" id="prg" type="button">⬆ Dupliquer en progression</button><button class="ib" id="mod" type="button">★ Enregistrer comme modèle</button><button class="ib" id="dup" type="button">Dupliquer</button><button class="ib" id="del" type="button">Supprimer</button></div>
-   <p class="msg">${RULE_PROG}</p></div></details>`;
+   <p class="msg">${RULE_PROG}</p></div></details>
+  ${actbar(`<a class="gs-btn main" href="#/terrain/${s.id}">▶ Lancer</a>`)}`;
   $("#okp")&&($("#okp").onclick=()=>{ s.prerempli=false; upd(s); });
   $("#okm")&&($("#okm").onclick=()=>{ s.modeleNote=null; upd(s); });
   $("#okg")&&($("#okg").onclick=()=>{ s.progNote=null; upd(s); });
@@ -1167,9 +1361,10 @@ function showSeance(id){
   $("#fill").onclick=()=>{ const n=autoFill(s,c); upd(s); toast(n?n+" case"+(n>1?"s":"")+" remplie"+(n>1?"s":""):"Aucune case vide."); };
   bindWu(s);
   $$("[data-pick]").forEach(b=>b.onclick=()=>picker(s,+b.dataset.pick,b.dataset.slot!=null?+b.dataset.slot:null,b.dataset.rep==="1"));
-  /* un exo = une page : la fiche de la banque (le retour ramène à la séance) */
+  /* un exercice = une page : la fiche de la banque (le retour ramène à la séance) */
   $$("[data-fiche]").forEach(b=>b.onclick=()=>{ const id=b.dataset.fiche; if(EX[id]&&!EX[id].snap){ try{ sessionStorage.setItem("seances_y",String(scrollY)); }catch(e){} location.href=GRUN.href("banque","#/ex/"+encodeURIComponent(id)); } else fiche(id); });
-  $$("[data-rm]").forEach(b=>b.onclick=()=>{ const [bi,ei]=b.dataset.rm.split(":").map(Number); const B=s.boxes[bi]; if(B.at) B.ex[ei]=null; else B.ex.splice(ei,1); upd(s); });
+  $$("[data-rm]").forEach(b=>b.onclick=()=>{ const [bi,ei]=b.dataset.rm.split(":").map(Number); retirerExo(s,bi,ei); });
+  $$("[data-exo]").forEach(b=>b.onclick=()=>{ const [bi,ei]=b.dataset.exo.split(":").map(Number); exoSheet(s,bi,ei); });
   $$("[data-mv]").forEach(b=>b.onclick=()=>{ const [bi,ei,d]=b.dataset.mv.split(":").map(Number); const A=s.boxes[bi].ex, j=ei+d; if(j<0||j>=A.length) return; [A[ei],A[j]]=[A[j],A[ei]]; upd(s); });
   $$("[data-dose]").forEach(i=>i.onchange=()=>{ const [bi,ei]=i.dataset.dose.split(":").map(Number); s.boxes[bi].ex[ei].d=i.value; s.maj=todayIso(); save(); });
   $$("[data-alt]").forEach(b=>b.onclick=()=>{ const [bi,ei,id]=b.dataset.alt.split(":"); const e=EX[id]; s.boxes[+bi].ex[+ei]={id,d:dose(e,c)}; upd(s); });
@@ -1177,16 +1372,61 @@ function showSeance(id){
   $$("[data-min]").forEach(i=>i.onchange=()=>{ s.boxes[+i.dataset.min].min=Math.max(0,+i.value||0); upd(s); });
   $$("[data-bmv]").forEach(b=>b.onclick=()=>{ const [bi,d]=b.dataset.bmv.split(":").map(Number); const B=s.boxes; let j=bi+d; while(j>=0&&j<B.length&&B[j].part!==B[bi].part) j+=d; if(j<0||j>=B.length) return; [B[bi],B[j]]=[B[j],B[bi]]; upd(s); });
   $$("[data-bren]").forEach(b=>b.onclick=()=>{ const B=s.boxes[+b.dataset.bren]; openSheet(`<div class="shh"><b>Renommer la case</b><button class="ib" data-close type="button">×</button></div><input id="rn" class="srch" value="${esc(B.nom)}"><div class="tools"><button class="go" id="rok" type="button">Enregistrer</button></div>`); $("#rok").onclick=()=>{ B.nom=$("#rn").value.trim()||B.nom; closeSheet(); upd(s); }; });
-  $$("[data-bdel]").forEach(b=>b.onclick=()=>{ if(!b.dataset.ok){ b.dataset.ok=1; b.textContent="Confirmer"; return; } s.boxes.splice(+b.dataset.bdel,1); upd(s); });
+  $$("[data-bdel]").forEach(b=>b.onclick=()=>{ const snap=clone(s.boxes), B=s.boxes[+b.dataset.bdel]; s.boxes.splice(+b.dataset.bdel,1); upd(s); GRUN.ui.annuler("Case « "+B.nom+" » supprimée", ()=>{ s.boxes=snap; upd(s); }); });
   $$("[data-bat]").forEach(b=>b.onclick=()=>{ const B=s.boxes[+b.dataset.bat]; if(B.at){ B.at=null; B.ex=B.ex.filter(Boolean); } else { B.at={n:Math.max(2,Math.min(6,B.ex.length||3))}; while(B.ex.length<B.at.n) B.ex.push(null); B.ex=B.ex.slice(0,B.at.n); } upd(s); });
   $$("[data-atn]").forEach(i=>i.onchange=()=>{ const B=s.boxes[+i.dataset.atn]; B.at.n=Math.max(2,Math.min(8,+i.value||3)); while(B.ex.length<B.at.n) B.ex.push(null); B.ex=B.ex.slice(0,B.at.n); upd(s); });
   $$("[data-addp]").forEach(b=>b.onclick=()=>addBox(s,b.dataset.addp));
   $("#dup").onclick=()=>{ const n=clone(s); n.id=uid(); n.nom=(s.nom||"Séance")+" (copie)"; n.src=null; n.faite=null; n.prerempli=false; n.cree=n.maj=todayIso(); ST.seances.push(n); saveNow(); go("#/s/"+n.id); };
   $("#prg").onclick=()=>{ const n=progression(s); go("#/s/"+n.id); };
   $("#mod").onclick=()=>modeleSheet(s);
-  $("#del").onclick=()=>{ const b=$("#del"); if(!b.dataset.ok){ b.dataset.ok=1; b.textContent="Toucher encore pour confirmer"; return; } ST.seances=ST.seances.filter(x=>x.id!==s.id); if(ST.relais?.sid===s.id) ST.relais=null; saveNow(); go("#/"); };
+  $("#del").onclick=()=>{ const snap=clone(ST); ST.seances=ST.seances.filter(x=>x.id!==s.id); if(ST.relais?.sid===s.id) ST.relais=null; saveNow(); go("#/"); GRUN.ui.annuler("Séance supprimée", ()=>{ ST=snap; saveNow(); location.hash="#/s/"+s.id; }); };
 }
 function upd(s){ s.maj=todayIso(); saveNow(); const y=scrollY; showSeance(s.id); scrollTo(0,y); }
+/* RÉSUMÉ en tête : durée totale, qualités travaillées, matériel nécessaire (+ vigilance, remplir les cases vides) */
+const MATWU={corde:"Corde à sauter",elast:"Élastique",minibands:"Mini-band",ballon:"Ballon",balles:"Balles de tennis",plots:"Plots",tapis:"Tapis",lattes:"Lattes",echelle:"Échelle de rythme",cerceaux:"Cerceaux",haies:"Haies basses",mb:"Médecine-ball",banc:"Banc",rouleau:"Rouleau",mur:"Mur",rb:"Raquette et balles",cibles:"Cibles",chasubles:"Chasubles"};
+function resumeSeance(s){
+  const ids=[]; (s.boxes||[]).forEach(b=>{ if(RP(s,b.part)) return; b.ex.forEach(x=>{ if(x) ids.push(x.id); }); });
+  const Lc=new Map(), add=(l,n)=>{ if(isLine(l)) Lc.set(l,(Lc.get(l)||0)+n); };
+  (s.lignes||[]).forEach(l=>add(l,3)); (s.boxes||[]).filter(b=>b.part==="C").forEach(b=>(b.L||[]).forEach(l=>add(l,2)));
+  ids.forEach(id=>{ const e=exoOf({id}); (e?.L||[]).forEach(l=>add(l,1)); });
+  const Q=[...Lc.entries()].sort((a,b)=>b[1]-a[1]).map(x=>x[0]);
+  const matN=Object.fromEntries(DATA.mat||[]), M=new Map(), addM=n=>{ if(n) M.set(norm(n).replace(/s$/,""),n); };
+  ids.forEach(id=>{ const e=exoOf({id}); (e?.m||[]).forEach(m=>addM(matN[m]||MATWU[m]||m)); });
+  ["E","F"].forEach(p=>{ const X=RP(s,p); if(!X) return; let mm=(X.routine?.situations||[]).flatMap(x=>x.mat||[]); if(!mm.length) mm=(WULIB.find(m=>m.id===X.id)?.materiel)||[]; mm.forEach(m=>addM(MATWU[m]||matN[m]||m)); });
+  return {Q,M:[...M.values()]};
+}
+function resumeHtml(s,c,tot,rest){
+  const {Q,M}=resumeSeance(s);
+  return `<section class="resume card noprint" aria-label="Résumé de la séance">
+   <div class="rsr"><span class="rsl">Durée</span><b>${fmtMin(tot)} / ${s.duree} min</b> <span class="${rest<0?"neg":""}">${rest===0?"temps complet":rest>0?"reste "+fmtMin(rest)+" min":"dépasse de "+fmtMin(-rest)+" min"}</span></div>
+   <div class="rsr"><span class="rsl">Qualités</span><span>${Q.length?Q.slice(0,6).map(chip).join(" "):`<span class="msg">aucune ligne précise</span>`}</span></div>
+   <div class="rsr"><span class="rsl">Matériel</span><span>${M.length?esc(M.join(" · ")):"aucun matériel"}</span></div>
+   ${c.zones.length||c.crois?`<div class="rsr"><span class="rsl">Vigilance</span><span class="neg">${esc([...c.zones.map(z=>ZN[z]||z),...(c.crois?["croissance"]:[])].join(", "))}</span></div>`:""}
+   </section>
+  <div class="tbar noprint"><b>${fmtMin(tot)} / ${s.duree} min</b> <span class="${rest<0?"neg":""}">${rest===0?"temps complet":rest>0?"reste "+fmtMin(rest)+" min":"dépasse de "+fmtMin(-rest)+" min"}</span> <button type="button" class="lnk" id="fill">Remplir les cases vides</button></div>`;
+}
+/* TOUCHER UN EXERCICE : modifier (dosage), remplacer, déplacer (↑ ↓, autre case), voir la fiche, retirer — tout au même endroit */
+function retirerExo(s,bi,ei){ const snap=clone(s.boxes), B=s.boxes[bi], e=exoOf(B.ex[ei]); if(B.at) B.ex[ei]=null; else B.ex.splice(ei,1); upd(s);
+  GRUN.ui.annuler("« "+(e?.n||"Exercice")+" » retiré", ()=>{ s.boxes=snap; upd(s); }); }
+function exoSheet(s,bi,ei){
+  const B=s.boxes[bi], x=B&&B.ex[ei], e=exoOf(x); if(!e) return;
+  const cases=s.boxes.map((b,i)=>({b,i})).filter(({b,i})=>i!==bi&&b.part!=="E"&&!RP(s,b.part));
+  openSheet(`<div class="shh"><b>${esc(e.n)}</b><button class="ib" data-close type="button" aria-label="Fermer">×</button></div>
+   <p class="msg">${esc(PARTS[B.part])} · ${esc(B.nom)}${B.at?" · atelier "+(ei+1):""}</p><p>${e.L.map(chip).join(" ")} <span class="msg">niveau ${e.v}${e.ma?" · "+esc(String(e.ma).replace(/\.$/,"")):""}</span></p>
+   <div class="f"><label for="xdz">Dosage</label><input id="xdz" value="${esc(x.d||"")}"></div>
+   <div class="mact"><button class="go big" id="xrp" type="button">⇄ Remplacer par un autre exercice</button>
+    ${B.at?"":`<div class="tools"><button class="ib" type="button" id="xup"${ei?"":" disabled"}>↑ Monter</button><button class="ib" type="button" id="xdn"${ei<B.ex.length-1?"":" disabled"}>↓ Descendre</button></div>`}
+    ${cases.length?`<div class="f"><label for="xmv">Déplacer dans une autre case</label><select id="xmv"><option value="">Choisir la case…</option>${cases.map(({b,i})=>`<option value="${i}">${esc(PARTS[b.part])} · ${esc(b.nom)}</option>`).join("")}</select></div>`:""}
+    <div class="tools"><button class="ib" type="button" id="xfi">ⓘ Voir la fiche</button><button class="ib" type="button" id="xrm">Retirer de la séance</button></div></div>`);
+  $("#xdz").onchange=ev=>{ x.d=ev.target.value; s.maj=todayIso(); saveNow(); const i=$(`[data-dose="${bi}:${ei}"]`); if(i){ i.value=x.d; const sp=i.nextElementSibling; if(sp) sp.textContent=x.d; } GRUN.ui.enregistre&&GRUN.ui.enregistre(); };
+  $("#xrp").onclick=()=>picker(s,bi,ei,true);
+  $("#xfi").onclick=()=>fiche(e.id,()=>exoSheet(s,bi,ei));
+  $("#xrm").onclick=()=>{ closeSheet(); retirerExo(s,bi,ei); };
+  const bouge=fn=>{ const snap=clone(s.boxes); fn(); closeSheet(); upd(s); GRUN.ui.annuler("Exercice déplacé", ()=>{ s.boxes=snap; upd(s); }); };
+  $("#xup")&&($("#xup").onclick=()=>bouge(()=>{ const A=B.ex; [A[ei-1],A[ei]]=[A[ei],A[ei-1]]; }));
+  $("#xdn")&&($("#xdn").onclick=()=>bouge(()=>{ const A=B.ex; [A[ei+1],A[ei]]=[A[ei],A[ei+1]]; }));
+  $("#xmv")&&($("#xmv").onchange=ev=>{ const T=s.boxes[+ev.target.value]; if(!T) return; bouge(()=>{ if(B.at) B.ex[ei]=null; else B.ex.splice(ei,1); if(T.at){ const k=T.ex.findIndex(z=>!z); if(k>=0) T.ex[k]=x; else T.ex.push(x); } else T.ex.push(x); }); });
+}
 let TT=null; function toast(t){ let el=$("#toast"); if(!el){ el=document.createElement("div"); el.id="toast"; el.setAttribute("role","status"); document.body.appendChild(el); } el.textContent=t; el.hidden=false; clearTimeout(TT); TT=setTimeout(()=>el.hidden=true,2200); }
 /* échauffement : CHOISI dans Choose your warm-up (relais vers la bibliothèque) ; les anciennes cases d'échauffement restent lisibles */
 function tConseil(s,code){ const T=trameFor(s), b=T&&T.blocs.find(x=>x.code===code); if(!b) return "";
@@ -1195,8 +1435,8 @@ function wuPart(s,c){ return tConseil(s,"ECH")+wuPart0(s,c); }
 function wuPart0(s,c){
   const W=s.wmode==="routine"&&s.warmup;
   if(W){ const B=wuBlocs(W.routine), J=B.flatMap(b=>b.jeux);
-    return `<div class="box wu"><div class="boxh"><div><b>${esc(W.routine.nom||"Échauffement")}</b><br><small class="msg">${fmtMin(W.min)} min · ${J.length} situation${J.length>1?"s":""}${W.auto?" · choisi d'office pour cette séance":""}</small></div></div>
-     <ol class="wul" style="margin:8px 0 0;padding-left:22px">${J.map(j=>{ const e=EX[j.id]; return `<li><button type="button" class="jeu" data-fiche="${esc(j.id)}">${esc(e?.n||j.n||"Situation")}<small>${j.sec?fmtSec(j.sec)+" · ":""}${esc(nomCourt(j.de||j.but||e?.w?.but||"",80))}</small></button></li>`; }).join("")}</ol>
+    return `<div class="box wu"><div class="boxh"><div><b>${esc(W.routine.nom||"Échauffement")}</b><br><small class="msg">${fmtMin(W.min)} min · ${J.length} exercice${J.length>1?"s":""}${W.auto?" · choisi d'office pour cette séance":""}</small></div></div>
+     <ol class="wul" style="margin:8px 0 0;padding-left:22px">${J.map(j=>{ const e=EX[j.id]; return `<li><button type="button" class="jeu" data-fiche="${esc(j.id)}">${esc(e?.n||j.n||"Exercice")}<small>${j.sec?fmtSec(j.sec)+" · ":""}${esc(nomCourt(j.de||j.but||e?.w?.but||"",80))}</small></button></li>`; }).join("")}</ol>
      <div class="boxf noprint"><button type="button" class="go sm" data-wu="go">Changer</button><button type="button" class="ib sm" data-wu="voir">Voir / modifier dans Choose your warm-up</button><span class="sp"></span><button type="button" class="lnk" data-wu="del">Retirer</button></div></div>`;
   }
   const old=(s.boxes||[]).filter(b=>b.part==="E"&&b.ex.some(Boolean));
@@ -1208,8 +1448,8 @@ function cdPart(s,c){ return tConseil(s,"RAC")+cdPart0(s,c); }
 function cdPart0(s,c){
   const W=RP(s,"F");
   if(W){ const J=wuBlocs(W.routine).flatMap(b=>b.jeux);
-    return `<div class="box wu cd"><div class="boxh"><div><b>${esc(W.routine.nom||"Retour au calme")}</b><br><small class="msg">${fmtMin(W.min)} min · ${J.length} situation${J.length>1?"s":""}${W.auto?" · choisi d'office pour cette séance":""}</small></div></div>
-     <ol class="wul" style="margin:8px 0 0;padding-left:22px">${J.map(j=>{ const e=EX[j.id]; return `<li><button type="button" class="jeu" data-fiche="${esc(j.id)}">${esc(e?.n||j.n||"Situation")}<small>${j.sec?fmtSec(j.sec)+" · ":""}${esc(nomCourt(j.de||j.but||"",80))}</small></button></li>`; }).join("")}</ol>
+    return `<div class="box wu cd"><div class="boxh"><div><b>${esc(W.routine.nom||"Retour au calme")}</b><br><small class="msg">${fmtMin(W.min)} min · ${J.length} exercice${J.length>1?"s":""}${W.auto?" · choisi d'office pour cette séance":""}</small></div></div>
+     <ol class="wul" style="margin:8px 0 0;padding-left:22px">${J.map(j=>{ const e=EX[j.id]; return `<li><button type="button" class="jeu" data-fiche="${esc(j.id)}">${esc(e?.n||j.n||"Exercice")}<small>${j.sec?fmtSec(j.sec)+" · ":""}${esc(nomCourt(j.de||j.but||"",80))}</small></button></li>`; }).join("")}</ol>
      <div class="boxf noprint"><button type="button" class="go sm" data-cd="go">Changer</button><button type="button" class="ib sm" data-cd="voir">Voir / modifier dans Choose your warm-up</button><span class="sp"></span><button type="button" class="lnk" data-cd="del">Retirer</button></div></div>`; }
   return `<div class="wucall noprint"><div><b>Retour au calme</b><span>Les retours au calme de référence : les mieux adaptés à cette séance en premier.${(s.boxes||[]).some(b=>b.part==="F")?" Les cases ci-dessous restent utilisables.":""}</span></div>
     <button type="button" class="go sm" data-cd="go">Choisir le retour au calme</button>${WULIB.some(m=>m.type==="cooldown")?`<button type="button" class="ib sm" data-cd="auto">Choisir pour moi</button>`:""}</div>`;
@@ -1219,41 +1459,41 @@ function bindWu(s){
   $$("[data-wu]").forEach(b=>b.onclick=()=>{ const k=b.dataset.wu;
     if(k==="go") return versWarmup(s,"#/nouveau");
     if(k==="voir") return versWarmup(s,"#/m/"+encodeURIComponent(s.warmup?.id||""));
-    if(k==="del"){ if(!b.dataset.ok){ b.dataset.ok=1; b.textContent="Confirmer"; return; } s.warmup=null; s.wmode="simple"; }
+    if(k==="del"){ const w0=s.warmup, m0=s.wmode; s.warmup=null; s.wmode="simple"; GRUN.ui.annuler("Échauffement retiré", ()=>{ s.warmup=w0; s.wmode=m0; upd(s); }); }
     upd(s); });
   $$("[data-cd]").forEach(b=>b.onclick=()=>{ const k=b.dataset.cd;
     if(k==="go") return versWarmup(s,"#/nouveau","cooldown");
     if(k==="voir") return versWarmup(s,"#/m/"+encodeURIComponent(s.cooldown?.id||""),"cooldown");
     if(k==="auto"){ s.cdCible||=s.duree<=45?6:s.duree<=75?8:10; cdAuto(s); }
-    if(k==="del"){ if(!b.dataset.ok){ b.dataset.ok=1; b.textContent="Confirmer"; return; } s.cooldown=null; s.cmode="simple"; }
+    if(k==="del"){ const c0=s.cooldown, m0=s.cmode; s.cooldown=null; s.cmode="simple"; GRUN.ui.annuler("Retour au calme retiré", ()=>{ s.cooldown=c0; s.cmode=m0; upd(s); }); }
     upd(s); });
 }
 function boxHtml(s,b,bi,c,used){
   const at=b.at, per=at?Math.round((b.min||0)/at.n):0, grp=at?Math.ceil(c.n/at.n):0;
   const exRow=(x,ei)=>{ const e=exoOf(x);
-    if(!e) return `<div class="exr empty2">${at?`<b>Atelier ${ei+1}</b> `:""}<button type="button" class="ib sm noprint" data-pick="${bi}" data-slot="${ei}">Choisir un exo</button>${x?`<small class="msg">exo introuvable</small>`:""}</div>`;
+    if(!e) return `<div class="exr empty2">${at?`<b>Atelier ${ei+1}</b> `:""}<button type="button" class="ib sm noprint" data-pick="${bi}" data-slot="${ei}">Choisir un exercice</button>${x?`<small class="msg">exercice introuvable</small>`:""}</div>`;
     const w=x.ok?null:(warnEx(e,c,b)||(b.part==="C"&&zoneHit(e,b,c)?"zone fragile ("+c.zones.map(z=>ZN[z]||z).join(", ")+") : à surveiller":null)), alt=w?altFor(e,b,c,used):null, md=upLevel(e,b,c), up=md&&e.v===md+1;
-    return `<div class="exr">${at?`<b class="atl">Atelier ${ei+1}</b>`:""}<div class="exm"><button type="button" class="exn" data-fiche="${esc(e.id)}">${esc(e.n)}</button>${x.up?` <span class="badge up" title="Progression">⬆ ${x.up==="exo"?"version plus dure":"dosage +1 cran"}</span>`:up?` <span class="badge up" title="${esc(RULE_HIST)}">⬆ niv. ${e.v}</span>`:""}${e.perso?` <span class="badge">perso</span>`:""}
+    return `<div class="exr">${at?`<b class="atl">Atelier ${ei+1}</b>`:""}<div class="exm"><button type="button" class="exn" data-exo="${bi}:${ei}" aria-label="${esc(e.n)} : modifier, remplacer ou déplacer">${esc(e.n)}</button>${x.up?` <span class="badge up" title="Progression">⬆ ${x.up==="exo"?"version plus dure":"dosage +1 cran"}</span>`:up?` <span class="badge up" title="${esc(RULE_HIST)}">⬆ niveau ${e.v}</span>`:""}${e.perso?` <span class="badge">personnel</span>`:""}
       <div class="exd"><input aria-label="Dosage" data-dose="${bi}:${ei}" value="${esc(x.d)}"><span class="pdose">${esc(x.d)}</span></div>
-      <small><span class="xp">${e.L.map(chip).join("")} niv. ${e.v} · </span>${esc(String(e.ma||"").replace(/\.$/,""))}</small>
+      <small><span class="xp">${e.L.map(chip).join("")} niveau ${e.v} · </span>${esc(String(e.ma||"").replace(/\.$/,""))}</small>
       ${w?`<div class="warn noprint">⚠ ${esc(w)}${alt?` · remplaçant proposé : <b>${esc(alt.n)}</b> <button type="button" class="ib sm" data-alt="${bi}:${ei}:${esc(alt.id)}">Remplacer</button>`:""}<button type="button" class="lnk" data-keep="${bi}:${ei}">Garder</button></div>`:""}</div>
       <div class="exa noprint"><button type="button" class="ib sm" data-pick="${bi}" data-slot="${ei}" data-rep="1">Changer</button>${at?"":`<button type="button" class="ib sm xp" data-mv="${bi}:${ei}:-1" aria-label="Monter">↑</button><button type="button" class="ib sm xp" data-mv="${bi}:${ei}:1" aria-label="Descendre">↓</button>`}<button type="button" class="ib sm" data-rm="${bi}:${ei}" aria-label="Retirer">×</button></div></div>`; };
   const T=b.t, tb=T?`<div class="tbloc">${T.obj?`<p class="bobj">${esc(T.obj)}</p>`:""}
      <div class="bdos"><label for="bd${bi}">Dosage du bloc</label><textarea id="bd${bi}" rows="2" data-bdos="${bi}">${esc(T.dos)}</textarea><span class="pdose">${esc(T.dos)}</span></div>
-     ${T.int?`<p class="msg"><b>Intensité :</b> ${esc(T.int)} · ${T.nb} exo${T.nb>1?"s":""} conseillé${T.nb>1?"s":""}</p>`:""}
+     ${T.int?`<p class="msg"><b>Intensité :</b> ${esc(T.int)} · ${T.nb} exercice${T.nb>1?"s":""} conseillé${T.nb>1?"s":""}</p>`:""}
      ${T.cons?.length||T.excl?`<details class="bcons"><summary>Consignes${T.excl?" et ce qu'on ne met pas ici":""}</summary>${T.cons?.length?`<ul>${T.cons.map(x=>`<li>${esc(x)}</li>`).join("")}</ul>`:""}${T.excl?`<p class="msg"><b>À ne pas mettre ici :</b> ${esc(T.excl)}</p>`:""}</details>`:""}</div>`:"";
   return `<div class="box${T?" tb":""}"><div class="boxh"><div>${T?`<span class="bcode xp">${esc(T.code)}</span> `:""}<b>${esc(b.nom)}</b>${b.L?.length?" "+b.L.map(chip).join(""):""}</div>
     <label class="mn"><input type="number" min="0" max="120" data-min="${bi}" value="${b.min}" aria-label="Minutes"> min</label></div>${tb}
    ${at?`<p class="msg atx">Ateliers : <input type="number" class="nb noprint" min="2" max="8" data-atn="${bi}" value="${at.n}"><span class="pdose">${at.n}</span> ateliers · ${per} min chacun · groupes de ${grp} joueur${grp>1?"s":""} · rotation au signal</p>`:""}
    ${b.ex.map(exRow).join("")}
-   <div class="boxf noprint">${at?"":`<button type="button" class="go sm" data-pick="${bi}">+ Choisir un exo</button>`}
+   <div class="boxf noprint">${at?"":`<button type="button" class="go sm" data-pick="${bi}">+ Choisir un exercice</button>`}
     <span class="sp"></span><span class="xp"><button type="button" class="lnk" data-bat="${bi}">${at?"Sans ateliers":"Ateliers"}</button><button type="button" class="lnk" data-bmv="${bi}:-1" aria-label="Monter la case">↑</button><button type="button" class="lnk" data-bmv="${bi}:1" aria-label="Descendre la case">↓</button><button type="button" class="lnk" data-bren="${bi}">Renommer</button><button type="button" class="lnk" data-bdel="${bi}">Supprimer</button></span></div></div>`;
 }
 function addBox(s,part){
   openSheet(`<div class="shh"><b>Ajouter une case · ${PARTS[part]}</b><button class="ib" data-close type="button">×</button></div>
    <p class="msg">Choisis une ligne de grille ou une famille de la banque.</p>
    <div class="f"><label for="al">Ligne de grille</label><select id="al"><option value="">—</option>${ALL_L.map(k=>`<option value="${k}">${esc(lineName(k))}</option>`).join("")}</select></div>
-   <div class="f"><label for="af">Ou famille d'exos</label><select id="af"><option value="">—</option>${DATA.fams.map(f=>`<option value="${f.c}">${esc(f.t)}</option>`).join("")}</select></div>
+   <div class="f"><label for="af">Ou famille d'exercices</label><select id="af"><option value="">—</option>${DATA.fams.map(f=>`<option value="${f.c}">${esc(f.t)}</option>`).join("")}</select></div>
    <div class="f"><label for="an">Nom de la case</label><input id="an" placeholder="Laisse vide pour le nom automatique"></div>
    <div class="row"><div class="f"><label for="am">Minutes</label><input id="am" type="number" min="0" value="10"></div></div>
    <div class="tools"><button class="go" id="aok" type="button">Ajouter</button></div>`);
@@ -1270,41 +1510,44 @@ function showSeanceJoueur(s){
   main.innerHTML=`<div class="crumb"><a href="#/">Mes séances</a> › Séance</div><h1>${esc(s.nom||"Séance")}</h1>
    <p class="lead">${frD(s.date)} · ${s.duree} min${s.theme?" · "+esc(s.theme):""}</p>
    ${s.faite?`<p class="note ok">✓ Faite le ${frD(s.faite.date)}${s.faite.rpe!=null?" · dureté "+s.faite.rpe+"/10":""}</p>`:""}
-   <div class="tools" style="margin:12px 0"><a class="go big" href="#/terrain/${s.id}">▶ C'est parti</a></div>
+   <div class="tools" style="margin:12px 0"><a class="go big" href="#/terrain/${s.id}">▶ Commencer la séance</a></div>
    ${["E","C","F"].map(p=>`<section class="sec part"><h2>${PARTS[p]} <small class="sm2">${partMin(s,p)} min</small></h2>${RP(s,p)?wuBlocs(RP(s,p).routine).map(b=>`<div class="box"><div class="boxh"><b>${esc(b.nom)}</b><span class="mn">${fmtMin(b.min)} min</span></div>${b.jeux.map(j=>`<button type="button" class="jeu" data-fiche="${esc(j.id)}">${esc(EX[j.id]?.n||j.n||j.id)}</button>`).join("")}</div>`).join(""):s.boxes.filter(b=>b.part===p&&b.ex.some(Boolean)).map(b=>`<div class="box"><div class="boxh"><b>${esc(b.nom)}</b><span class="mn">${fmtMin(b.min)} min</span></div>${b.t?.obj?`<p class="bobj">${esc(b.t.obj)}</p>`:""}${b.t?.dos?`<p class="msg"><b>Dosage :</b> ${esc(b.t.dos)}</p>`:""}${exs(b)}</div>`).join("")}</section>`).join("")}`;
   $$("[data-fiche]").forEach(b=>b.onclick=()=>fiche(b.dataset.fiche));
 }
 
-/* ---------- CHOIX D'UN EXO (liste complète) + création à la volée ---------- */
+/* ---------- CHOIX D'UN EXERCICE (liste complète) + création à la volée ---------- */
 function picker(s,bi,slot,replace){
   const B=s.boxes[bi], c=ctxOf(s), used=new Set(s.boxes.flatMap(b=>b.ex.filter(Boolean).map(x=>x.id)));
   let jeux=!!picker.jeux; const P0=pool(B,c,used), PJ=c.noKids?pool(B,c,used,{jeux:true}):P0; let P=jeux?PJ:P0; const fams=[...new Set(PJ.map(x=>x.e.f))];
   let q="", ff="", lv="", shown=40;
   openSheet(`<div class="shh"><b>${replace?"Changer · ":""}${esc(B.nom)}${slot!=null&&B.at?" · atelier "+(slot+1):""}</b><button class="ib" data-close type="button" aria-label="Fermer">×</button></div>
-   <input class="srch" id="pq" type="search" placeholder="Chercher un exo : tes exos, puis toute la banque" autocomplete="off">
-   <p class="msg">${P.length} exos possibles (âge ${c.al}, ${(LIEUX[c.lieu]||"").toLowerCase()}, ton matériel). Les plus adaptés sont en haut. ${c.done.ids.size?RULE_HIST:""}</p>
-   <div class="tools"><button type="button" class="ib" id="pnew">+ Créer un exo pour cette case</button></div>
+   <input class="srch" id="pq" type="search" placeholder="Chercher un exercice : tes exercices, puis toute la banque" autocomplete="off">
+   <p class="msg">${P.length} exercices possibles (âge ${c.al}, ${(LIEUX[c.lieu]||"").toLowerCase()}, ton matériel). Les plus adaptés sont en haut. ${c.done.ids.size?RULE_HIST:""}</p>
+   <div class="tools"><button type="button" class="ib" id="pnew">+ Créer un exercice pour cette case</button></div>
    ${c.noKids&&PJ.length>P0.length?`<label class="chk"><input type="checkbox" id="pj"${jeux?" checked":""}> Afficher aussi les jeux (jeux d'échauffement et jeux physiques, ${PJ.length-P0.length})</label>`:""}
-   ${B.t?.cles?.length?`<p class="msg">En tête : les exos clés de la trame pour ce bloc, puis les familles du bloc (niveau ${B.t.niv.join(" à ")}).</p>`:""}
+   ${B.t?.cles?.length?`<p class="msg">En tête : les exercices clés de la trame pour ce bloc, puis les familles du bloc (niveau ${B.t.niv.join(" à ")}).</p>`:""}
    <div class="row"><div class="f grow"><label for="pf">Famille</label><select id="pf"><option value="">Toutes</option>${fams.map(f=>`<option value="${f}">${esc(FAM[f]?.t||f)}</option>`).join("")}</select></div>
    <div class="f"><label for="pv">Niveau</label><select id="pv"><option value="">Tous</option>${[1,2,3,4].map(v=>`<option>${v}</option>`).join("")}</select></div></div>
    <div id="pl"></div>`);
-  $("#pnew").onclick=()=>creerExo(s,bi,slot,replace);
+  /* Nouvel exercice : composant unique (G.ui.nouvelExo → fiche complète de la banque) ; au retour, l'exercice est mis dans cette case */
+  $("#pnew").onclick=()=>{ if(!(GRUN.ui&&GRUN.ui.nouvelExo)) return creerExo(s,bi,slot,replace);
+    try{ sessionStorage.setItem("seances_exo_case",JSON.stringify({sid:s.id,bi,slot,replace:!!replace})); }catch(e){}
+    history.replaceState(null,"",location.pathname+location.search+"#/s/"+s.id+"?case="+bi); closeSheet(); GRUN.ui.nouvelExo({nom:q}); };
   const put=x=>{ if(B.at||replace){ const k=slot!=null?slot:B.ex.findIndex(z=>!z); if(k>=0) B.ex[k]=x; else B.ex.push(x); } else B.ex.push(x); closeSheet(); upd(s); };
   const draw=()=>{
     const qq=norm(q).split(/\s+/).filter(Boolean);
     const L=P.filter(({e})=>(!ff||e.f===ff)&&(!lv||e.v==lv)&&(!qq.length||qq.every(w=>tx(e)._t.includes(w))));
-    if(qq.length) L.sort((a,b)=>(!!b.e.perso-!!a.e.perso));   /* tes exos d'abord */
+    if(qq.length) L.sort((a,b)=>(!!b.e.perso-!!a.e.perso));   /* tes exercices d'abord */
     const inP=new Set(P.map(x=>x.e.id));
     const X0=qq.length?DATA.ex.filter(e=>!inP.has(e.id)&&!HIDE.has(e.id)&&(!ff||e.f===ff)&&(!lv||e.v==lv)&&qq.every(w=>tx(e)._t.includes(w))).sort((a,b)=>(!!b.perso-!!a.perso)||(warnEx(a,c,B)?1:0)-(warnEx(b,c,B)?1:0)).slice(0,40).map(e=>({e})):[];
-    const MX=qq.length?[...L.filter(x=>x.e.perso),...X0.filter(x=>x.e.perso)]:[], X=X0.filter(x=>!x.e.perso);   /* tes exos d'abord, où qu'ils soient */
+    const MX=qq.length?[...L.filter(x=>x.e.perso),...X0.filter(x=>x.e.perso)]:[], X=X0.filter(x=>!x.e.perso);   /* tes exercices d'abord, où qu'ils soient */
     if(MX.length){ for(let i=L.length-1;i>=0;i--) if(L[i].e.perso) L.splice(i,1); }
     const filt=q||ff||lv;
-    const item=({e})=>{ const md=upLevel(e,B,c); return `<div class="pit${used.has(e.id)?" used":""}"><button type="button" class="padd" data-add="${esc(e.id)}"><b>${esc(e.n)}${B.t?.cles?.includes(e.id)?` <span class="badge ok">clé de la trame</span>`:""}${isKid(e)&&c.noKids?` <span class="badge">jeu</span>`:""}${md&&e.v===md+1?` <span class="badge up">⬆ un cran au-dessus</span>`:""}${e.perso?` <span class="badge">perso</span>`:""}</b><span>${esc(e.ob||e.de||"")}</span><small>${e.L.map(chip).join("")} niv. ${e.v} · dès ${e.a} ans · ${esc(String(e.ma||"").replace(/\.$/,""))}${used.has(e.id)?" · <em>déjà dans la séance</em>":""}</small></button><button type="button" class="ib sm" data-inf="${esc(e.id)}" aria-label="Voir la fiche">ⓘ</button></div>`; };
+    const item=({e})=>{ const md=upLevel(e,B,c); return `<div class="pit${used.has(e.id)?" used":""}"><button type="button" class="padd" data-add="${esc(e.id)}"><b>${esc(e.n)}${B.t?.cles?.includes(e.id)?` <span class="badge ok">clé de la trame</span>`:""}${isKid(e)&&c.noKids?` <span class="badge">jeu</span>`:""}${md&&e.v===md+1?` <span class="badge up">⬆ un cran au-dessus</span>`:""}${e.perso?` <span class="badge">personnel</span>`:""}</b><span>${esc(e.ob||e.de||"")}</span><small>${e.L.map(chip).join("")} niveau ${e.v} · dès ${e.a} ans · ${esc(String(e.ma||"").replace(/\.$/,""))}${used.has(e.id)?" · <em>déjà dans la séance</em>":""}</small></button><button type="button" class="ib sm" data-inf="${esc(e.id)}" aria-label="Voir la fiche">ⓘ</button></div>`; };
     const itemX=({e})=>{ const w=warnEx(e,c,B)||(!okEx(e,c)?"matériel ou lieu différent des réglages":""); return item({e}).replace("</small>",`${w?` · <em>${esc(w)}</em>`:""}</small>`); };
-    const hM=MX.length?`<h3 class="alt">Mes exos (${MX.length})</h3>${MX.map(itemX).join("")}`:"";
+    const hM=MX.length?`<h3 class="alt">Mes exercices (${MX.length})</h3>${MX.map(itemX).join("")}`:"";
     const hX=X.length?`<h3 class="alt">Dans toute la banque (${X.length}${X.length>=40?"+":""})</h3>${X.map(itemX).join("")}`:"";
-    $("#pl").innerHTML=!L.length&&!X.length&&!MX.length?`<div class="empty">Aucun exo${q?" pour « "+esc(q)+" »":""}. Vérifie le matériel, le lieu ou l'âge dans les réglages, ou crée ton exo.</div>`:qq.length?hM+(L.length&&(MX.length||X.length)?`<h3 class="alt">Pour cette case (${L.length})</h3>`:"")+L.slice(0,shown).map(item).join("")+hX:
+    $("#pl").innerHTML=!L.length&&!X.length&&!MX.length?`<div class="empty">Aucun exercice${q?" pour « "+esc(q)+" »":""}. Vérifie le matériel, le lieu ou l'âge dans les réglages, ou crée ton exercice.</div>`:qq.length?hM+(L.length&&(MX.length||X.length)?`<h3 class="alt">Pour cette case (${L.length})</h3>`:"")+L.slice(0,shown).map(item).join("")+hX:
       filt?L.slice(0,shown).map(item).join(""):
       `<h3 class="alt">Les plus adaptés</h3>${L.slice(0,12).map(item).join("")}${L.length>12?`<h3 class="alt">Tous les autres possibles (${L.length-12})</h3>${L.slice(12,shown).map(item).join("")}`:""}`;
     if(L.length>shown) $("#pl").insertAdjacentHTML("beforeend",`<button type="button" class="ib" id="more">Voir plus (${L.length-shown} restants)</button>`);
@@ -1320,8 +1563,8 @@ function picker(s,bi,slot,replace){
 }
 function creerExo(s,bi,slot,replace){
   const B=s.boxes[bi], c=ctxOf(s); let L=[...(B.L||[])], M=[];
-  openSheet(`<div class="shh"><b>Nouvel exo · ${esc(B.nom)}</b><button class="ib" data-close type="button">×</button></div>
-   <p class="msg">Il est rangé dans la banque (exos perso) : disponible partout dans GRÜN.</p>
+  openSheet(`<div class="shh"><b>Nouvel exercice · ${esc(B.nom)}</b><button class="ib" data-close type="button">×</button></div>
+   <p class="msg">Il est rangé dans la banque (exercices personnels) : disponible partout dans GRÜN.</p>
    <div class="f"><label for="xn">Nom</label><input id="xn" placeholder="Ex. Fentes croisées avec balle"></div>
    <div class="f"><label for="xd">Description</label><textarea id="xd" rows="3" placeholder="Déroulement, consignes"></textarea></div>
    <div class="f"><label>Lignes</label><div class="chips">${ALL_L.map(l=>`<button type="button" class="tg sm" data-xl="${l}" aria-pressed="${L.includes(l)}" title="${esc(lineName(l))}">${l}</button>`).join("")}</div></div>
@@ -1332,21 +1575,29 @@ function creerExo(s,bi,slot,replace){
   $$("[data-xl]",sheet).forEach(b=>b.onclick=()=>{ const l=b.dataset.xl; L=L.includes(l)?L.filter(x=>x!==l):[...L,l]; b.setAttribute("aria-pressed",L.includes(l)); });
   $$("[data-xm]",sheet).forEach(b=>b.onclick=()=>{ const m=b.dataset.xm; M=M.includes(m)?M.filter(x=>x!==m):[...M,m]; b.setAttribute("aria-pressed",M.includes(m)); });
   $("#xok").onclick=()=>{
-    const n=$("#xn").value.trim(); if(!n){ $("#xmsg").textContent="Donne un nom à l'exo."; return; }
+    const n=$("#xn").value.trim(); if(!n){ $("#xmsg").textContent="Donne un nom à l'exercice."; return; }
     const de=$("#xd").value.trim(), f=B.f?.[0]||(L[0]?famsOfLine(L[0])[0]:"")||"", dom=(L[0]||"PP").slice(0,2);
     const matN=Object.fromEntries(DATA.mat);
-    const x=GRUN.banque.add({n,de,ob:de.split(/(?<=\.)\s/)[0].slice(0,160),co:"",er:"",ut:"",L,m:M,ma:M.length?M.map(k=>matN[k]).join(", ")+".":"aucun.",dos:$("#xs").value.trim(),f,s:"Mes exos",dom,a:+$("#xa").value||4,ax:18,v:+$("#xv").value||2,k:kOf(f),c:dom==="GE"?1:0,e:0,an:"à partir de "+(+$("#xa").value||4)+" ans · niveau "+(+$("#xv").value||2)});
+    const x=GRUN.banque.add({n,de,ob:de.split(/(?<=\.)\s/)[0].slice(0,160),co:"",er:"",ut:"",L,m:M,ma:M.length?M.map(k=>matN[k]).join(", ")+".":"aucun.",dos:$("#xs").value.trim(),f,s:"Mes exercices",dom,a:+$("#xa").value||4,ax:18,v:+$("#xv").value||2,k:kOf(f),c:dom==="GE"?1:0,e:0,an:"à partir de "+(+$("#xa").value||4)+" ans · niveau "+(+$("#xv").value||2)});
     const e=normEx({...x,perso:true}); EX[e.id]=e; if(!DATA.ex.some(y=>y.id===e.id)) DATA.ex.push(e);
     const item={id:e.id,d:e.dos||dose(e,c)};
     if(B.at||replace){ const k=slot!=null?slot:B.ex.findIndex(z=>!z); if(k>=0) B.ex[k]=item; else B.ex.push(item); } else B.ex.push(item);
     s.maj=todayIso(); saveNow();
-    openSheet(`<div class="shh"><b>Exo créé</b><button class="ib" data-close type="button">×</button></div><p>« ${esc(e.n)} » est dans la case et dans ta banque.</p>
+    openSheet(`<div class="shh"><b>Exercice créé</b><button class="ib" data-close type="button">×</button></div><p>« ${esc(e.n)} » est dans la case et dans ta banque.</p>
       <div class="tools"><a class="ib" href="${GRUN.href("banque","#/ex/"+e.id)}">Fiche complète (vidéo, photo, usage échauffement)</a><button class="go" data-close type="button">OK</button></div>`);
     $$("[data-close]",sheet).forEach(b=>b.addEventListener("click",()=>upd(s)));
   };
 }
 
-/* ---------- FICHE D'UN EXO / JEU (+ vidéo) ---------- */
+/* retour de la banque après « Nouvel exercice » : l'exercice créé va dans la case d'où on l'a demandé */
+function exoRetour(sid,id){
+  let P=null; try{ P=JSON.parse(sessionStorage.getItem("seances_exo_case")||"null"); sessionStorage.removeItem("seances_exo_case"); }catch(e){}
+  const s=getS(sid), e=EX[id]; location.replace("#/s/"+sid); if(!s||!e||!P||P.sid!==sid) return true;
+  const B=s.boxes&&s.boxes[P.bi]; if(!B) return true; const c=ctxOf(s), item={id:e.id,d:doseB(e,c,B,Math.max(1,B.ex.filter(Boolean).length+1))};
+  if(B.at||P.replace){ const k=P.slot!=null?P.slot:B.ex.findIndex(z=>!z); if(k>=0) B.ex[k]=item; else B.ex.push(item); } else B.ex.push(item);
+  s.maj=todayIso(); saveNow(); setTimeout(()=>toast("« "+e.n+" » est dans la case « "+B.nom+" »"),300); return true;
+}
+/* ---------- FICHE D'UN EXERCICE / JEU (+ vidéo) ---------- */
 async function videoOf(id){
   try{ const u=await GRUN.video(id); if(u) return {l:u}; }catch(e){}
   try{ const db=await new Promise((ok,ko)=>{ const r=indexedDB.open("banque_videos",1); r.onupgradeneeded=()=>r.result.createObjectStore("v"); r.onsuccess=()=>ok(r.result); r.onerror=()=>ko(); });
@@ -1369,19 +1620,20 @@ function fiche(id,back){
 /* ---------- MODÈLES ---------- */
 function modeleSheet(s){
   openSheet(`<div class="shh"><b>Enregistrer comme modèle</b><button class="ib" data-close type="button">×</button></div>
-   <p class="msg">Le modèle garde la structure, les exos, les dosages et l'échauffement. Tu pourras l'appliquer à un autre joueur ou groupe : dosages recalculés pour son âge, exos inadaptés signalés avec un remplaçant.</p>
+   <p class="msg">Le modèle garde la structure, les exercices, les dosages et l'échauffement. Tu pourras l'appliquer à un autre joueur ou groupe : dosages recalculés pour son âge, exercices inadaptés signalés avec un remplaçant.</p>
    <div class="f"><label for="mn">Nom du modèle</label><input id="mn" value="${esc(s.nom||"Modèle")}"></div><div class="tools"><button class="go" id="mok" type="button">Enregistrer</button></div>`);
   $("#mok").onclick=()=>{ const c=ctxOf(s); const m={id:uid(),nom:$("#mn").value.trim()||s.nom||"Modèle",type:s.type,theme:s.theme,lignes:[...s.lignes],phase:s.phase,duree:s.duree,lieu:s.lieu,mat:[...(s.mat||[])],boxes:clone(s.boxes).map(b=>({...b,ex:b.ex.map(x=>x?{id:x.id,d:x.d,snap:x.snap}:null)})),warmup:s.warmup?clone(s.warmup):null,wmode:s.wmode,cooldown:s.cooldown?clone(s.cooldown):null,cmode:s.cmode||"simple",age:c.age,de:s.id,cree:todayIso()};
     ST.modeles.push(m); saveNow(); closeSheet(); toast("Modèle enregistré"); };
 }
 function showModeles(){
   if(!COACH()) return go("#/");
-  main.innerHTML=`<div class="crumb"><a href="#/">Séances</a> › Modèles</div><h1>Modèles de séance</h1>
-   <p class="lead">Applique un modèle à un joueur ou à un groupe : la structure et les exos sont repris, les dosages sont recalculés pour son âge, les exos inadaptés sont signalés avec un remplaçant.</p>
-   ${ST.modeles.length?`<div class="list">${ST.modeles.slice().reverse().map(m=>`<div class="li"><span class="code">${m.duree} min</span><span class="tt"><b>${esc(m.nom)}</b><small>${TYPES[m.type]?.n||""} · conçu pour ${Math.min(18,+m.age||13)+" ans"} · ${m.boxes.reduce((a,b)=>a+b.ex.filter(Boolean).length,0)} exos${m.warmup?" · warm-up":""}</small>
+  aide("modeles");
+  main.innerHTML=`<div class="crumb"><a href="#/">Create my session</a> › Modèles</div><h1>Modèles de séance</h1>
+   <p class="lead">Applique un modèle à un joueur ou à un groupe : la structure et les exercices sont repris, les dosages sont recalculés pour son âge, les exercices inadaptés sont signalés avec un remplaçant.</p>
+   ${ST.modeles.length?`<div class="list">${ST.modeles.slice().reverse().map(m=>`<div class="li"><span class="code">${m.duree} min</span><span class="tt"><b>${esc(m.nom)}</b><small>${TYPES[m.type]?.n||""} · conçu pour ${Math.min(18,+m.age||13)+" ans"} · ${m.boxes.reduce((a,b)=>a+b.ex.filter(Boolean).length,0)} exercices${m.warmup?" · warm-up":""}</small>
      <span class="tools" style="margin-top:6px"><button type="button" class="go sm" data-app="${m.id}">Appliquer</button><button type="button" class="ib sm" data-mdel="${m.id}">Supprimer</button></span></span></div>`).join("")}</div>`:`<div class="empty">Aucun modèle. Ouvre une séance et touche « ★ Enregistrer comme modèle ».</div>`}`;
   $$("[data-app]").forEach(b=>b.onclick=()=>appliquerSheet(ST.modeles.find(m=>m.id===b.dataset.app)));
-  $$("[data-mdel]").forEach(b=>b.onclick=()=>{ if(!b.dataset.ok){ b.dataset.ok=1; b.textContent="Confirmer"; return; } ST.modeles=ST.modeles.filter(m=>m.id!==b.dataset.mdel); saveNow(); showModeles(); });
+  $$("[data-mdel]").forEach(b=>b.onclick=()=>{ const snap=ST.modeles.slice(); ST.modeles=ST.modeles.filter(m=>m.id!==b.dataset.mdel); saveNow(); showModeles(); GRUN.ui.annuler("Modèle supprimé", ()=>{ ST.modeles=snap; saveNow(); showModeles(); }); });
 }
 function appliquerSheet(m){
   const J=GRUN.joueurs.all(), Gs=GRUN.groupes.all(); let tgt=null;
@@ -1400,7 +1652,7 @@ function appliquerModele(m,tgt,age,date){
   const s=newSeance(o); s.boxes=clone(m.boxes).map(b=>({...b,id:uid()}));
   const c=ctxOf(s); let bad=0;
   for(const b of s.boxes) for(const x of b.ex){ if(!x) continue; const e=exoOf(x); if(!e) continue; x.d=dose(e,c); if(warnEx(e,c,b)) bad++; }
-  s.modeleNote=`Modèle appliqué : dosages recalculés pour ${c.al}.`+(bad?` ${bad} exo${bad>1?"s":""} inadapté${bad>1?"s":""} à l'âge : remplaçant proposé sous chacun.`:" Tous les exos conviennent à cet âge.");
+  s.modeleNote=`Modèle appliqué : dosages recalculés pour ${c.al}.`+(bad?` ${bad} exercice${bad>1?"s":""} inadapté${bad>1?"s":""} à l'âge : remplaçant proposé sous chacun.`:" Tous les exercices conviennent à cet âge.");
   saveNow(); return s;
 }
 
@@ -1413,7 +1665,7 @@ function progression(s){
     const h=b.part==="C"?harder(e,c,b):null;            // échauffement et retour au calme : le dosage seul monte
     if(h){ up++; return {id:h.id,d:dose(h,c),up:"exo",de:e.id}; }
     if(b.part==="C"){ dz++; return {...x,d:bumpDose(x.d),up:"dose"}; } return x; });
-  n.progNote=`Progression de « ${s.nom||"séance"} » : ${up} exo${up>1?"s":""} remplacé${up>1?"s":""} par leur version plus dure, ${dz} dosage${dz>1?"s":""} monté${dz>1?"s":""} d'un cran.`;
+  n.progNote=`Progression de « ${s.nom||"séance"} » : ${up} exercice${up>1?"s":""} remplacé${up>1?"s":""} par leur version plus dure, ${dz} dosage${dz>1?"s":""} monté${dz>1?"s":""} d'un cran.`;
   ST.seances.push(n); saveNow(); return n;
 }
 
@@ -1461,7 +1713,7 @@ async function pdfSeance(s){
       if(B.t){ if(B.t.obj) d.para(B.t.obj,{size:9.5,x:M+10,after:0}); if(B.t.dos) d.para("Dosage du bloc : "+B.t.dos,{size:9.5,bold:true,color:COL[p],x:M+10,after:0}); if(B.t.int) d.para("Intensité : "+B.t.int,{size:9,color:"#5D6675",x:M+10,after:0}); if(B.t.cons?.length) d.para("Consignes : "+B.t.cons.join(" ; "),{size:9,color:"#333333",x:M+10,after:3}); }
       if(B.at) d.para(`${B.at.n} ateliers · ${Math.round((B.min||0)/B.at.n)} min chacun · groupes de ${Math.ceil(c.n/B.at.n)} · rotation au signal`,{size:9,color:"#5D6675",x:M+10});
       const L=B.ex.map((x,i)=>[x,i]).filter(([x])=>exoOf(x));
-      if(!L.length) d.para("(aucun exo choisi)",{size:9,color:"#8A94A3",x:M+10});
+      if(!L.length) d.para("(aucun exercice choisi)",{size:9,color:"#8A94A3",x:M+10});
       for(const [x,i] of L){ const e=exoOf(x);
         d.need(30); d.para((B.at?`Atelier ${i+1} · `:"")+e.n,{size:10.5,bold:true,x:M+10,after:0});
         if(x.d) d.para(x.d,{size:9.5,color:COL[p],x:M+10,after:0});
@@ -1479,13 +1731,13 @@ async function pdfSeance(s){
   setTimeout(()=>pdfLab("prt","Séance PDF"),2500);
 }
 
-/* ---------- MODE TERRAIN COMMUN : warm-up guidé (jeu par jeu) puis séance (exo par exo), retour à la fin ---------- */
+/* ---------- MODE TERRAIN COMMUN : warm-up guidé (jeu par jeu) puis séance (exercice par exercice), retour à la fin ---------- */
 const PDFICO='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M12 11v6M9 14l3 3 3-3"/></svg>';
 const pdfBtn=(id,lab)=>`<button type="button" class="grun-pdf" id="${id}">${PDFICO}<span>${lab}</span></button>`;   /* bouton PDF commun (grun.css .grun-pdf) */
 const pdfLab=(id,t)=>{ const b=document.getElementById(id); const sp=b&&b.querySelector("span"); if(sp) sp.textContent=t; };
 let TIMER=null, RTIMER=null, ACX=null, WL=null;
 document.addEventListener("visibilitychange",()=>{ if(document.visibilityState==="visible"&&document.body.classList.contains("terrain")&&!WL) try{ navigator.wakeLock&&navigator.wakeLock.request("screen").then(w=>{ WL=w; w.addEventListener("release",()=>WL=null); }).catch(()=>{}); }catch(e){} });
-/* VOIX (mode terrain) : annonce l'exo, le dosage et les décomptes en français ; réglage gardé dans seances_v1.voix */
+/* VOIX (mode terrain) : annonce l'exercice, le dosage et les décomptes en français ; réglage gardé dans seances_v1.voix */
 const VOIX={ ok:()=>"speechSynthesis" in window, v:null,
   pick(){ if(this.v||!this.ok()) return this.v; const L=speechSynthesis.getVoices(); this.v=L.find(x=>/^fr[-_]FR/i.test(x.lang))||L.find(x=>/^fr/i.test(x.lang))||null; return this.v; },
   dire(t,coupe=true){ if(!ST.voix||!this.ok()||!t) return; try{ if(coupe) speechSynthesis.cancel(); const u=new SpeechSynthesisUtterance(parler(t)); u.lang="fr-FR"; const v=this.pick(); if(v) u.voice=v; u.rate=1.02; speechSynthesis.speak(u); }catch(e){} },
@@ -1511,6 +1763,7 @@ const mmss=t=>{ const a=Math.abs(t); return (t<0?"+":"")+Math.floor(a/60)+":"+St
 function showTerrain(id,k){
   const s=getS(id); if(!s?.boxes){ go("#/"); return; }
   if(!COACH()&&!concerne(s,MOI())&&!s.recu){ go("#/"); return; }
+  aide("terrain");
   const S=steps(s); if(!S.length){ main.innerHTML=`<div class="empty">Cette séance est vide.</div>`; return; }
   if(!ST.run||ST.run.sid!==id){ ST.run={sid:id,etat:{},debut:Date.now()}; saveNow(); }
   if(k==null||k===""){ k=S.findIndex(x=>!ST.run.etat[x.key]); if(k<0) k=0; }
@@ -1531,9 +1784,9 @@ function showTerrain(id,k){
    ${x.bi!=null&&s.boxes[x.bi]?.t?(()=>{ const T=s.boxes[x.bi].t; return `<div class="terx tb">${T.obj?`<p><b>Objectif du bloc.</b> ${esc(T.obj)}</p>`:""}${T.dos?`<p><b>Dosage du bloc.</b> ${esc(T.dos)}</p>`:""}${T.int?`<p class="msg"><b>Intensité.</b> ${esc(T.int)}</p>`:""}${T.cons?.length?`<ul class="cos">${T.cons.map(t=>`<li>${esc(t)}</li>`).join("")}</ul>`:""}</div>`; })():""}
    ${nSer?`<div class="ser"><b>Série <span id="sn">1</span> / ${nSer}</b><button type="button" class="go sm" id="sdone">Série faite → récup ${mmss(rec)}</button><span class="clock sm" id="rclk" hidden></span></div>`:""}
    <div id="vid"></div>
-   ${(wu||x.k==="cd")&&!e&&(x.co?.length||x.de)?`<div class="terx">${x.co?.length?`<ul class="cos">${x.co.map(t=>`<li>${esc(t)}</li>`).join("")}</ul>`:""}${x.de?`<p class="msg"><b>Déroulement.</b> ${esc(x.de)}</p>`:""}</div>`:e?`<div class="terx">${e.co?`<p><b>Consignes.</b> ${esc(arr(e.co))}</p>`:""}${e.de?`<p class="msg"><b>Déroulement.</b> ${esc(e.de)}</p>`:""}${e.ma&&!/^aucun/.test(e.ma)?`<p class="msg"><b>Matériel.</b> ${esc(e.ma)}</p>`:""}</div>`:x.k==="box"?`<div class="empty">Aucun exo choisi dans cette case : fais-la librement.</div>`:""}
+   ${(wu||x.k==="cd")&&!e&&(x.co?.length||x.de)?`<div class="terx">${x.co?.length?`<ul class="cos">${x.co.map(t=>`<li>${esc(t)}</li>`).join("")}</ul>`:""}${x.de?`<p class="msg"><b>Déroulement.</b> ${esc(x.de)}</p>`:""}</div>`:e?`<div class="terx">${e.co?`<p><b>Consignes.</b> ${esc(arr(e.co))}</p>`:""}${e.de?`<p class="msg"><b>Déroulement.</b> ${esc(e.de)}</p>`:""}${e.ma&&!/^aucun/.test(e.ma)?`<p class="msg"><b>Matériel.</b> ${esc(e.ma)}</p>`:""}</div>`:x.k==="box"?`<div class="empty">Aucun exercice choisi dans cette case : fais-la librement.</div>`:""}
    <div class="tools tfin"><button class="go big" id="ok" type="button">✓ Fait${nx?", suivant":""}</button><button class="ib" id="sk" type="button">Sauter</button>${k?`<a class="ib" href="#/terrain/${s.id}/${k-1}">‹ Précédent</a>`:""}</div>
-   ${nx?`<p class="msg">Ensuite : ${esc((nx.id&&(exoOf({id:nx.id})||{}).n)||nx.n||nx.cas)}${nx.k==="wu"||x.k!=="wu"?"":" (fin de l'échauffement)"}</p>`:`<p class="msg">Dernier exo : ensuite, le retour.</p>`}</div>`;
+   ${nx?`<p class="msg">Ensuite : ${esc((nx.id&&(exoOf({id:nx.id})||{}).n)||nx.n||nx.cas)}${nx.k==="wu"||x.k!=="wu"?"":" (fin de l'échauffement)"}</p>`:`<p class="msg">Dernier exercice : ensuite, le retour.</p>`}</div>`;
   clearInterval(TIMER); clearInterval(RTIMER); let left=x.sec, run=false;
   const show=()=>{ const c=$("#clk"); if(!c) return; c.textContent=mmss(left); c.classList.toggle("over",left<0); };
   show();
@@ -1550,44 +1803,30 @@ function showTerrain(id,k){
   $("#ok").onclick=()=>{ VOIX.stop(); mark("fait"); }; $("#sk").onclick=()=>{ VOIX.stop(); mark("saute"); };
   if(x.id) videoOf(x.id).then(v=>v||(x.exo?videoOf(x.exo):null)).then(v=>{ if(!v||!$("#vb")) return; $("#vb").innerHTML=`<button type="button" class="ib" id="vbt">▶ Vidéo</button>`; $("#vbt").onclick=()=>{ const el=$("#vid"); if(el.innerHTML) el.innerHTML=""; else { el.innerHTML=vidHtml(v); if(!v.u&&!/\.(mp4|mov|webm|m4v)/i.test(v.l)) window.open(v.l,"_blank","noopener"); } }; });
 }
-/* RETOUR : dureté ressentie, durée réelle, douleur, commentaire → journal de chaque joueur */
+/* RETOUR APRÈS SÉANCE : composant commun du socle (GRUN.ui.retour, grun.js), le même dans Create my session et Choose your warm-up */
+const RETOUR = GRUN.ui.retour;
+
+/* RETOUR (Create my session) : le composant commun ; chaque ligne → journal du joueur ; la séance est marquée faite */
 function showRetour(id){
   const s=getS(id); if(!s){ go("#/"); return; }
+  aide("retour");
   clearInterval(TIMER); clearInterval(RTIMER); try{ WL&&WL.release(); }catch(e){}
   const S=steps(s), run=ST.run&&ST.run.sid===id?ST.run:{etat:{},debut:null};
   const nF=S.filter(x=>run.etat[x.key]==="fait").length, nS=S.filter(x=>run.etat[x.key]==="saute").length;
   const ecoule=run.debut?Math.round((Date.now()-run.debut)/6e4):0, reel=ecoule>=s.duree*0.4?ecoule:s.duree;   // chrono réel si plausible, sinon durée prévue
   let J=joueursDe(s); if(MOI()) J=J.filter(j=>j.id===MOI()).concat(J.length?[]:[GRUN.joueurs.get(MOI())].filter(Boolean));
-  const solo=J.length<=1, j0=J[0];
-  const zoneSel=(id,v)=>`<select id="${id}" aria-label="Zone de la douleur"><option value="">Pas de douleur</option>${Object.entries(ZONES_RETOUR).map(([k,n])=>`<option value="${k}"${v===k?" selected":""}>${n}</option>`).join("")}</select>`;
-  const intSel=id=>`<select id="${id}" aria-label="Intensité de la douleur">${[...Array(10)].map((_,i)=>`<option value="${i+1}"${i===2?" selected":""}>${i+1}/10</option>`).join("")}</select>`;
-  const rpeSel=id=>`<select id="${id}" aria-label="Dureté ressentie"><option value="">–</option>${[...Array(11)].map((_,i)=>`<option value="${i}">${i}</option>`).join("")}</select>`;
-  main.innerHTML=`<div class="ter fin"><h1>Séance terminée 💪</h1><p class="lead">${nF} fait${nF>1?"s":""}${nS?", "+nS+" sauté"+(nS>1?"s":""):""} sur ${S.length}. ${COACH()?"Note le retour de chaque joueur :":"Dis-moi comment ça s'est passé :"} il part dans ${solo?"son":"leur"} dossier (charge, suivi).</p>
-   <div class="card" style="margin-top:12px"><div class="row"><div class="f"><label for="rd">Durée réelle (min)</label><input id="rd" type="number" min="1" max="300" value="${reel}"></div></div>
-   ${solo?`<div class="f"><label>${MOI()?"Dureté ressentie":"Dureté ressentie"+(j0?" · "+esc(j0.nom):"")} (0 = repos, 10 = maximal)</label><div class="chips rpe">${[...Array(11)].map((_,i)=>`<button type="button" class="tg" data-rpe="${i}" aria-pressed="false">${i}</button>`).join("")}</div></div>
-     <div class="row"><div class="f grow"><label for="rz0">Douleur</label>${zoneSel("rz0","")}</div><div class="f" id="ri0w" hidden><label for="ri0">Intensité</label>${intSel("ri0")}</div></div>
-     <div class="f"><label for="rc0">Commentaire</label><textarea id="rc0" rows="2" placeholder="${MOI()?"Ce qui était dur, ce que tu as aimé…":"Ressenti, qualité, à retenir…"}"></textarea></div>`
-   :`<div class="f"><label for="rall">Même dureté pour tous</label>${rpeSel("rall")}</div>
-     <div class="plist">${J.map((j,i)=>`<div class="prow"><b>${esc(j.nom)}</b><div class="f"><label for="rr${i}">Dureté</label>${rpeSel("rr"+i)}</div><div class="f"><label for="rz${i}">Douleur</label>${zoneSel("rz"+i,"")}</div><div class="f"><label for="ri${i}">Intensité</label>${intSel("ri"+i)}</div><div class="f pc"><label for="rc${i}">Commentaire</label><input id="rc${i}" placeholder="facultatif"></div></div>`).join("")}</div>`}
-   <p class="msg" id="rmsg"></p>
-   <div class="tools"><button class="go big" id="rok" type="button">Enregistrer le retour</button><a class="ib" href="#/terrain/${s.id}">Revenir au terrain</a></div></div></div>`;
-  let rpe0=null;
-  $$("[data-rpe]").forEach(b=>b.onclick=()=>{ rpe0=+b.dataset.rpe; $$("[data-rpe]").forEach(x=>x.setAttribute("aria-pressed",x===b)); });
-  $("#rz0")&&($("#rz0").onchange=e=>$("#ri0w").hidden=!e.target.value);
-  $("#rall")&&($("#rall").onchange=e=>J.forEach((_,i)=>$("#rr"+i).value=e.target.value));
-  $("#rok").onclick=()=>{
-    const duree=Math.max(1,+$("#rd").value||s.duree), fait=nF===S.length?true:nF+nS===0?true:nF?"partiel":false, date=todayIso(), ids=[];
+  const fait0=nF===S.length?true:nF+nS===0?true:nF?"partiel":false;
+  main.innerHTML=`<div class="ter fin"><h1>Séance terminée 💪</h1><p class="lead">${nF} fait${nF>1?"s":""}${nS?", "+nS+" sauté"+(nS>1?"s":""):""} sur ${S.length}. ${COACH()?"Note le retour :":"Dis-moi comment ça s'est passé :"} il part dans ${J.length<=1?"son":"leur"} dossier (charge, suivi).</p><div id="rtf"></div></div>`;
+  RETOUR.ouvrir($("#rtf"),{quoi:"séance",duree:reel,fait:fait0,joueurs:J,choix:J,moi:!!MOI(),autres:[{t:"Revenir au terrain",href:"#/terrain/"+s.id}]},res=>{
+    const date=todayIso(), ids=[], rpes=[];
     const exF=S.filter(x=>x.id&&(run.etat[x.key]==="fait"||!run.etat[x.key])).map(x=>x.id);
-    const rec=(jid,rpe,z,int,com)=>{ if(!jid) return; const r=GRUN.journal.addRetour({jid,date,type:"seance",ref:s.id,titre:s.nom||"Séance",duree,rpe,douleur:z?{zone:z,int}:null,fait,comment:com||""}); ids.push(r.id); };
-    const rpes=[];
-    if(solo){ if(rpe0==null){ $("#rmsg").textContent="Choisis la dureté ressentie (0 à 10)."; return; } rpes.push(rpe0); rec(j0?.id,rpe0,$("#rz0").value,+$("#ri0").value,$("#rc0").value.trim()); }
-    else J.forEach((j,i)=>{ const v=$("#rr"+i).value; if(v==="") return; rpes.push(+v); rec(j.id,+v,$("#rz"+i).value,+$("#ri"+i).value,$("#rc"+i).value.trim()); });
-    if(!solo&&!rpes.length){ $("#rmsg").textContent="Note au moins la dureté d'un joueur."; return; }
-    s.faite={date,duree,rpe:rpes.length?Math.round(rpes.reduce((a,b)=>a+b,0)/rpes.length*10)/10:null,fait,ex:[...new Set(exF)],retours:ids,n:rpes.length};
+    for(const L of res.lignes){ const r=GRUN.journal.addRetour({jid:L.jid,date,type:"seance",ref:s.id,titre:s.nom||"Séance",duree:res.duree,rpe:L.rpe,douleur:L.douleur,fait:res.fait,comment:L.comment||""}); ids.push(r.id); rpes.push(L.rpe); }
+    if(!rpes.length&&res.rpe!=null) rpes.push(res.rpe);
+    s.faite={date,duree:res.duree,rpe:rpes.length?Math.round(rpes.reduce((a,b)=>a+b,0)/rpes.length*10)/10:null,fait:res.fait,ex:[...new Set(exF)],retours:ids,n:rpes.length,...(res.comment?{comment:res.comment}:{}),...(!ids.length&&res.douleur?{douleur:res.douleur}:{})};
     s.statut="faite"; s.maj=date; ST.run=null; saveNow();
     main.innerHTML=`<div class="ter fin"><h1>Retour enregistré ✓</h1><p class="lead">${ids.length?ids.length+" retour"+(ids.length>1?"s":"")+" dans le journal"+(ids.length>1?" des joueurs":" du joueur")+". ":""}Séance marquée faite le ${frD(date)}.</p>
      <div class="tools"><a class="go" href="#/s/${s.id}">Voir la séance</a>${J.length===1?`<a class="ib" href="index.html#/j/${J[0].id}">${MOI()?"Mon dossier":"Dossier de "+esc(J[0].nom.split(" ")[0])}</a>`:s.gid?`<a class="ib" href="index.html#/g/${s.gid}">Dossier du groupe</a>`:""}<a class="ib" href="#/">${MOI()?"Mes séances":"Accueil"}</a></div></div>`;
-  };
+  });
 }
 
 /* ---------- ROUTAGE ---------- */
@@ -1603,7 +1842,7 @@ function route(){
   if(a==="x"&&b){ recevoir(b); return; }
   if(a==="nouvelle") nouvelle(q);
   else if(a==="r"&&b&&!J) showReglages(b);
-  else if(a==="s"&&b) showSeance(b);
+  else if(a==="s"&&b){ if(q.get("exo")&&exoRetour(b,q.get("exo"))) return; showSeance(b); }
   else if(ter&&b) showTerrain(b,c);
   else if(a==="retour"&&b) showRetour(b);
   else if(a==="joueur"&&b) showJoueur(b);
@@ -1621,6 +1860,17 @@ function rerender(){ if(document.body.classList.contains("terrain")) return; if(
 async function boot(){
   try{ const rg=GRUN.load(GRUN.K.reglages,{})||{}; if(rg.theme==="light"||rg.theme==="dark") document.documentElement.dataset.theme=rg.theme; }catch(e){}
   GRUN.nav("create");
+  Object.entries({
+    "seances/accueil":"Create my session : la séance du joueur ou du groupe en cours se construit en une touche (bouton du bas), avec tes réglages de coach (durée, lieu, matériel, date du prochain créneau). « Choisir » pour un autre joueur ou sans profil.",
+    "seances/joueur":"Les séances du joueur, à venir et faites. Le bouton du bas construit sa prochaine séance en une touche.",
+    "seances/groupe":"Les séances du groupe. Le bouton du bas construit la séance du groupe en une touche (âge du plus jeune, zones fragiles et croissance de tous).",
+    "seances/r":"Les réglages de la séance : pour qui, quoi, où. Tout est enregistré tout de suite ; « Construire la séance » en bas.",
+    "seances/s":"La séance : en haut le résumé (durée, qualités, matériel). Touche un exercice pour le modifier, le remplacer ou le déplacer ; « ▶ Lancer » en bas ouvre le mode terrain.",
+    "seances/terrain":"Le mode terrain : chrono, séries et récupérations, vidéo, voix. « ✓ Fait » passe à l'exercice suivant ; à la fin, le retour.",
+    "seances/retour":"Le retour après la séance : durée, faite ou non, dureté (0-10), douleur et commentaire, pour chaque joueur. Il part dans son dossier (charge, suivi).",
+    "seances/modeles":"Tes modèles de séance : applique-en un à un joueur, un groupe ou un âge ; dosages recalculés, exercices inadaptés signalés avec un remplaçant.",
+    "seances/plan":"Les séances d'un plan de Create my prog, semaine par semaine : touche une séance pour la construire."
+  }).forEach(([k,t])=>{ try{ GRUN.aide(k,t); }catch(e){} });
   try{ await loadBanque(); await Promise.all([loadWuLib(),loadTrames()]); }
   catch(e){ console.error(e); main.innerHTML=`<div class="empty">Impossible de charger la banque d'exercices. Ouvre l'appli une fois avec une connexion.</div>`; return; }
   const sid=retourWarmup();

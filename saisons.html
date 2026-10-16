@@ -62,8 +62,153 @@ html.grun-simple .cx{display:none!important}
 .grun-pdf:disabled{opacity:.6}
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .grun-pdf{color:#2DD4BF;border-color:#2DD4BF}}
 :root[data-theme="dark"] .grun-pdf{color:#2DD4BF;border-color:#2DD4BF}
+
+/* ===================== SOCLE 1.1 « chemin ultra intuitif » =====================
+   RÈGLES DE MISE EN PAGE (toutes les pages) :
+   - retour « ‹ » en haut à gauche (#back) ; joueur en cours + « ? » en haut à droite (.grun-topx, injectés par GRUN.nav) ;
+   - action principale EN BAS, grande, dans la zone du pouce : <div class="grun-actbar"><button class="gs-btn main">…</button></div> ;
+   - options secondaires repliées : <details class="grun-plus"><summary>Plus d'options</summary><div class="grun-plusb">…</div></details> ;
+   - « + » unique au centre de la barre du bas (#grun-plus) ; créations dans une feuille (.grun-ov > .grun-sheet). */
+:root{--grun-hi:#0F766E;--grun-on:#fff}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--grun-hi:#2DD4BF;--grun-on:#0B1117}}
+:root[data-theme="dark"]{--grun-hi:#2DD4BF;--grun-on:#0B1117}
+/* « + » au centre de la barre du bas */
+#grun-nav #grun-plus{flex:0 0 64px;border:0;background:none;padding:0;display:flex;align-items:center;justify-content:center;min-height:var(--nav-h);cursor:pointer}
+#grun-nav #grun-plus span{width:48px;height:48px;border-radius:16px;background:var(--grun-hi);color:var(--grun-on);display:flex;align-items:center;justify-content:center;box-shadow:0 3px 10px rgba(15,118,110,.35)}
+#grun-nav #grun-plus svg{width:26px;height:26px;stroke-width:2.6;stroke:currentColor}
+#grun-nav #grun-plus:active span{transform:scale(.94)}
+@media (max-width:380px){#grun-nav a{font-size:10.5px}#grun-nav #grun-plus{flex-basis:56px}}
+/* barre du haut : joueur en cours + aide */
+.grun-topx{display:inline-flex;gap:6px;align-items:center;flex:0 0 auto}
+.grun-chip{display:inline-flex;align-items:center;gap:6px;min-height:36px;max-width:118px;padding:0 10px 0 4px;border:1px solid var(--line,#D9DDE3);border-radius:999px;background:var(--panel,#fff);color:var(--ink,#16202E);font:600 14px/1 var(--ui,system-ui,sans-serif);cursor:pointer}
+.grun-chip .gc-nm{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+.gc-av{flex:0 0 28px;width:28px;height:28px;border-radius:50%;background:var(--grun-hi);color:var(--grun-on);display:inline-flex;align-items:center;justify-content:center;font-weight:800;font-size:13px}
+.gc-av.g{border-radius:8px;background:#6D3FC0;color:#fff}
+.gc-av.vide{background:var(--soft,#ECEFF3);color:var(--mute,#5D6675)}
+.grun-q{width:36px;height:36px;border-radius:50%;border:1px solid var(--line,#D9DDE3);background:var(--panel,#fff);color:var(--mute,#5D6675);font:800 17px/1 var(--ui,system-ui,sans-serif);cursor:pointer;padding:0}
+@media (max-width:430px){.grun-chip{max-width:92px;padding-right:8px}.grun-chip .gc-nm{font-size:13px}}
+@media (max-width:360px){.grun-chip .gc-nm{display:none}.grun-chip{padding:0 4px}}
+/* feuille (bottom sheet) */
+.grun-ov{position:fixed;inset:0;z-index:200;background:rgba(10,16,24,.42);display:flex;align-items:flex-end;justify-content:center;opacity:0;transition:opacity .16s ease}
+.grun-ov.in{opacity:1}.grun-ov.out{opacity:0}
+.grun-sheet{width:100%;max-width:560px;max-height:min(90vh,calc(100vh - env(safe-area-inset-top,0px) - 24px));display:flex;flex-direction:column;background:var(--panel,#fff);color:var(--ink,#16202E);border-radius:18px 18px 0 0;box-shadow:0 -10px 40px rgba(0,0,0,.25);transform:translateY(24px);transition:transform .18s ease;font-family:var(--ui,system-ui,sans-serif);font-size:16px;line-height:1.4}
+.grun-sheet.large{max-width:720px}
+.grun-ov.in .grun-sheet{transform:none}
+@media (min-width:700px){.grun-ov{align-items:center}.grun-sheet{border-radius:18px;max-height:86vh}}
+.gs-h{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:14px 16px 8px;border-bottom:1px solid var(--line,#D9DDE3)}
+.gs-h b{font-family:var(--display,"Barlow Condensed",system-ui,sans-serif);font-size:1.45em;font-weight:700;line-height:1.1}
+.gs-x{width:40px;height:40px;border-radius:50%;border:0;background:var(--soft,#ECEFF3);color:var(--ink,#16202E);font-size:24px;line-height:1;cursor:pointer;flex:0 0 auto}
+.gs-b{padding:12px 16px 14px;overflow-y:auto;-webkit-overflow-scrolling:touch;display:flex;flex-direction:column;gap:12px;flex:1 1 auto;min-height:0}
+.gs-f{display:flex;gap:8px;padding:10px 16px calc(12px + env(safe-area-inset-bottom,0px));border-top:1px solid var(--line,#D9DDE3)}
+.gs-btn{min-height:52px;border-radius:13px;border:1px solid var(--line,#D9DDE3);background:var(--panel,#fff);color:var(--ink,#16202E);font:700 16px/1.1 var(--ui,system-ui,sans-serif);padding:0 16px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;text-decoration:none;gap:6px}
+.gs-btn.main{flex:1;background:var(--grun-hi);border-color:var(--grun-hi);color:var(--grun-on)}
+.gs-btn.sec{flex:0 1 auto}
+.gs-btn.sm{min-height:40px;font-size:14.5px;border-radius:10px;padding:0 12px;flex:0 0 auto}
+.gs-btn:disabled{opacity:.5}
+.grun-ov.danger .gs-btn.main{background:#B91C1C;border-color:#B91C1C;color:#fff}
+.gs-form{display:flex;flex-direction:column;gap:12px;margin:0}
+.gs-l{display:flex;flex-direction:column;gap:5px;font-weight:600;font-size:14.5px;color:var(--ink,#16202E);min-width:0}
+.gs-l small{font-weight:500;color:var(--mute,#5D6675)}
+.gs-inp{min-height:48px;border:1px solid var(--line,#D9DDE3);border-radius:11px;background:var(--bg,#F4F5F7);color:var(--ink,#16202E);padding:0 12px;font:500 17px/1.2 var(--ui,system-ui,sans-serif);width:100%;max-width:100%;box-sizing:border-box}
+.gs-ta{padding:10px 12px;min-height:84px;resize:vertical;line-height:1.4}
+.gs-inp:focus{outline:2px solid var(--grun-hi);outline-offset:1px}
+.gs-seg{display:flex;border:1px solid var(--line,#D9DDE3);border-radius:11px;overflow:hidden;background:var(--bg,#F4F5F7)}
+.gs-seg button{flex:1;min-height:46px;border:0;background:none;color:var(--ink,#16202E);font:600 16px/1 var(--ui,system-ui,sans-serif);cursor:pointer}
+.gs-seg button+button{border-left:1px solid var(--line,#D9DDE3)}
+.gs-seg button[aria-checked=true]{background:var(--grun-hi);color:var(--grun-on)}
+.gs-chips{display:flex;flex-wrap:wrap;gap:6px}
+.gs-chip{min-height:40px;border:1px solid var(--line,#D9DDE3);background:var(--panel,#fff);color:var(--ink,#16202E);border-radius:999px;padding:0 14px;font:600 15px/1 var(--ui,system-ui,sans-serif);cursor:pointer;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.gs-chips.big .gs-chip{min-height:46px;font-size:16px}
+.gs-chip.g{border-style:dashed}
+.gs-chip[aria-pressed=true]{background:var(--grun-hi);border-color:var(--grun-hi);color:var(--grun-on)}
+.gs-err{color:#B91C1C;font-weight:600;margin:0;min-height:0}
+.gs-err:empty{display:none}
+.gs-m{color:var(--mute,#5D6675);font-size:14.5px;margin:0}
+.gs-p{margin:0;font-size:16.5px;line-height:1.5}
+.gs-sert{color:var(--grun-hi);font-weight:600;font-size:13px}
+.gs-lien{align-self:flex-start;border:0;background:none;color:var(--grun-hi);font:700 15.5px/1.2 var(--ui,system-ui,sans-serif);padding:6px 0;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+.gs-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.gs-n .gs-inp{font-variant-numeric:tabular-nums}
+.gs-c{display:flex;gap:10px;align-items:flex-start;font-weight:600;font-size:15px}
+.gs-c input{width:22px;height:22px;flex:0 0 auto;margin-top:1px}
+.gs-c small{font-weight:500;color:var(--mute,#5D6675)}
+.gs-cp fieldset{border:1px solid var(--line,#D9DDE3);border-radius:13px;padding:10px 12px 12px;margin:0;display:flex;flex-direction:column;gap:10px;min-width:0}
+.gs-cp legend{font-weight:800;font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:var(--mute,#5D6675);padding:0 4px}
+.gs-cp legend small{text-transform:none;letter-spacing:0;font-weight:500}
+details.gs-plus>summary{cursor:pointer;color:var(--grun-hi);font-weight:700;padding:4px 0;list-style:none}
+details.gs-plus>summary::-webkit-details-marker{display:none}
+details.gs-plus[open]>summary{margin-bottom:8px}
+.gs-list{border:1px solid var(--line,#D9DDE3);border-radius:11px;overflow:hidden}
+.gs-row{display:flex;flex-wrap:wrap;gap:2px 10px;align-items:baseline;padding:8px 12px;border-top:1px solid var(--line,#D9DDE3)}
+.gs-row:first-child{border-top:0}
+.gs-row span{color:var(--mute,#5D6675);font-size:14px}
+.gs-row small{flex-basis:100%;color:#B91C1C;font-weight:600}
+.gs-row.ko b{color:#B91C1C}
+.gs-menu{display:flex;flex-direction:column;gap:8px}
+.gs-menu.plus{display:grid;grid-template-columns:minmax(0,1fr);gap:6px}
+@media (min-width:560px){.gs-menu.plus{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.gs-it{display:grid;grid-template-columns:auto minmax(0,1fr);gap:1px 12px;align-items:center;text-align:left;min-height:60px;padding:9px 12px;border:1px solid var(--line,#D9DDE3);border-radius:13px;background:var(--panel,#fff);color:var(--ink,#16202E);text-decoration:none;cursor:pointer;font:inherit}
+.gs-it b{font-size:16.5px;grid-column:2}
+.gs-it span{grid-column:2;color:var(--mute,#5D6675);font-size:13.5px;line-height:1.3}
+.gs-it:not(:has(.pi)){grid-template-columns:minmax(0,1fr)}.gs-it:not(:has(.pi)) b,.gs-it:not(:has(.pi)) span{grid-column:1}
+.gs-it.x{border-color:var(--grun-hi);border-width:1.5px}
+.gs-it.st{cursor:default}
+.gs-it.st .gs-seg{grid-column:1/-1;margin-top:6px}
+.gs-it:active{background:var(--soft,#ECEFF3)}
+.pi{grid-row:1/3;width:38px;height:38px;border-radius:11px;background:var(--soft,#ECEFF3);position:relative}
+.pi::after{content:"";position:absolute;inset:9px;background:var(--grun-hi);-webkit-mask:var(--m) center/contain no-repeat;mask:var(--m) center/contain no-repeat}
+.pi-joueur{--m:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.2'%3E%3Ccircle cx='12' cy='8' r='4'/%3E%3Cpath d='M4 21c0-4 4-6 8-6s8 2 8 6'/%3E%3C/svg%3E")}
+.pi-groupe{--m:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.2'%3E%3Ccircle cx='8' cy='9' r='3'/%3E%3Ccircle cx='16' cy='9' r='3'/%3E%3Cpath d='M2 20c0-3 3-5 6-5s6 2 6 5M12 20c0-3 2-5 4-5s6 2 6 5'/%3E%3C/svg%3E")}
+.pi-session{--m:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='black'%3E%3Cpath d='M8 5v14l11-7z'/%3E%3C/svg%3E")}
+.pi-test{--m:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.2'%3E%3Cpath d='M12 3l8.5 6.2-3.2 10H6.7L3.5 9.2z'/%3E%3C/svg%3E")}
+.pi-exo{--m:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.2'%3E%3Cpath d='M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2z'/%3E%3Cpath d='M4 19V5'/%3E%3C/svg%3E")}
+.pi-note{--m:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.2'%3E%3Cpath d='M4 20h4L19 9l-4-4L4 16z'/%3E%3C/svg%3E")}
+.pi-wu{--m:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.2'%3E%3Cpath d='M12 3c2 3 5 5 5 9a5 5 0 0 1-10 0c0-2 1-3 2-4 0 2 1 3 2 3 0-3-1-5 1-8z'/%3E%3C/svg%3E")}
+.gs-cur{display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center;padding:10px 12px;border-radius:13px;background:var(--soft,#ECEFF3)}
+.gs-cur b{font-size:17px}.gs-cur span{color:var(--mute,#5D6675);font-size:14px;flex:1}
+.gs-bar{display:flex;flex-direction:column;gap:5px}
+.gs-bar>div,.gc-bar{display:block;height:8px;border-radius:99px;background:var(--soft,#ECEFF3);overflow:hidden}
+.gs-bar i,.gc-bar i{display:block;height:100%;background:var(--grun-hi);border-radius:99px;transition:width .3s}
+/* toast avec « Annuler » */
+#grun-toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(var(--nav-h,62px) + 14px + env(safe-area-inset-bottom,0px));z-index:260;display:flex;gap:12px;align-items:center;max-width:calc(100vw - 32px);background:var(--ink,#16202E);color:var(--bg,#fff);padding:8px 8px 8px 16px;border-radius:13px;box-shadow:0 8px 28px rgba(0,0,0,.28);font:600 15px/1.3 var(--ui,system-ui,sans-serif)}
+#grun-toast:not(:has(button)){padding:11px 16px}
+#grun-toast button{min-height:40px;border:0;border-radius:9px;background:var(--grun-hi);color:var(--grun-on);font:800 15px/1 var(--ui,system-ui,sans-serif);padding:0 14px;cursor:pointer;white-space:nowrap}
+body:not(.grun-has-nav) #grun-toast{bottom:calc(16px + env(safe-area-inset-bottom,0px))}
+#grun-saved{position:fixed;top:calc(8px + env(safe-area-inset-top,0px));right:12px;z-index:270;background:var(--grun-hi);color:var(--grun-on);font:700 13px/1 var(--ui,system-ui,sans-serif);padding:7px 11px;border-radius:99px;opacity:0;transform:translateY(-6px);transition:opacity .2s,transform .2s;pointer-events:none}
+#grun-saved.on{opacity:1;transform:none}
+/* barre de complétude (dossier) */
+.grun-compl{border:1px solid var(--line,#D9DDE3);border-radius:13px;background:var(--panel,#fff);padding:10px 12px;display:flex;flex-direction:column;gap:6px}
+.grun-compl .gc-h{display:flex;gap:10px;align-items:center}.grun-compl .gc-h b{white-space:nowrap}.grun-compl .gc-bar{flex:1}
+.grun-compl ul{margin:0;padding-left:18px;font-size:14.5px;color:var(--mute,#5D6675)}
+.grun-compl ul b{color:var(--ink,#16202E);font-weight:600}
+.grun-compl .gs-btn{align-self:flex-start}
+.grun-compl.ok{padding:8px 12px}
+/* action principale en bas (zone du pouce), au-dessus de la barre du bas */
+.grun-actbar{position:sticky;bottom:calc(var(--nav-h,62px) + env(safe-area-inset-bottom,0px) + 8px);z-index:20;display:flex;gap:8px;margin-top:16px}
+body:not(.grun-has-nav) .grun-actbar{bottom:calc(8px + env(safe-area-inset-bottom,0px))}
+.grun-actbar>*{flex:1;min-height:52px;box-shadow:0 6px 18px rgba(0,0,0,.14)}
+/* visite guidée, schéma */
+.gv h3{font-family:var(--display,"Barlow Condensed",system-ui,sans-serif);font-size:1.6em;margin:4px 0 6px;line-height:1.1}
+.gv-dots{display:flex;gap:5px}.gv-dots i{width:22px;height:5px;border-radius:9px;background:var(--line,#D9DDE3)}.gv-dots i.vu{background:var(--mute,#5D6675)}.gv-dots i.on{background:var(--grun-hi)}
+.grun-schema{width:100%;max-width:440px;display:block;margin:10px auto 0;font-family:var(--ui,system-ui,sans-serif)}
+.grun-schema rect{stroke-width:2}
+.grun-schema .s-ind{fill:rgba(15,118,110,.12);stroke:#0F766E}.grun-schema .s-tests{fill:rgba(109,63,192,.12);stroke:#6D3FC0}.grun-schema .s-res{fill:rgba(29,78,216,.10);stroke:#1D4ED8}.grun-schema .s-create{fill:rgba(194,65,12,.10);stroke:#C2410C}
+.grun-schema .s-d1{fill:rgba(194,65,12,.14);stroke:#C2410C}.grun-schema .s-d2{fill:rgba(194,65,12,.22);stroke:#C2410C}.grun-schema .s-d3{fill:#C2410C;stroke:#C2410C}
+.grun-schema text{fill:var(--ink,#16202E);text-anchor:middle}.grun-schema .s-t{font-weight:800;font-size:15px}.grun-schema .s-s{font-size:12px;fill:var(--mute,#5D6675)}
+.grun-schema .s-k{font-size:11px;font-weight:700;text-anchor:start}.grun-schema .s-k.c{text-anchor:middle;fill:#fff}
+.grun-doll{margin-top:8px}.grun-doll div{border:2px solid #C2410C;border-radius:12px;padding:8px 10px 10px;font-weight:800;color:#C2410C;background:rgba(194,65,12,.07)}.grun-doll div div{margin-top:6px;background:rgba(194,65,12,.12)}.grun-doll div div div{background:#C2410C;color:#fff}
+.grun-demo-bar{display:flex;gap:14px;align-items:center;justify-content:center;margin-top:8px}
+.grun-chip.demo{pointer-events:none}
+.grun-plus-demo{width:48px;height:48px;border-radius:16px;background:var(--grun-hi);color:var(--grun-on);display:inline-flex;align-items:center;justify-content:center;font:800 30px/1 var(--ui,system-ui,sans-serif)}
+html.grun-sheet-on body{overflow:hidden}
+@media print{.grun-topx,#grun-toast,#grun-saved,.grun-ov,.grun-actbar{display:none!important}}
+/* barre du haut des modules sur téléphone : le joueur en cours se réduit à son initiale, le titre s'abrège */
+html.grun-mod .topin .brand{min-width:0;overflow:hidden;text-overflow:ellipsis;flex:0 1 auto}
+@media (max-width:430px){html.grun-mod .grun-chip .gc-nm{display:none}html.grun-mod .grun-chip{padding:0 3px;max-width:none}.grun-topx{gap:4px}.grun-q{width:34px;height:34px}}
+.grun-chip:has(.gc-av.vide){max-width:none}.grun-chip:has(.gc-av.vide) .gc-nm{overflow:visible}
 </style>
-<script src="grun.js?v=1"></script>
+<script src="grun.js?v=1.4"></script>
+<script src="assistant.js?v=1.4"></script>
 <meta name="grun-module" content="saisons"></head><body><title>Référentiel de programmation · GRÜN</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Barlow:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
 <style>
@@ -156,6 +301,8 @@ mark{background:var(--mark);color:inherit;border-radius:2px}
 .lc{font-family:var(--ui);font-size:11px;font-weight:700;border-radius:5px;padding:1px 5px;margin-right:2px;white-space:nowrap} .lc.pp{color:#C2410C;background:#FFF1E8} .lc.ge{color:#1D4ED8;background:#EAF0FF} .lc.de{color:#0F766E;background:#E6F6F3}
 .doc table.wk{width:100%;font-size:.86em} .doc table.wk td{padding:6px 8px} .doc table.wk td.sl{width:7.5em;border-left:4px solid var(--c)} .doc table.wk td.sl small{color:var(--mute);font-size:.86em}
 .doc tr.pp{--c:#C2410C} .doc tr.pp td{background:#FFF8F3} .doc tr.tb{--c:#1D4ED8} .doc tr.tb td{background:#F4F7FF} .doc tr.ten{--c:#475569} .doc tr.ten td{background:#F6F8FA} .doc tr.pm{--c:#7C3AED} .doc tr.pm td{background:#F8F5FF}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .doc tr.pp td{background:#2A1E16}:root:not([data-theme="light"]) .doc tr.tb td{background:#18213A}:root:not([data-theme="light"]) .doc tr.ten td{background:#1C232E}:root:not([data-theme="light"]) .doc tr.pm td{background:#231B36}}
+:root[data-theme="dark"] .doc tr.pp td{background:#2A1E16} :root[data-theme="dark"] .doc tr.tb td{background:#18213A} :root[data-theme="dark"] .doc tr.ten td{background:#1C232E} :root[data-theme="dark"] .doc tr.pm td{background:#231B36}
 .doc tr td div{margin-top:3px} .doc b.tour{color:#B91C1C}
 .doc h4{display:flex;flex-wrap:wrap;gap:6px;align-items:center} .chg{display:inline-flex;gap:2px;margin-left:4px} .chg b{width:9px;height:9px;border-radius:2px;border:1px solid var(--pc);display:inline-block} .chg b.on{background:var(--pc)}
 .wf{font-family:var(--ui);font-size:13px;margin:0 0 6px} .fl{border-radius:999px;padding:2px 8px;font-weight:600;font-size:12px;margin-right:4px} .fl.t{background:#FDECEC;color:#B91C1C} .fl.v{background:#FEF3C7;color:#8A5A00} .fl.b{background:#E6F6F3;color:#0F766E}
@@ -194,7 +341,31 @@ body.joueur .wkgo,body.joueur .basebar{display:none}
 .pj{display:flex;flex-direction:column;gap:2px;text-decoration:none;background:var(--panel);border:1px solid var(--line);border-left:4px solid var(--p3);border-radius:10px;padding:10px 12px;min-height:44px}
 .pj b{font-size:15px} .pj small{color:var(--mute);font-size:12.5px}
 .pjbar{margin-top:12px;font-size:14px;background:var(--soft);border-radius:10px;padding:8px 12px} .pjbar a{color:var(--pc);font-weight:600}
-@media print{.top,.wkgo,.basebar,.notes,.pn,.jump,.pjbar{display:none!important}}
+/* frise visuelle de la saison (phases et semaines, touchables) */
+.tl{margin-top:14px;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px 0 12px}
+.tlh{display:flex;flex-wrap:wrap;gap:2px 10px;align-items:baseline;padding:0 14px}
+.tlh b{font-family:var(--display);font-size:20px}
+.tls{overflow-x:auto;padding:8px 14px 4px;scroll-padding:0 40px;-webkit-overflow-scrolling:touch}
+.tlg{display:grid;grid-auto-rows:auto;row-gap:4px;width:max-content}
+.tlM{grid-row:1;background:var(--ink);color:var(--bg);font-size:11.5px;font-weight:700;border-radius:6px;padding:3px 7px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-right:2px}
+.tlm{grid-row:2;border:none;color:#fff;font-size:12px;font-weight:600;border-radius:6px;padding:4px 7px;min-height:30px;text-align:left;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-right:2px;cursor:pointer}
+.tlw{grid-row:3;position:relative;height:64px;border:1px solid var(--line);background:var(--bg);border-radius:6px;margin-right:2px;padding:0;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;cursor:pointer;overflow:hidden}
+.tlw i{display:block;width:100%;background:var(--c);opacity:.9}
+.tlw span{position:absolute;top:3px;left:0;right:0;text-align:center;font-size:11px;font-weight:700;color:var(--ink)}
+.tlw.off{background:repeating-linear-gradient(135deg,var(--soft),var(--soft) 4px,var(--bg) 4px,var(--bg) 8px)}
+.tlw.now{box-shadow:0 0 0 2px var(--ink) inset}
+.tlw.sel{outline:3px solid var(--pc);outline-offset:1px;z-index:1}
+.tlw .tt{position:absolute;bottom:2px;left:50%;transform:translateX(-50%);width:6px;height:6px;border-radius:50%;background:#B91C1C}
+.tlw .bb{position:absolute;top:17px;left:50%;transform:translateX(-50%);font-size:9px;font-weight:800;color:#fff;background:#0F766E;border-radius:4px;padding:0 3px}
+.tlmo{grid-row:4;font-size:11px;font-weight:700;color:var(--mute);white-space:nowrap}
+.tll{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:12px;padding:4px 14px 0;color:var(--mute)} .tll span{display:inline-flex;align-items:center;gap:5px} .tll i{width:11px;height:11px;border-radius:3px;display:inline-block}
+.tlc{margin:10px 14px 0;border:1px solid var(--line);border-left:4px solid var(--c,var(--pc));border-radius:10px;padding:10px 12px;background:var(--bg)}
+.tlc h3{font-family:var(--display);font-size:20px;margin:0;line-height:1.15}
+.tlc .ph{font-size:13.5px;color:var(--mute);margin:2px 0 6px}
+.tlc .tw{margin:6px 0}
+.tlc .tools{margin-top:8px}
+.doc details.frd{border:none} .doc details.frd>summary{font-size:.92em;color:var(--mute)}
+@media print{.top,.wkgo,.basebar,.notes,.pn,.jump,.pjbar,.tl{display:none!important}}
 </style>
 
 <header class="top"><div class="topin">
@@ -223,7 +394,17 @@ const JR = () => { try{ if(!GR||!GR.joueurs) return [];
 const jAge = j => { const a = GR&&j&&j.naissance ? GR.ageCiv(j.naissance) : null; return a==null ? null : Math.max(4, Math.min(18, a)); };
 const jCode = j => { const a=jAge(j); return a!=null && /^[FG]$/.test(j.sexe||"") ? normCode(j.sexe+a) : null; };
 const jGet = id => { try{ return id&&GR&&GR.joueurs ? GR.joueurs.get(id) : null; }catch(e){ return null; } };
-let AGES = [];
+/* joueur ou groupe EN COURS (choisi une fois dans GRÜN) : la saison s'ouvre pour lui */
+const cour = () => { try{ return GR&&GR.courant ? GR.courant.get() : null; }catch(e){ return null; } };
+const prenom = j => String(j&&j.nom||"").split(" ")[0];
+/* saison d'un groupe : sexe le plus fréquent, âge médian de ses joueurs */
+function gCode(gid){ try{ const js = GR.groupes.joueurs(gid).filter(j=>jCode(j)); if(!js.length) return null;
+  const f = js.filter(j=>j.sexe==="F").length, sx = f*2 >= js.length ? (f*2===js.length ? js[0].sexe : "F") : "G";
+  const as = js.map(jAge).sort((a,b)=>a-b); return normCode(sx + as[Math.floor(as.length/2)]); }catch(e){ return null; } }
+const gGet = id => { try{ return id&&GR&&GR.groupes ? GR.groupes.get(id) : null; }catch(e){ return null; } };
+function titre(t){ document.title = t ? t+" · Référentiel" : "Référentiel de programmation"; }
+function actbar(t, id, href){ return `<div class="grun-actbar">${href?`<a class="gs-btn main" id="${id}" href="${href}">${esc(t)}</a>`:`<button class="gs-btn main" id="${id}" type="button">${esc(t)}</button>`}</div>`; }
+let AGES = [], MESOC = {}, PREM = true;
 let CALW = [];
 const pad2 = n => String(n).padStart(2,"0");
 function curWeek(){ const t=new Date().toISOString().slice(0,10); const w=CALW.find(x=>x.du<=t&&t<=x.au); if(w) return w.n; return CALW.length&&t<CALW[0].du?1:52; }
@@ -231,7 +412,7 @@ const MOISC=["janv.","févr.","mars","avril","mai","juin","juil.","août","sept.
 const dd = s => { const d=new Date(s+"T12:00:00"); return d.getDate()+" "+MOISC[d.getMonth()]; };
 
 
-let DOCS = [], BY = {}, NORM = null, JID = null;
+let DOCS = [], BY = {}, NORM = null, JID = null, GID = null, SEL = null;
 const $ = s => document.querySelector(s);
 const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const fold = s => { let o=""; for(const ch of s){ const d=ch.normalize("NFD")[0]; o += (d||ch).toLowerCase(); } return o; };
@@ -248,7 +429,7 @@ document.documentElement.style.setProperty("--fs", P.fs+"px");
 async function boot(){
   try{
     const r = await fetch("data-saisons.json"); const d = await r.json();
-    DOCS = d.docs; CALW = d.cal||[]; DOCS.forEach((x,i)=>{ x.i=i; BY[x.c]=x; });
+    DOCS = d.docs; CALW = d.cal||[]; MESOC = d.meso||{}; DOCS.forEach((x,i)=>{ x.i=i; BY[x.c]=x; });
     AGES = [...new Set(DOCS.filter(x=>x.age).map(x=>x.age))].sort((a,b)=>a-b);
     const rng = AGES.length ? AGES[0]+" à "+AGES[AGES.length-1]+" ans" : "";
     const gs = DOCS.filter(x=>/^Semaine type/.test(x.t)).map(x=>x.t.replace("Semaine type ","").replace(" ans",""));
@@ -267,12 +448,20 @@ function buildIndex(){
 window.addEventListener("hashchange", route);
 $("#back").onclick = () => { if(history.length > 1) history.back(); else location.hash = ""; };
 function route(){
-  let h = decodeURIComponent(location.hash.slice(1)); const qi = h.indexOf("?j="); JID = null;
+  let h = decodeURIComponent(location.hash.slice(1)); const qi = h.indexOf("?j="), qg = h.indexOf("?g="); JID = null; GID = null;
   if(qi>=0 && !h.startsWith("s/")){ JID = h.slice(qi+3) || null; h = h.slice(0, qi); }
+  else if(qg>=0 && !h.startsWith("s/")){ GID = h.slice(qg+3) || null; h = h.slice(0, qg); }
+  else { const c = cour(); if(c && c.t==="j") JID = c.id; else if(c && c.t==="g") GID = c.id; }
+  const prem = PREM; PREM = false;
+  /* première ouverture sans adresse : la saison du joueur (ou du groupe) en cours, à la semaine en cours */
+  if(GR && GR.isJoueur && GR.isJoueur()){ JID = GR.mode().jid; GID = null; }
+  if(prem && !h){ const c = cour(); let cd = c ? (c.t==="j" ? jCode(c.joueur) : gCode(c.id)) : null; if(!cd && JID) cd = jCode(jGet(JID));
+    if(cd && BY[cd]){ location.replace(`#/s/${cd}/w${curWeek()}`); return; } }
   const m = $("#main"); window.scrollTo(0,0);
   if(h.startsWith("/s/")) { const [c,w]=h.slice(3).split("/"); return showDoc(normCode(c), w); }   // GRÜN : saisons.html#/s/<code>[/w<n>]
   if(h.startsWith("d/")) return showDoc(normCode(h.slice(2).split("/")[0]), h.split("/")[2]);
   if(h.startsWith("p/")) return showPorte(h.slice(2));
+  if(h==="/accueil") return showHome();
   if(h.startsWith("s/")) { $("#q").value = h.slice(2); return showSearch(h.slice(2)); }
   showHome();
 }
@@ -285,6 +474,8 @@ function showHome(){
   const m = $("#main");
   const count = p => DOCS.filter(x=>porteOf(x)===p).length;
   const cw = curWeek(), cwk = CALW.find(x=>x.n===cw);
+  titre(""); ecran("saisons");
+  const c0 = cour(), cd0 = c0 ? (c0.t==="j" ? jCode(c0.joueur) : gCode(c0.id)) : null;
   let html = `<h1>Référentiel de programmation</h1><p class="lead">Saisons de référence de la méthode · ${AGES.length?AGES[0]+" à "+AGES[AGES.length-1]+" ans":""} · filles et garçons · compétitions, préparation physique, biomécanique, tennis et préparation mentale</p>`;
   html += `<div class="sec"><h2>Accès direct</h2><div class="quick">
     <div class="f"><label for="qs">Sexe</label><select id="qs"><option value="F">Fille</option><option value="G">Garçon</option></select></div>
@@ -292,18 +483,22 @@ function showHome(){
     <div class="f" style="flex:1;min-width:200px"><label for="qw">Semaine</label><select id="qw"><option value="0">Toute la saison</option>${CALW.map(w=>`<option value="${w.n}">S${w.n} · ${dd(w.du)} - ${dd(w.au)}${w.n===cw?" (en cours)":""}</option>`).join("")}</select></div>
     <button class="go" id="qgo" type="button">Ouvrir</button></div>
     <div class="tools" style="margin-top:8px"><button class="ib" id="qnow" type="button">Cette semaine (S${cw}${cwk?" · "+dd(cwk.du):""})</button></div></div>`;
+  if(cd0 && BY[cd0]) html += `<div class="sec"><a class="pj" style="border-left-color:var(--p${BY[cd0].p})" href="#/s/${cd0}/w${cw}"><small>${c0.t==="g"?"Groupe en cours":"Joueur en cours"}</small><b>${esc(c0.nom)} · ${esc(BY[cd0].t)}</b><small>Ouvrir à la semaine en cours (S${cw})${c0.t==="g"?" · âge médian du groupe":""}</small></a></div>`;
   const js = JR().filter(j=>BY[jCode(j)]);
   if(js.length) html += `<div class="sec"><h2>${js.length>1?"La saison de mes joueurs":"Ma saison"}</h2><p class="msg" style="margin:-4px 0 8px">Ouvre la saison de son âge et de son sexe, directement à la semaine en cours (S${cw}).</p><div class="pjs">${js.slice(0,24).map(j=>`<a class="pj" href="#/s/${jCode(j)}/w${cw}?j=${encodeURIComponent(j.id)}"><b>${esc(j.nom)}</b><small>Saison ${j.sexe==="F"?"fille":"garçon"} ${jAge(j)} ans · S${cw}</small></a>`).join("")}</div></div>`;
   html += `<div class="sec"><h2>Les portes</h2><div class="doors">${Object.entries(PORTES).map(([p,o])=>`<a class="door" href="#p/${p}" style="--pc:var(${o.c})"><b>${o.n}</b><span>${o.s}</span><small>${count(p)} documents</small></a>`).join("")}</div></div>`;
   const favs = P.fav.filter(c=>BY[c]), recs = P.rec.filter(c=>BY[c]).slice(0,8);
   html += `<div class="sec"><h2>Favoris</h2>${favs.length ? listHTML(favs.map(c=>BY[c]), true) : '<div class="empty">Touche ☆ en haut d\'un document pour le retrouver ici.</div>'}</div>`;
   if(recs.length) html += `<div class="sec"><h2>Consultés récemment</h2>${listHTML(recs.map(c=>BY[c]), true)}</div>`;
-  html += `<details class="grun-plus"><summary>Plus d'options : sauvegarde, taille du texte</summary><div class="grun-plusb"><div class="tools">
-     <button class="ib" id="bsave" type="button">Sauvegarder</button>
-     <label class="ib" for="frest">Restaurer</label><input id="frest" type="file" accept=".json,application/json" hidden>
+  html += `<details class="grun-plus"><summary>Plus d'options</summary><div class="grun-plusb"><div class="tools">
+     <button class="ib" id="bsave" type="button">${GR&&GR.TXT?GR.TXT.sauver:"Tout sauvegarder"}</button>
+     <label class="ib" for="frest">${GR&&GR.TXT?GR.TXT.restaurer:"Restaurer une sauvegarde"}</label><input id="frest" type="file" accept=".json,application/json" hidden>
      <button class="ib" id="fsm" type="button" aria-label="Texte plus petit">A−</button><button class="ib" id="fsp" type="button" aria-label="Texte plus grand">A+</button></div><p class="msg" id="dmsg">Favoris et notes sont gardés sur cet appareil.</p></div></details>`;
+  html += cd0 && BY[cd0] ? actbar(`Ouvrir la saison de ${c0.t==="j"?prenom(c0.joueur):c0.nom} · S${cw}`, "hgo", `#/s/${cd0}/w${cw}`) : actbar(`Ouvrir · cette semaine (S${cw})`, "hgo");
   m.innerHTML = html;
   const qs=$("#qs"), qa=$("#qa"), qw=$("#qw"); qs.value=P.sx; qa.value=AGES.includes(+P.age)?P.age:String(AGES[AGES.length-1]||14); qw.value="0";
+  if(cd0 && BY[cd0]){ qs.value = BY[cd0].sx; qa.value = String(BY[cd0].age); }   /* présélection : joueur ou groupe en cours */
+  if(!(cd0 && BY[cd0])) $("#hgo").onclick = ()=>$("#qnow").click();
   const cd=()=>normCode(qs.value+qa.value);
   $("#qgo").onclick=()=>{ P.sx=qs.value; P.age=qa.value; save(); location.hash = `/s/${cd()}` + (+qw.value ? `/w${qw.value}` : ""); };
   $("#qnow").onclick=()=>{ P.sx=qs.value; P.age=qa.value; save(); location.hash = `/s/${cd()}/w${curWeek()}`; };
@@ -319,9 +514,9 @@ function listHTML(xs, withPath){
 function showPorte(p){
   if(!PORTES[p]) return showHome();
   document.documentElement.style.setProperty("--acc", pc(p));
-  const xs = DOCS.filter(x=>porteOf(x)===p), groups = {};
+  const xs = DOCS.filter(x=>porteOf(x)===p), groups = {}; ecran("saisons/porte"); titre(PORTES[p].n);
   xs.forEach(x=>{ (groups[x.d] = groups[x.d] || []).push(x); });
-  let html = `<div class="crumb" style="--pc:${pc(p)}"><a href="#">Accueil</a></div><h1 style="color:${pc(p)}">${PORTES[p].n}</h1><p class="lead">${PORTES[p].s}</p>`;
+  let html = `<div class="crumb" style="--pc:${pc(p)}"><a href="#/accueil">Référentiel</a></div><h1 style="color:${pc(p)}">${PORTES[p].n}</h1><p class="lead">${PORTES[p].s}</p>`;
   html += Object.entries(groups).map(([d,arr])=>`<div class="fold" style="--pc:${pc(p)}"><h3>${esc(d)}</h3>${listHTML(arr,false)}</div>`).join("");
   $("#main").innerHTML = html;
 }
@@ -332,18 +527,26 @@ function showDoc(code, hint){
   const p = porteOf(x); document.documentElement.style.setProperty("--acc", pc(p));
   P.rec = [code, ...P.rec.filter(c=>c!==code)].slice(0,20); save();
   const sib = DOCS.filter(y=>y.d===x.d), k = sib.indexOf(x), prev = sib[k-1], next = sib[k+1];
-  const fav = P.fav.includes(code), jb = jGet(JID);
+  const fav = P.fav.includes(code), jb = jGet(JID), gb = jb ? null : gGet(GID); titre(x.t); ecran(x.sx ? "saisons/saison" : "saisons/doc"); CURX = x.sx ? {x, jb, gb} : null;
+  const cible = jb ? prenom(jb) : gb ? gb.nom : null, wsel = hint && /^w\d+$/.test(hint) ? +hint.slice(1) : curWeek();
   const m = $("#main"); m.style.setProperty("--pc", pc(p));
-  m.innerHTML = `<div class="crumb"><a href="#">Accueil</a>›<a href="#p/${p}">${PORTES[p].n}</a>›<span>${esc(String(x.d).replace(/^\d+(\.\d+)*\s/,""))}</span></div>
+  m.innerHTML = `<div class="crumb"><a href="#/accueil">Référentiel</a>›<a href="#p/${p}">${PORTES[p].n}</a>›<span>${esc(String(x.d).replace(/^\d+(\.\d+)*\s/,""))}</span></div>
     <div class="dochead"><h1>${esc(x.t)}</h1><div class="acts">
-      <button class="ib star" id="fav" type="button" aria-pressed="${fav}">${fav?"★ Favori":"☆ Favori"}</button>
-      <button class="ib" id="fsm" type="button" aria-label="Texte plus petit">A−</button><button class="ib" id="fsp" type="button" aria-label="Texte plus grand">A+</button></div></div>
+      <button class="ib star" id="fav" type="button" aria-pressed="${fav}">${fav?"★ Favori":"☆ Favori"}</button></div></div>
     <div class="crumb xp" style="margin-top:4px">${esc(x.ch||"")}</div>${jumps(x)}
-    ${x.sx?`${jb?`<div class="pjbar">Pour <b>${esc(jb.nom)}</b>${jCode(jb)!==x.c?` · sa saison : <a href="#/s/${jCode(jb)}/w${curWeek()}?j=${encodeURIComponent(jb.id)}">${jb.sexe==="F"?"fille":"garçon"} ${jAge(jb)} ans</a>`:""}</div>`:""}<div class="basebar"><a class="go bl" href="${progHref(x.c, 0, jb&&jb.id)}">${jb?`Créer la prog de ${esc(jb.nom)} sur cette saison →`:"Utiliser comme base dans Create my prog →"}</a><a class="ib" href="${progHref(x.c, curWeek(), jb&&jb.id)}">Créer les séances de cette semaine (S${curWeek()})</a></div>`:""}
+    ${x.sx?`${jb?`<div class="pjbar">Pour <b>${esc(jb.nom)}</b>${jCode(jb)!==x.c?` · sa saison : <a href="#/s/${jCode(jb)}/w${curWeek()}?j=${encodeURIComponent(jb.id)}">${jb.sexe==="F"?"fille":"garçon"} ${jAge(jb)} ans</a>`:""}</div>`
+      : gb?`<div class="pjbar">Pour le groupe <b>${esc(gb.nom)}</b>${gCode(gb.id)&&gCode(gb.id)!==x.c&&BY[gCode(gb.id)]?` · sa saison : <a href="#/s/${gCode(gb.id)}/w${curWeek()}?g=${encodeURIComponent(gb.id)}">${esc(BY[gCode(gb.id)].t.replace(/^Saison /,""))}</a>`:""}</div>`:""}
+      ${frise(x, wsel)}`:""}
     <nav class="toc xp" id="toc" hidden></nav>
     <article class="doc" id="doc"></article>
     <div class="pn">${prev?`<a href="#d/${prev.c}"><small>‹ Précédent</small>${esc(prev.t)}</a>`:"<span></span>"}${next?`<a class="nx" href="#d/${next.c}"><small>Suivant ›</small>${esc(next.t)}</a>`:"<span></span>"}</div>
-    <div class="notes"><label for="nt" style="font-weight:600">Mes notes sur ce document</label><textarea id="nt" placeholder="Idées, joueurs concernés, à tester…"></textarea><div class="msg" id="ntm"></div></div>`;
+    <div class="notes"><label for="nt" style="font-weight:600">Mes notes sur ce document</label><textarea id="nt" placeholder="Idées, joueurs concernés, à tester…"></textarea><div class="msg" id="ntm"></div></div>
+    <details class="grun-plus"><summary>Plus d'options</summary><div class="grun-plusb"><div class="tools">
+      ${x.sx?`<a class="ib" href="${progHref(x.c, 0)}">Utiliser comme base dans Create my prog, sans joueur</a><a class="ib" id="semcur" href="${progHref(x.c, curWeek(), jb&&jb.id)}${gb?"&gid="+encodeURIComponent(gb.id):""}">Créer les séances de cette semaine (S${curWeek()})</a>`:""}
+      <button class="ib" id="fsm" type="button" aria-label="Texte plus petit">A−</button><button class="ib" id="fsp" type="button" aria-label="Texte plus grand">A+</button>
+      <button class="ib" type="button" onclick="print()">Imprimer</button></div><p class="msg" id="dmsg"></p></div></details>
+    ${x.sx ? actbar(cible ? `Appliquer à ${cible}` : "Appliquer à mon joueur / mon groupe", "appl") : ""}`;
+  const ap = $("#appl"); if(ap) ap.onclick = ()=>appliquer(x.c, jb, gb);
   // structure : L'essentiel encadré, Le détail en sections dépliables
   const doc = $("#doc"); const tmp = document.createElement("div"); tmp.innerHTML = x.h;
   tmp.querySelectorAll("table").forEach(t=>{ const w=document.createElement("div"); w.className="tw"; t.replaceWith(w); w.appendChild(t); });
@@ -355,14 +558,18 @@ function showDoc(code, hint){
       mode = "det"; doc.appendChild(node); cur = doc; continue;
     }
     if(node.nodeName==="H3" && mode!=="ess"){
-      const d = document.createElement("details"); const s = document.createElement("summary"); s.textContent = node.textContent; d.appendChild(s);
-      d.id = "s"+sections.length; sections.push([d.id, node.textContent]); doc.appendChild(d); cur = d; continue;
+      const d = document.createElement("details"); const s = document.createElement("summary"); s.innerHTML = node.innerHTML; d.appendChild(s);
+      const tt = GR&&GR.expert&&GR.expert() ? node.textContent : [...node.childNodes].filter(n=>!(n.classList&&n.classList.contains("xp"))).map(n=>n.textContent).join("");
+      d.id = "s"+sections.length; sections.push([d.id, tt]); doc.appendChild(d); cur = d; continue;
     }
     (cur || doc).appendChild(node);
   }
   if(sections.length>2){ const toc=$("#toc"); toc.hidden=false; toc.innerHTML = `<b>Le détail</b><ol>${sections.map(([id,t])=>`<li><a href="#" data-s="${id}">${esc(t.replace(/^\d+\.\s*/,""))}</a></li>`).join("")}</ol>`;
     toc.onclick = e=>{ const a=e.target.closest("a[data-s]"); if(!a) return; e.preventDefault(); const d=document.getElementById(a.dataset.s); d.open=true; d.scrollIntoView({behavior:"smooth",block:"start"}); }; }
   if(sections.length===1){ doc.querySelector("details").open = true; }
+  /* l'ancienne frise SVG (charge, tournois, bilans) reste, repliée sous la frise touchable */
+  if(x.sx){ const fw = doc.querySelector(".frw"); if(fw){ const dt = document.createElement("details"); dt.className = "frd"; dt.innerHTML = "<summary>Frise détaillée : charge, tournois, bilans</summary>"; fw.before(dt);
+    let n = fw; const L = [fw]; while((n = n.nextSibling) && n.nodeName==="P" && /leg|msg/.test(n.className)) L.push(n); L.forEach(e=>dt.appendChild(e)); } }
   if(window.GRUN&&GRUN.clair) GRUN.clair(document.getElementById("doc"));   /* lignes de grille en clair (mode simple) */
   doc.querySelectorAll('.wkgo a[href*="#/nouveau/"]').forEach(a=>{ const q=a.getAttribute("href").split("?")[1]||""; const w=(q.match(/w=(\d+)/)||[])[1]; a.href = progHref(x.c, w, jb&&jb.id); });
   if(jb) $("#main").querySelectorAll('.jump a[href^="#/s/"]').forEach(a=>{ a.href += "?j="+encodeURIComponent(jb.id); });
@@ -371,10 +578,49 @@ function showDoc(code, hint){
   $("#fsm").onclick=()=>setFs(-1); $("#fsp").onclick=()=>setFs(1);
   const nt=$("#nt"); nt.value = P.notes[code]||""; let tm;
   nt.oninput = ()=>{ clearTimeout(tm); tm=setTimeout(()=>{ if(nt.value.trim()) P.notes[code]=nt.value; else delete P.notes[code]; save(); $("#ntm").textContent="Note enregistrée sur cet appareil."; },500); };
+  if(x.sx){ voirSemaine(x, wsel, jb, gb, false); const tls = $("#tls"), b = tls && tls.querySelector(`[data-wk="${wsel}"]`); if(b) tls.scrollLeft = Math.max(0, b.offsetLeft - tls.clientWidth/2 + 14);
+    $("#tlz").onclick = e=>{ const b = e.target.closest("[data-wk]"); if(!b) return; voirSemaine(x, +b.dataset.wk, jb, gb, true); }; }
   // aller à un âge ou surligner une recherche
-  if(hint && hint.startsWith("w")) goWeek(+hint.slice(1));
+  if(hint && hint.startsWith("w")){ if(!x.sx) goWeek(+hint.slice(1)); }
   else if(hint && hint.startsWith("a")) goAge(+hint.slice(1));
   else if(hint && hint.startsWith("q")) highlight(hint.slice(1));
+}
+/* ---------- frise touchable : phases (mésocycles) et 52 semaines ; toucher une semaine l'ouvre juste en dessous ---------- */
+function frise(x, wsel){ const F = x.fr; if(!F) return ""; const cw = curWeek();
+  const col = n => { const m = F.m.find(m=>n>=m[3]&&n<=m[4]); return m ? m[5] : "#94A3B8"; };
+  const mois = []; let last = -1; CALW.forEach(w=>{ const d = new Date(w.du+"T12:00:00"); d.setDate(d.getDate()+3); if(d.getMonth()!==last){ mois.push([w.n, MOISC[d.getMonth()]]); last = d.getMonth(); } });
+  const types = [...new Set(F.m.map(m=>m[2]))];
+  return `<section class="tl" aria-label="Frise de la saison"><div class="tlh"><b>La saison en un coup d'œil</b><span class="msg">Touche une semaine pour l'ouvrir · S${cw} = cette semaine</span></div>
+    <div class="tls" id="tls"><div class="tlg" id="tlz" style="grid-template-columns:repeat(52,30px)">
+    ${F.M.map(m=>`<div class="tlM" style="grid-column:${m[2]}/${m[3]+1}" title="${esc(m[1])}"><span class="xp">${esc(m[0])} · </span>${esc(m[1])}</div>`).join("")}
+    ${F.m.map(m=>`<button type="button" class="tlm" data-wk="${m[3]}" style="grid-column:${m[3]}/${m[4]+1};background:${m[5]}" title="${esc(m[1]+" · "+m[2])}">${esc(m[1])}</button>`).join("")}
+    ${F.w.map(([n,ch,mi,se])=>{ const C = CALW.find(w=>w.n===n)||{};
+      return `<button type="button" class="tlw${se?"":" off"}${n===cw?" now":""}${n===wsel?" sel":""}" data-wk="${n}" style="grid-column:${n};--c:${col(n)}" aria-label="Semaine ${n}, ${C.du?dd(C.du):""}, ${esc(mi)}, charge ${ch} sur 5"><span>${n}</span>${C.bilan?'<em class="bb">B</em>':""}${C.tournois?'<em class="tt"></em>':""}<i style="height:${ch*10}px"></i></button>`; }).join("")}
+    ${mois.map(([n,t])=>`<div class="tlmo" style="grid-column:${n}/span 4">${t}</div>`).join("")}
+    </div></div>
+    <div class="tll">${types.map(t=>`<span><i style="background:${MESOC[t]||"#64748B"}"></i>${esc(t)}</span>`).join("")}<span><i style="background:#B91C1C;border-radius:50%"></i>Tournois</span><span><i style="background:#0F766E"></i>B = bilan</span><span><i style="background:repeating-linear-gradient(135deg,var(--soft),var(--soft) 3px,var(--panel) 3px,var(--panel) 6px);border:1px solid var(--line)"></i>Sans entraînement</span></div>
+    <div class="tlc" id="tlc"></div></section>`; }
+function voirSemaine(x, n, jb, gb, defil){
+  const F = x.fr, w = F.w.find(w=>w[0]===n), C = CALW.find(c=>c.n===n), m = F.m.find(m=>n>=m[3]&&n<=m[4]); if(!w||!C) return; SEL = n;
+  document.querySelectorAll("#tlz .tlw").forEach(b=>b.classList.toggle("sel", +b.dataset.wk===n));
+  const h = document.getElementById("w"+n), part = [];
+  if(h){ let e = h.nextElementSibling; while(e && !/^H[34]$/.test(e.nodeName)){ if(!e.classList.contains("wkgo")) part.push(e.cloneNode(true)); e = e.nextElementSibling; } }
+  const box = $("#tlc"); box.style.setProperty("--c", m ? m[5] : "var(--pc)");
+  const q = (jb ? "" : "") + (gb ? "&gid="+encodeURIComponent(gb.id) : "");
+  box.innerHTML = `<h3>Semaine ${n} · ${dd(C.du)} - ${dd(C.au)}</h3><p class="ph">${m?`${esc(m[1])} · ${esc(m[2])}`:""}${w[2]&&(!m||w[2]!==m[2])?`${m?" · ":""}${esc(w[2])}`:""} · charge ${w[1]} sur 5${n===curWeek()?" · <b>cette semaine</b>":""}</p><div class="doc tlx"></div>
+    <div class="tools">${w[3]?`<a class="ib" href="${progHref(x.c, n, jb&&jb.id)}${q}">Créer les séances de cette semaine</a>`:""}<button class="ib" type="button" id="tlvoir">Voir dans la saison</button></div>`;
+  part.forEach(e=>box.querySelector(".tlx").appendChild(e));
+  box.querySelectorAll("table").forEach(t=>{ if(t.parentNode.className!=="tw"){ const d=document.createElement("div"); d.className="tw"; t.replaceWith(d); d.appendChild(t); } });
+  $("#tlvoir").onclick = ()=>goWeek(n);
+  try{ history.replaceState(null, "", "#/s/"+x.c+"/w"+n+(JID&&location.hash.includes("?j=")?"?j="+encodeURIComponent(JID):GID&&location.hash.includes("?g=")?"?g="+encodeURIComponent(GID):"")); }catch(e){}
+  if(defil) box.scrollIntoView({behavior:"smooth", block:"nearest"});
+}
+/* « Appliquer à mon joueur / mon groupe » : Create my prog prérempli sur cette saison (adresse #/nouveau/<jid>?base=<code>[&gid=<gid>]) */
+function appliquer(code, jb, gb){
+  const go = (jid, gid) => { if(!jid && !gid) return; location.href = progHref(code, 0, jid) + (gid ? "&gid="+encodeURIComponent(gid) : ""); };
+  if(jb) return go(jb.id, null); if(gb) return go(null, gb.id);
+  if(GR&&GR.ui&&GR.ui.choisirJoueur) return GR.ui.choisirJoueur("Appliquer cette saison à qui ?", go, {toujours:true});
+  location.href = progHref(code, 0);
 }
 function jumps(x){
   if(!x.sx) return ""; const a=x.age, o=x.sx==="F"?"G":"F";
@@ -382,7 +628,7 @@ function jumps(x){
   return `<div class="jump">${BY[c(x.sx,a-1)]?`<a href="#/s/${c(x.sx,a-1)}">‹ ${a-1} ans</a>`:""}${BY[c(x.sx,a+1)]?`<a href="#/s/${c(x.sx,a+1)}">${a+1} ans ›</a>`:""}${BY[c(o,a)]?`<a href="#/s/${c(o,a)}">Même âge · ${o==="F"?"filles":"garçons"}</a>`:""}<button type="button" class="now" data-now="1">Cette semaine (S${curWeek()})</button></div>`;
 }
 document.addEventListener("click", e=>{
-  const n=e.target.closest("[data-now]"); if(n){ e.preventDefault(); goWeek(curWeek()); return; }
+  const n=e.target.closest("[data-now]"); if(n){ e.preventDefault(); if(CURX && $("#tlc")){ voirSemaine(CURX.x, curWeek(), CURX.jb, CURX.gb, true); return; } goWeek(curWeek()); return; }
   const w=e.target.closest("svg.frise a[data-w]"); if(w){ e.preventDefault(); goWeek(+w.dataset.w); }
 });
 function goWeek(n){
@@ -411,7 +657,7 @@ $("#q").addEventListener("input", e=>{ clearTimeout(sT); const v=e.target.value.
 $("#q").addEventListener("keydown", e=>{ if(e.key==="Enter"){ e.target.blur(); } });
 function terms(q){ return fold(q).split(/\s+/).filter(w=>w.length>=2); }
 function showSearch(q){
-  document.documentElement.style.setProperty("--acc", "var(--ink)");
+  document.documentElement.style.setProperty("--acc", "var(--ink)"); ecran("saisons/recherche"); titre("Recherche");
   buildIndex();
   const ts = terms(q), m = $("#main");
   if(!ts.length){ showHome(); return; }
@@ -469,7 +715,14 @@ async function importData(e){
   catch(err){ m.textContent="Ce fichier n'est pas une sauvegarde de cette appli (Saisons_favoris_notes_….json)."; }
 }
 
-if(GR){ try{ GR.nav("res"); if(GR.isJoueur()) document.body.classList.add("joueur"); }catch(e){} }
+if(GR){ try{ GR.nav("res"); if(GR.isJoueur()) document.body.classList.add("joueur"); }catch(e){}
+  [["saisons","Le référentiel : une saison de référence par âge (4 à 18 ans) et par sexe, semaine par semaine. Il s'ouvre sur la saison de ton joueur en cours ; « Accès direct » ouvre n'importe quelle saison."],
+   ["saisons/saison","Une saison : la frise montre les phases et les 52 semaines ; touche une semaine pour voir ses séances. Le bouton du bas l'applique à ton joueur ou ton groupe dans Create my prog, déjà rempli."],
+   ["saisons/doc","Un document de la méthode : calendrier, semaines types, cycles et charge, lignes des grilles. « L'essentiel » d'abord, le détail en sections dépliables."],
+   ["saisons/porte","Toutes les saisons d'une porte (filles, garçons) ou les documents de la méthode. Touche un titre pour l'ouvrir."],
+   ["saisons/recherche","La recherche lit toutes les saisons : un thème, une ligne, un mot. Le document s'ouvre sur le passage surligné."]].forEach(([k,t])=>{ try{ GR.aide(k,t); }catch(e){} }); }
+function ecran(k){ try{ GR&&GR.aide&&GR.aide.ecran&&GR.aide.ecran(k); }catch(e){} }
+let CURX = null;
 boot();
 </script>
 </body></html>

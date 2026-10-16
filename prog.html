@@ -62,8 +62,153 @@ html.grun-simple .cx{display:none!important}
 .grun-pdf:disabled{opacity:.6}
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .grun-pdf{color:#2DD4BF;border-color:#2DD4BF}}
 :root[data-theme="dark"] .grun-pdf{color:#2DD4BF;border-color:#2DD4BF}
+
+/* ===================== SOCLE 1.1 « chemin ultra intuitif » =====================
+   RÈGLES DE MISE EN PAGE (toutes les pages) :
+   - retour « ‹ » en haut à gauche (#back) ; joueur en cours + « ? » en haut à droite (.grun-topx, injectés par GRUN.nav) ;
+   - action principale EN BAS, grande, dans la zone du pouce : <div class="grun-actbar"><button class="gs-btn main">…</button></div> ;
+   - options secondaires repliées : <details class="grun-plus"><summary>Plus d'options</summary><div class="grun-plusb">…</div></details> ;
+   - « + » unique au centre de la barre du bas (#grun-plus) ; créations dans une feuille (.grun-ov > .grun-sheet). */
+:root{--grun-hi:#0F766E;--grun-on:#fff}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--grun-hi:#2DD4BF;--grun-on:#0B1117}}
+:root[data-theme="dark"]{--grun-hi:#2DD4BF;--grun-on:#0B1117}
+/* « + » au centre de la barre du bas */
+#grun-nav #grun-plus{flex:0 0 64px;border:0;background:none;padding:0;display:flex;align-items:center;justify-content:center;min-height:var(--nav-h);cursor:pointer}
+#grun-nav #grun-plus span{width:48px;height:48px;border-radius:16px;background:var(--grun-hi);color:var(--grun-on);display:flex;align-items:center;justify-content:center;box-shadow:0 3px 10px rgba(15,118,110,.35)}
+#grun-nav #grun-plus svg{width:26px;height:26px;stroke-width:2.6;stroke:currentColor}
+#grun-nav #grun-plus:active span{transform:scale(.94)}
+@media (max-width:380px){#grun-nav a{font-size:10.5px}#grun-nav #grun-plus{flex-basis:56px}}
+/* barre du haut : joueur en cours + aide */
+.grun-topx{display:inline-flex;gap:6px;align-items:center;flex:0 0 auto}
+.grun-chip{display:inline-flex;align-items:center;gap:6px;min-height:36px;max-width:118px;padding:0 10px 0 4px;border:1px solid var(--line,#D9DDE3);border-radius:999px;background:var(--panel,#fff);color:var(--ink,#16202E);font:600 14px/1 var(--ui,system-ui,sans-serif);cursor:pointer}
+.grun-chip .gc-nm{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+.gc-av{flex:0 0 28px;width:28px;height:28px;border-radius:50%;background:var(--grun-hi);color:var(--grun-on);display:inline-flex;align-items:center;justify-content:center;font-weight:800;font-size:13px}
+.gc-av.g{border-radius:8px;background:#6D3FC0;color:#fff}
+.gc-av.vide{background:var(--soft,#ECEFF3);color:var(--mute,#5D6675)}
+.grun-q{width:36px;height:36px;border-radius:50%;border:1px solid var(--line,#D9DDE3);background:var(--panel,#fff);color:var(--mute,#5D6675);font:800 17px/1 var(--ui,system-ui,sans-serif);cursor:pointer;padding:0}
+@media (max-width:430px){.grun-chip{max-width:92px;padding-right:8px}.grun-chip .gc-nm{font-size:13px}}
+@media (max-width:360px){.grun-chip .gc-nm{display:none}.grun-chip{padding:0 4px}}
+/* feuille (bottom sheet) */
+.grun-ov{position:fixed;inset:0;z-index:200;background:rgba(10,16,24,.42);display:flex;align-items:flex-end;justify-content:center;opacity:0;transition:opacity .16s ease}
+.grun-ov.in{opacity:1}.grun-ov.out{opacity:0}
+.grun-sheet{width:100%;max-width:560px;max-height:min(90vh,calc(100vh - env(safe-area-inset-top,0px) - 24px));display:flex;flex-direction:column;background:var(--panel,#fff);color:var(--ink,#16202E);border-radius:18px 18px 0 0;box-shadow:0 -10px 40px rgba(0,0,0,.25);transform:translateY(24px);transition:transform .18s ease;font-family:var(--ui,system-ui,sans-serif);font-size:16px;line-height:1.4}
+.grun-sheet.large{max-width:720px}
+.grun-ov.in .grun-sheet{transform:none}
+@media (min-width:700px){.grun-ov{align-items:center}.grun-sheet{border-radius:18px;max-height:86vh}}
+.gs-h{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:14px 16px 8px;border-bottom:1px solid var(--line,#D9DDE3)}
+.gs-h b{font-family:var(--display,"Barlow Condensed",system-ui,sans-serif);font-size:1.45em;font-weight:700;line-height:1.1}
+.gs-x{width:40px;height:40px;border-radius:50%;border:0;background:var(--soft,#ECEFF3);color:var(--ink,#16202E);font-size:24px;line-height:1;cursor:pointer;flex:0 0 auto}
+.gs-b{padding:12px 16px 14px;overflow-y:auto;-webkit-overflow-scrolling:touch;display:flex;flex-direction:column;gap:12px;flex:1 1 auto;min-height:0}
+.gs-f{display:flex;gap:8px;padding:10px 16px calc(12px + env(safe-area-inset-bottom,0px));border-top:1px solid var(--line,#D9DDE3)}
+.gs-btn{min-height:52px;border-radius:13px;border:1px solid var(--line,#D9DDE3);background:var(--panel,#fff);color:var(--ink,#16202E);font:700 16px/1.1 var(--ui,system-ui,sans-serif);padding:0 16px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;text-decoration:none;gap:6px}
+.gs-btn.main{flex:1;background:var(--grun-hi);border-color:var(--grun-hi);color:var(--grun-on)}
+.gs-btn.sec{flex:0 1 auto}
+.gs-btn.sm{min-height:40px;font-size:14.5px;border-radius:10px;padding:0 12px;flex:0 0 auto}
+.gs-btn:disabled{opacity:.5}
+.grun-ov.danger .gs-btn.main{background:#B91C1C;border-color:#B91C1C;color:#fff}
+.gs-form{display:flex;flex-direction:column;gap:12px;margin:0}
+.gs-l{display:flex;flex-direction:column;gap:5px;font-weight:600;font-size:14.5px;color:var(--ink,#16202E);min-width:0}
+.gs-l small{font-weight:500;color:var(--mute,#5D6675)}
+.gs-inp{min-height:48px;border:1px solid var(--line,#D9DDE3);border-radius:11px;background:var(--bg,#F4F5F7);color:var(--ink,#16202E);padding:0 12px;font:500 17px/1.2 var(--ui,system-ui,sans-serif);width:100%;max-width:100%;box-sizing:border-box}
+.gs-ta{padding:10px 12px;min-height:84px;resize:vertical;line-height:1.4}
+.gs-inp:focus{outline:2px solid var(--grun-hi);outline-offset:1px}
+.gs-seg{display:flex;border:1px solid var(--line,#D9DDE3);border-radius:11px;overflow:hidden;background:var(--bg,#F4F5F7)}
+.gs-seg button{flex:1;min-height:46px;border:0;background:none;color:var(--ink,#16202E);font:600 16px/1 var(--ui,system-ui,sans-serif);cursor:pointer}
+.gs-seg button+button{border-left:1px solid var(--line,#D9DDE3)}
+.gs-seg button[aria-checked=true]{background:var(--grun-hi);color:var(--grun-on)}
+.gs-chips{display:flex;flex-wrap:wrap;gap:6px}
+.gs-chip{min-height:40px;border:1px solid var(--line,#D9DDE3);background:var(--panel,#fff);color:var(--ink,#16202E);border-radius:999px;padding:0 14px;font:600 15px/1 var(--ui,system-ui,sans-serif);cursor:pointer;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.gs-chips.big .gs-chip{min-height:46px;font-size:16px}
+.gs-chip.g{border-style:dashed}
+.gs-chip[aria-pressed=true]{background:var(--grun-hi);border-color:var(--grun-hi);color:var(--grun-on)}
+.gs-err{color:#B91C1C;font-weight:600;margin:0;min-height:0}
+.gs-err:empty{display:none}
+.gs-m{color:var(--mute,#5D6675);font-size:14.5px;margin:0}
+.gs-p{margin:0;font-size:16.5px;line-height:1.5}
+.gs-sert{color:var(--grun-hi);font-weight:600;font-size:13px}
+.gs-lien{align-self:flex-start;border:0;background:none;color:var(--grun-hi);font:700 15.5px/1.2 var(--ui,system-ui,sans-serif);padding:6px 0;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+.gs-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.gs-n .gs-inp{font-variant-numeric:tabular-nums}
+.gs-c{display:flex;gap:10px;align-items:flex-start;font-weight:600;font-size:15px}
+.gs-c input{width:22px;height:22px;flex:0 0 auto;margin-top:1px}
+.gs-c small{font-weight:500;color:var(--mute,#5D6675)}
+.gs-cp fieldset{border:1px solid var(--line,#D9DDE3);border-radius:13px;padding:10px 12px 12px;margin:0;display:flex;flex-direction:column;gap:10px;min-width:0}
+.gs-cp legend{font-weight:800;font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:var(--mute,#5D6675);padding:0 4px}
+.gs-cp legend small{text-transform:none;letter-spacing:0;font-weight:500}
+details.gs-plus>summary{cursor:pointer;color:var(--grun-hi);font-weight:700;padding:4px 0;list-style:none}
+details.gs-plus>summary::-webkit-details-marker{display:none}
+details.gs-plus[open]>summary{margin-bottom:8px}
+.gs-list{border:1px solid var(--line,#D9DDE3);border-radius:11px;overflow:hidden}
+.gs-row{display:flex;flex-wrap:wrap;gap:2px 10px;align-items:baseline;padding:8px 12px;border-top:1px solid var(--line,#D9DDE3)}
+.gs-row:first-child{border-top:0}
+.gs-row span{color:var(--mute,#5D6675);font-size:14px}
+.gs-row small{flex-basis:100%;color:#B91C1C;font-weight:600}
+.gs-row.ko b{color:#B91C1C}
+.gs-menu{display:flex;flex-direction:column;gap:8px}
+.gs-menu.plus{display:grid;grid-template-columns:minmax(0,1fr);gap:6px}
+@media (min-width:560px){.gs-menu.plus{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.gs-it{display:grid;grid-template-columns:auto minmax(0,1fr);gap:1px 12px;align-items:center;text-align:left;min-height:60px;padding:9px 12px;border:1px solid var(--line,#D9DDE3);border-radius:13px;background:var(--panel,#fff);color:var(--ink,#16202E);text-decoration:none;cursor:pointer;font:inherit}
+.gs-it b{font-size:16.5px;grid-column:2}
+.gs-it span{grid-column:2;color:var(--mute,#5D6675);font-size:13.5px;line-height:1.3}
+.gs-it:not(:has(.pi)){grid-template-columns:minmax(0,1fr)}.gs-it:not(:has(.pi)) b,.gs-it:not(:has(.pi)) span{grid-column:1}
+.gs-it.x{border-color:var(--grun-hi);border-width:1.5px}
+.gs-it.st{cursor:default}
+.gs-it.st .gs-seg{grid-column:1/-1;margin-top:6px}
+.gs-it:active{background:var(--soft,#ECEFF3)}
+.pi{grid-row:1/3;width:38px;height:38px;border-radius:11px;background:var(--soft,#ECEFF3);position:relative}
+.pi::after{content:"";position:absolute;inset:9px;background:var(--grun-hi);-webkit-mask:var(--m) center/contain no-repeat;mask:var(--m) center/contain no-repeat}
+.pi-joueur{--m:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.2'%3E%3Ccircle cx='12' cy='8' r='4'/%3E%3Cpath d='M4 21c0-4 4-6 8-6s8 2 8 6'/%3E%3C/svg%3E")}
+.pi-groupe{--m:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.2'%3E%3Ccircle cx='8' cy='9' r='3'/%3E%3Ccircle cx='16' cy='9' r='3'/%3E%3Cpath d='M2 20c0-3 3-5 6-5s6 2 6 5M12 20c0-3 2-5 4-5s6 2 6 5'/%3E%3C/svg%3E")}
+.pi-session{--m:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='black'%3E%3Cpath d='M8 5v14l11-7z'/%3E%3C/svg%3E")}
+.pi-test{--m:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.2'%3E%3Cpath d='M12 3l8.5 6.2-3.2 10H6.7L3.5 9.2z'/%3E%3C/svg%3E")}
+.pi-exo{--m:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.2'%3E%3Cpath d='M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2z'/%3E%3Cpath d='M4 19V5'/%3E%3C/svg%3E")}
+.pi-note{--m:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.2'%3E%3Cpath d='M4 20h4L19 9l-4-4L4 16z'/%3E%3C/svg%3E")}
+.pi-wu{--m:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.2'%3E%3Cpath d='M12 3c2 3 5 5 5 9a5 5 0 0 1-10 0c0-2 1-3 2-4 0 2 1 3 2 3 0-3-1-5 1-8z'/%3E%3C/svg%3E")}
+.gs-cur{display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center;padding:10px 12px;border-radius:13px;background:var(--soft,#ECEFF3)}
+.gs-cur b{font-size:17px}.gs-cur span{color:var(--mute,#5D6675);font-size:14px;flex:1}
+.gs-bar{display:flex;flex-direction:column;gap:5px}
+.gs-bar>div,.gc-bar{display:block;height:8px;border-radius:99px;background:var(--soft,#ECEFF3);overflow:hidden}
+.gs-bar i,.gc-bar i{display:block;height:100%;background:var(--grun-hi);border-radius:99px;transition:width .3s}
+/* toast avec « Annuler » */
+#grun-toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(var(--nav-h,62px) + 14px + env(safe-area-inset-bottom,0px));z-index:260;display:flex;gap:12px;align-items:center;max-width:calc(100vw - 32px);background:var(--ink,#16202E);color:var(--bg,#fff);padding:8px 8px 8px 16px;border-radius:13px;box-shadow:0 8px 28px rgba(0,0,0,.28);font:600 15px/1.3 var(--ui,system-ui,sans-serif)}
+#grun-toast:not(:has(button)){padding:11px 16px}
+#grun-toast button{min-height:40px;border:0;border-radius:9px;background:var(--grun-hi);color:var(--grun-on);font:800 15px/1 var(--ui,system-ui,sans-serif);padding:0 14px;cursor:pointer;white-space:nowrap}
+body:not(.grun-has-nav) #grun-toast{bottom:calc(16px + env(safe-area-inset-bottom,0px))}
+#grun-saved{position:fixed;top:calc(8px + env(safe-area-inset-top,0px));right:12px;z-index:270;background:var(--grun-hi);color:var(--grun-on);font:700 13px/1 var(--ui,system-ui,sans-serif);padding:7px 11px;border-radius:99px;opacity:0;transform:translateY(-6px);transition:opacity .2s,transform .2s;pointer-events:none}
+#grun-saved.on{opacity:1;transform:none}
+/* barre de complétude (dossier) */
+.grun-compl{border:1px solid var(--line,#D9DDE3);border-radius:13px;background:var(--panel,#fff);padding:10px 12px;display:flex;flex-direction:column;gap:6px}
+.grun-compl .gc-h{display:flex;gap:10px;align-items:center}.grun-compl .gc-h b{white-space:nowrap}.grun-compl .gc-bar{flex:1}
+.grun-compl ul{margin:0;padding-left:18px;font-size:14.5px;color:var(--mute,#5D6675)}
+.grun-compl ul b{color:var(--ink,#16202E);font-weight:600}
+.grun-compl .gs-btn{align-self:flex-start}
+.grun-compl.ok{padding:8px 12px}
+/* action principale en bas (zone du pouce), au-dessus de la barre du bas */
+.grun-actbar{position:sticky;bottom:calc(var(--nav-h,62px) + env(safe-area-inset-bottom,0px) + 8px);z-index:20;display:flex;gap:8px;margin-top:16px}
+body:not(.grun-has-nav) .grun-actbar{bottom:calc(8px + env(safe-area-inset-bottom,0px))}
+.grun-actbar>*{flex:1;min-height:52px;box-shadow:0 6px 18px rgba(0,0,0,.14)}
+/* visite guidée, schéma */
+.gv h3{font-family:var(--display,"Barlow Condensed",system-ui,sans-serif);font-size:1.6em;margin:4px 0 6px;line-height:1.1}
+.gv-dots{display:flex;gap:5px}.gv-dots i{width:22px;height:5px;border-radius:9px;background:var(--line,#D9DDE3)}.gv-dots i.vu{background:var(--mute,#5D6675)}.gv-dots i.on{background:var(--grun-hi)}
+.grun-schema{width:100%;max-width:440px;display:block;margin:10px auto 0;font-family:var(--ui,system-ui,sans-serif)}
+.grun-schema rect{stroke-width:2}
+.grun-schema .s-ind{fill:rgba(15,118,110,.12);stroke:#0F766E}.grun-schema .s-tests{fill:rgba(109,63,192,.12);stroke:#6D3FC0}.grun-schema .s-res{fill:rgba(29,78,216,.10);stroke:#1D4ED8}.grun-schema .s-create{fill:rgba(194,65,12,.10);stroke:#C2410C}
+.grun-schema .s-d1{fill:rgba(194,65,12,.14);stroke:#C2410C}.grun-schema .s-d2{fill:rgba(194,65,12,.22);stroke:#C2410C}.grun-schema .s-d3{fill:#C2410C;stroke:#C2410C}
+.grun-schema text{fill:var(--ink,#16202E);text-anchor:middle}.grun-schema .s-t{font-weight:800;font-size:15px}.grun-schema .s-s{font-size:12px;fill:var(--mute,#5D6675)}
+.grun-schema .s-k{font-size:11px;font-weight:700;text-anchor:start}.grun-schema .s-k.c{text-anchor:middle;fill:#fff}
+.grun-doll{margin-top:8px}.grun-doll div{border:2px solid #C2410C;border-radius:12px;padding:8px 10px 10px;font-weight:800;color:#C2410C;background:rgba(194,65,12,.07)}.grun-doll div div{margin-top:6px;background:rgba(194,65,12,.12)}.grun-doll div div div{background:#C2410C;color:#fff}
+.grun-demo-bar{display:flex;gap:14px;align-items:center;justify-content:center;margin-top:8px}
+.grun-chip.demo{pointer-events:none}
+.grun-plus-demo{width:48px;height:48px;border-radius:16px;background:var(--grun-hi);color:var(--grun-on);display:inline-flex;align-items:center;justify-content:center;font:800 30px/1 var(--ui,system-ui,sans-serif)}
+html.grun-sheet-on body{overflow:hidden}
+@media print{.grun-topx,#grun-toast,#grun-saved,.grun-ov,.grun-actbar{display:none!important}}
+/* barre du haut des modules sur téléphone : le joueur en cours se réduit à son initiale, le titre s'abrège */
+html.grun-mod .topin .brand{min-width:0;overflow:hidden;text-overflow:ellipsis;flex:0 1 auto}
+@media (max-width:430px){html.grun-mod .grun-chip .gc-nm{display:none}html.grun-mod .grun-chip{padding:0 3px;max-width:none}.grun-topx{gap:4px}.grun-q{width:34px;height:34px}}
+.grun-chip:has(.gc-av.vide){max-width:none}.grun-chip:has(.gc-av.vide) .gc-nm{overflow:visible}
 </style>
-<script src="grun.js?v=1"></script>
+<script src="grun.js?v=1.4"></script>
+<script src="assistant.js?v=1.4"></script>
 <meta name="grun-module" content="prog"></head><body><title>Create my prog · GRÜN</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Barlow:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
 <style>
@@ -255,6 +400,24 @@ h4.wnow{color:var(--ink)}.wh2{display:flex;align-items:center;gap:10px;flex-wrap
 @media (max-width:640px){.wkg{grid-template-columns:minmax(0,1fr);overflow:visible}.wkd{flex-direction:row;flex-wrap:wrap;align-items:flex-start;border-top:1px solid var(--line);padding-top:6px}.wkd>b{width:34px;text-align:left;padding-top:8px}.wkd .stb{flex:0 1 auto}.addw{flex-direction:row;flex-wrap:wrap;align-items:flex-start}.addw .menu{flex-direction:row;flex-wrap:wrap;width:auto}}
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){.doc tr.pp td,.doc tr.tb td,.doc tr.ten td,.doc tr.pm td{background:transparent}}}
 @media print{.top,.noprint,#sheet,.wa,.crumb{display:none!important} body{background:#fff;color:#000} main{padding:0;max-width:none} details{border:none} .doc summary::before{content:""} .tw{overflow:visible} h4{break-after:avoid} table{break-inside:auto} tr{break-inside:avoid} .frise{min-width:0!important}}
+
+/* Create my prog 1.3 : calendrier (déplacer une séance), joueur en cours, bascule Liste / Calendrier */
+.vtog{margin:0 0 10px}
+.li.cur{background:var(--soft)}
+.calh{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:4px 0 8px;font-family:var(--ui)}
+.calh b{font-size:15px}
+.calg{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px}
+.cald{display:flex;flex-direction:column;gap:5px;min-width:0;border:1px solid var(--line);border-radius:10px;padding:6px;background:var(--panel);min-height:110px}
+.cald.today{border-color:#0F766E;box-shadow:0 0 0 1px #0F766E inset}
+.caldh{font-family:var(--ui);font-size:12.5px}.caldh small{color:var(--mute)}
+.calse{display:flex;flex-direction:column;gap:2px;text-align:left;border-radius:8px;padding:7px 7px;border:1.5px solid;font:600 12px/1.25 var(--ui);cursor:pointer;min-height:44px}
+.calse span{font-weight:400;font-size:11.5px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.calse.pp{color:#C2410C;background:#FFF1E8} .calse.tb{color:#1D4ED8;background:#EAF0FF} .calse.ten{color:#334155;background:#EEF1F5} .calse.pm{color:#7C3AED;background:#F3EEFF}
+.calse.ok{border-style:dashed}
+.calv{color:var(--mute);font-size:13px}
+@media (max-width:760px){.calg{grid-template-columns:minmax(0,1fr)}.cald{flex-direction:row;flex-wrap:wrap;align-items:flex-start;min-height:0}.caldh{width:62px;padding-top:6px}.calse{flex:1 1 200px}}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .calse{background:transparent}}
+:root[data-theme="dark"] .calse{background:transparent}
 </style>
 <header class="top"><div class="topin">
   <button class="ib" id="back" type="button" aria-label="Retour">‹</button>
@@ -266,8 +429,8 @@ h4.wnow{color:var(--ink)}.wh2{display:flex;align-items:center;gap:10px;flex-wrap
 "use strict";
 /* ===== MOTEUR DE RÈGLES : programmation adaptable (aucun hasard : mêmes données = même plan) ===== */
 const KINDS = {
-  PPI:{n:"PP individuelle", c:"pp", fam:["LUN_PP","JEU_PP","SAM_PP","ETE_PP","SAM_PPC"]},
-  PPC:{n:"PP collective", c:"pp", fam:["SAM_PPC","LUN_PP","JEU_PP","SAM_PP","ETE_PP"]},
+  PPI:{n:"Préparation physique individuelle", c:"pp", fam:["LUN_PP","JEU_PP","SAM_PP","ETE_PP","SAM_PPC"]},
+  PPC:{n:"Préparation physique collective", c:"pp", fam:["SAM_PPC","LUN_PP","JEU_PP","SAM_PP","ETE_PP"]},
   TI: {n:"Tennis individuel (biomécanique)", c:"tb", fam:["MAR_TB","JEU_TB","SAM_TB","ETE_TB"]},
   TC: {n:"Tennis collectif", c:"ten", fam:["LUN_TEN","MER_TEN","VEN_TEN","SAM_TENC","ETE_TEN"]},
   PM: {n:"Préparation mentale", c:"pm", fam:["MAR_PM"]}
@@ -596,7 +759,8 @@ const todayIso = () => G.today();
 const frD = s => s ? s.split("-").reverse().join("/") : "";
 function load(k, def){ return G.load(k, def) || def; }
 let ST = load(PK, {profils:{}, plans:[]}); normST();
-function normST(){ if(!ST || typeof ST!=="object") ST={}; if(!ST.profils) ST.profils={}; if(!Array.isArray(ST.plans)) ST.plans=[]; }
+/* ST.brouillons : programmations en cours de création (pas encore « Créer le plan ») — gardées, jamais comptées comme des plans */
+function normST(){ if(!ST || typeof ST!=="object") ST={}; if(!ST.profils) ST.profils={}; if(!Array.isArray(ST.plans)) ST.plans=[]; if(!Array.isArray(ST.brouillons)) ST.brouillons=[]; }
 let saveT=null;
 function save(){ clearTimeout(saveT); saveT=setTimeout(saveNow, 150); }
 function saveNow(){ clearTimeout(saveT); G.save(PK, ST); }
@@ -605,11 +769,13 @@ const MOI = () => G.mode().jid;
 const joueurs = () => G.joueurs.all();
 const getJ = id => id ? G.joueurs.get(id) : null;
 const getPlan = id => ST.plans.find(p=>p.id===id);
+const getBr = id => ST.brouillons.find(p=>p.id===id);
 const lineName = l => { const m=/^(PP|GE|DE)(\d+)$/.exec(l); return m ? DATA.lignes[m[1]][+m[2]-1] : l; };
 const chip = l => `<span class="lc ${l.slice(0,2).toLowerCase()}" title="${esc(l)}">${esc(lineName(l))}<span class="xp"> · ${l}</span></span>`;   /* ligne en clair (code en mode expert) */
 const clampAge = a => Math.max(4, Math.min(18, a));   // GRÜN = 4-18 ans : au-delà, 18 ans (ancien « Adulte » = 19 → 18)
 const age18 = (nai, ref) => { const a = G.ageCiv(nai, ref); return a==null ? null : Math.min(18, a); };
 const sxn = s => s==="G" ? "garçon" : "fille";
+const DEMI = mx => Array.from({length:mx*2+1},(_,i)=>i/2);   /* 0 à mx au pas de 0,5 (même échelle que la fiche du socle) */
 const baseNom = c => { const m=/^([FG])(\d\d)$/.exec(c||""); return m ? (m[1]==="F"?"Filles ":"Garçons ")+(+m[2])+" ans" : (c||""); };   /* F12 → « Filles 12 ans » (pas de code en mode Simple) */
 
 /* ---------- fiche joueur (GRUN.joueurs) ; ancien profil ST.profils lu en secours ---------- */
@@ -656,7 +822,8 @@ function ctxPlan(p){
     return {j, P, g, M, info, groupe:true};
   }
   const j=getJ(p.jid)||{id:null, nom:"Joueur supprimé", sexe:p.sexe||"F", bilans:[]};
-  return {j, P:prof(p.jid), M:j.id?[j]:[], groupe:false};
+  const P0=prof(p.jid); if(p.prio?.length) P0.prio=[...new Set([...P0.prio, ...p.prio])];   /* objectif du préremplissage : lignes ajoutées au plan */
+  return {j, P:P0, M:j.id?[j]:[], groupe:false};
 }
 const ownerName = p => p.gid ? (G.groupes.get(p.gid)?.nom||"Groupe") : (getJ(p.jid)?.nom||"?");
 const ownerHref = p => p.gid ? "#/groupe/"+p.gid : "#/joueur/"+p.jid;
@@ -672,46 +839,49 @@ function go(h){ if(location.hash===h) route(); else location.hash=h; }
 $("#back").onclick = () => { if(history.length>1) history.back(); else go("#"); };
 
 /* ---------- ACCUEIL ---------- */
+/* joueur / groupe EN COURS (G.courant) : présélectionné partout où l'on choisit */
+const curJ = () => { try{ return G.courant.jid(); }catch(e){ return null; } };
+const curG = () => { try{ return G.courant.gid(); }catch(e){ return null; } };
+const prenom = n => String(n||"").split(" ")[0];
+/* action principale en bas (zone du pouce, grun.css .grun-actbar) */
+const actbar = (inner) => `<div class="grun-actbar noprint">${inner}</div>`;
+const aide = (k) => { try{ G.aide.ecran("prog/"+k); }catch(e){} };
 function showHome(){
+  aide("accueil");
   if(RO()){ if(MOI()) { location.replace("#/joueur/"+MOI()); return; } main.innerHTML=`<div class="empty">Mode joueur : ouvre ton dossier depuis l'accueil.</div>`; return; }
-  const J = joueurs(), Gs = G.groupes.all();
+  const J = joueurs(), Gs = G.groupes.all(), cj=getJ(curJ()), cg=!cj&&curG()?G.groupes.get(curG()):null;
   const recent = ST.plans.slice().sort((a,b)=>(b.maj||"")<(a.maj||"")?-1:1).slice(0,5);
+  const BR = ST.brouillons.filter(b=>b&&(b.jid?getJ(b.jid):G.groupes.get(b.gid)));
+  const qui = cj ? {t:"j", id:cj.id, nom:prenom(cj.nom)} : cg ? {t:"g", id:cg.id, nom:cg.nom} : null;
   main.innerHTML = `
   <h1>Create my prog</h1>
-  <p class="lead">Choisis ton joueur : GRÜN construit son plan, semaine par semaine. Touche une séance du plan pour la créer.</p>
+  <p class="lead">Choisis ton joueur ou ton groupe : GRÜN construit sa programmation, semaine par semaine. Touche une séance de la programmation pour la créer.</p>
+  ${BR.length?`<section class="sec"><h2>Brouillons à finir</h2><div class="list">${BR.map(b=>`<div class="li"><span class="code">${esc(prenom(ownerName(b)))}</span><span class="tt"><a href="#e/${b.id}">${esc(b.nom||"Programmation")}</a><small>${frD(b.debut)} → ${frD(b.fin)} · pas encore créée</small></span><span class="tools"><a class="ib sm" href="#e/${b.id}">Reprendre</a><button class="ib sm" type="button" data-jet="${b.id}">Jeter</button></span></div>`).join("")}</div></section>`:""}
   ${recent.length?`<section class="sec"><h2>Derniers plans</h2><div class="list">${recent.map(p=>`<a class="li" href="#p/${p.id}"><span class="code">${esc(ownerName(p).split(" ")[0])}</span><span class="tt">${esc(p.nom||"Plan")}${p.gid?' <span class="gbdg">groupe</span>':""}<small>${frD(p.debut)} → ${frD(p.fin)}</small></span></a>`).join("")}</div></section>`:""}
   <section class="sec"><h2>Joueurs</h2>
-   ${J.length?`<div class="list">${J.map(j=>{const n=plansDe(j.id).length, a=age18(j.naissance);return `<a class="li" href="#/joueur/${j.id}"><span class="code">${j.sexe==="G"?"Garçon":"Fille"}</span><span class="tt">${esc(j.nom)}<small>${a!=null?a+" ans · ":""}${esc(prof(j.id).classement)} · ${n} plan${n>1?"s":""}</small></span></a>`}).join("")}</div>`:`<div class="empty">Aucun joueur pour l'instant. Crée-le ici ou dans Individualisation : c'est la même fiche partout.</div>`}
-   <div class="tools" style="margin-top:10px"><button class="go" id="nj" type="button">+ Nouveau joueur</button></div>
-   ${formJoueur()}</section>
+   ${J.length?`<div class="list">${J.map(j=>{const n=plansDe(j.id).length, a=age18(j.naissance);return `<a class="li${cj&&cj.id===j.id?" cur":""}" href="#/joueur/${j.id}"><span class="code">${j.sexe==="G"?"Garçon":"Fille"}</span><span class="tt">${esc(j.nom)}${cj&&cj.id===j.id?' <span class="gbdg">en cours</span>':""}<small>${a!=null?a+" ans · ":""}${esc(prof(j.id).classement)} · ${n} plan${n>1?"s":""}</small></span></a>`}).join("")}</div>`:`<div class="empty">Aucun joueur pour l'instant. Crée-le ici ou dans Individualisation : c'est la même fiche partout.</div>`}
+   <div class="tools" style="margin-top:10px"><button class="ib" id="nj" type="button">+ Nouveau joueur</button></div></section>
   <section class="sec"><h2>Groupes</h2>
-   ${Gs.length?`<div class="list">${Gs.map(g=>{const n=ST.plans.filter(p=>p.gid===g.id).length;return `<a class="li" href="#/groupe/${g.id}"><span class="code">${g.jids.length} j.</span><span class="tt">${esc(g.nom)}<small>${n} plan${n>1?"s":""} de groupe</small></span></a>`}).join("")}</div>`:`<div class="empty">Aucun groupe. Crée tes groupes dans <a href="${G.href("joueurs")}">Individualisation</a>, puis reviens leur faire une prog commune.</div>`}
+   ${Gs.length?`<div class="list">${Gs.map(g=>{const n=ST.plans.filter(p=>p.gid===g.id).length;return `<a class="li${cg&&cg.id===g.id?" cur":""}" href="#/groupe/${g.id}"><span class="code">${g.jids.length}&nbsp;joueur${g.jids.length>1?"s":""}</span><span class="tt">${esc(g.nom)}${cg&&cg.id===g.id?' <span class="gbdg">en cours</span>':""}<small>${n} plan${n>1?"s":""} de groupe</small></span></a>`}).join("")}</div>`:`<div class="empty">Aucun groupe pour l'instant : crée-le ici, puis fais-lui une programmation commune.</div>`}
+   <div class="tools" style="margin-top:10px"><button class="ib" id="ng" type="button">+ Nouveau groupe</button></div>
   </section>
   <section class="sec"><h2>Partir d'une saison de référence</h2><a class="li solo" href="${G.href("saisons")}"><span class="code">4-18 ans</span><span class="tt">Référentiel de programmation<small>Choisis une saison puis « Utiliser comme base dans Create my prog »</small></span></a></section>
-  <section class="sec"><h2>Comment ça marche</h2><a class="li solo" href="#m"><span class="code">Règles</span><span class="tt">Les règles de la méthode<small>Découpe, phases, charges, choix des thèmes</small></span></a></section>
-  <details class="grun-plus"><summary>Plus d'options : sauvegarde</summary><div class="grun-plusb"><div class="tools"><button class="ib" id="exp" type="button">Sauvegarder (toute l'appli)</button><label class="ib">Restaurer<input type="file" id="imp" accept=".json,application/json" hidden></label></div><p class="msg" id="smsg">Tout reste sur cet appareil. Une seule sauvegarde pour toute l'appli GRÜN : garde-la dans Fichiers.</p></div></details>`;
-  bindFormJoueur(j=>go("#/joueur/"+j.id));
-  $("#exp").onclick=exporter; $("#imp").onchange=importer;
+  <details class="grun-plus"><summary>Plus d'options</summary><div class="grun-plusb">
+   <a class="li solo" href="#m"><span class="code">Règles</span><span class="tt">Les règles de la méthode<small>Découpe, phases, charges, choix des thèmes</small></span></a>
+   <div class="tools"><button class="ib" type="button" data-grun="sauver">${esc((G.TXT||{}).sauver||"Tout sauvegarder")}</button><label class="ib">${esc((G.TXT||{}).restaurer||"Restaurer une sauvegarde")}<input type="file" id="imp" accept=".json,application/json" hidden></label></div><p class="msg" id="smsg">Tout reste sur cet appareil. Une seule sauvegarde pour toute l'appli GRÜN (les anciens fichiers de l'appli Programmation sont aussi acceptés).</p></div></details>
+  ${actbar(qui?`<button class="gs-btn main" id="cmain" type="button">Créer la programmation ${qui.t==="g"?"du groupe "+esc(qui.nom):"de "+esc(qui.nom)}</button><button class="gs-btn sec" id="cqui" type="button" aria-label="Pour quelqu'un d'autre">Autre</button>`:`<button class="gs-btn main" id="cmain" type="button">Créer une programmation</button>`)}`;
+  $("#nj").onclick=()=>G.ui.nouveauJoueur().then(j=>{ if(j) go("#/joueur/"+j.id); });
+  $("#ng").onclick=()=>G.ui.nouveauGroupe().then(g=>{ if(g) go("#/groupe/"+g.id); });
+  $("#cmain").onclick=()=>{ if(qui) go(qui.t==="j"?"#/nouveau/"+qui.id:"#/nouveau/?gid="+qui.id); else go("#/nouveau"); };
+  $("#cqui")&&($("#cqui").onclick=()=>go("#/nouveau?choisir=1"));
+  $$("[data-jet]").forEach(b=>b.onclick=()=>jeterBrouillon(b.dataset.jet));
+  $("#imp").onchange=importer;
 }
-function formJoueur(){
-  return `<form class="card" id="fj" hidden>
-     <div class="row"><div class="f grow"><label for="jn">Nom</label><input id="jn" required autocomplete="off"></div>
-     <div class="f"><label for="js">Sexe</label><select id="js"><option value="F">Fille</option><option value="G">Garçon</option></select></div>
-     <div class="f"><label for="jd">Naissance</label><input id="jd" type="date"></div></div>
-     <p class="msg" id="jmsg2" style="margin:6px 0 0">Date de naissance (joueur de 4 à 18 ans).</p>
-     <div class="tools"><button class="go" type="submit">Créer</button><button class="ib" type="button" id="jx">Annuler</button></div>
-   </form>`;
-}
-function bindFormJoueur(after){
-  $("#nj").onclick=()=>{ $("#fj").hidden=false; $("#jn").focus(); };
-  $("#jx").onclick=()=>{ $("#fj").hidden=true; };
-  $("#fj").onsubmit=e=>{ e.preventDefault(); const nom=$("#jn").value.trim(); if(!nom) return;
-    if(!$("#jd").value){ $("#jmsg2").textContent="Indique la date de naissance."; return; }
-    const j=G.joueurs.create({nom, sexe:$("#js").value, naissance:$("#jd").value}); after(j); };
-}
+/* nouveau joueur : composant unique du socle (prénom, sexe, naissance) */
+function nouveauJoueurPuis(after){ G.ui.nouveauJoueur().then(j=>{ if(j) after(j); }); }
 function exporter(){
   saveNow();
-  G.telecharger(G.exportAll(), `GRUN_sauvegarde_${todayIso()}.json`);
+  if(G.sauvegarder) G.sauvegarder(); else G.telecharger(G.exportAll(), `GRUN_sauvegarde_${todayIso()}.json`);
   $("#smsg") && ($("#smsg").textContent="Fichier créé : enregistre-le dans Fichiers.");
 }
 function importer(e){
@@ -740,24 +910,25 @@ function showJoueur(id){
   const gs=G.groupes.de(id), gp=ST.plans.filter(p=>p.gid && gs.some(g=>g.id===p.gid)).sort((x,y)=>x.debut<y.debut?1:-1);
   const nv = niveauDe(P.classement, clampAge(a||13)), dp=P.dispo||{};
   const mat=G.maturite(j);
+  aide("joueur");
   const planLi = p => `<a class="li" href="#p/${p.id}"><span class="code">${frD(p.debut).slice(0,5)}</span><span class="tt">${esc(p.nom||"Plan")}${p.gid?` <span class="gbdg">${esc(ownerName(p))}</span>`:""}<small>${frD(p.debut)} → ${frD(p.fin)}${p.base?`<span class="xp"> · base ${esc(p.base)}</span>`:""}</small></span></a>`;
   main.innerHTML = `
   <div class="crumb">${ro?"":`<a href="#">Create my prog</a> › Joueur`}</div>
   <div class="dochead"><div><h1>${esc(j.nom)}</h1><p class="lead">${j.sexe==="G"?"Garçon":"Fille"}${a!=null?" · "+a+" ans":""}${j.naissance?" · né"+(j.sexe==="F"?"e":"")+" le "+frD(j.naissance):""}${mat?" · âge biologique "+mat.bio.toFixed(1).replace(".",",")+" ans":""}</p></div>
-   ${ro?"":`<div class="acts"><a class="ib" href="${G.href("accueil","#/j/"+id)}">Dossier complet</a></div>`}</div>
+   ${ro?"":`<div class="acts"><a class="ib" href="${G.href("accueil","#/j/"+id)}">Dossier complet</a><button class="ib" type="button" data-grun="completer" data-jid="${esc(id)}" data-focus="classement">Compléter le profil</button></div>`}</div>
   <section class="sec"><h2>${ro?"Mes plans":"Plans"}</h2>
    ${own.length?`<div class="list">${own.map(planLi).join("")}</div>`:`<div class="empty">Pas encore de plan${ro?".":" individuel."}</div>`}
-   ${ro?"":`<div class="tools" style="margin-top:10px"><button class="go" id="np" type="button">+ Nouveau plan</button><a class="ib" href="${G.href("saisons")}">Partir d'une saison de référence</a></div>`}</section>
+   ${ro?"":`<div class="tools" style="margin-top:10px"><a class="ib" href="${G.href("saisons")}">Partir d'une saison de référence</a></div>`}</section>
   ${gp.length?`<section class="sec"><h2>Plans de ${ro?"mes":"ses"} groupes</h2><div class="list">${gp.map(planLi).join("")}</div></section>`:""}
   ${ro?`<section class="sec"><h2>Mon profil</h2><div class="card"><p class="msg">Classement ${esc(P.classement)} · ${NIVN[nv]}${P.croissance?" · pic de croissance en cours":""}${P.zones.length?" · zones fragiles : "+P.zones.map(z=>ZONES[z]?.n||z).join(", "):""}</p>${P.prio.length||fa.length?`<p class="msg">Lignes prioritaires : ${[...new Set([...P.prio,...fa])].map(chip).join(" ")}</p>`:""}</div></section>`:`
   <section class="sec"><h2>Profil pour la programmation</h2><div class="card">
-   <p class="msg">Ces infos sont écrites sur la fiche du joueur : elles servent partout dans GRÜN.</p>
+   <p class="msg">Ces informations sont écrites sur la fiche du joueur : elles servent partout dans GRÜN.</p>
    <div class="row"><div class="f"><label for="pcl">Classement FFT</label><select id="pcl">${CLASSEMENTS.map(c=>`<option${c===P.classement?" selected":""}>${c}</option>`).join("")}</select></div>
    <div class="f"><label>Niveau déduit</label><output id="pnv" class="outv">${NIVN[nv]}</output></div></div>
    <label class="chk"><input type="checkbox" id="pcr"${P.croissance?" checked":""}> Pic de croissance en cours${mat?` <span class="sm2">(mesures : ${esc(mat.statut)})</span>`:""}</label>
    <div class="f"><label>Zones fragiles ou douloureuses</label><div class="chips" id="pzo">${Object.entries(ZONES).map(([k,z])=>`<button type="button" class="tg" data-z="${k}" aria-pressed="${P.zones.includes(k)}">${z.n}</button>`).join("")}</div></div>
-   <div class="row"><div class="f"><label for="dpp">Séances de PP par semaine</label><select id="dpp"><option value="">—</option>${[0,1,2,3,4,5,6].map(n=>`<option${dp.pp===n?" selected":""}>${n}</option>`).join("")}</select></div>
-   <div class="f"><label for="dte">Séances de tennis par semaine</label><select id="dte"><option value="">—</option>${[0,1,2,3,4,5,6,7,8].map(n=>`<option${dp.tennis===n?" selected":""}>${n}</option>`).join("")}</select></div></div>
+   <div class="row"><div class="f"><label for="dpp">Séances de préparation physique par semaine</label><select id="dpp"><option value="">—</option>${DEMI(20).map(n=>`<option value="${n}"${dp.pp===n?" selected":""}>${String(n).replace(".",",")}</option>`).join("")}</select></div>
+   <div class="f"><label for="dte">Séances de tennis par semaine</label><select id="dte"><option value="">—</option>${DEMI(30).map(n=>`<option value="${n}"${dp.tennis===n?" selected":""}>${String(n).replace(".",",")}</option>`).join("")}</select></div></div>
    <p class="msg">Disponibilités : un nouveau plan part de ce nombre de séances (tu ajustes ensuite la semaine type).</p>
   </div></section>
   <section class="sec"><h2>Lignes prioritaires</h2><div class="card">
@@ -765,13 +936,15 @@ function showJoueur(id){
    <p class="msg">Ajoute à la main les lignes à travailler en priorité : le plan choisira d'abord les thèmes qui les touchent.</p>
    ${["PP","GE","DE"].map(d=>`<div class="f"><label>${d==="PP"?"Préparation physique":d==="GE"?"Geste":"Déplacements"}</label><div class="chips">${DATA.lignes[d].map((n,i)=>`<button type="button" class="tg sm" data-l="${d}${i+1}" aria-pressed="${P.prio.includes(d+(i+1))}" title="${d}${i+1}">${esc(n)}</button>`).join("")}</div></div>`).join("")}
    <p class="msg" id="lnm"></p>
-  </div></section>`}`;
+  </div></section>
+  ${actbar(`<button class="gs-btn main" id="np" type="button">+ Nouveau plan pour ${esc(prenom(j.nom))}</button>`)}`}`;
   if(ro) return;
-  $("#np").onclick=()=>{ const p=nouveauPlan({jid:id}); go("#e/"+p.id); };
-  $("#pcl").onchange=e=>{ setProf(id,{classement:e.target.value}); $("#pnv").textContent=NIVN[niveauDe(e.target.value, clampAge(a||13))]; };
-  $("#pcr").onchange=e=>{ setProf(id,{croissance:e.target.checked}); };
+  try{ G.courant.set("j", id); }catch(e){}
+  $("#np").onclick=()=>go("#/nouveau/"+id);
+  $("#pcl").onchange=e=>{ setProf(id,{classement:e.target.value}); G.ui.enregistre(); $("#pnv").textContent=NIVN[niveauDe(e.target.value, clampAge(a||13))]; };
+  $("#pcr").onchange=e=>{ setProf(id,{croissance:e.target.checked}); G.ui.enregistre(); };
   $$("#pzo .tg").forEach(b=>b.onclick=()=>{ const z=b.dataset.z, cur=prof(id).zones; const nz=cur.includes(z)?cur.filter(x=>x!==z):[...cur,z]; setProf(id,{zones:nz}); b.setAttribute("aria-pressed",nz.includes(z)); });
-  const setD=()=>{ const v=x=>x===""?undefined:+x; const d={...(getJ(id).dispo||{})}; d.pp=v($("#dpp").value); d.tennis=v($("#dte").value); if(d.pp==null) delete d.pp; if(d.tennis==null) delete d.tennis; setProf(id,{dispo:d}); };
+  const setD=()=>{ const v=x=>x===""?undefined:+x; const d={...(getJ(id).dispo||{})}; d.pp=v($("#dpp").value); d.tennis=v($("#dte").value); if(d.pp==null) delete d.pp; if(d.tennis==null) delete d.tennis; setProf(id,{dispo:d}); G.ui.enregistre(); };
   $("#dpp").onchange=setD; $("#dte").onchange=setD;
   $$("[data-l]").forEach(b=>b.onclick=()=>{ const l=b.dataset.l, cur=prof(id).prio; const np=cur.includes(l)?cur.filter(x=>x!==l):[...cur,l]; setProf(id,{prio:np}); b.setAttribute("aria-pressed",np.includes(l)); $("#lnm").textContent=lineName(l); });
 }
@@ -783,18 +956,20 @@ function showGroupe(gid){
   const M=G.groupes.joueurs(gid), I=groupeInfo(M);
   const plans=ST.plans.filter(p=>p.gid===gid).sort((x,y)=>x.debut<y.debut?1:-1);
   const ages=[...new Set(I.ages)].sort((a,b)=>a-b);
+  aide("groupe"); try{ G.courant.set("g", gid); }catch(e){}
   main.innerHTML = `
   <div class="crumb"><a href="#">Create my prog</a> › Groupe</div>
   <div class="dochead"><div><h1>${esc(g.nom)}</h1><p class="lead">${M.length} joueur${M.length>1?"s":""}${I.age!=null?` · dominante ${sxn(I.sexe)}s ${ageLab(I.age)}`:""}${ages.length>1?` (${ages[0]}-${ages[ages.length-1]} ans)`:""} · classement médian ${esc(I.classement)}</p></div>
    <div class="acts"><a class="ib" href="${G.href("accueil","#/g/"+gid)}">Dossier du groupe</a></div></div>
   <section class="sec"><h2>Plans du groupe</h2>
    ${plans.length?`<div class="list">${plans.map(p=>`<a class="li" href="#p/${p.id}"><span class="code">${frD(p.debut).slice(0,5)}</span><span class="tt">${esc(p.nom||"Plan")}<small>${frD(p.debut)} → ${frD(p.fin)} · ${sxn(p.sexe)} ${ageLab(p.age)}</small></span></a>`).join("")}</div>`:`<div class="empty">Pas encore de plan de groupe. Il apparaîtra dans le dossier de chaque joueur du groupe.</div>`}
-   <div class="tools" style="margin-top:10px"><button class="go" id="np" type="button"${M.length?"":" disabled"}>+ Nouveau plan de groupe</button></div></section>
+</section>
   <section class="sec"><h2>Lignes faibles communes</h2><div class="card">
    <p class="msg">${I.avec?`D'après les derniers bilans des grilles (${I.avec} joueur${I.avec>1?"s":""} sur ${M.length}), lignes au niveau 1 ou 2 chez au moins la moitié : ${I.communes.length?I.communes.map(l=>chip(l)+`<small class="sm2">×${I.lc[l]}</small>`).join(" "):"aucune."}`:"Aucun bilan des grilles chez les joueurs de ce groupe."}</p>
    <p class="msg">Elles sont prises automatiquement dans le plan de groupe ; tu ajoutes d'autres lignes dans les données du plan.</p></div></section>
-  <section class="sec"><h2>Joueurs</h2>${M.length?`<div class="list">${M.map(j=>{const a=age18(j.naissance), P=prof(j.id);return `<a class="li" href="#/joueur/${j.id}"><span class="code">${j.sexe==="G"?"G":"F"} ${a??"?"}</span><span class="tt">${esc(j.nom)}<small>${esc(P.classement)}${P.croissance?" · croissance":""}${P.zones.length?" · "+P.zones.map(z=>ZONES[z]?.n||z).join(", "):""}</small></span></a>`}).join("")}</div>`:`<div class="empty">Aucun joueur dans ce groupe : ajoute-les dans Individualisation.</div>`}</section>`;
-  $("#np").onclick=()=>{ const p=nouveauPlan({gid}); go("#e/"+p.id); };
+  <section class="sec"><h2>Joueurs</h2>${M.length?`<div class="list">${M.map(j=>{const a=age18(j.naissance), P=prof(j.id);return `<a class="li" href="#/joueur/${j.id}"><span class="code">${j.sexe==="G"?"G":"F"} ${a??"?"}</span><span class="tt">${esc(j.nom)}<small>${esc(P.classement)}${P.croissance?" · croissance":""}${P.zones.length?" · "+P.zones.map(z=>ZONES[z]?.n||z).join(", "):""}</small></span></a>`}).join("")}</div>`:`<div class="empty">Aucun joueur dans ce groupe : ajoute-les depuis le <a href="${G.href("accueil","#/g/"+gid)}">dossier du groupe</a>.</div>`}</section>
+  ${actbar(`<button class="gs-btn main" id="np" type="button"${M.length?"":" disabled"}>+ Nouveau plan de groupe</button>`)}`;
+  $("#np").onclick=()=>go("#/nouveau/?gid="+gid);
 }
 
 /* ---------- NOUVEAU PLAN ---------- */
@@ -809,7 +984,37 @@ function nouveauPlan(owner, opt={}){
   const dp = owner.jid ? prof(owner.jid).dispo : {};
   p.sem = (dp && (dp.pp!=null || dp.tennis!=null)) ? presetDispo(dp.pp||0, dp.tennis||0, age) : presetSem(groupeAge(age));
   if(opt.base) appliquerBase(p, opt.base, opt.w);
-  ST.plans.push(p); saveNow(); return p;
+  if(opt.pre) preremplir(p, opt.pre, age);
+  /* BROUILLON : rien n'est ajouté aux plans avant « Créer le plan » (le brouillon est gardé, on peut le reprendre ou le jeter) */
+  p.brouillon=true; ST.brouillons=ST.brouillons.filter(b=>b.id!==p.id); ST.brouillons.push(p); if(ST.brouillons.length>8) ST.brouillons=ST.brouillons.slice(-8);
+  saveNow(); return p;
+}
+/* ---------- PRÉREMPLISSAGE (Assistant, « + », adresse) ----------
+   adresse : #/nouveau/<jid>?debut=AAAA-MM-JJ&fin=AAAA-MM-JJ&semaines=N&objectif=<texte ou codes PP6,DE3>&objdate=AAAA-MM-JJ&spw=<séances PP / semaine>&tennis=<séances tennis / semaine>&base=F12&w=5
+            #/nouveau?qui=<jid ou gid>&…   (qui remplace le segment jid ; gid= reste accepté)
+   relais : G.relais.envoyer({vers:"prog", jid|gid|qui, debut, fin, semaines, objectif, objdate, spw|seances|parSemaine, tennis, base, w}) puis prog.html#/nouveau[/<jid>]
+   Le brouillon s'ouvre sur « Données du plan », déjà rempli ; rien n'est enregistré comme plan avant « Créer le plan ». */
+const OBJL=[[/vitesse|sprint|accél|acceler|vivacit/,"PP6"],[/force|muscu|renfor/,"PP1"],[/puissance|saut|pliom|détente|detente/,"PP4"],[/endurance|aérob|aerob|foncier|cardio/,"PP8"],[/répétition|repetition|rsa|intermit/,"PP9"],[/gainage|tronc/,"PP3"],[/mobilit|souplesse/,"PP12"],[/coordination|motricit/,"PP10"],[/équilibre|equilibre|propriocep/,"PP11"],[/freinage|changement|agilit|appuis/,"PP7"],[/déplacement|deplacement|replacement/,"DE11"],[/service/,"GE1"],[/coup droit/,"GE4"],[/revers/,"GE7"],[/volée|volee/,"GE10"],[/blessure|prévenir|prevenir|prévention|prevention/,"PP11"]];
+function lireObjectif(t){ const x=String(t||"").toLowerCase(), codes=(x.toUpperCase().match(/\b(PP|GE|DE)\d{1,2}\b/g)||[]).filter(c=>{ const m=/^(PP|GE|DE)(\d+)$/.exec(c); return m&&DATA.lignes[m[1]][+m[2]-1]; });
+  for(const [r,l] of OBJL) if(r.test(x)&&!codes.includes(l)) codes.push(l); return [...new Set(codes)]; }
+function preremplir(p, o, age){
+  const okD=d=>/^\d{4}-\d{2}-\d{2}$/.test(String(d||""));
+  if(okD(o.debut)){ p.debut=o.debut; const y=+o.debut.slice(0,4), m=+o.debut.slice(5,7); p.fin=(m>=7?y+1:y)+"-06-30"; if(p.fin<=p.debut) p.fin=iso(pd(p.debut)+(7*12-1)*DAY); p.nom="Programmation du "+frD(p.debut).slice(0,5); }
+  if(+o.semaines>0){ const s0=monday(pd(okD(o.debut)?p.debut:todayIso())); p.debut=iso(s0); if(!okD(o.debut)) p.nom=(+o.semaines===1?"Une semaine":+o.semaines===4?"4 semaines":+o.semaines===12?"3 mois":o.semaines+" semaines")+" dès le "+frD(p.debut).slice(0,5); p.fin=iso(s0+(7*Math.min(60,+o.semaines)-1)*DAY); }
+  if(okD(o.fin)&&o.fin>p.debut) p.fin=o.fin;
+  const spw=o.spw??o.seances??o.parSemaine, ten=o.tennis;
+  if(spw!=null&&spw!==""&&!isNaN(+spw)){ const pp=Math.max(0,Math.min(7,+spw)), te=ten!=null&&ten!==""&&!isNaN(+ten)?Math.max(0,Math.min(14,+ten)):(p.jid?(prof(p.jid).dispo||{}).tennis||0:0); p.sem=presetDispo(pp, te, age); p.spw=pp; }
+  else if(ten!=null&&ten!==""&&!isNaN(+ten)){ const dp=p.jid?prof(p.jid).dispo||{}:{}; p.sem=presetDispo(dp.pp||0, +ten, age); }
+  if(o.objectif){ const txt=String(o.objectif).trim().slice(0,80), L=lireObjectif(txt); p.objectif=txt; if(L.length) p.prio=[...new Set([...(p.prio||[]),...L])];
+    if(okD(o.objdate)&&o.objdate>=p.debut){ p.objs.push({nom:txt, d:o.objdate}); if(o.objdate>p.fin) p.fin=iso(pd(o.objdate)+7*DAY); }
+    p.nom=(p.nom||"Programmation")+" · "+txt.slice(0,40); }
+  else if(okD(o.objdate)&&o.objdate>=p.debut){ p.objs.push({nom:"Tournoi objectif", d:o.objdate}); if(o.objdate>p.fin) p.fin=iso(pd(o.objdate)+7*DAY); }
+}
+function jeterBrouillon(id){
+  const b=getBr(id); if(!b) return; const undo=G.ui.photo([PK]);
+  ST.brouillons=ST.brouillons.filter(x=>x.id!==id); saveNow();
+  G.ui.annuler("Brouillon jeté", ()=>{ undo(); ST=load(PK,{profils:{},plans:[]}); normST(); route(); });
+  if(/^#e\//.test(location.hash)) go(ownerHref(b)); else route();
 }
 function presetSem(t){
   const P13=[[0,"PPI"],[0,"TC"],[1,"PM"],[1,"TI"],[2,"TC"],[3,"PPI"],[3,"TI"],[4,"TC"],[5,"PPI"],[5,"TI"]];
@@ -861,37 +1066,65 @@ function appliquerBase(p, code, wn){
   p.bilans=C.filter(w=>w.bi&&inP(w.d1)).map(w=>iso(w.d1+2*DAY));
 }
 /* #/nouveau/<jid>?base=<code>[&w=<semaine>][&gid=<gid>] */
-function routeNouveau(jid, q){
+function routeNouveau(jid, q, pre){
   if(RO()){ location.replace("#"); return; }
-  const base=q.get("base")||"", w=q.get("w")||"", gid=q.get("gid")||"";
+  pre = pre || {}; for(const k of ["debut","fin","semaines","objectif","objdate","spw","seances","tennis","per","obj","pp"]) if(q.get(k)!=null) pre[k]=q.get(k);
+  /* Assistant (« Créer une programmation en 4 questions ») : per (saison | 12 | 4 | 1 semaines), obj (texte), pp, tennis — dans l'adresse et dans sessionStorage.grun_prog_prefill */
+  try{ const ss=JSON.parse(sessionStorage.getItem("grun_prog_prefill")||"null"); if(ss&&Date.now()-(+ss.t||0)<36e5&&(!jid||!ss.jid||ss.jid===jid)&&(!q.get("gid")||!ss.gid||ss.gid===q.get("gid"))){
+      for(const [k,v] of Object.entries(ss)) if(["per","obj","pp","tennis"].includes(k)&&pre[k]==null&&v!=null&&v!=="") pre[k]=v; sessionStorage.removeItem("grun_prog_prefill"); } }catch(e){}
+  if(pre.obj!=null&&pre.objectif==null) pre.objectif=pre.obj; if(pre.pp!=null&&pre.spw==null) pre.spw=pre.pp;
+  if(pre.per!=null&&pre.per!=="saison"&&+pre.per>0&&pre.semaines==null) pre.semaines=+pre.per;
+  delete pre.obj; delete pre.pp; delete pre.per;
+  let gid=q.get("gid")||pre.gid||"";
+  const qui=q.get("qui")||pre.qui||""; if(qui&&!jid&&!gid){ if(getJ(qui)) jid=qui; else if(G.groupes.get(qui)) gid=qui; }
+  if(!jid&&!gid&&pre.jid) jid=pre.jid;
+  const base=q.get("base")||pre.base||"", w=q.get("w")||pre.w||"";
   if(base && !DATA.refs[base]){ main.innerHTML=`<div class="empty">Saison de référence « ${esc(baseNom(base))} » introuvable.</div>`; return; }
   if(jid && !getJ(jid)){ main.innerHTML=`<div class="empty">Joueur introuvable.</div>`; return; }
   if(gid && !G.groupes.get(gid)){ main.innerHTML=`<div class="empty">Groupe introuvable.</div>`; return; }
-  if(!jid && !gid) return showChoix(base, w);
-  const p=nouveauPlan(jid?{jid}:{gid}, {base, w});
-  location.replace(w ? "#p/"+p.id : "#e/"+p.id);
+  if(!jid && !gid) return showChoix(base, w, q.get("choisir"));
+  /* même joueur, même base, sans préremplissage : on reprend le brouillon en cours au lieu d'en ouvrir un deuxième */
+  const vide=!Object.keys(pre).some(k=>!["jid","gid","qui","base","w"].includes(k)&&pre[k]!=null&&pre[k]!=="");
+  const ex=vide&&ST.brouillons.find(b=>(jid?b.jid===jid:b.gid===gid)&&(b.base||"")===base&&String(b.refW||"")===String(w||""));
+  const p=ex||nouveauPlan(jid?{jid}:{gid}, {base, w, pre});
+  location.replace("#e/"+p.id);
 }
-function showChoix(base, w){
+/* relais vers la programmation (Assistant, « + », accueil) : lu une fois, puis préremplit le brouillon */
+function relaisProg(){
+  let h=null; try{ h=G.relais.lire(); }catch(e){}
+  if(!h || h.vers!=="prog" || h.res || ST.rlT===h.t) return null;
+  ST.rlT=h.t; saveNow(); try{ G.relais.vider(); }catch(e){}
+  const pre={}; for(const k of ["jid","gid","qui","debut","fin","semaines","objectif","objdate","spw","seances","parSemaine","tennis","base","w"]) if(h[k]!=null&&h[k]!=="") pre[k]=h[k];
+  return pre;
+}
+function showChoix(base, w, autre){
+  aide("nouveau");
   const ref=DATA.refs[base], J=joueurs(), Gs=G.groupes.all();
   const qs=(base?"base="+base:"")+(w?"&w="+w:"");
+  const cj=!autre&&getJ(curJ()), cg=!autre&&!cj&&curG()&&G.groupes.get(curG());
   main.innerHTML=`<div class="crumb"><a href="#">Create my prog</a> › Nouveau plan</div>
   <h1>Pour qui ?</h1>
   <p class="lead">${ref?`Le plan démarre de la saison de référence <b>${sxn(ref.sexe)} ${ref.age} ans</b>${w?`, semaine S${esc(w)} (mêmes séances et mêmes thèmes)`:" (âge et sexe de la saison, dates de cette année)"}.`:"Choisis le joueur ou le groupe."}</p>
   ${ref?`<p class="msg">${esc(ref.resume.split(". ")[0])}.</p>`:""}
   <section class="sec"><h2>Joueurs</h2>${J.length?`<div class="list">${J.map(j=>{const a=age18(j.naissance);return `<a class="li" href="#/nouveau/${j.id}?${qs}"><span class="code">${j.sexe==="G"?"Garçon":"Fille"}</span><span class="tt">${esc(j.nom)}<small>${a!=null?a+" ans":""}${ref&&a!=null&&(a!==ref.age||j.sexe!==ref.sexe)?` · la saison reste celle des ${ref.age} ans`:""}</small></span></a>`}).join("")}</div>`:`<div class="empty">Aucun joueur : crée-le ci-dessous.</div>`}
-   <div class="tools" style="margin-top:10px"><button class="go" id="nj" type="button">+ Nouveau joueur</button></div>${formJoueur()}</section>
-  ${Gs.length?`<section class="sec"><h2>Groupes</h2><div class="list">${Gs.map(g=>`<a class="li" href="#/nouveau/?${qs}&gid=${g.id}"><span class="code">${g.jids.length} j.</span><span class="tt">${esc(g.nom)}<small>Plan de groupe</small></span></a>`).join("")}</div></section>`:""}`;
-  bindFormJoueur(j=>location.replace(`#/nouveau/${j.id}?${qs}`));
+   <div class="tools" style="margin-top:10px"><button class="ib" id="nj" type="button">+ Nouveau joueur</button></div></section>
+  <section class="sec"><h2>Groupes</h2>${Gs.length?`<div class="list">${Gs.map(g=>`<a class="li" href="#/nouveau/?${qs}&gid=${g.id}"><span class="code">${g.jids.length}&nbsp;joueur${g.jids.length>1?"s":""}</span><span class="tt">${esc(g.nom)}<small>Plan de groupe</small></span></a>`).join("")}</div>`:""}
+   <div class="tools" style="margin-top:10px"><button class="ib" id="ng" type="button">+ Nouveau groupe</button></div></section>
+  ${cj||cg?actbar(`<a class="gs-btn main" href="${cj?`#/nouveau/${cj.id}?${qs}`:`#/nouveau/?${qs}&gid=${cg.id}`}">Pour ${esc(cj?prenom(cj.nom):cg.nom)} (en cours)</a>`):""}`;
+  $("#nj").onclick=()=>nouveauJoueurPuis(j=>location.replace(`#/nouveau/${j.id}?${qs}`));
+  $("#ng").onclick=()=>G.ui.nouveauGroupe().then(g=>{ if(g) location.replace(`#/nouveau/?${qs}&gid=${g.id}`); });
 }
 
 /* ---------- ÉDITION DES DONNÉES DU PLAN ---------- */
 function showEdit(pid){
-  const p=getPlan(pid); if(!p){ main.innerHTML=`<div class="empty">Plan introuvable.</div>`; return; }
+  const br=getBr(pid), p=getPlan(pid)||br; if(!p){ main.innerHTML=`<div class="empty">Plan introuvable.</div>`; return; }
   if(RO()){ location.replace("#p/"+pid); return; }
+  aide(br?"brouillon":"e");
   const X=ctxPlan(p), j=X.j, dp=X.P.dispo||{};
   main.innerHTML = `
   <div class="crumb"><a href="#">Create my prog</a> › <a href="${ownerHref(p)}">${esc(j.nom)}</a> › Données du plan</div>
-  <h1>Données du plan</h1><p class="lead">Remplis les 5 étapes puis touche « Créer le plan ». Tu pourras revenir ici à tout moment : le plan se recalcule et garde tes thèmes retouchés.</p>
+  <h1>${br?"Nouveau plan":"Données du plan"}</h1><p class="lead">${br?"Tout est déjà rempli d'après "+(X.groupe?"le groupe":"sa fiche")+" : vérifie les 5 étapes puis touche « Créer le plan » en bas. Le brouillon est gardé tant que tu ne l'as pas créé.":"Chaque changement est enregistré tout de suite : le plan se recalcule et garde tes thèmes retouchés."}</p>
+  ${p.objectif?`<p class="msg basebd">Objectif : <b>${esc(p.objectif)}</b>${(p.prio||[]).length?" · lignes ajoutées : "+p.prio.map(chip).join(" "):""}</p>`:""}
   ${p.base?`<p class="msg basebd">Démarré de la saison de référence <a href="${G.href("saisons","#/s/"+p.base)}">${esc(baseNom(p.base))}</a>${p.refW?" · semaine S"+p.refW:""}.</p>`:""}
   <section class="sec step"><h2><b>1</b> Période${X.groupe?" et groupe":""}</h2><div class="card">
     <div class="row"><div class="f grow"><label for="pn">Nom du plan</label><input id="pn" value="${esc(p.nom)}"></div></div>
@@ -906,7 +1139,7 @@ function showEdit(pid){
   </div></section>
   <section class="sec step"><h2><b>2</b> Semaine type réelle</h2><div class="card">
     <p class="msg">Touche « + » sous un jour pour ajouter une séance ; touche une séance pour la retirer.</p>
-    <div class="chips">${dp.pp!=null||dp.tennis!=null?`<button type="button" class="tg" data-pre="dispo">Selon ses disponibilités (${dp.pp||0} PP, ${dp.tennis||0} tennis)</button>`:""}<button type="button" class="tg" data-pre="13">Semaine type 13-18</button><button type="button" class="tg" data-pre="11">Semaine type 11-12</button><button type="button" class="tg" data-pre="8">Semaine 8-10</button><button type="button" class="tg" data-pre="4">Semaine 4-7 (ludique)</button><button type="button" class="tg" data-pre="0">Vider</button></div>
+    <div class="chips">${dp.pp!=null||dp.tennis!=null?`<button type="button" class="tg" data-pre="dispo">Selon ses disponibilités (${dp.pp||0} préparation physique, ${dp.tennis||0} tennis)</button>`:""}<button type="button" class="tg" data-pre="13">Semaine type 13-18</button><button type="button" class="tg" data-pre="11">Semaine type 11-12</button><button type="button" class="tg" data-pre="8">Semaine 8-10</button><button type="button" class="tg" data-pre="4">Semaine 4-7 (ludique)</button><button type="button" class="tg" data-pre="0">Vider</button></div>
     <div class="wkg" id="wkg"></div><p class="msg" id="wsum"></p>
   </div></section>
   <section class="sec step"><h2><b>3</b> Compétitions</h2><div class="card">
@@ -914,7 +1147,7 @@ function showEdit(pid){
     <div id="lcomp"></div><div class="tools"><button type="button" class="ib" id="acomp">+ Période de tournois</button><button type="button" class="ib" id="a3p">+ Les 3 périodes types</button></div>
     <div id="lobj" style="margin-top:12px"></div><div class="tools"><button type="button" class="ib" id="aobj">+ Tournoi objectif</button></div>
   </div></section>
-  <section class="sec step"><h2><b>4</b> Coupures perso</h2><div class="card">
+  <section class="sec step"><h2><b>4</b> Coupures personnelles</h2><div class="card">
     <p class="msg">Examens, vacances en famille, blessure… À partir de 4 jours dans une semaine, la semaine devient « repos ».</p>
     <div id="lcoup"></div><div class="tools"><button type="button" class="ib" id="acoup">+ Coupure</button></div>
   </div></section>
@@ -922,8 +1155,9 @@ function showEdit(pid){
     <p class="msg">Les dates où tu fais passer les tests. La semaine devient « bilan ».</p>
     <div id="lbil"></div><div class="tools"><button type="button" class="ib" id="abil">+ Date de bilan</button></div>
   </div></section>
-  <div class="tools bigact"><button class="go big" id="gen" type="button">Créer le plan</button><button class="ib" id="del" type="button">Supprimer ce plan</button></div>`;
-  const upd=()=>{ p.maj=todayIso(); save(); info(); };
+  <details class="grun-plus noprint"><summary>Plus d'options</summary><div class="grun-plusb"><div class="tools"><button class="ib" id="del" type="button">${br?"Jeter ce brouillon":"Supprimer ce plan"}</button></div></div></details>
+  ${actbar(`<button class="gs-btn main" id="gen" type="button">${br?"Créer le plan":"Voir le plan"}</button>`)}`;
+  const upd=()=>{ p.maj=todayIso(); save(); info(); if(!br) G.ui.enregistre(); };
   const info=()=>{ const a=p.debut&&p.fin?Math.round((monday(pd(p.fin))-monday(pd(p.debut)))/(7*DAY))+1:0;
     const ag=p.age||age18(j?.naissance, p.debut||todayIso()), sx=p.sexe||j.sexe;
     $("#pinfo").textContent = p.debut>p.fin ? "La fin doit être après le début." : `${a} semaine${a>1?"s":""} → ${a>12?"macrocycles, mésocycles, microcycles et séances":a>=3?"mésocycles, microcycles et séances":"microcycles et séances"}${ag!=null?" · référence "+sxn(sx)+" "+clampAge(ag)+" ans":""}.`; };
@@ -950,7 +1184,7 @@ function showEdit(pid){
     $$("#wkg .menu [data-k]").forEach(b=>b.onclick=()=>{ const ji=+b.closest(".wkd").querySelector("[data-add]").dataset.add; p.sem.push({j:ji,k:b.dataset.k}); upd(); drawW(); });
   };
   drawW();
-  $$("[data-pre]").forEach(b=>b.onclick=()=>{ const v=b.dataset.pre; p.sem = v==="dispo" ? presetDispo(dp.pp||0, dp.tennis||0, p.age||age18(j.naissance, p.debut)) : presetSem(v); upd(); drawW(); });
+  $$("[data-pre]").forEach(b=>b.onclick=()=>{ const v=b.dataset.pre, avant=p.sem.map(x=>({...x})); if(v==="0"&&avant.length) G.ui.annuler("Semaine type vidée", ()=>{ p.sem=avant; upd(); drawW(); }); p.sem = v==="dispo" ? presetDispo(dp.pp||0, dp.tennis||0, p.age||age18(j.naissance, p.debut)) : presetSem(v); upd(); drawW(); });
   // listes de dates
   const rangeList=(sel, arr, label)=>{
     const el=$(sel);
@@ -975,8 +1209,12 @@ function showEdit(pid){
   $("#aobj").onclick=()=>{ p.objs.push({nom:"", d:firstDay()}); upd(); drawAll(); };
   $("#acoup").onclick=()=>{ p.coups.push({nom:"", d1:firstDay(), d2:firstDay()}); upd(); drawAll(); };
   $("#abil").onclick=()=>{ p.bilans.push(firstDay()); upd(); drawAll(); };
-  $("#gen").onclick=()=>{ if(!p.debut||!p.fin||p.debut>p.fin){ $("#pinfo").textContent="Vérifie les dates de début et de fin."; $("#pd1").scrollIntoView({block:"center"}); return; } saveNow(); go("#p/"+p.id); };
-  $("#del").onclick=()=>{ const b=$("#del"); if(b.dataset.ok){ ST.plans=ST.plans.filter(x=>x.id!==p.id); saveNow(); go(ownerHref(p)); } else { b.dataset.ok=1; b.textContent="Toucher encore pour confirmer"; } };
+  $("#gen").onclick=()=>{ if(!p.debut||!p.fin||p.debut>p.fin){ $("#pinfo").textContent="Vérifie les dates de début et de fin."; $("#pd1").scrollIntoView({block:"center"}); return; }
+    if(br){ const undo=G.ui.photo([PK]); delete p.brouillon; ST.brouillons=ST.brouillons.filter(x=>x.id!==p.id); p.maj=todayIso(); ST.plans.push(p); saveNow();
+      go("#p/"+p.id); G.ui.annuler("Plan créé", ()=>{ undo(); ST=load(PK,{profils:{},plans:[]}); normST(); location.replace("#e/"+p.id); route(); }); return; }
+    saveNow(); go("#p/"+p.id); };
+  $("#del").onclick=()=>{ if(br) return jeterBrouillon(p.id); const undo=G.ui.photo([PK]); ST.plans=ST.plans.filter(x=>x.id!==p.id); saveNow(); go(ownerHref(p));
+    G.ui.annuler("Plan supprimé", ()=>{ undo(); ST=load(PK,{profils:{},plans:[]}); normST(); location.hash="#p/"+p.id; }); };
   info();
 }
 
@@ -991,8 +1229,9 @@ function builtMap(p){
   return m;
 }
 function showPlan(pid, hint){
-  const p=getPlan(pid); if(!p){ main.innerHTML=`<div class="empty">Plan introuvable.</div>`; return; }
+  const p=getPlan(pid); if(!p){ if(getBr(pid)){ location.replace("#e/"+pid); return; } main.innerHTML=`<div class="empty">Plan introuvable.</div>`; return; }
   if(!peutVoir(p)){ location.replace("#"); return; }
+  aide(VUE()==="cal"?"calendrier":"p");
   const X=ctxPlan(p), j=X.j, P=X.P, ro=RO();
   const R=generer(p, j, P, DATA); CUR={p,R,j,P,X,ci:semaineEnCours(R)};
   try{ const C=load(CK,{}); C[p.id]={nom:p.nom,jid:p.jid,gid:p.gid||null,jids:X.M.map(m=>m.id),debut:p.debut,fin:p.fin,age:R.age,sexe:R.sexe,W:R.W.map(w=>({i:w.i,d1:w.d1,lab:fd(w.d1)+" → "+fd(w.d7),ph:w.ph,mi:w.mi,c:w.c,ses:w.ses.map(s=>({key:s.key,j:s.j,k:s.k,t:s.t,l:s.l}))}))}; G.save(CK,C); }catch(e){}
@@ -1003,7 +1242,7 @@ function showPlan(pid, hint){
   main.innerHTML = `
   <div class="crumb">${ro?`<a href="#/joueur/${MOI()}">Mes plans</a> › Plan`:`<a href="#">Create my prog</a> › <a href="${ownerHref(p)}">${esc(j.nom)}</a> › Plan`}</div>
   <div class="dochead"><div><h1>${esc(p.nom||"Plan")}</h1><p class="lead">${esc(j.nom)}${X.groupe?` (groupe, ${X.M.length} joueur${X.M.length>1?"s":""})`:""} · ${sxn(R.sexe)} ${ageLab(R.age)} · ${esc(P.classement)} (${NIVN[R.niv].toLowerCase()}) · ${fdy(pd(p.debut))} → ${fdy(pd(p.fin))}${p.base?` · <a href="${G.href("saisons","#/s/"+p.base)}">saison de référence</a>`:""}</p></div>
-   <div class="acts noprint">${ro?"":`<a class="ib" href="#e/${p.id}">Modifier</a>`}</div></div>
+   <div class="acts noprint">${ro?"":`<a class="ib" href="#e/${p.id}">Modifier</a>${pdfBtn("prt","Plan PDF")}${X.groupe?"":`<button class="ib" id="snd" type="button">📲 Envoyer au joueur</button>`}`}</div></div>
   <div class="doc">
   <div class="ess"><h2>L'essentiel</h2>
    <p>${R.N} semaine${R.N>1?"s":""} · ${nbS} séances${nbB?` (${nbB} construite${nbB>1?"s":""})`:""} · ${lvl==="macro"?R.macros.length+" macrocycles, "+R.mesos.length+" mésocycles":lvl==="meso"?R.mesos.length+" mésocycles":"microcycles et séances"} · charge maximale ${R.cap}/5${R.crois?" (croissance)":""}${comps?"":" · aucune compétition rentrée"}.</p>
@@ -1015,11 +1254,12 @@ function showPlan(pid, hint){
   </div>
   ${lvl!=="micro"?`<details class="grun-plus"><summary>Les cycles du plan${lvl==="macro"?" (macrocycles et mésocycles)":" (mésocycles)"}</summary><div class="grun-plusb">`:""}
   ${lvl==="macro"?`<h2>Macrocycles</h2><div class="tw"><table><tr><th>Macro</th><th>Semaines</th><th>Objectif</th></tr>${R.macros.map(m=>`<tr><td><b>${m.id}</b><br>${esc(m.nom)}</td><td>${fd(R.W[m.a].d1)} → ${fd(R.W[m.b].d7)}<br><small>${m.b-m.a+1} sem.</small></td><td>${esc(m.obj)}</td></tr>`).join("")}</table></div>`:""}
-  ${lvl!=="micro"?`<h2>Mésocycles</h2><div class="tw"><table class="mt"><tr><th>Méso</th><th>Semaines</th><th>Objectifs</th></tr>${R.mesos.map(m=>`<tr><td style="border-left:4px solid ${PHC[m.t]}"><b>${esc(m.nom)}</b></td><td>${fd(R.W[m.a].d1)} → ${fd(R.W[m.b].d7)}<br><small>${m.b-m.a+1} sem.</small></td><td>${m.t==="T"?"Repos, activités libres.":m.ref?[["PP","Physique"],["GE","Geste"],["DE","Dépl."],["TEN","Tennis"],["PM","Mental"]].filter(([k])=>m.ref[k]).map(([k,n])=>`<div><b>${n} :</b> ${esc(m.ref[k])}</div>`).join(""):""}</td></tr>`).join("")}</table></div></div></details>`:""}
-  <h2 class="wh2">Semaines${CUR.ci>=0?` <button type="button" class="ib sm noprint" id="cwk">Aller à cette semaine</button>`:""}</h2>
-  ${lvl==="micro" ? R.W.map(weekHtml).join("") : R.mesos.map((m,q)=>`<details${q===openM(R)?" open":""} data-m="${m.a}"><summary>${esc(m.nom)} <small class="sm2">${fd(R.W[m.a].d1)} → ${fd(R.W[m.b].d7)}</small></summary>${R.W.slice(m.a,m.b+1).map(weekHtml).join("")}</details>`).join("")}
+  ${lvl!=="micro"?`<h2>Mésocycles</h2><div class="tw"><table class="mt"><tr><th>Mésocycle</th><th>Semaines</th><th>Objectifs</th></tr>${R.mesos.map(m=>`<tr><td style="border-left:4px solid ${PHC[m.t]}"><b>${esc(m.nom)}</b></td><td>${fd(R.W[m.a].d1)} → ${fd(R.W[m.b].d7)}<br><small>${m.b-m.a+1} sem.</small></td><td>${m.t==="T"?"Repos, activités libres.":m.ref?[["PP","Physique"],["GE","Geste"],["DE","Dépl."],["TEN","Tennis"],["PM","Mental"]].filter(([k])=>m.ref[k]).map(([k,n])=>`<div><b>${n} :</b> ${esc(m.ref[k])}</div>`).join(""):""}</td></tr>`).join("")}</table></div></div></details>`:""}
+  <h2 class="wh2">Semaines${CUR.ci>=0&&VUE()!=="cal"?` <button type="button" class="ib sm noprint" id="cwk">Aller à cette semaine</button>`:""}</h2>
+  <div class="chips vtog noprint" role="tablist" aria-label="Affichage des semaines"><button type="button" class="tg" data-vue="liste" aria-pressed="${VUE()!=="cal"}">Liste</button><button type="button" class="tg" data-vue="cal" aria-pressed="${VUE()==="cal"}">Calendrier</button></div>
+  ${VUE()==="cal" ? `<div id="cal"></div>` : lvl==="micro" ? R.W.map(weekHtml).join("") : R.mesos.map((m,q)=>`<details${q===openM(R)?" open":""} data-m="${m.a}"><summary>${esc(m.nom)} <small class="sm2">${fd(R.W[m.a].d1)} → ${fd(R.W[m.b].d7)}</small></summary>${R.W.slice(m.a,m.b+1).map(weekHtml).join("")}</details>`).join("")}
   </div>
-  ${ro?"":`<details class="grun-plus noprint"><summary>Plus d'options : imprimer, envoyer</summary><div class="grun-plusb"><div class="tools">${pdfBtn("prt","Plan PDF")}${X.groupe?"":`<button class="ib" id="snd" type="button">📲 Envoyer au joueur</button>`}</div></div></details>`}`;
+  ${ro?"":(()=>{ const nx=prochaine(R); return nx?actbar(`<button class="gs-btn main" id="nxs" type="button">Créer la prochaine séance · ${JC[nx.s.j]} ${fd(nx.w.d1+nx.s.j*DAY)}</button>`):""; })()}`;
   $("#prt")&&($("#prt").onclick=()=>pdfPlan());
   $("#snd") && ($("#snd").onclick=()=>{ const o=JSON.parse(JSON.stringify(p)); delete o.id; delete o.built; Partage.envoyer({v:1,p:o,j:{nom:j.nom,sexe:j.sexe,naissance:j.naissance||""},pr:{classement:P.classement,croissance:P.croissance,zones:P.zones,prio:P.prio}},"Plan : "+(p.nom||"plan"),`Plan « ${p.nom||""} » de ${j.nom} : ouvre ce lien.`,openSheet,esc); });
   $$(".theme").forEach(b=>b.onclick=()=>seanceMenu(+b.dataset.w, +b.dataset.s));
@@ -1029,8 +1269,75 @@ function showPlan(pid, hint){
   $$("[data-rgi]").forEach(b=>b.onclick=()=>{ p.reag ||= {}; p.reag[R.W[+b.dataset.rgi].iso]={k:"ign"}; p.maj=todayIso(); saveNow(); showPlan(p.id,"w"+b.dataset.rgi); });
   $$("[data-rgu]").forEach(b=>b.onclick=()=>annulerReag(+b.dataset.rgu));
   $("#cwk")&&($("#cwk").onclick=()=>goWeek(CUR.ci));
+  $$("[data-vue]").forEach(b=>b.onclick=()=>{ ST.vue=b.dataset.vue; saveNow(); showPlan(p.id, hint); });
+  $("#nxs")&&($("#nxs").onclick=()=>{ const nx=prochaine(R); if(nx) envoyerSeance(nx.w.i, nx.si); });
+  if(VUE()==="cal"){ const wi=hint&&/^w\d+$/.test(hint)?+hint.slice(1):(CUR.ci>=0?CUR.ci:0); drawCal(wi); if(hint) requestAnimationFrame(()=>$("#cal")?.scrollIntoView({block:"start"})); return; }
   if(hint && /^w\d+$/.test(hint)) goWeek(+hint.slice(1));
   else if(CUR.ci>=0) requestAnimationFrame(()=>goWeek(CUR.ci, true));   /* le plan s'ouvre sur la semaine en cours */
+}
+/* ---------- VUE CALENDRIER : la semaine jour par jour ; toucher une séance → créer, réécrire ou DÉPLACER (avec « Annuler ») ---------- */
+const VUE = () => ST.vue==="cal" ? "cal" : "liste";
+function prochaine(R){ const t=pd(todayIso()); for(const w of R.W){ if(w.d7<t) continue; for(let si=0; si<w.ses.length; si++){ const s=w.ses[si]; if(w.d1+s.j*DAY>=t && !s.tour && !BUILT.has(s.key)) return {w,s,si}; } } return null; }
+function drawCal(wi){
+  const {R}=CUR, el=$("#cal"); if(!el) return; wi=Math.max(0,Math.min(R.W.length-1,wi)); CUR.cw=wi; const w=R.W[wi], now=wi===CUR.ci, t=pd(todayIso()), ro=RO();
+  const fl=[w.obj.length?`<span class="fl t">Objectif : ${esc(w.obj.join(", "))}</span>`:"", w.comp.length&&!w.obj.length?`<span class="fl t">${esc([...new Set(w.comp)].join(", "))}</span>`:"", w.bil?`<span class="fl b">Bilan</span>`:"", w.off?`<span class="fl v">Coupure</span>`:""].join("");
+  el.innerHTML=`<div class="calh"><button type="button" class="ib sm" data-cw="${wi-1}" aria-label="Semaine précédente"${wi?"":" disabled"}>‹</button><b>S${w.i+1} · ${fd(w.d1)} → ${fd(w.d7)}</b> <span class="mic" style="--c:${PHC[w.ph]}">${esc(w.mi)}</span><button type="button" class="ib sm" data-cw="${wi+1}" aria-label="Semaine suivante"${wi<R.W.length-1?"":" disabled"}>›</button>${!now&&CUR.ci>=0?`<button type="button" class="lnk" data-cw="${CUR.ci}">Cette semaine</button>`:now?`<span class="bdg nowb">Cette semaine</span>`:""}</div>
+   ${fl?`<p class="wf">${fl}</p>`:""}${now?reagHtml(w):""}
+   ${w.off?`<p class="off">Semaine sans entraînement : repos et activités libres.</p>`:`<div class="calg">${JOURS.map((d,ji)=>{ const dt=w.d1+ji*DAY, S=w.ses.map((s,si)=>({s,si})).filter(x=>x.s.j===ji);
+     return `<div class="cald${dt===t?" today":""}"><div class="caldh"><b>${JC[ji]}</b> <small>${fd(dt)}</small></div>${S.map(({s,si})=>`<button type="button" class="calse ${KINDS[s.k].c}${BUILT.has(s.key)?" ok":""}" data-cs="${si}"${ro?" disabled":""}><b>${esc(KINDS[s.k].n.replace(" (biomécanique)",""))}${BUILT.has(s.key)?" ✓":""}</b><span>${esc(nomC(s.t))}</span></button>`).join("")||`<span class="calv">—</span>`}</div>`; }).join("")}</div>
+   ${ro?"":`<p class="msg noprint">Touche une séance pour la créer, réécrire son thème ou la déplacer à un autre jour ou dans une autre semaine.</p>`}`}`;
+  $$("[data-cw]",el).forEach(b=>b.onclick=()=>drawCal(+b.dataset.cw));
+  $$("[data-cs]",el).forEach(b=>b.onclick=()=>seanceMenu(wi, +b.dataset.cs));
+  $$("[data-rga]",el).forEach(b=>b.onclick=()=>appliquerReag(+b.dataset.rga));
+  $$("[data-rgi]",el).forEach(b=>b.onclick=()=>{ const {p}=CUR; p.reag ||= {}; p.reag[R.W[+b.dataset.rgi].iso]={k:"ign"}; p.maj=todayIso(); saveNow(); showPlan(p.id,"w"+b.dataset.rgi); });
+  $$("[data-rgu]",el).forEach(b=>b.onclick=()=>annulerReag(+b.dataset.rgu));
+}
+/* clés des séances d'une semaine (même calcul que le moteur) : objet de la semaine type → clé */
+function clesSemaine(list, w){ const L=list.filter(s=>!w.offDays.includes(s.j)).slice().sort((x,y)=>x.j-y.j || KORD.indexOf(x.k)-KORD.indexOf(y.k)); const cnt={}, m=new Map();
+  for(const s of L) m.set(s, w.iso+"|"+s.j+"|"+s.k+"|"+(cnt[s.j+s.k]=(cnt[s.j+s.k]||0)+1)); return m; }
+function deplacer(wi, si, jNew){
+  const {p,R}=CUR, w=R.W[wi], s=w.ses[si]; if(!s || s.j===jNew) return;
+  const undo=G.ui.photo([PK, G.K.seances]);
+  p.over ||= {}; p.edits ||= {}; p.built ||= {};
+  const base=(Array.isArray(p.over[w.iso])?p.over[w.iso]:(p.sem||[])).map(x=>({...x}));
+  const k0=clesSemaine(base, w), it=[...k0].find(([,k])=>k===s.key)?.[0]; if(!it) return;
+  it.j=jNew; const k1=clesSemaine(base, w), map={};
+  for(const [o,k] of k0){ const n=k1.get(o); if(n && n!==k) map[k]=n; }
+  const E={...p.edits}, B={...p.built};
+  for(const [a] of Object.entries(map)){ delete p.edits[a]; delete p.built[a]; }
+  for(const [a,b] of Object.entries(map)){ if(E[a]!==undefined) p.edits[b]=E[a]; if(B[a]!==undefined) p.built[b]=B[a]; }
+  p.over[w.iso]=base; p.maj=todayIso();
+  /* la séance déjà construite suit (date et clé) */
+  try{ const SS=G.load(G.K.seances,null); if(SS&&Array.isArray(SS.seances)){ let ch=false; for(const x of SS.seances){ const n=x.src&&x.src.plan===p.id&&map[x.src.key]; if(n){ x.src.key=n; x.date=iso(w.d1+(+n.split("|")[1])*DAY); ch=true; } } if(ch) G.save(G.K.seances, SS); } }catch(e){ console.warn(e); }
+  saveNow(); closeSheet(); showPlan(p.id, "w"+wi);
+  G.ui.annuler(`Séance déplacée au ${JOURS[jNew].toLowerCase()}`, ()=>{ undo(); ST=load(PK,{profils:{},plans:[]}); normST(); showPlan(p.id, "w"+wi); });
+}
+/* déplacer une séance vers une AUTRE semaine (jour au choix) : retirée de sa semaine, ajoutée à la semaine visée ; thème, lignes et séance construite suivent ; « Annuler » */
+function deplacerSemaine(wi, si, wj, jNew){
+  const {p,R}=CUR, w=R.W[wi], w2=R.W[wj], s=w.ses[si]; if(!s || !w2 || wj===wi) return deplacer(wi, si, jNew);
+  if(w2.off || w2.offDays.includes(jNew)){ G.ui.toast("Ce jour est sans entraînement dans cette semaine"); return; }
+  const undo=G.ui.photo([PK, G.K.seances]);
+  p.over ||= {}; p.edits ||= {}; p.built ||= {};
+  const baseDe=x=>(Array.isArray(p.over[x.iso])?p.over[x.iso]:(p.sem||[])).map(y=>({...y}));
+  /* semaine de départ */
+  const b1=baseDe(w), k1a=clesSemaine(b1, w), it=[...k1a].find(([,k])=>k===s.key)?.[0]; if(!it) return;
+  const b1n=b1.filter(x=>x!==it), k1b=clesSemaine(b1n, w), map1={};
+  for(const [o,k] of k1a){ if(o===it) continue; const n=k1b.get(o); if(n && n!==k) map1[k]=n; }
+  /* semaine d'arrivée */
+  const b2=baseDe(w2), k2a=clesSemaine(b2, w2), nv={...it, j:jNew}; const b2n=b2.concat([nv]), k2b=clesSemaine(b2n, w2), map2={};
+  for(const [o,k] of k2a){ const n=k2b.get(o); if(n && n!==k) map2[k]=n; }
+  const kNew=k2b.get(nv);
+  const E={...p.edits}, B={...p.built}, map={...map1, ...map2};
+  for(const a of Object.keys(map)){ delete p.edits[a]; delete p.built[a]; }
+  for(const [a,b] of Object.entries(map)){ if(E[a]!==undefined) p.edits[b]=E[a]; if(B[a]!==undefined) p.built[b]=B[a]; }
+  delete p.edits[s.key]; delete p.built[s.key];
+  p.edits[kNew]=E[s.key]!==undefined?E[s.key]:{t:s.t, l:s.l||[]};
+  if(B[s.key]!==undefined) p.built[kNew]=B[s.key];
+  map[s.key]=kNew;
+  p.over[w.iso]=b1n; p.over[w2.iso]=b2n; p.maj=todayIso();
+  try{ const SS=G.load(G.K.seances,null); if(SS&&Array.isArray(SS.seances)){ let ch=false; for(const x of SS.seances){ const n=x.src&&x.src.plan===p.id&&map[x.src.key]; if(n){ const wx=R.W.find(y=>n.startsWith(y.iso+"|")); x.src.key=n; if(wx) x.date=iso(wx.d1+(+n.split("|")[1])*DAY); ch=true; } } if(ch) G.save(G.K.seances, SS); } }catch(e){ console.warn(e); }
+  saveNow(); closeSheet(); showPlan(p.id, "w"+wj);
+  G.ui.annuler(`Séance déplacée en semaine ${w2.i+1}, ${JOURS[jNew].toLowerCase()} ${fd(w2.d1+jNew*DAY)}`, ()=>{ undo(); ST=load(PK,{profils:{},plans:[]}); normST(); showPlan(p.id, "w"+wi); });
 }
 function openM(R){ const t=Date.UTC(new Date().getFullYear(),new Date().getMonth(),new Date().getDate()); const q=R.mesos.findIndex(m=>t>=R.W[m.a].d1&&t<=R.W[m.b].d7); return q<0?0:q; }
 async function pdfPlan(){
@@ -1058,7 +1365,7 @@ async function pdfPlan(){
   if(R.decoupe==="macro"){ d.para("Macrocycles",{size:13,bold:true,after:3}); R.macros.forEach(m=>d.para(`${m.id} · ${m.nom} · ${fd(R.W[m.a].d1)} -> ${fd(R.W[m.b].d7)} (${m.b-m.a+1} sem.) : ${m.obj}`,{size:9.5})); d.y+=6; }
   if(R.decoupe!=="micro"){ d.para("Mésocycles",{size:13,bold:true,after:3});
     R.mesos.forEach(m=>{ d.need(30); d.rect(M,d.y+1,4,10,{fill:PHC[m.t]}); d.para(`${m.nom} · ${fd(R.W[m.a].d1)} -> ${fd(R.W[m.b].d7)} (${m.b-m.a+1} sem.)`,{size:10,bold:true,x:M+8,after:0});
-      if(m.t!=="T"&&m.ref) [["PP","PP"],["GE","Geste"],["DE","Dépl."],["TEN","Tennis"],["PM","Mental"]].filter(([k])=>m.ref[k]).forEach(([k,n])=>d.para(n+" : "+m.ref[k],{size:8.5,color:"#333333",x:M+8,after:0}));
+      if(m.t!=="T"&&m.ref) [["PP","Préparation physique"],["GE","Geste"],["DE","Déplacement"],["TEN","Tennis"],["PM","Préparation mentale"]].filter(([k])=>m.ref[k]).forEach(([k,n])=>d.para(n+" : "+m.ref[k],{size:8.5,color:"#333333",x:M+8,after:0}));
       d.y+=5; }); }
   d.addPage(); d.para("Semaines",{size:15,bold:true,after:6});
   for(const w of R.W){
@@ -1069,7 +1376,7 @@ async function pdfPlan(){
     if(fl) d.text(M+W-6-MiniPDF.width(fl,8.5,true),d.y+4,fl,{size:8.5,bold:true,color:"#B91C1C"});
     d.y+=20;
     if(w.off){ d.para("Semaine sans entraînement : repos et activités libres.",{size:9,color:"#5D6675",x:M+8}); }
-    for(const s of w.ses){ const lab=JC[s.j]+" · "+KINDS[s.k].n.replace("Tennis individuel (biomécanique)","Tennis indiv"); const lw=118;
+    for(const s of w.ses){ const lab=JC[s.j]+" · "+KINDS[s.k].n.replace("Tennis individuel (biomécanique)","Tennis individuel"); const lw=118;
       const lines=d.wrap(s.t+(s.l?.length?"  ["+s.l.join(" ")+"]":""),9,W-lw-8);
       d.need(lines.length*11.5+2); d.text(M+8,d.y,lab,{size:8.5,bold:true,color:KC[KINDS[s.k].c]});
       lines.forEach((l,i)=>d.text(M+lw,d.y+i*11.5,l,{size:9})); d.y+=lines.length*11.5+2.5; }
@@ -1091,10 +1398,10 @@ function weekHtml(w){
   return `<h4 id="w${w.i}"${now?' class="wnow"':""}>S${w.i+1} · ${fd(w.d1)} → ${fd(w.d7)} <span class="mic" style="--c:${PHC[w.ph]}">${w.mi}</span>${ch}${now?` <span class="bdg nowb">Cette semaine</span>`:""}</h4>
   ${fl?`<p class="wf">${fl}</p>`:""}${now?reagHtml(w):""}
   ${w.off?`<p class="off">Semaine sans entraînement : repos et activités libres.</p>`:
-    w.ses.length?`<div class="tw"><table class="wk">${w.ses.map((s,si)=>`<tr class="${KINDS[s.k].c}"><td class="sl">${JC[s.j]}<br><small>${KINDS[s.k].n.replace("Tennis individuel (biomécanique)","Tennis indiv · biomécanique")}</small></td><td>${theme(s,si)}${s.l?.length?`<div>${s.l.map(chip).join("")}</div>`:""}${BUILT.has(s.key)?`<div><a class="bdg noprint" href="${seanceHref(BUILT.get(s.key))}">✓ séance construite</a></div>`:""}</td></tr>`).join("")}</table></div>`:`<p class="off">Aucune séance cette semaine.</p>`}
+    w.ses.length?`<div class="tw"><table class="wk">${w.ses.map((s,si)=>`<tr class="${KINDS[s.k].c}"><td class="sl">${JC[s.j]}<br><small>${KINDS[s.k].n.replace("Tennis individuel (biomécanique)","Tennis individuel · biomécanique")}</small></td><td>${theme(s,si)}${s.l?.length?`<div>${s.l.map(chip).join("")}</div>`:""}${BUILT.has(s.key)?`<div><a class="bdg noprint" href="${seanceHref(BUILT.get(s.key))}">✓ séance construite</a></div>`:""}</td></tr>`).join("")}</table></div>`:`<p class="off">Aucune séance cette semaine.</p>`}
   ${ro?"":`<p class="noprint wa"><button type="button" class="lnk" data-wed="${w.i}">Modifier cette semaine${ov?" (modifiée)":""}</button></p>`}`;
 }
-/* ---------- PROG QUI RÉAGIT : le journal (charge, forme, douleur, blessure) et les derniers tests proposent un ajustement de la semaine en cours ----------
+/* ---------- PROGRAMMATION QUI RÉAGIT : le journal (charge, forme, douleur, blessure) et les derniers tests proposent un ajustement de la semaine en cours ----------
    Décision gardée dans le plan : p.reag[iso de la semaine] = {k:"ign"} (ignoré) ou {k:"ok", type, txt, avant:{over, edits:{clé:valeur}}} (appliqué, annulable). */
 const ecartJ = (a,b) => Math.round((pd(a)-pd(b))/DAY);
 const ZONEN = {dos:"dos",genou:"genou",talon:"talon",epaule:"épaule",poignet:"poignet",hanche:"hanche",cheville:"cheville",cuisse:"cuisse",mollet:"mollet",coude:"coude",nuque:"nuque"};
@@ -1145,7 +1452,7 @@ function reagHtml(w){
   const pr=propositionDe(w, S); CUR.prop=pr;
   return `<div class="reag noprint"><p><b>Le journal signale :</b> ${S.slice(0,4).map(x=>esc(x.txt)).join(" · ")}.</p>
    ${pr&&pr.type==="info"?`<p class="msg">${esc(pr.txt)}</p><div class="tools"><button type="button" class="ib" data-rgi="${w.i}">Compris</button></div>`:pr?`<p><b>Proposition :</b> ${esc(pr.txt)}</p><div class="tools"><button type="button" class="go" data-rga="${w.i}">Appliquer</button><button type="button" class="ib" data-rgi="${w.i}">Ignorer</button></div>`
-       :`<p class="msg">Aucune séance restante à changer cette semaine : ${S.some(x=>x.k!=="tests")?"garde la prochaine en bas de fourchette (Create my session règle le dosage)":"la ligne sera à cibler dans la prochaine séance de PP"}.</p><div class="tools"><button type="button" class="ib" data-rgi="${w.i}">Compris</button></div>`}</div>`;
+       :`<p class="msg">Aucune séance restante à changer cette semaine : ${S.some(x=>x.k!=="tests")?"garde la prochaine en bas de fourchette (Create my session règle le dosage)":"la ligne sera à cibler dans la prochaine séance de préparation physique"}.</p><div class="tools"><button type="button" class="ib" data-rgi="${w.i}">Compris</button></div>`}</div>`;
 }
 function appliquerReag(wi){
   const {p,R}=CUR, w=R.W[wi], pr=CUR.prop; if(!pr) return;
@@ -1198,9 +1505,13 @@ function seanceMenu(wi, si){
     ${b?`<a class="ib big2" id="mop" href="${seanceHref(b)}">Ouvrir la séance construite</a>`:""}
     <button class="ib big2" id="mth" type="button">Réécrire le thème / choisir un autre thème</button>
    </div>
+   <div class="f"><label>Déplacer au</label><div class="chips">${JOURS.map((d,ji)=>`<button type="button" class="tg sm" data-mvj="${ji}" aria-pressed="${ji===s.j}"${w.offDays.includes(ji)?" disabled":""}>${JC[ji]} ${fd(w.d1+ji*DAY)}</button>`).join("")}</div></div>
+   ${R.W.length>1?`<div class="f"><label for="mvw">Ou dans une autre semaine</label><div class="row" style="gap:8px;flex-wrap:wrap"><select id="mvw">${R.W.map((x,xi)=>`<option value="${xi}"${xi===wi?" selected":""}${x.off?" disabled":""}>S${x.i+1} · ${fd(x.d1)} → ${fd(x.d7)}${x.off?" (sans entraînement)":xi===wi?" (cette semaine)":""}</option>`).join("")}</select><select id="mvwj" aria-label="Jour">${JOURS.map((d,ji)=>`<option value="${ji}"${ji===s.j?" selected":""}>${d}</option>`).join("")}</select><button type="button" class="ib" id="mvgo">Déplacer</button></div></div>`:""}
    <p class="msg">La séance arrive pré-remplie dans Create my session (thème, lignes, phase, charge, durée, ${CUR.X.groupe?"joueurs du groupe":"joueur"}). « Valider et revenir » te ramène sur cette semaine.</p>`);
   $("#mcr").onclick=()=>envoyerSeance(wi, si);
   $("#mth").onclick=()=>themeSheet(wi, si);
+  $$("[data-mvj]",sheet).forEach(b=>b.onclick=()=>deplacer(wi, si, +b.dataset.mvj));
+  $("#mvgo") && ($("#mvgo").onclick=()=>{ const wj=+$("#mvw").value, jn=+$("#mvwj").value; if(wj===wi) deplacer(wi, si, jn); else deplacerSemaine(wi, si, wj, jn); });
 }
 function envoyerSeance(wi, si){
   const {p,R,P,X}=CUR, w=R.W[wi], s=w.ses[si];
@@ -1269,6 +1580,7 @@ function weekSheet(wi){
 
 /* ---------- RÈGLES ---------- */
 function showMethode(){
+  aide("m");
   main.innerHTML=`<div class="crumb"><a href="#">Create my prog</a> › Règles</div><h1>Les règles de la méthode</h1>
   <div class="doc"><div class="ess"><h2>L'essentiel</h2><p>Le plan part toujours de la saison de référence de l'âge et du sexe du joueur (4 à 18 ans), puis l'adapte à sa situation réelle. Mêmes données = même plan : rien n'est tiré au hasard. Un plan de groupe part de l'âge et du sexe dominants du groupe et de ses lignes faibles communes.</p></div>
   <h2>Découpe selon la durée</h2><ul><li>Plus de 12 semaines : macrocycles, mésocycles, microcycles et séances.</li><li>3 à 12 semaines : mésocycles, microcycles et séances.</li><li>1 ou 2 semaines : microcycles et séances.</li></ul>
@@ -1300,10 +1612,15 @@ function route(){
   if(raw.startsWith("x/")){ recevoir(raw.slice(2)); return; }
   const qi=raw.indexOf("?"), path=decodeURIComponent(qi<0?raw:raw.slice(0,qi)), q=new URLSearchParams(qi<0?"":raw.slice(qi+1));
   let a,b,c;
+  if(q.get("vue")==="cal"||q.get("vue")==="liste"){ ST.vue=q.get("vue"); saveNow(); }   /* ?vue=cal : ouvrir les plans en vue Calendrier (Assistant) */
+  const pre=RO()?null:relaisProg();
   if(path.startsWith("/")){ const s=path.slice(1).split("/"); a=s[0]; b=s[1]; c=s[2];
-    if(a==="joueur"&&b) showJoueur(b); else if(a==="groupe"&&b) showGroupe(b); else if(a==="nouveau") routeNouveau(b||"", q); else if(a==="plan"&&b) showPlan(b,c); else showHome(); }
+    const remplit=pre&&Object.keys(pre).some(k=>!["jid","gid","qui"].includes(k));
+    if(pre&&(a==="nouveau"||remplit||(a==="groupe"&&b&&!ST.plans.some(p=>p.gid===b)))){ if(a==="groupe"&&b&&!pre.gid) pre.gid=b; if(a==="joueur"&&b&&!pre.jid) pre.jid=b; routeNouveau(a==="nouveau"?(b||""):"", q, pre); }
+    else if(a==="joueur"&&b) showJoueur(b); else if(a==="groupe"&&b) showGroupe(b); else if(a==="nouveau") routeNouveau(b||"", q); else if(a==="plan"&&b) showPlan(b,c); else showHome(); }
   else { [a,b,c]=path.split("/");
-    if(a==="j"&&b) showJoueur(b); else if(a==="e"&&b) showEdit(b); else if(a==="p"&&b) showPlan(b,c); else if(a==="m") showMethode(); else showHome(); }
+    if(pre&&!a){ routeNouveau("", q, pre); a="nouveau"; }
+    else if(a==="j"&&b) showJoueur(b); else if(a==="e"&&b) showEdit(b); else if(a==="p"&&b) showPlan(b,c); else if(a==="m") showMethode(); else showHome(); }
   if(!c) window.scrollTo(0,0);
   $("#back").style.visibility = a ? "visible" : "hidden";
 }
@@ -1314,6 +1631,18 @@ async function boot(){
   try{ const r = await fetch("data-prog.json"); const d = await r.json(); DATA=d; }
   catch(e){ main.innerHTML=`<div class="empty">Impossible de charger les données. Ouvre l'appli une fois avec une connexion.</div>`; return; }
   try{ migrerProfils(); }catch(e){ console.warn(e); }
+  /* « ? » : une ou deux phrases par écran */
+  Object.entries({
+    "prog/accueil":"Create my prog : choisis un joueur ou un groupe (celui en cours est proposé en bas) et touche « Créer la programmation ». Tes brouillons non finis restent en haut.",
+    "prog/joueur":"La page programmation du joueur : ses plans, les plans de ses groupes et son profil pour la programmation (classement, croissance, zones fragiles, disponibilités, lignes prioritaires), enregistrés tout de suite sur sa fiche.",
+    "prog/groupe":"La page programmation du groupe : ses plans communs et les lignes faibles partagées par ses joueurs. Un plan de groupe apparaît dans le dossier de chaque joueur.",
+    "prog/nouveau":"Pour qui est la programmation ? Touche un joueur ou un groupe ; le joueur en cours est proposé en bas.",
+    "prog/brouillon":"Nouveau plan : tout est prérempli (période, semaine type, compétitions, coupures, bilans). Vérifie et touche « Créer le plan ». Rien n'est créé avant : le brouillon est gardé et peut être jeté.",
+    "prog/e":"Données du plan : chaque changement est enregistré tout de suite et le plan se recalcule en gardant tes thèmes retouchés.",
+    "prog/p":"Le plan : l'essentiel, la frise, les cycles et les semaines. Touche le thème d'une séance pour la créer dans Create my session, le réécrire ou la déplacer. « Calendrier » montre la semaine jour par jour.",
+    "prog/calendrier":"Le calendrier : la semaine jour par jour. Touche une séance pour la créer, réécrire son thème ou la déplacer à un autre jour ou dans une autre semaine (« Annuler » pendant 10 s).",
+    "prog/m":"Les règles de la méthode : découpe, phases, charges, niveau d'après le classement et choix des thèmes."
+  }).forEach(([k,t])=>{ try{ G.aide(k,t); }catch(e){} });
   route();
 }
 boot();

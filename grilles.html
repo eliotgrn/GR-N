@@ -62,8 +62,153 @@ html.grun-simple .cx{display:none!important}
 .grun-pdf:disabled{opacity:.6}
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .grun-pdf{color:#2DD4BF;border-color:#2DD4BF}}
 :root[data-theme="dark"] .grun-pdf{color:#2DD4BF;border-color:#2DD4BF}
+
+/* ===================== SOCLE 1.1 « chemin ultra intuitif » =====================
+   RÈGLES DE MISE EN PAGE (toutes les pages) :
+   - retour « ‹ » en haut à gauche (#back) ; joueur en cours + « ? » en haut à droite (.grun-topx, injectés par GRUN.nav) ;
+   - action principale EN BAS, grande, dans la zone du pouce : <div class="grun-actbar"><button class="gs-btn main">…</button></div> ;
+   - options secondaires repliées : <details class="grun-plus"><summary>Plus d'options</summary><div class="grun-plusb">…</div></details> ;
+   - « + » unique au centre de la barre du bas (#grun-plus) ; créations dans une feuille (.grun-ov > .grun-sheet). */
+:root{--grun-hi:#0F766E;--grun-on:#fff}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--grun-hi:#2DD4BF;--grun-on:#0B1117}}
+:root[data-theme="dark"]{--grun-hi:#2DD4BF;--grun-on:#0B1117}
+/* « + » au centre de la barre du bas */
+#grun-nav #grun-plus{flex:0 0 64px;border:0;background:none;padding:0;display:flex;align-items:center;justify-content:center;min-height:var(--nav-h);cursor:pointer}
+#grun-nav #grun-plus span{width:48px;height:48px;border-radius:16px;background:var(--grun-hi);color:var(--grun-on);display:flex;align-items:center;justify-content:center;box-shadow:0 3px 10px rgba(15,118,110,.35)}
+#grun-nav #grun-plus svg{width:26px;height:26px;stroke-width:2.6;stroke:currentColor}
+#grun-nav #grun-plus:active span{transform:scale(.94)}
+@media (max-width:380px){#grun-nav a{font-size:10.5px}#grun-nav #grun-plus{flex-basis:56px}}
+/* barre du haut : joueur en cours + aide */
+.grun-topx{display:inline-flex;gap:6px;align-items:center;flex:0 0 auto}
+.grun-chip{display:inline-flex;align-items:center;gap:6px;min-height:36px;max-width:118px;padding:0 10px 0 4px;border:1px solid var(--line,#D9DDE3);border-radius:999px;background:var(--panel,#fff);color:var(--ink,#16202E);font:600 14px/1 var(--ui,system-ui,sans-serif);cursor:pointer}
+.grun-chip .gc-nm{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+.gc-av{flex:0 0 28px;width:28px;height:28px;border-radius:50%;background:var(--grun-hi);color:var(--grun-on);display:inline-flex;align-items:center;justify-content:center;font-weight:800;font-size:13px}
+.gc-av.g{border-radius:8px;background:#6D3FC0;color:#fff}
+.gc-av.vide{background:var(--soft,#ECEFF3);color:var(--mute,#5D6675)}
+.grun-q{width:36px;height:36px;border-radius:50%;border:1px solid var(--line,#D9DDE3);background:var(--panel,#fff);color:var(--mute,#5D6675);font:800 17px/1 var(--ui,system-ui,sans-serif);cursor:pointer;padding:0}
+@media (max-width:430px){.grun-chip{max-width:92px;padding-right:8px}.grun-chip .gc-nm{font-size:13px}}
+@media (max-width:360px){.grun-chip .gc-nm{display:none}.grun-chip{padding:0 4px}}
+/* feuille (bottom sheet) */
+.grun-ov{position:fixed;inset:0;z-index:200;background:rgba(10,16,24,.42);display:flex;align-items:flex-end;justify-content:center;opacity:0;transition:opacity .16s ease}
+.grun-ov.in{opacity:1}.grun-ov.out{opacity:0}
+.grun-sheet{width:100%;max-width:560px;max-height:min(90vh,calc(100vh - env(safe-area-inset-top,0px) - 24px));display:flex;flex-direction:column;background:var(--panel,#fff);color:var(--ink,#16202E);border-radius:18px 18px 0 0;box-shadow:0 -10px 40px rgba(0,0,0,.25);transform:translateY(24px);transition:transform .18s ease;font-family:var(--ui,system-ui,sans-serif);font-size:16px;line-height:1.4}
+.grun-sheet.large{max-width:720px}
+.grun-ov.in .grun-sheet{transform:none}
+@media (min-width:700px){.grun-ov{align-items:center}.grun-sheet{border-radius:18px;max-height:86vh}}
+.gs-h{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:14px 16px 8px;border-bottom:1px solid var(--line,#D9DDE3)}
+.gs-h b{font-family:var(--display,"Barlow Condensed",system-ui,sans-serif);font-size:1.45em;font-weight:700;line-height:1.1}
+.gs-x{width:40px;height:40px;border-radius:50%;border:0;background:var(--soft,#ECEFF3);color:var(--ink,#16202E);font-size:24px;line-height:1;cursor:pointer;flex:0 0 auto}
+.gs-b{padding:12px 16px 14px;overflow-y:auto;-webkit-overflow-scrolling:touch;display:flex;flex-direction:column;gap:12px;flex:1 1 auto;min-height:0}
+.gs-f{display:flex;gap:8px;padding:10px 16px calc(12px + env(safe-area-inset-bottom,0px));border-top:1px solid var(--line,#D9DDE3)}
+.gs-btn{min-height:52px;border-radius:13px;border:1px solid var(--line,#D9DDE3);background:var(--panel,#fff);color:var(--ink,#16202E);font:700 16px/1.1 var(--ui,system-ui,sans-serif);padding:0 16px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;text-decoration:none;gap:6px}
+.gs-btn.main{flex:1;background:var(--grun-hi);border-color:var(--grun-hi);color:var(--grun-on)}
+.gs-btn.sec{flex:0 1 auto}
+.gs-btn.sm{min-height:40px;font-size:14.5px;border-radius:10px;padding:0 12px;flex:0 0 auto}
+.gs-btn:disabled{opacity:.5}
+.grun-ov.danger .gs-btn.main{background:#B91C1C;border-color:#B91C1C;color:#fff}
+.gs-form{display:flex;flex-direction:column;gap:12px;margin:0}
+.gs-l{display:flex;flex-direction:column;gap:5px;font-weight:600;font-size:14.5px;color:var(--ink,#16202E);min-width:0}
+.gs-l small{font-weight:500;color:var(--mute,#5D6675)}
+.gs-inp{min-height:48px;border:1px solid var(--line,#D9DDE3);border-radius:11px;background:var(--bg,#F4F5F7);color:var(--ink,#16202E);padding:0 12px;font:500 17px/1.2 var(--ui,system-ui,sans-serif);width:100%;max-width:100%;box-sizing:border-box}
+.gs-ta{padding:10px 12px;min-height:84px;resize:vertical;line-height:1.4}
+.gs-inp:focus{outline:2px solid var(--grun-hi);outline-offset:1px}
+.gs-seg{display:flex;border:1px solid var(--line,#D9DDE3);border-radius:11px;overflow:hidden;background:var(--bg,#F4F5F7)}
+.gs-seg button{flex:1;min-height:46px;border:0;background:none;color:var(--ink,#16202E);font:600 16px/1 var(--ui,system-ui,sans-serif);cursor:pointer}
+.gs-seg button+button{border-left:1px solid var(--line,#D9DDE3)}
+.gs-seg button[aria-checked=true]{background:var(--grun-hi);color:var(--grun-on)}
+.gs-chips{display:flex;flex-wrap:wrap;gap:6px}
+.gs-chip{min-height:40px;border:1px solid var(--line,#D9DDE3);background:var(--panel,#fff);color:var(--ink,#16202E);border-radius:999px;padding:0 14px;font:600 15px/1 var(--ui,system-ui,sans-serif);cursor:pointer;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.gs-chips.big .gs-chip{min-height:46px;font-size:16px}
+.gs-chip.g{border-style:dashed}
+.gs-chip[aria-pressed=true]{background:var(--grun-hi);border-color:var(--grun-hi);color:var(--grun-on)}
+.gs-err{color:#B91C1C;font-weight:600;margin:0;min-height:0}
+.gs-err:empty{display:none}
+.gs-m{color:var(--mute,#5D6675);font-size:14.5px;margin:0}
+.gs-p{margin:0;font-size:16.5px;line-height:1.5}
+.gs-sert{color:var(--grun-hi);font-weight:600;font-size:13px}
+.gs-lien{align-self:flex-start;border:0;background:none;color:var(--grun-hi);font:700 15.5px/1.2 var(--ui,system-ui,sans-serif);padding:6px 0;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+.gs-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.gs-n .gs-inp{font-variant-numeric:tabular-nums}
+.gs-c{display:flex;gap:10px;align-items:flex-start;font-weight:600;font-size:15px}
+.gs-c input{width:22px;height:22px;flex:0 0 auto;margin-top:1px}
+.gs-c small{font-weight:500;color:var(--mute,#5D6675)}
+.gs-cp fieldset{border:1px solid var(--line,#D9DDE3);border-radius:13px;padding:10px 12px 12px;margin:0;display:flex;flex-direction:column;gap:10px;min-width:0}
+.gs-cp legend{font-weight:800;font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:var(--mute,#5D6675);padding:0 4px}
+.gs-cp legend small{text-transform:none;letter-spacing:0;font-weight:500}
+details.gs-plus>summary{cursor:pointer;color:var(--grun-hi);font-weight:700;padding:4px 0;list-style:none}
+details.gs-plus>summary::-webkit-details-marker{display:none}
+details.gs-plus[open]>summary{margin-bottom:8px}
+.gs-list{border:1px solid var(--line,#D9DDE3);border-radius:11px;overflow:hidden}
+.gs-row{display:flex;flex-wrap:wrap;gap:2px 10px;align-items:baseline;padding:8px 12px;border-top:1px solid var(--line,#D9DDE3)}
+.gs-row:first-child{border-top:0}
+.gs-row span{color:var(--mute,#5D6675);font-size:14px}
+.gs-row small{flex-basis:100%;color:#B91C1C;font-weight:600}
+.gs-row.ko b{color:#B91C1C}
+.gs-menu{display:flex;flex-direction:column;gap:8px}
+.gs-menu.plus{display:grid;grid-template-columns:minmax(0,1fr);gap:6px}
+@media (min-width:560px){.gs-menu.plus{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.gs-it{display:grid;grid-template-columns:auto minmax(0,1fr);gap:1px 12px;align-items:center;text-align:left;min-height:60px;padding:9px 12px;border:1px solid var(--line,#D9DDE3);border-radius:13px;background:var(--panel,#fff);color:var(--ink,#16202E);text-decoration:none;cursor:pointer;font:inherit}
+.gs-it b{font-size:16.5px;grid-column:2}
+.gs-it span{grid-column:2;color:var(--mute,#5D6675);font-size:13.5px;line-height:1.3}
+.gs-it:not(:has(.pi)){grid-template-columns:minmax(0,1fr)}.gs-it:not(:has(.pi)) b,.gs-it:not(:has(.pi)) span{grid-column:1}
+.gs-it.x{border-color:var(--grun-hi);border-width:1.5px}
+.gs-it.st{cursor:default}
+.gs-it.st .gs-seg{grid-column:1/-1;margin-top:6px}
+.gs-it:active{background:var(--soft,#ECEFF3)}
+.pi{grid-row:1/3;width:38px;height:38px;border-radius:11px;background:var(--soft,#ECEFF3);position:relative}
+.pi::after{content:"";position:absolute;inset:9px;background:var(--grun-hi);-webkit-mask:var(--m) center/contain no-repeat;mask:var(--m) center/contain no-repeat}
+.pi-joueur{--m:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.2'%3E%3Ccircle cx='12' cy='8' r='4'/%3E%3Cpath d='M4 21c0-4 4-6 8-6s8 2 8 6'/%3E%3C/svg%3E")}
+.pi-groupe{--m:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.2'%3E%3Ccircle cx='8' cy='9' r='3'/%3E%3Ccircle cx='16' cy='9' r='3'/%3E%3Cpath d='M2 20c0-3 3-5 6-5s6 2 6 5M12 20c0-3 2-5 4-5s6 2 6 5'/%3E%3C/svg%3E")}
+.pi-session{--m:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='black'%3E%3Cpath d='M8 5v14l11-7z'/%3E%3C/svg%3E")}
+.pi-test{--m:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.2'%3E%3Cpath d='M12 3l8.5 6.2-3.2 10H6.7L3.5 9.2z'/%3E%3C/svg%3E")}
+.pi-exo{--m:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.2'%3E%3Cpath d='M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2z'/%3E%3Cpath d='M4 19V5'/%3E%3C/svg%3E")}
+.pi-note{--m:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.2'%3E%3Cpath d='M4 20h4L19 9l-4-4L4 16z'/%3E%3C/svg%3E")}
+.pi-wu{--m:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.2'%3E%3Cpath d='M12 3c2 3 5 5 5 9a5 5 0 0 1-10 0c0-2 1-3 2-4 0 2 1 3 2 3 0-3-1-5 1-8z'/%3E%3C/svg%3E")}
+.gs-cur{display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center;padding:10px 12px;border-radius:13px;background:var(--soft,#ECEFF3)}
+.gs-cur b{font-size:17px}.gs-cur span{color:var(--mute,#5D6675);font-size:14px;flex:1}
+.gs-bar{display:flex;flex-direction:column;gap:5px}
+.gs-bar>div,.gc-bar{display:block;height:8px;border-radius:99px;background:var(--soft,#ECEFF3);overflow:hidden}
+.gs-bar i,.gc-bar i{display:block;height:100%;background:var(--grun-hi);border-radius:99px;transition:width .3s}
+/* toast avec « Annuler » */
+#grun-toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(var(--nav-h,62px) + 14px + env(safe-area-inset-bottom,0px));z-index:260;display:flex;gap:12px;align-items:center;max-width:calc(100vw - 32px);background:var(--ink,#16202E);color:var(--bg,#fff);padding:8px 8px 8px 16px;border-radius:13px;box-shadow:0 8px 28px rgba(0,0,0,.28);font:600 15px/1.3 var(--ui,system-ui,sans-serif)}
+#grun-toast:not(:has(button)){padding:11px 16px}
+#grun-toast button{min-height:40px;border:0;border-radius:9px;background:var(--grun-hi);color:var(--grun-on);font:800 15px/1 var(--ui,system-ui,sans-serif);padding:0 14px;cursor:pointer;white-space:nowrap}
+body:not(.grun-has-nav) #grun-toast{bottom:calc(16px + env(safe-area-inset-bottom,0px))}
+#grun-saved{position:fixed;top:calc(8px + env(safe-area-inset-top,0px));right:12px;z-index:270;background:var(--grun-hi);color:var(--grun-on);font:700 13px/1 var(--ui,system-ui,sans-serif);padding:7px 11px;border-radius:99px;opacity:0;transform:translateY(-6px);transition:opacity .2s,transform .2s;pointer-events:none}
+#grun-saved.on{opacity:1;transform:none}
+/* barre de complétude (dossier) */
+.grun-compl{border:1px solid var(--line,#D9DDE3);border-radius:13px;background:var(--panel,#fff);padding:10px 12px;display:flex;flex-direction:column;gap:6px}
+.grun-compl .gc-h{display:flex;gap:10px;align-items:center}.grun-compl .gc-h b{white-space:nowrap}.grun-compl .gc-bar{flex:1}
+.grun-compl ul{margin:0;padding-left:18px;font-size:14.5px;color:var(--mute,#5D6675)}
+.grun-compl ul b{color:var(--ink,#16202E);font-weight:600}
+.grun-compl .gs-btn{align-self:flex-start}
+.grun-compl.ok{padding:8px 12px}
+/* action principale en bas (zone du pouce), au-dessus de la barre du bas */
+.grun-actbar{position:sticky;bottom:calc(var(--nav-h,62px) + env(safe-area-inset-bottom,0px) + 8px);z-index:20;display:flex;gap:8px;margin-top:16px}
+body:not(.grun-has-nav) .grun-actbar{bottom:calc(8px + env(safe-area-inset-bottom,0px))}
+.grun-actbar>*{flex:1;min-height:52px;box-shadow:0 6px 18px rgba(0,0,0,.14)}
+/* visite guidée, schéma */
+.gv h3{font-family:var(--display,"Barlow Condensed",system-ui,sans-serif);font-size:1.6em;margin:4px 0 6px;line-height:1.1}
+.gv-dots{display:flex;gap:5px}.gv-dots i{width:22px;height:5px;border-radius:9px;background:var(--line,#D9DDE3)}.gv-dots i.vu{background:var(--mute,#5D6675)}.gv-dots i.on{background:var(--grun-hi)}
+.grun-schema{width:100%;max-width:440px;display:block;margin:10px auto 0;font-family:var(--ui,system-ui,sans-serif)}
+.grun-schema rect{stroke-width:2}
+.grun-schema .s-ind{fill:rgba(15,118,110,.12);stroke:#0F766E}.grun-schema .s-tests{fill:rgba(109,63,192,.12);stroke:#6D3FC0}.grun-schema .s-res{fill:rgba(29,78,216,.10);stroke:#1D4ED8}.grun-schema .s-create{fill:rgba(194,65,12,.10);stroke:#C2410C}
+.grun-schema .s-d1{fill:rgba(194,65,12,.14);stroke:#C2410C}.grun-schema .s-d2{fill:rgba(194,65,12,.22);stroke:#C2410C}.grun-schema .s-d3{fill:#C2410C;stroke:#C2410C}
+.grun-schema text{fill:var(--ink,#16202E);text-anchor:middle}.grun-schema .s-t{font-weight:800;font-size:15px}.grun-schema .s-s{font-size:12px;fill:var(--mute,#5D6675)}
+.grun-schema .s-k{font-size:11px;font-weight:700;text-anchor:start}.grun-schema .s-k.c{text-anchor:middle;fill:#fff}
+.grun-doll{margin-top:8px}.grun-doll div{border:2px solid #C2410C;border-radius:12px;padding:8px 10px 10px;font-weight:800;color:#C2410C;background:rgba(194,65,12,.07)}.grun-doll div div{margin-top:6px;background:rgba(194,65,12,.12)}.grun-doll div div div{background:#C2410C;color:#fff}
+.grun-demo-bar{display:flex;gap:14px;align-items:center;justify-content:center;margin-top:8px}
+.grun-chip.demo{pointer-events:none}
+.grun-plus-demo{width:48px;height:48px;border-radius:16px;background:var(--grun-hi);color:var(--grun-on);display:inline-flex;align-items:center;justify-content:center;font:800 30px/1 var(--ui,system-ui,sans-serif)}
+html.grun-sheet-on body{overflow:hidden}
+@media print{.grun-topx,#grun-toast,#grun-saved,.grun-ov,.grun-actbar{display:none!important}}
+/* barre du haut des modules sur téléphone : le joueur en cours se réduit à son initiale, le titre s'abrège */
+html.grun-mod .topin .brand{min-width:0;overflow:hidden;text-overflow:ellipsis;flex:0 1 auto}
+@media (max-width:430px){html.grun-mod .grun-chip .gc-nm{display:none}html.grun-mod .grun-chip{padding:0 3px;max-width:none}.grun-topx{gap:4px}.grun-q{width:34px;height:34px}}
+.grun-chip:has(.gc-av.vide){max-width:none}.grun-chip:has(.gc-av.vide) .gc-nm{overflow:visible}
 </style>
-<script src="grun.js?v=1"></script>
+<script src="grun.js?v=1.4"></script>
+<script src="assistant.js?v=1.4"></script>
 <meta name="grun-module" content="grilles"></head><body><title>Grilles et tests</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Barlow:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
 <style>
@@ -311,6 +456,15 @@ table.bed .bi{width:74px;font-size:16px;text-align:center;padding:0 4px}
 .pimg{width:100%;border-radius:8px;border:1px solid var(--line)}
 .att.mine{background:var(--n2s);border-color:var(--n2)} .att.mine b{color:var(--n2)}
 table.fs td.blank{min-width:90px;height:34px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chips .chip{font-family:inherit;font-size:14px;cursor:pointer}
+.chip.g{border-style:dashed}
+.sabat .chip{min-height:44px}
+button.li{background:none;border:0;border-top:1px solid var(--line);font:inherit;color:inherit;cursor:pointer}
+.cur1 .doors{grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.cur1 .door{padding:10px 12px}
+.cur1 .door b{font-size:14.5px}
+.cur1 .door span{font-size:12.5px}
 @media print{.top,.noprint,#grun-nav,.tools,.dochead .acts,.pn,.notes,#toc{display:none!important} body{background:#fff} main{padding:0} .fsheet,.ov,.axc{break-inside:avoid}}
 </style>
 
@@ -405,7 +559,8 @@ function route(){
   if(h==="/tests") return showPorte("3");
   if(h==="/test-nouveau") return showTestEdit(null, q);
   if(h.startsWith("/test-edit/")) return showTestEdit(h.split("/")[2], q);
-  if(h==="/gbilan" || h.startsWith("/gbilan/")) return showGBilan(h.slice(8));
+  if(h==="/gbilan" || h.startsWith("/gbilan/")) return showGBilan(h.slice(8), q);
+  if(h==="/saisie") return showSaisie(q);
   if(h.startsWith("/fiche/")) return showFiche(h.split("/")[2], h.split("/")[3]);
   if(h==="/joueurs") return showJoueurs();
   if(h.startsWith("d/")) return showDoc(h.slice(2).split("/")[0], h.split("/")[2]);
@@ -427,7 +582,12 @@ function showHome(){
   document.documentElement.style.setProperty("--acc", "var(--ink)");
   const m = $("#main");
   const count = p => DOCS.filter(x=>porteOf(x)===p).length;
+  ecran("accueil");
   let html = `<h1>Grilles et tests</h1><p class="lead">Grilles de compétences 4-18 ans · 90 grilles · 287 tests · niveau 3 = attendu du haut niveau de sa génération</p>`;
+  /* grilles ouvertes sur le joueur en cours : son sexe, sa grille conseillée (âge biologique s'il est mesuré) */
+  const cj = !RO() && GR.courant && GR.courant.jid() ? GR.joueurs.get(GR.courant.jid()) : (RO() ? GR.joueurs.get(GR.mode().jid) : null);
+  const ca = cj ? clampA(conseil(cj) || 10) : null;
+  if(cj) html += `<div class="sec cur1" style="--pc:${cj.sexe==="F"?"var(--p1)":"var(--p2)"}"><h2>${esc(cj.nom.split(" ")[0])} · grilles ${cj.sexe==="F"?"filles":"garçons"} ${ca} ans</h2><div class="doors">${DOM3.map(d=>`<a class="door" href="#d/${cj.sexe==="F"?"F":"G"}${pad2(ca)}_${d}" style="--pc:var(--${d.toLowerCase()})"><b>${DOMN[d]}</b><span>${cj.sexe==="F"?"Fille":"Garçon"} · ${ca} ans</span></a>`).join("")}</div>${RO()?"":`<div class="tools" style="margin-top:8px"><a class="ib" href="#/joueur/${cj.id}">Son dossier (profil radar)</a><a class="ib" href="#/joueur/${cj.id}/bilan/nouveau">Bilan du jour</a></div>`}</div>`;
   html += `<div class="sec"><h2>Accès direct</h2><div class="quick">
     <div class="f"><label for="qs">Sexe</label><select id="qs"><option value="F">Fille</option><option value="G">Garçon</option></select></div>
     <div class="f"><label for="qa">Âge</label><select id="qa">${Array.from({length:15},(_,i)=>String(i+4)).map(a=>`<option value="${a}">${a} ans</option>`).join("")}</select></div>
@@ -436,21 +596,22 @@ function showHome(){
     <button class="go" id="qgo" type="button">Ouvrir</button></div></div>`;
   const nJ = GR.joueurs.all().length, nT = tc().per.length;
   if(RO()) html += `<div class="sec"><a class="door" href="#/joueur/${GR.mode().jid}" style="--pc:var(--p5)"><b>Mon dossier</b><span>Ton profil radar, tes résultats de tests et ta progression.</span></a></div>`;
-  html += `<div class="sec"><h2>Les portes</h2><div class="doors">${Object.entries(PORTES).map(([p,o])=>`<a class="door" href="#p/${p}" style="--pc:var(${o.c})"><b>${o.n}</b><span>${o.s}</span><small>${count(p)} documents${p==="3"&&nT?` · ${nT} test${nT>1?"s":""} perso`:""}</small></a>`).join("")}${RO()?"":`<a class="door" href="#j" style="--pc:var(--p5)"><b>Joueurs</b><span>Dossier de chaque joueur : profil radar, grilles remplies, tests et résultats, progression, croissance. Bilans de groupe.</span><small>${nJ} joueur${nJ>1?"s":""}</small></a>`}</div></div>`;
+  html += `<div class="sec"><h2>Les portes</h2><div class="doors">${Object.entries(PORTES).map(([p,o])=>`<a class="door" href="#p/${p}" style="--pc:var(${o.c})"><b>${o.n}</b><span>${o.s}</span><small>${count(p)} documents${p==="3"&&nT?` · ${nT} test${nT>1?"s":""} personnel${nT>1?"s":""}`:""}</small></a>`).join("")}${RO()?"":`<a class="door" href="#j" style="--pc:var(--p5)"><b>Joueurs</b><span>Dossier de chaque joueur : profil radar, grilles remplies, tests et résultats, progression, croissance. Bilans de groupe.</span><small>${nJ} joueur${nJ>1?"s":""}</small></a>`}</div></div>`;
   const favs = P.fav.filter(c=>BY[c]), recs = P.rec.filter(c=>BY[c]).slice(0,8);
   html += `<div class="sec"><h2>Favoris</h2>${favs.length ? listHTML(favs.map(c=>BY[c]), true) : '<div class="empty">Touche ☆ en haut d\'une grille ou d\'un test pour le retrouver ici.</div>'}</div>`;
   if(recs.length) html += `<div class="sec"><h2>Consultés récemment</h2>${listHTML(recs.map(c=>BY[c]), true)}</div>`;
   html += `<details class="grun-plus"><summary>Plus d'options : sauvegarde, taille du texte</summary><div class="grun-plusb"><div class="tools">
-     ${RO()?"":`<button class="ib" id="bsave" type="button">Sauvegarder tout GRÜN</button>
-     <label class="ib" for="frest">Restaurer</label><input id="frest" type="file" accept=".json,application/json" hidden>`}
+     ${RO()?"":`<button class="ib" data-grun="sauver" type="button">${esc((GR.TXT&&GR.TXT.sauver)||"Tout sauvegarder")}</button>
+     <label class="ib" for="frest">${esc((GR.TXT&&GR.TXT.restaurer)||"Restaurer une sauvegarde")}</label><input id="frest" type="file" accept=".json,application/json" hidden>`}
      <button class="ib" id="fsm" type="button" aria-label="Texte plus petit">A−</button><button class="ib" id="fsp" type="button" aria-label="Texte plus grand">A+</button></div><p class="msg" id="dmsg">${RO()?"Tes données sont gardées sur cet appareil.":"Une seule sauvegarde pour toute l'appli (joueurs, groupes, tests, favoris, notes…) ; la restauration accepte aussi les anciens fichiers Grilles et Profil radar."}</p></div></details>`;
+  if(!RO()) html += `<div class="grun-actbar"><a class="gs-btn main" href="#/saisie">Saisir un test ou un bilan</a></div>`;
   m.innerHTML = html;
   const qs=$("#qs"), qa=$("#qa"), qd=$("#qd"), ql=$("#ql");
-  qs.value=P.sx; qa.value=P.age; qd.value=P.dom;
+  qs.value = cj ? (cj.sexe==="F"?"F":"G") : P.sx; qa.value = cj ? String(ca) : P.age; qd.value=P.dom;
   const fill=()=>{ const L = LIGNES[qd.value]||[]; ql.innerHTML = `<option value="0">Toute la grille</option>`+L.map((n,i)=>`<option value="${i+1}">${i+1} · ${esc(n)}</option>`).join(""); ql.value = +P.ligne <= L.length ? P.ligne : "0"; };
   fill(); qd.onchange=()=>{ P.ligne="0"; fill(); };
   $("#qgo").onclick=()=>{ P.sx=qs.value; P.age=qa.value; P.dom=qd.value; P.ligne=ql.value||"0"; save(); location.hash = `d/${qs.value}${pad2(qa.value)}_${qd.value}` + (+ql.value ? `/l${ql.value}` : ""); };
-  if($("#bsave")){ $("#bsave").onclick=exportData; $("#frest").onchange=importData; }
+  if($("#frest")) $("#frest").onchange=importData;
   $("#fsm").onclick=()=>setFs(-1); $("#fsp").onclick=()=>setFs(1);
 }
 function setFs(d){ P.fs=Math.max(14,Math.min(24,P.fs+d)); save(); document.documentElement.style.setProperty("--fs",P.fs+"px"); const m=$("#dmsg"); if(m) m.textContent="Taille du texte des documents : "+P.fs+" px."; }
@@ -465,7 +626,11 @@ function showPorte(p){
   document.documentElement.style.setProperty("--acc", pc(p));
   const xs = DOCS.filter(x=>porteOf(x)===p), groups = {};
   xs.forEach(x=>{ (groups[x.d] = groups[x.d] || []).push(x); });
+  ecran("porte");
   let html = `<div class="crumb" style="--pc:${pc(p)}"><a href="#${RO()?"/accueil":""}">Accueil</a></div><h1 style="color:${pc(p)}">${PORTES[p].n}</h1><p class="lead">${PORTES[p].s}</p>`;
+  const cj = (p==="1"||p==="2") && GR.courant && GR.courant.jid() ? GR.joueurs.get(GR.courant.jid()) : null;
+  if(cj && (cj.sexe==="F") === (p==="1")){ const a = clampA(conseil(cj)||10); html += `<div class="jump"><b class="msg" style="align-self:center">${esc(cj.nom.split(" ")[0])} · ${a} ans :</b>${DOM3.map(d=>`<a href="#d/${p==="1"?"F":"G"}${pad2(a)}_${d}">${DOMN[d]}</a>`).join("")}</div>`; }
+  if(p==="3" && !RO()) html += `<div class="tools" style="margin-top:12px"><a class="ib" href="#/saisie" style="font-weight:700">Saisir un test ou un bilan</a></div>`;
   if(p==="3"){ const per = tc().per;
     html += `<div class="tools" style="margin-top:12px">${RO()?"":`<a class="ib" href="#/test-nouveau">+ Créer un test</a>`}<a class="ib" href="#/mestests">Mes tests et modifications</a></div>`;
     if(per.length){ const byd = {}; per.forEach(t=>(byd[t.dom]=byd[t.dom]||[]).push(t)); html += `<div class="fold" style="--pc:${pc(p)}"><h3>Mes tests</h3>${persoListHTML(DOM3.flatMap(d=>byd[d]||[]))}</div>`; } }
@@ -516,7 +681,8 @@ function showDoc(code, hint){
   if(window.GRUN&&GRUN.clair) GRUN.clair(document.getElementById("doc"));   /* lignes de grille en clair (mode simple) */
   // favoris, taille, notes
   /* PDF d'une grille ou d'un test : tout le document déplié, comme dans l'appli */
-  $("#dprint").onclick = ()=>{ const cl = [...document.querySelectorAll("#doc details:not([open])")]; cl.forEach(d=>d.open = true); addEventListener("afterprint", ()=>cl.forEach(d=>d.open = false), {once:true}); print(); };
+  $("#dprint").onclick = ()=>pdfGo($("#dprint"), ()=>pdfDoc(code));   /* vrai fichier PDF (tout le document, sections repliées comprises) */
+  ecran(/^T-/.test(code) ? "test" : /^[FG]\d\d_/.test(code) ? "grille" : "porte");
   $("#fav").onclick = ()=>{ const on = !P.fav.includes(code); P.fav = on ? [code,...P.fav] : P.fav.filter(c=>c!==code); save(); $("#fav").setAttribute("aria-pressed",on); $("#fav").textContent = on?"★ Favori":"☆ Favori"; };
   $("#fsm").onclick=()=>setFs(-1); $("#fsp").onclick=()=>setFs(1);
   const nt=$("#nt"); nt.value = P.notes[code]||""; let tm;
@@ -564,8 +730,17 @@ let sT;
 $("#q").addEventListener("input", e=>{ clearTimeout(sT); const v=e.target.value.trim(); sT=setTimeout(()=>{ if(v.length>=2) history.replaceState(null,"","#s/"+encodeURIComponent(v)), showSearch(v); else if(!v && location.hash.startsWith("#s/")) location.hash=""; },250); });
 $("#q").addEventListener("keydown", e=>{ if(e.key==="Enter"){ e.target.blur(); } });
 function terms(q){ return fold(q).split(/\s+/).filter(w=>w.length>=2); }
+/* codes de grille : « F12 », « G 15 », « fille 12 », « G15 DE », « 12 ans garçon » → la grille de cet âge */
+function codeGrille(q){ const f = fold(q).replace(/[^a-z0-9 ]/g," ").replace(/\s+/g," ").trim();
+  let m = /^(f|g|fille|filles|garcon|garcons)\s?(\d{1,2})(?:\s?ans)?(?:\s(pp|ge|de|physique|geste|deplacement))?$/.exec(f) || null, sx, a, d;
+  if(m){ sx = m[1][0]; a = +m[2]; d = m[3]; } else { m = /^(\d{1,2})\s?ans?\s(f|g|fille|filles|garcon|garcons)$/.exec(f); if(m){ sx = m[2][0]; a = +m[1]; } }
+  if(!sx || a<4 || a>18) return null; const D = d ? ({pp:"PP",physique:"PP",ge:"GE",geste:"GE",de:"DE",deplacement:"DE"})[d] : null;
+  return {sx:sx.toUpperCase(), a, d:D}; }
+function codeHTML(c){ const doms = c.d ? [c.d, ...DOM3.filter(x=>x!==c.d)] : DOM3;
+  return `<div class="sec"><h2>Grilles ${c.sx==="F"?"filles":"garçons"} ${c.a} ans</h2><div class="doors">${doms.map(d=>{ const code = c.sx+pad2(c.a)+"_"+d; return BY[code] ? `<a class="door" href="#d/${code}" style="--pc:var(--${d.toLowerCase()})"><b>${DOMN[d]}</b><span>${c.sx==="F"?"Fille":"Garçon"} · ${c.a} ans</span></a>` : ""; }).join("")}</div></div>`; }
 function showSearch(q, fini){
-  document.documentElement.style.setProperty("--acc", "var(--ink)");
+  document.documentElement.style.setProperty("--acc", "var(--ink)"); ecran("recherche");
+  const cg = codeGrille(q); if(cg && !fini){ $("#main").innerHTML = `<h1>Recherche</h1><p class="lead">« ${esc(q)} » = grille ${cg.sx==="F"?"fille":"garçon"} ${cg.a} ans.</p>${codeHTML(cg)}`; return; }
   const ts = terms(q), m = $("#main");
   if(!ts.length){ showHome(); return; }
   if(!fini && DOCS.some(x=>x.h==null)){ const h0 = location.hash; if(!m.querySelector(".res")) m.innerHTML = `<h1>Recherche</h1><p class="lead">Recherche de « ${esc(q)} » dans toutes les grilles et tous les tests…</p>`;
@@ -615,7 +790,7 @@ function highlight(q){
 const GR = window.GRUN;
 let X = null;
 const DOM3 = ["PP","GE","DE"];
-const DCOURT = {PP:"Prépa physique", GE:"Geste", DE:"Déplacement"};
+const DCOURT = {PP:"Préparation physique", GE:"Geste", DE:"Déplacement"};
 const NVN = {1:"Non acquis",2:"En cours d'acquisition",3:"Acquis",4:"Maîtrisé"};
 const uid = () => GR.uid();
 const today = () => GR.today();
@@ -789,25 +964,19 @@ function showJoueurs(){
   const af = L.filter(j=>bilanAfaire(j)).length, w = semBilan();
   let h = `<div class="crumb" style="--pc:var(--p5)"><a href="#">Accueil</a></div><h1 style="color:var(--p5)">Joueurs</h1><p class="lead">Un dossier par joueur : profil radar, grilles remplies, tests et résultats, progression, croissance. Le même joueur existe dans tout GRÜN.</p>`;
   if(w) h += `<div class="att2"><b>Semaine de bilan</b> · ${esc(w.t)} (S${w.n}, du ${frD(w.du)} au ${frD(w.au)}).</div>`;
-  h += `<div class="sec"><h2>Nouveau joueur</h2><div class="quick">
-    <div class="f" style="flex:1;min-width:180px"><label for="jn">Prénom et nom</label><input id="jn" class="inp" autocomplete="off"></div>
-    <div class="f"><label for="jsx">Sexe</label><select id="jsx"><option value="G">Garçon</option><option value="F">Fille</option></select></div>
-    <div class="f"><label for="jnai">Naissance</label><input id="jnai" class="inp" type="date"></div>
-    <div class="f"><label for="jmain">Main</label><select id="jmain"><option value="D">Droitier</option><option value="G">Gaucher</option></select></div>
-    <div class="f"><label for="jrev">Revers</label><select id="jrev"><option value="2">À 2 mains</option><option value="1">À 1 main</option></select></div>
-    <div class="f"><label for="jcl">Classement</label><input id="jcl" class="inp" list="dlcl" value="NC" style="width:96px"></div>
-    ${grs.length?`<div class="f"><label for="jgg">Groupe</label><select id="jgg"><option value="">—</option>${grs.map(g=>`<option value="${g.id}" ${g.id===gf?"selected":""}>${esc(g.nom)}</option>`).join("")}</select></div>`:""}
-    <button class="go" id="jadd" type="button">Créer</button></div><datalist id="dlcl">${CLASS.map(c=>`<option value="${c}">`).join("")}</datalist><p class="msg" id="jmsg"></p></div>`;
-  h += `<div class="sec"><div class="dochead"><h2 style="margin:0">Mes joueurs</h2><div class="acts">${grs.length?`<select id="gfil" class="inp" aria-label="Filtrer par groupe"><option value="">Tous les joueurs</option>${grs.map(g=>`<option value="${g.id}" ${g.id===gf?"selected":""}>${esc(g.nom)}</option>`).join("")}</select>`:""}<a class="ib" href="#/gbilan">Bilan de groupe</a></div></div>
+  h += `<div class="sec"><div class="dochead"><h2 style="margin:0">Mes joueurs</h2><div class="acts">${grs.length?`<select id="gfil" class="inp" aria-label="Filtrer par groupe"><option value="">Tous les joueurs</option>${grs.map(g=>`<option value="${g.id}" ${g.id===gf?"selected":""}>${esc(g.nom)}</option>`).join("")}</select>`:""}<a class="ib" href="#/gbilan${gf?"?g="+gf:""}">Bilan de groupe</a><button class="ib" id="gadd" type="button">+ Nouveau groupe</button></div></div>
     ${af?`<p class="msg">${af} joueur${af>1?"s":""} avec un bilan à faire.</p>`:""}
     ${L.length ? `<div class="list" style="margin-top:8px">${L.map(j=>{ const b = curB(j); const ac = ageCiv(j.naissance); const r = bilanAfaire(j); const gs = GR.groupes.de(j.id).map(g=>g.nom);
-    return `<a class="li" href="#/joueur/${j.id}"><span class="code">${j.sexe==="F"?"Fille":"Garçon"}</span><span class="tt">${esc(j.nom)}${r?` <span class="bdg warn">${esc(r)}</span>`:""}<small>${ac!=null?ac+" ans · ":""}${gs.length?esc(gs.join(", "))+" · ":j.groupe?esc(j.groupe)+" · ":""}${b?`bilan du ${frD(b.date)}, ${gL(b)} · moyennes ${DOM3.map(d=>fmtN(moy(j,b,d))).join(" / ")}`:"aucun bilan"}</small></span></a>`; }).join("")}</div>` : `<div class="empty" style="margin-top:8px">${gf?"Aucun joueur dans ce groupe.":"Aucun joueur pour l'instant : crée le premier ci-dessus."}</div>`}</div>`;
+    return `<a class="li" href="#/joueur/${j.id}"><span class="code">${j.sexe==="F"?"Fille":"Garçon"}</span><span class="tt">${esc(j.nom)}${r?` <span class="bdg warn">${esc(r)}</span>`:""}<small>${ac!=null?ac+" ans · ":""}${gs.length?esc(gs.join(", "))+" · ":j.groupe?esc(j.groupe)+" · ":""}${b?`bilan du ${frD(b.date)}, ${gL(b)} · moyennes ${DOM3.map(d=>fmtN(moy(j,b,d))).join(" / ")}`:"aucun bilan"}</small></span></a>`; }).join("")}</div>` : `<div class="empty" style="margin-top:8px">${gf?"Aucun joueur dans ce groupe.":"Aucun joueur pour l'instant : touche « + Nouveau joueur » en bas."}</div>`}</div>`;
+  /* créer : le composant unique de GRÜN (prénom, sexe, naissance ; le reste dans « Compléter le profil » du dossier) */
+  h += `<details class="grun-plus"><summary>Plus d'options</summary><div class="grun-plusb"><div class="tools"><button class="ib" id="jaddm" type="button">Ajouter plusieurs joueurs d'un coup</button><a class="ib" href="#/saisie">Saisir un test ou un bilan</a></div></div></details>
+    <div class="grun-actbar"><button class="gs-btn main" id="jadd" type="button">+ Nouveau joueur</button></div>`;
   $("#main").innerHTML = h;
   const gfil = $("#gfil"); if(gfil) gfil.onchange = ()=>{ P.gf = gfil.value; save(); showJoueurs(); };
-  $("#jadd").onclick = ()=>{ const nom = $("#jn").value.trim(); if(!nom){ $("#jmsg").textContent = "Indique le nom du joueur."; return; }
-    SELF++; let j; try{ j = GR.joueurs.create({nom, sexe:$("#jsx").value, naissance:$("#jnai").value, main:$("#jmain").value, revers:$("#jrev").value, classement:$("#jcl").value.trim()||"NC"}); } finally { SELF--; }
-    const gg = $("#jgg"); if(gg && gg.value){ const g = GR.groupes.get(gg.value); if(g && !g.jids.includes(j.id)){ g.jids.push(j.id); GR.groupes.save(g); } }
-    j = getP(j.id); const b = newB(today(), conseil(j) || 10); j.bilans.push(b); j.cur = b.id; jsave(j); location.hash = "/joueur/"+j.id; };
+  $("#jadd").onclick = ()=>GR.ui.nouveauJoueur({groupe:gf||undefined}).then(j=>{ if(j) showJoueurs(); });
+  $("#jaddm").onclick = ()=>GR.ui.nouveauJoueur({groupe:gf||undefined, multiple:true}).then(js=>{ if(js) showJoueurs(); });
+  $("#gadd").onclick = ()=>GR.ui.nouveauGroupe({}).then(g=>{ if(g){ P.gf = g.id; save(); showJoueurs(); } });
+  ecran("joueurs");
 }
 
 /* ---------- dossier d'un joueur ---------- */
@@ -819,6 +988,10 @@ function showJoueur(id){
   const seg = (location.hash.split("?")[0].split("/")[3]||"");
   const ONG = {radar:"profil", profil:"profil", tests:"grilles", bilan:"grilles", crois:"crois", croissance:"crois", progression:"prog"};
   if(ONG[seg] && SEG!==location.hash){ UI.tab = ONG[seg]; SEG = location.hash; }
+  /* grilles.html#/joueur/<jid>/bilan/nouveau : CRÉE le bilan du jour (tests conseillés pour l'âge) et l'ouvre en saisie */
+  if(seg==="bilan" && (location.hash.split("?")[0].split("/")[4]||"")==="nouveau" && !RO()){ creerBilanDuJour(j); const h2 = "#/joueur/"+j.id+"/bilan"; history.replaceState(null, "", h2); SEG = h2; UI.tab = "grilles"; }
+  if(!RO() && GR.courant && GR.courant.jid()!==j.id) GR.courant.set("j", j.id);   /* le joueur ouvert devient le joueur en cours de GRÜN */
+  ecran("joueur");
   const modeBilan = seg==="bilan" && !RO();
   const b = (RO() && VIEWB && j.bilans.find(x=>x.id===VIEWB)) || curB(j); CUR = {j, b};
   const pc = j.sexe==="F"?"var(--p1)":"var(--p2)";
@@ -827,14 +1000,18 @@ function showJoueur(id){
   const ac = ageCiv(j.naissance), gs = GR.groupes.de(j.id), allg = GR.groupes.all();
   const infos = [j.sexe==="F"?"Fille":"Garçon", j.naissance?(j.sexe==="F"?"née le ":"né le ")+frD(j.naissance):"", ac!=null?ac+" ans":"", j.main==="G"?"gaucher":"droitier", j.revers==="1"?"revers à 1 main":"revers à 2 mains", j.classement?"classement "+esc(j.classement):""].filter(Boolean);
   let h = `<div class="crumb">${RO()?`<a href="#/accueil">Grilles</a>›<span>Mon dossier</span>`:`<a href="#">Accueil</a>›<a href="#j">Joueurs</a>›<span>${esc(j.nom)}</span>`}</div>
-  <div class="dochead"><h1>${RO()?"Mon profil · ":""}${esc(j.nom)}</h1>${RO()?"":`<div class="acts"><button class="ib" id="jedit" type="button">Modifier la fiche</button><a class="ib" href="${GR.href("joueurs","#/j/"+j.id)}">Dossier complet</a></div>`}</div>
+  <div class="dochead"><h1>${RO()?"Mon profil · ":""}${esc(j.nom)}</h1>${RO()?"":`<div class="acts"><button class="ib" id="jedit" type="button">Modifier la fiche</button><button class="ib" id="jsais" type="button">Saisir un test</button><a class="ib" href="${GR.href("joueurs","#/j/"+j.id)}">Dossier complet</a></div>`}</div>
   <div class="crumb" style="margin-top:4px">${infos.join(" · ")}</div>
   ${gs.length||j.groupe?`<div class="jump">${gs.map(g=>`<a href="${GR.href("joueurs","#/g/"+g.id)}">${esc(g.nom)}</a>`).join("")}${!gs.length&&j.groupe?`<span class="msg">${esc(j.groupe)}</span>`:""}</div>`:""}`;
   if(!RO()) h += ficheForm(j, allg, gs);
-  if(!b){ h += `<div class="sec"><h2>Premier bilan</h2>${nouveauBilanForm(j, null)}</div>`; m.innerHTML = h; bindFiche(j); bindNouveauBilan(j, null); return; }
+  if(!b){ h += `<div class="sec"><h2>Premier bilan</h2><p class="msg">Un bilan = une batterie de tests. « Créer le premier bilan » prend les tests conseillés pour son âge (grille ${esc(String(conseil(j)||10))} ans) ; tu peux en ajouter ou en retirer ensuite.</p>
+      <details class="grun-plus"><summary>Plus d'options : date, grille, intitulé</summary><div class="grun-plusb">${nouveauBilanForm(j, null)}</div></details></div>
+      <div class="grun-actbar"><button class="gs-btn main" id="bfirst" type="button">Créer le premier bilan</button></div>`;
+    m.innerHTML = h; bindFiche(j); bindNouveauBilan(j, null); bindJActs(j);
+    $("#bfirst").onclick = ()=>{ creerBilanDuJour(j); UI.tab = "grilles"; rerender(); }; return; }
   const bs = sortB(j).reverse(), ra = bilanAfaire(j);
   /* un seul gros bouton : continuer le bilan affiché ou en créer un nouveau (date du jour, grille conseillée, mêmes tests) */
-  if(!RO()) h += `<div class="bil1${modeBilan?" on":""}"><div><b>${b.date===today()?"Bilan du jour":"Bilan du "+frD(b.date)}</b><small>${esc(gL(b))}${b.note?" · "+esc(b.note.slice(0,40)):""}</small></div>${b.date===today()?"":`<button class="go big" id="bnew1" type="button">Créer un nouveau bilan</button>`}</div>`;
+  if(!RO()) h += `<div class="bil1${modeBilan?" on":""}"><div><b>${b.date===today()?"Bilan du jour":"Bilan du "+frD(b.date)}</b><small>${esc(gL(b))}${b.note?" · "+esc(b.note.slice(0,40)):""}</small></div></div>`;
   h += `<details class="grun-plus" id="bplus"><summary>Plus d'options du bilan</summary><div class="grun-plusb">${ra && !RO()?`<p class="msg"><span class="bdg warn">${esc(ra)}</span></p>`:""}<div class="quick">
     <div class="f" style="flex:1;min-width:190px"><label for="bsel">Bilan affiché</label><select id="bsel">${bs.map(x=>`<option value="${x.id}" ${x.id===b.id?"selected":""}>${frD(x.date)} · ${gL(x)}${x.note?" · "+esc(x.note.slice(0,30)):""}</option>`).join("")}</select></div>
     ${RO()?"":`<div class="f"><label for="bdate">Date</label><input id="bdate" class="inp" type="date" value="${b.date}"></div>
@@ -844,11 +1021,15 @@ function showJoueur(id){
     ${RO()?"":`<p class="msg">Grille conseillée : ${esc(raisonGrille(j))}.</p><div id="nbf" hidden>${nouveauBilanForm(j, b)}</div>`}</div></details>`;
   const TABS = [["profil","Profil radar"],["grilles","Tests et grilles"],["prog","Progression"],["crois","Croissance"]];
   if(!TABS.some(t=>t[0]===UI.tab)) UI.tab = "profil";
-  h += `<div class="jump tabs" role="tablist">${TABS.map(([k,t])=>`<a href="#" role="tab" data-tab="${k}" class="${UI.tab===k?"on":""}" aria-selected="${UI.tab===k}">${t}</a>`).join("")}<a href="#/fiche/${j.id}/${b.id}">Fiche bilan ›</a></div><div id="tabc"></div>`;
+  h += `<div class="jump tabs" role="tablist">${TABS.map(([k,t])=>`<a href="#" role="tab" data-tab="${k}" class="${UI.tab===k?"on":""}" aria-selected="${UI.tab===k}">${t}</a>`).join("")}<a href="#/fiche/${j.id}/${b.id}">Fiche bilan ›</a></div><div id="tabc"></div>
+    ${RO()?"":`<div class="grun-actbar">${b.date===today()?`<button class="gs-btn main" id="bgo" type="button">Saisir les résultats</button>`:`<button class="gs-btn main" id="bnew1" type="button">Créer le bilan du jour</button>`}${pdfBtn('id="jpdf"', "Bilan PDF")}</div>`}`;
   m.innerHTML = h;
   const sc = $("#bcomp"); sc.value = UI.comp; if(sc.value!==UI.comp){ UI.comp = "prev"; sc.value = "prev"; }
   bindFiche(j); bindBilanBar(j, b);
-  const b1 = $("#bnew1"); if(b1) b1.onclick = ()=>{ const nb = newB(today(), conseil(j) || ak(b)); const w = semBilan(); nb.note = w ? w.t : ""; nb.sel = [...b.sel]; j.bilans.push(nb); j.cur = nb.id; jsave(j); UI.tab = "grilles"; rerender(); };
+  const b1 = $("#bnew1"); if(b1) b1.onclick = ()=>{ const undo = GR.ui.photo([GR.K.joueurs]); const nb = newB(today(), conseil(j) || ak(b)); const w = semBilan(); nb.note = w ? w.t : ""; nb.sel = b.sel.length ? [...b.sel] : prioTests(j, nb); j.bilans.push(nb); j.cur = nb.id; jsave(j); UI.tab = "grilles"; rerender(); GR.ui.annuler("Bilan du jour créé ("+nb.sel.length+" tests)", ()=>{ undo(); reroute(); }); };
+  const bg = $("#bgo"); if(bg) bg.onclick = ()=>{ if(UI.tab!=="grilles"){ UI.tab = "grilles"; uisave(); rerender(); } const t = $("#tabc input[data-t]") || $("#tpri"); if(t){ t.scrollIntoView({block:"center", behavior:"smooth"}); if(t.focus && t.matches("input")) setTimeout(()=>t.focus({preventScroll:true}), 350); } };
+  const jp = $("#jpdf"); if(jp) jp.onclick = ()=>pdfGo(jp, ()=>pdfBilan(j, b));
+  bindJActs(j);
   document.querySelectorAll("[data-tab]").forEach(a=>a.onclick = e=>{ e.preventDefault(); UI.tab = a.dataset.tab; uisave(); document.querySelectorAll("[data-tab]").forEach(x=>{ x.classList.toggle("on", x===a); x.setAttribute("aria-selected", x===a); }); renderTab(); });
   renderTab();
 }
@@ -858,27 +1039,29 @@ function renderTab(){ const {j, b} = CUR; const c = $("#tabc"); if(!c) return;
   else if(UI.tab==="prog"){ c.innerHTML = progressionHTML(j); }
   else { c.innerHTML = croissanceHTML(j); bindCroissance(j); } }
 function rerender(){ const y = scrollY; showJoueur(CUR.j.id); scrollTo(0,y); }
+function bindJActs(j){ const s = $("#jsais"); if(s) s.onclick = ()=>{ location.hash = "/saisie?j="+j.id; }; }
+/* bilan du jour : reprend celui d'aujourd'hui s'il existe, sinon le crée avec les tests conseillés (★) de la grille de son âge */
+function creerBilanDuJour(j, o){ o = o||{}; const d = o.date||today();
+  let b = (j.bilans||[]).find(x=>x.date===d && (!o.gb || x.gb===o.gb));
+  if(!b){ const l = lastB(j); b = newB(d, conseil(j) || (l?ak(l):10)); const w = semBilan(d); b.note = o.note!=null ? o.note : (w ? w.t : ""); if(o.gb) b.gb = o.gb; b.sel = o.tests ? [...o.tests] : prioTests(j, b); j.bilans.push(b); }
+  else if(o.tests) b.sel = [...new Set([...b.sel, ...o.tests])];
+  j.cur = b.id; jsave(j); return b; }
 
-function ficheForm(j, allg, gs){ const notIn = allg.filter(g=>!gs.some(x=>x.id===g.id));
-  return `<div class="quick" id="jform" hidden style="margin-top:10px">
-    <div class="f" style="flex:1;min-width:180px"><label for="en">Prénom et nom</label><input id="en" class="inp" value="${esc(j.nom)}"></div>
-    <div class="f"><label for="esx">Sexe</label><select id="esx"><option value="G" ${j.sexe==="G"?"selected":""}>Garçon</option><option value="F" ${j.sexe==="F"?"selected":""}>Fille</option></select></div>
-    <div class="f"><label for="enai">Naissance</label><input id="enai" class="inp" type="date" value="${esc(j.naissance||"")}"></div>
-    <div class="f"><label for="emain">Main</label><select id="emain"><option value="D" ${j.main!=="G"?"selected":""}>Droitier</option><option value="G" ${j.main==="G"?"selected":""}>Gaucher</option></select></div>
-    <div class="f"><label for="erev">Revers</label><select id="erev"><option value="2" ${j.revers!=="1"?"selected":""}>À 2 mains</option><option value="1" ${j.revers==="1"?"selected":""}>À 1 main</option></select></div>
-    <div class="f"><label for="ecl">Classement</label><input id="ecl" class="inp" list="dlcl2" value="${esc(j.classement||"NC")}" style="width:96px"><datalist id="dlcl2">${CLASS.map(c=>`<option value="${c}">`).join("")}</datalist></div>
-    <div class="f"><label for="egr">Groupe (texte libre)</label><input id="egr" class="inp" value="${esc(j.groupe||"")}" style="width:150px"></div>
-    ${notIn.length?`<div class="f"><label for="eadd">Ajouter à un groupe</label><select id="eadd"><option value="">—</option>${notIn.map(g=>`<option value="${g.id}">${esc(g.nom)}</option>`).join("")}</select></div>`:""}
-    <label class="ck"><input type="checkbox" id="ecr" ${j.croissance?"checked":""}> En pleine croissance</label>
-    <div class="f" style="flex-basis:100%"><label for="eobj">Objectifs</label><textarea id="eobj" class="inp ta">${esc(j.objectifs||"")}</textarea></div>
-    <div class="f" style="flex-basis:100%"><label for="enot">Notes</label><textarea id="enot" class="inp ta">${esc(j.notes||"")}</textarea></div>
-    <button class="go" id="esave" type="button">Enregistrer</button><button class="ib" id="jarch" type="button">Je ne l'entraîne plus</button><a class="ib" href="${GR.href("joueurs","#/j/"+j.id+"/fin")}">Supprimer définitivement…</a></div>`; }
+/* fiche : « Modifier la fiche » ouvre le formulaire unique de GRÜN (G.ui.completerProfil : nom, sexe, naissance, main, revers, classement,
+   mesures, parents, séances par semaine, zones, croissance, groupes, objectifs, notes ; enregistré tout de suite).
+   Ce que ce formulaire n'a pas reste ici, replié et enregistré automatiquement : groupe en texte libre (ancien champ), classement libre, archiver, supprimer. */
+function ficheForm(j, allg, gs){
+  return `<details class="grun-plus" id="jform"><summary>Plus d'options de la fiche</summary><div class="grun-plusb"><form class="quick" id="jff" autocomplete="off" onsubmit="return false">
+    <div class="f"><label for="ecl">Classement (texte libre)</label><input id="ecl" name="classement" class="inp" list="dlcl2" value="${esc(j.classement||"NC")}" style="width:110px"><datalist id="dlcl2">${[...new Set([...CLASS,...(GR.CLASSEMENTS||[])])].map(c=>`<option value="${c}">`).join("")}</datalist></div>
+    <div class="f"><label for="egr">Groupe (texte libre)</label><input id="egr" name="groupe" class="inp" value="${esc(j.groupe||"")}" style="width:150px"></div>
+    </form><p class="msg">Enregistré tout de suite. Les groupes GRÜN (avec leurs joueurs) se règlent dans « Modifier la fiche ».</p>
+    <div class="tools"><button class="ib" id="jarch" type="button">Je ne l'entraîne plus</button><a class="ib" href="${GR.href("joueurs","#/j/"+j.id+"/fin")}">Supprimer définitivement…</a></div></div></details>`; }
 function bindFiche(j){ if(RO()) return; const ed = $("#jedit"); if(!ed) return;
-  ed.onclick = ()=>{ $("#jform").hidden = !$("#jform").hidden; };
-  $("#esave").onclick = ()=>{ const n = $("#en").value.trim(); if(n) j.nom = n; j.sexe = $("#esx").value; j.naissance = $("#enai").value; j.main = $("#emain").value; j.revers = $("#erev").value; j.classement = $("#ecl").value.trim()||"NC"; j.groupe = $("#egr").value.trim(); j.croissance = $("#ecr").checked; j.objectifs = $("#eobj").value; j.notes = $("#enot").value; jsave(j);
-    const ad = $("#eadd"); if(ad && ad.value){ const g = GR.groupes.get(ad.value); if(g && !g.jids.includes(j.id)){ g.jids.push(j.id); GR.groupes.save(g); } } rerender(); };
-  /* archiver (dossier gardé, réactivable dans Individualisation) ; la suppression définitive se fait depuis le dossier de l'accueil (liste de ce qui sera effacé) */
-  const del = $("#jarch"); del.onclick = ()=>{ if(!del.dataset.ok){ del.dataset.ok = 1; del.textContent = "Toucher encore pour archiver"; setTimeout(()=>{ if(del.isConnected){ delete del.dataset.ok; del.textContent = "Je ne l'entraîne plus"; } },4000); return; } SELF++; try{ GR.joueurs.archiver ? GR.joueurs.archiver(j.id, true) : GR.joueurs.remove(j.id); } finally { SELF--; } location.hash = "j"; }; }
+  ed.onclick = ()=>GR.ui.completerProfil(j.id).then(()=>rerender());
+  const f = $("#jff"); if(f && GR.ui.autosave) GR.ui.autosave(f, F=>{ const x = getP(j.id); x.classement = String(F.get("classement")||"").trim()||"NC"; x.groupe = String(F.get("groupe")||"").trim(); jsave(x); j.classement = x.classement; j.groupe = x.groupe; }, 500);
+  /* archiver (dossier gardé, réactivable dans Individualisation) + « Annuler » ; la suppression définitive se fait depuis le dossier de l'accueil (liste de ce qui sera effacé) */
+  $("#jarch").onclick = ()=>{ const undo = GR.ui.photo([GR.K.joueurs, GR.K.groupes]); SELF++; try{ GR.joueurs.archiver ? GR.joueurs.archiver(j.id, true) : GR.joueurs.remove(j.id); } finally { SELF--; }
+    GR.ui.annuler((j.nom||"Joueur")+" n'est plus suivi", ()=>{ undo(); location.hash = "/joueur/"+j.id; }); location.hash = "j"; }; }
 function nouveauBilanForm(j, b){ const age = conseil(j) || (b?ak(b):10); const w = semBilan();
   return `<div class="quick" style="margin-top:8px">
     <div class="f"><label for="nbd">Date</label><input id="nbd" class="inp" type="date" value="${today()}"></div>
@@ -899,7 +1082,7 @@ function bindBilanBar(j, b){
   $("#bage").onchange = e=>{ b.age = clampA(+e.target.value); delete b.adulte; jsave(j); rerender(); };
   $("#bnew").onclick = ()=>{ $("#nbf").hidden = !$("#nbf").hidden; };
   bindNouveauBilan(j, b);
-  const bd = $("#bdel"); if(bd) bd.onclick = ()=>{ if(!bd.dataset.ok){ bd.dataset.ok = 1; bd.textContent = "Toucher encore pour supprimer"; setTimeout(()=>{ if(bd.isConnected){ delete bd.dataset.ok; bd.textContent = "Supprimer ce bilan"; } },4000); return; } j.bilans = j.bilans.filter(x=>x.id!==b.id); j.cur = lastB(j).id; jsave(j); rerender(); };
+  const bd = $("#bdel"); if(bd) bd.onclick = ()=>{ const undo = GR.ui.photo([GR.K.joueurs]); j.bilans = j.bilans.filter(x=>x.id!==b.id); j.cur = lastB(j).id; jsave(j); rerender(); GR.ui.annuler("Bilan du "+frD(b.date)+" supprimé", ()=>{ undo(); reroute(); }); };
 }
 let VIEWB = null, SEG = null; /* mode joueur : bilan affiché (pas enregistré sur la fiche) */
 
@@ -1018,7 +1201,7 @@ function grillesHTML(j, b){
   h += `</div>`;
   const hG = h; h = "";   /* les tests d'abord : leurs résultats donnent le niveau des lignes */
   const pri = prioTests(j,b); const sel = b.sel.filter(texists); const done = sel.filter(t=>niveau(t,j.sexe,ak(b),b.res[t])).length;
-  h += `<div class="sec"><h2>Tests du bilan</h2>${RO()?"":`<div class="tools"><button class="ib" id="tpri" type="button">★ Ajouter les ${pri.length} tests prioritaires</button><button class="ib" id="tchoose" type="button">Choisir les tests</button>${sel.length?`<button class="ib" id="tclear" type="button">Tout retirer</button>`:""}<a class="ib" href="#/test-nouveau">+ Créer un test</a></div>`}
+  h += `<div class="sec"><h2>Tests du bilan</h2>${RO()?"":`<div class="tools"><button class="ib" id="tpri" type="button">★ Ajouter les ${pri.length} tests prioritaires</button><button class="ib" id="tchoose" type="button">Choisir les tests</button>${sel.length?`<button class="ib" id="tclear" type="button">Tout retirer</button>`:""}<a class="ib" href="#/test-nouveau?r=${encodeURIComponent("/joueur/"+j.id+"/bilan")}">+ Créer un test</a></div>`}
     <p class="msg" style="margin-top:6px">${sel.length?`${done} fait${done>1?"s":""} sur ${sel.length} au programme. ${RO()?"":`Tape le résultat : le niveau se calcule avec le barème ${j.sexe==="F"?"filles":"garçons"} ${ak(b)+" ans"} (niveau le plus bas des mesures). Une ligne encore vide reçoit le niveau de ses tests.`}`:"Aucun test choisi pour ce bilan."}</p>
     <div id="tpick" hidden>${DOM3.map(d=>{ const c = gcode(j.sexe,ak(b),d); return `<div class="fold" style="--pc:var(--${d.toLowerCase()})"><h3>${DOMN[d]}</h3><div class="list">${X.g[c].map((L,i)=>{ if(!L) return ""; const T = lineT(j.sexe,ak(b),d,i);
       return `<div class="pk"><b>${i+1} · ${esc(LIGNES[d][i])}</b>${T.t.map(t=>`<label><input type="checkbox" data-t="${t}" ${b.sel.includes(t)?"checked":""}> ${T.p.includes(t)?"★ ":""}${esc(tnom(t))}${badgeT(t)}</label>`).join("")}</div>`; }).join("")}</div></div>`; }).join("")}</div>`;
@@ -1041,7 +1224,7 @@ function bindGrilles(j, b){
   $("#tpri").onclick = ()=>{ b.sel = [...new Set([...b.sel,...pri])]; jsave(j); rerender(); };
   $("#tchoose").onclick = ()=>{ $("#tpick").hidden = !$("#tpick").hidden; $("#tchoose").textContent = $("#tpick").hidden ? "Choisir les tests" : "Fermer et mettre à jour"; if($("#tpick").hidden) rerender(); };
   document.querySelectorAll("#tpick input[type=checkbox]").forEach(c=>c.onchange = ()=>{ const t = c.dataset.t; b.sel = c.checked ? [...new Set([...b.sel,t])] : b.sel.filter(x=>x!==t); jsave(j); });
-  const tcl = $("#tclear"); if(tcl) tcl.onclick = ()=>{ if(!tcl.dataset.ok){ tcl.dataset.ok = 1; tcl.textContent = "Toucher encore pour tout retirer"; return; } b.sel = []; jsave(j); rerender(); };
+  const tcl = $("#tclear"); if(tcl) tcl.onclick = ()=>{ const undo = GR.ui.photo([GR.K.joueurs]); b.sel = []; jsave(j); rerender(); GR.ui.annuler("Tests retirés du bilan", ()=>{ undo(); reroute(); }); };
   document.querySelectorAll("#tabc input[data-t][data-k]").forEach(inp=>inp.oninput = ()=>{ const t = inp.dataset.t, k = inp.dataset.k; setRes(j,b,t,k,inp.value); mresUpd(inp, t, b.res[t]);
     const lv = niveau(t,j.sexe,ak(b),b.res[t]); $("#lv_"+CSS.escape(t)).innerHTML = lv?lvB(lv):"–"; $("#bt_"+CSS.escape(t)).textContent = lv?btxt(t,j.sexe,ak(b),lv):"";
     const d = tdom(t); (X.g[gcode(j.sexe,ak(b),d)]||[]).forEach((L,i)=>{ const T = lineT(j.sexe,ak(b),d,i); if(!T||!T.t.includes(t)) return; const cell = $(`#tl_${d}_${i}`); const tl = lineTestsLevel(j,b,d,i); if(cell) cell.innerHTML = tl?lvB(tl):"–"; const s = document.querySelector(`.lvsel[data-d="${d}"][data-i="${i}"]`); if(s) s.value = b.v[d][i]==null?"":String(b.v[d][i]); });
@@ -1124,7 +1307,7 @@ function showFiche(jid, bid){
    ${b.note?`<div class="fold"><h3>Notes</h3><p>${esc(b.note)}</p></div>`:""}
    <p class="msg">Niveaux : 1 non acquis · 2 en cours d'acquisition · 3 acquis = attendu du haut niveau de l'âge · 4 maîtrisé.</p></div>`;
   $("#main").innerHTML = h;
-  $("#fprint").onclick = ()=>print();
+  $("#fprint").onclick = ()=>pdfGo($("#fprint"), ()=>pdfBilan(j, b)); ecran("fiche");
   $("#fpng").onclick = ()=>profilPNG(j,b).then(bl=>partagerFichier(bl, ("Profil_"+j.nom+"_"+b.date).replace(/[^\wÀ-ÿ-]+/g,"_")+".png"));
   $("#fshare").onclick = async ()=>{ const t = ficheTexte(j,b); if(navigator.share){ try{ await navigator.share({title:"Bilan "+j.nom, text:t}); return; }catch(e){ if(e&&e.name==="AbortError") return; } }
     try{ await navigator.clipboard.writeText(t); $("#fshare").textContent = "Texte copié ✓"; }catch(e){ modal(`<textarea class="inp ta" style="width:100%;min-height:260px">${esc(t)}</textarea><button class="ib" type="button" data-close>Fermer</button>`); } };
@@ -1138,17 +1321,32 @@ function ficheTexte(j, b){ const ax = [], fo = [];
 
 /* ---------- BILAN DE GROUPE ---------- */
 function gbs(){ return P.gbs = P.gbs||[]; }
-function showGBilan(arg){
+/* relais GRÜN « bilan-groupe » {type, gid, jids, date, retour} ou adresse #/gbilan?g=<gid>&d=<date> : la création est préremplie (groupe, joueurs, date) */
+function lireRelaisGB(q){ const qs = new URLSearchParams(q||""); let rl = null; try{ rl = GR.relais.lire(); }catch(e){}
+  const okR = rl && rl.vers==="grilles" && rl.type==="bilan-groupe" && !rl.res;
+  const gid = qs.get("g") || (okR ? rl.gid : ""); if(!gid && !okR) return;
+  const g = gid && GR.groupes.get(gid);
+  GB.gid = g ? g.id : ""; GB.jids = okR && Array.isArray(rl.jids) && rl.jids.length && (!qs.get("g") || rl.gid===qs.get("g")) ? rl.jids.filter(id=>GR.joueurs.get(id)) : (g ? [...g.jids] : []);
+  GB.date = qs.get("d") || (okR && rl.date) || today(); GB.tests = null; GB.nom = null;
+  GB.retour = okR ? (rl.retour||"") : (qs.get("retour")||""); GB.de = okR ? rl.de : ""; GB.relais = !!okR;
+  history.replaceState(null, "", "#/gbilan"); }
+function bandeauRetour(retour, de){ if(!retour) return ""; const nm = {accueil:"l'accueil", joueurs:"Individualisation", prog:"la programmation", seances:"la séance", warmup:"l'échauffement"}[de] || "la page précédente";
+  return `<div class="grun-relais"><button type="button" id="rlb">← Retour à ${esc(nm)}</button><span class="rlt">Bilan de groupe</span></div>`; }
+function bindRetour(retour){ const b = $("#rlb"); if(b) b.onclick = ()=>{ location.href = retour; }; }
+function showGBilan(arg, q){
   if(RO()) return showJoueur();
+  if(!arg) lireRelaisGB(q);
   document.documentElement.style.setProperty("--acc","var(--p5)"); const m = $("#main"); m.style.setProperty("--pc","var(--p5)");
   const [sid, sub] = (arg||"").split("/");
   if(sid){ const s = gbs().find(x=>x.id===sid); if(!s){ location.hash = "/gbilan"; return; } return sub==="feuille" ? showFeuille(s) : sub==="terrain" ? showTerrain(s) : showSession(s); }
   const grs = GR.groupes.all(), J = GR.joueurs.all(), w = semBilan();
   const pre = GB.jids || [];
-  let h = `<div class="crumb"><a href="#">Accueil</a>›<a href="#j">Joueurs</a>›<span>Bilan de groupe</span></div><h1 style="color:var(--p5)">Bilan de groupe</h1><p class="lead">Choisis un groupe ou des joueurs, la date et les tests : un nouveau bilan daté est créé dans le dossier de chacun, puis tu saisis test par test pour tout le groupe.</p>`;
+  if(!GB.gid && !GB.jids.length && GR.courant && GR.courant.gid()){ const g = GR.groupes.get(GR.courant.gid()); if(g){ GB.gid = g.id; GB.jids = [...g.jids]; } }   /* groupe en cours de GRÜN présélectionné */
+  ecran("gbilan");
+  let h = `${bandeauRetour(GB.retour, GB.de)}<div class="crumb"><a href="#">Accueil</a>›<a href="#j">Joueurs</a>›<span>Bilan de groupe</span></div><h1 style="color:var(--p5)">Bilan de groupe</h1><p class="lead">Choisis un groupe ou des joueurs, la date et les tests : un nouveau bilan daté est créé dans le dossier de chacun, puis tu saisis test par test pour tout le groupe.</p>`;
   if(gbs().length) h += `<div class="sec"><h2>Bilans de groupe en cours</h2><div class="list">${[...gbs()].reverse().map(s=>`<a class="li" href="#/gbilan/${s.id}"><span class="code">${frD(s.date)}</span><span class="tt">${esc(s.nom||"Bilan de groupe")}<small>${s.jids.length} joueurs · ${s.tests.length} tests</small></span></a>`).join("")}</div></div>`;
   h += `<div class="sec"><h2>Nouveau bilan de groupe</h2>${J.length?`<div class="quick">
-    ${grs.length?`<div class="f"><label for="gbg">Groupe</label><select id="gbg"><option value="">— choisir —</option>${grs.map(g=>`<option value="${g.id}" ${GB.gid===g.id?"selected":""}>${esc(g.nom)} (${g.jids.length})</option>`).join("")}</select></div>`:""}
+    ${grs.length?`<div class="f"><label for="gbg">Groupe</label><select id="gbg"><option value="">— choisir —</option>${grs.map(g=>`<option value="${g.id}" ${GB.gid===g.id?"selected":""}>${esc(g.nom)} (${g.jids.length})</option>`).join("")}</select></div>`:""}<button class="ib" id="gbng" type="button">+ Nouveau groupe</button>
     <div class="f"><label for="gbd">Date</label><input id="gbd" class="inp" type="date" value="${GB.date||today()}"></div>
     <div class="f" style="flex:1;min-width:170px"><label for="gbn">Intitulé</label><input id="gbn" class="inp" value="${esc(GB.nom!=null?GB.nom:(w?w.t:""))}" placeholder="Bilan de rentrée…"></div></div>
     <div class="fold"><h3>Joueurs</h3><div class="list">${J.map(j=>`<div class="pk"><label><input type="checkbox" data-gj="${j.id}" ${pre.includes(j.id)?"checked":""}> ${esc(j.nom)} <small class="msg">${j.sexe==="F"?"fille":"garçon"}${ageCiv(j.naissance)!=null?", "+ageCiv(j.naissance)+" ans":""} · ${"grille "+(conseil(j)||"?")+" ans"}</small></label></div>`).join("")}</div></div>
@@ -1158,8 +1356,10 @@ function showGBilan(arg){
   document.querySelectorAll("[data-gj]").forEach(c=>c.onchange = ()=>{ GB.jids = [...document.querySelectorAll("[data-gj]:checked")].map(x=>x.dataset.gj); GB.tests = null; gbTests(); });
   ["gbd","gbn"].forEach(id=>{ const e = $("#"+id); if(e) e.oninput = ()=>{ GB[id==="gbd"?"date":"nom"] = e.value; }; });
   if(J.length) gbTests();
+  bindRetour(GB.retour);
+  const ng = $("#gbng"); if(ng) ng.onclick = ()=>GR.ui.nouveauGroupe({jids:GB.jids}).then(g=>{ if(g){ GB.gid = g.id; GB.jids = [...g.jids]; GB.tests = null; showGBilan(); } });
 }
-const GB = {jids:[], tests:null};
+const GB = {jids:[], tests:null, gid:"", retour:"", de:""};
 function gbPlan(j){ const b = lastB(j); return {sx:j.sexe, age:conseil(j) || (b?ak(b):10)}; }
 function gbTests(){ const box = $("#gbt"); if(!box) return; const js = GB.jids.map(getP).filter(Boolean);
   if(!js.length){ box.innerHTML = `<p class="msg">Coche au moins un joueur.</p>`; return; }
@@ -1168,29 +1368,35 @@ function gbTests(){ const box = $("#gbt"); if(!box) return; const js = GB.jids.m
   if(!GB.tests) GB.tests = [...pri];
   box.innerHTML = `<div class="fold"><h3>Tests <small class="msg">(★ = prioritaire pour au moins un joueur ; ${GB.tests.length} choisis)</small></h3><div class="tools"><button class="ib" type="button" id="gbpri">Seulement les ★</button><button class="ib" type="button" id="gbnone">Aucun</button></div>
     ${DOM3.map(d=>avail[d].length?`<div class="fold" style="--pc:var(--${d.toLowerCase()})"><h3>${DOMN[d]}</h3><div class="list gbl">${avail[d].sort((a,c)=>(isPerso(a)-isPerso(c))||(a<c?-1:1)).map(t=>`<div class="pk"><label><input type="checkbox" data-gt="${t}" ${GB.tests.includes(t)?"checked":""}> ${pri.includes(t)?"★ ":""}${esc(tnom(t))}${badgeT(t)}</label></div>`).join("")}</div></div>`:"").join("")}
-    <div class="tools" style="margin-top:12px"><button class="go" id="gbok" type="button">Créer les bilans (${js.length} joueur${js.length>1?"s":""})</button></div><p class="msg" id="gbmsg"></p></div>`;
+    <p class="msg" id="gbmsg"></p><div class="grun-actbar"><button class="gs-btn main" id="gbok" type="button">Créer les bilans (${js.length} joueur${js.length>1?"s":""})</button></div></div>`;
   document.querySelectorAll("[data-gt]").forEach(c=>c.onchange = ()=>{ GB.tests = [...document.querySelectorAll("[data-gt]:checked")].map(x=>x.dataset.gt); });
   $("#gbpri").onclick = ()=>{ GB.tests = [...pri]; gbTests(); }; $("#gbnone").onclick = ()=>{ GB.tests = []; gbTests(); };
   $("#gbok").onclick = ()=>{ if(!GB.tests.length){ $("#gbmsg").textContent = "Choisis au moins un test."; return; }
     const date = $("#gbd").value||today(), nom = $("#gbn").value.trim(), s = {id:uid(), date, nom, gid:GB.gid||"", jids:[], tests:[...GB.tests], bids:{}, cree:today()};
+    if(GB.retour){ s.retour = GB.retour; s.de = GB.de||""; }
     js.forEach(j=>{ const p = gbPlan(j); const nb = newB(date, p.age); nb.note = nom; nb.gb = s.id; nb.sel = [...s.tests]; j.bilans.push(nb); j.cur = nb.id; jsave(j); s.jids.push(j.id); s.bids[j.id] = nb.id; });
-    gbs().push(s); save(); GB.jids = []; GB.tests = null; GB.nom = null; location.hash = "/gbilan/"+s.id; };
+    gbs().push(s); save(); if(GB.relais){ try{ GR.relais.rendre({gid:s.gid, date, sid:s.id, jids:s.jids, tests:s.tests.length}); }catch(e){} }
+    GB.jids = []; GB.tests = null; GB.nom = null; GB.gid = ""; GB.retour = ""; GB.relais = false; location.hash = "/gbilan/"+s.id; };
 }
 function sessRows(s){ return s.jids.map(id=>{ const j = getP(id); if(!j) return null; const b = j.bilans.find(x=>x.id===s.bids[id]); return b ? {j, b} : null; }).filter(Boolean); }
 function showSession(s){
   const R = sessRows(s); const k = Math.max(0, Math.min(s.tests.length-1, +(s.k||0))); const t = s.tests[k];
-  let h = `<div class="crumb"><a href="#">Accueil</a>›<a href="#j">Joueurs</a>›<a href="#/gbilan">Bilan de groupe</a>›<span>${frD(s.date)}</span></div>
-   <div class="dochead"><h1 style="color:var(--p5)">${esc(s.nom||"Bilan de groupe")} · ${frD(s.date)}</h1><div class="acts"><a class="go" href="#/gbilan/${s.id}/terrain">▶ Mode terrain</a><a class="ib" href="#/gbilan/${s.id}/feuille">Feuille à imprimer</a><button class="ib" id="gsdel" type="button">Retirer de la liste</button></div></div>
+  ecran("gbilan-saisie");
+  let h = `${bandeauRetour(s.retour, s.de)}<div class="crumb"><a href="#">Accueil</a>›<a href="#j">Joueurs</a>›<a href="#/gbilan">Bilan de groupe</a>›<span>${frD(s.date)}</span></div>
+   <div class="dochead"><h1 style="color:var(--p5)">${esc(s.nom||"Bilan de groupe")} · ${frD(s.date)}</h1><div class="acts"><a class="ib" href="#/gbilan/${s.id}/feuille">Feuille à imprimer</a>${pdfBtn('id="gspdf"', "Feuille PDF")}</div></div>
    <p class="lead">${R.length} joueurs · test ${k+1} sur ${s.tests.length}. Le niveau se calcule avec le barème de chaque joueur (sexe, grille) et remplit ses lignes vides.</p>
    <div class="quick" style="margin-top:10px"><button class="ib" id="gsp" type="button" ${k<=0?"disabled":""}>‹ Précédent</button><div class="f" style="flex:1;min-width:200px"><label for="gst">Test</label><select id="gst">${s.tests.map((x,n)=>`<option value="${n}" ${n===k?"selected":""}>${n+1} · ${esc(tnom(x))}</option>`).join("")}</select></div><button class="ib" id="gsn" type="button" ${k>=s.tests.length-1?"disabled":""}>Suivant ›</button></div>`;
   if(t){ h += `<div class="fold" style="--pc:var(--${tdom(t).toLowerCase()})"><h3><a class="ref" href="${isPerso(t)?"#/test/"+t:"#d/"+t}">${esc(tnom(t))}</a>${badgeT(t)} <small class="msg">${esc(tunite(t))}</small></h3><div class="tw"><table class="jt"><thead><tr><th>Joueur</th><th>Résultat</th><th>Niveau</th></tr></thead><tbody>${R.map(({j,b})=>{ const ms = mesuresOf(t,j.sexe,ak(b)), r = b.res[t]||{}, lv = niveau(t,j.sexe,ak(b),r);
       return `<tr><td><a class="ref" href="#/joueur/${j.id}">${esc(j.nom)}</a><div class="lvtxt">${j.sexe==="F"?"F":"G"} · ${gL(b)}</div><div class="lvtxt" id="gbt_${j.id}">${lv?esc(btxt(t,j.sexe,ak(b),lv)):""}</div></td>
       <td>${mesHTML(t, j.sexe, ak(b), r, `data-gjid="${j.id}"`)}</td><td class="c" id="glv_${j.id}">${lv?lvB(lv):"–"}</td></tr>`; }).join("")}</tbody></table></div></div>`; }
   h += `<div class="fold"><h3>Avancement</h3><div class="tw"><table class="jt pg"><thead><tr><th>Joueur</th>${s.tests.map((x,n)=>`<th class="c" title="${esc(tnom(x))}">${n+1}</th>`).join("")}</tr></thead><tbody>${R.map(({j,b})=>`<tr><td>${esc(j.nom)}</td>${s.tests.map(x=>{ const lv = niveau(x,j.sexe,ak(b),b.res[x]); return `<td class="c">${lv?lvB(lv):(b.res[x]?"…":"·")}</td>`; }).join("")}</tr>`).join("")}</tbody></table></div></div>`;
-  $("#main").innerHTML = h;
+  h += `<details class="grun-plus"><summary>Plus d'options</summary><div class="grun-plusb"><div class="tools"><button class="ib" id="gsdel" type="button">Retirer de la liste</button></div></div></details>
+   <div class="grun-actbar"><a class="gs-btn main" href="#/gbilan/${s.id}/terrain">▶ Mode terrain</a></div>`;
+  $("#main").innerHTML = h; bindRetour(s.retour);
+  $("#gspdf").onclick = ()=>pdfGo($("#gspdf"), ()=>pdfFeuille(s));
   const go = n => { s.k = n; save(); showSession(s); scrollTo(0,0); };
   $("#gsp").onclick = ()=>go(k-1); $("#gsn").onclick = ()=>go(k+1); $("#gst").onchange = e=>go(+e.target.value);
-  const del = $("#gsdel"); del.onclick = ()=>{ if(!del.dataset.ok){ del.dataset.ok = 1; del.textContent = "Toucher encore (les bilans restent dans les dossiers)"; return; } P.gbs = gbs().filter(x=>x.id!==s.id); save(); location.hash = "/gbilan"; };
+  const del = $("#gsdel"); del.onclick = ()=>{ const k = gbs().indexOf(s); P.gbs = gbs().filter(x=>x.id!==s.id); save(); location.hash = "/gbilan"; GR.ui.annuler("Retiré de la liste (les bilans restent dans les dossiers)", ()=>{ gbs().splice(Math.max(0,k), 0, s); save(); location.hash = "/gbilan/"+s.id; }); };
   document.querySelectorAll("input[data-gjid]").forEach(inp=>inp.oninput = ()=>{ const j = getP(inp.dataset.gjid); if(!j) return; const b = j.bilans.find(x=>x.id===s.bids[j.id]); if(!b) return;
     setRes(j,b,t,inp.dataset.k,inp.value); mresUpd(inp, t, b.res[t]); if(!b.sel.includes(t)) b.sel.push(t); jsave(j); const lv = niveau(t,j.sexe,ak(b),b.res[t]); $("#glv_"+CSS.escape(j.id)).innerHTML = lv?lvB(lv):"–"; $("#gbt_"+CSS.escape(j.id)).textContent = lv?btxt(t,j.sexe,ak(b),lv):""; });
 }
@@ -1200,7 +1406,7 @@ const isCount = u => /r[ée]p|nb|nombre|touch|coups?|balles?|pts|points?|sauts?|
 let CHR = null;
 function terrUnit(t, k){ return isPerso(t) ? messOf(t,k).u : (X.u[t]||""); }
 function posBar(t, sx, age, lv){ return `<div class="pos4">${[1,2,3,4].map(n=>`<div class="p n${n}${lv===n?" on":""}"><b>${n} · ${NVN[n]}</b><span>${esc(btxt(t,sx,age,n))}</span></div>`).join("")}</div>`; }
-function showTerrain(s){
+function showTerrain(s){ ecran("terrain");
   const R = sessRows(s); if(!R.length || !s.tests.length){ location.hash = "/gbilan/"+s.id; return; }
   const k = Math.max(0, Math.min(s.tests.length-1, +(s.k||0))), t = s.tests[k];
   let pi = Math.max(0, Math.min(R.length-1, +(s.p||0))); const {j, b} = R[pi], age = ak(b), r = b.res[t]||{}, lv = niveau(t,j.sexe,age,r);
@@ -1223,7 +1429,7 @@ function showTerrain(s){
   $("#trt").onchange = e=>go(+e.target.value, 0);
   document.querySelectorAll("[data-p]").forEach(c=>c.onclick = ()=>go(k, +c.dataset.p));
   $("#trprev").onclick = ()=> pi>0 ? go(k, pi-1) : go(k-1, R.length-1);
-  $("#trnext").onclick = ()=> !last ? go(k, pi+1) : !lastT ? go(k+1, 0) : (location.hash = "/gbilan/"+s.id);
+  $("#trnext").onclick = ()=> !last ? go(k, pi+1) : !lastT ? go(k+1, 0) : (s.retour ? (GR.ui.toast("Bilan de groupe terminé"), location.href = s.retour) : (location.hash = "/gbilan/"+s.id));
   const ins = [...document.querySelectorAll(".tin input")]; let cur = ins.find(x=>!x.value) || ins[0];
   const upd = ()=>{ const lv2 = niveau(t,j.sexe,age,b.res[t]); $("#trres").innerHTML = lv2?`Niveau ${lvB(lv2)} · ${esc(NVN[lv2])}`:`<span class="msg">Résultat incomplet.</span>`; if(ms.length) $("#trpos").innerHTML = posBar(t,j.sexe,age,lv2);
     const ch = document.querySelectorAll(".chip")[pi], ok = !!lv2 || resKeys(b.res[t]).length>0; ch.classList.toggle("ok", ok); ch.textContent = (ok?"✓ ":"")+j.nom.split(" ")[0]; };
@@ -1241,7 +1447,7 @@ function showFeuille(s){ const R = sessRows(s);
    <p class="msg">Note les résultats à la main, puis saisis-les test par test dans l'appli. Repère du niveau 3 = barème de la grille du joueur.</p>`;
   h += s.tests.map((t,n)=>{ const ms = [...new Set(R.flatMap(({j,b})=>mesuresOf(t,j.sexe,ak(b))||[]))];
     return `<div class="fold fsheet"><h3>${n+1} · ${esc(tnom(t))} <small class="msg">${esc(tunite(t))}</small></h3><div class="tw"><table class="jt fs"><thead><tr><th>Joueur</th><th>Grille</th>${(ms.length?ms:["Résultat"]).map(k=>`<th>${esc(mlabel(t,k))}</th>`).join("")}<th>Niveau 3</th></tr></thead><tbody>${R.map(({j,b})=>`<tr><td>${esc(j.nom)}</td><td>${j.sexe} ${ak(b)}</td>${(ms.length?ms:["x"]).map(()=>`<td class="blank"></td>`).join("")}<td><small>${esc(btxt(t,j.sexe,ak(b),3)||"–")}</small></td></tr>`).join("")}</tbody></table></div></div>`; }).join("");
-  $("#main").innerHTML = h; $("#fprint").onclick = ()=>print(); }
+  $("#main").innerHTML = h; $("#fprint").onclick = ()=>pdfGo($("#fprint"), ()=>pdfFeuille(s)); ecran("feuille"); }
 
 /* ---------- TESTS PERSO : liste, fiche, formulaire, éditeur de barèmes ---------- */
 function showMesTests(){
@@ -1249,9 +1455,9 @@ function showMesTests(){
   const per = tc().per, ov = Object.keys(tc().ov).filter(t=>BY[t]);
   let h = `<div class="crumb"><a href="#">Accueil</a>›<a href="#p/3">3 · Tests</a>›<span>Mes tests</span></div><div class="dochead"><h1 style="color:${pc("3")}">Mes tests et barèmes</h1>${RO()?"":`<div class="acts"><a class="ib" href="#/test-nouveau">+ Créer un test</a></div>`}</div>
    <p class="lead">Tes tests apparaissent partout comme ceux d'origine : catalogue, grilles (là où ils ont un barème), tests du bilan, calcul du niveau.</p>`;
-  h += `<div class="sec"><h2>Mes tests</h2>${per.length?`<div class="list">${per.map(t=>`<a class="li" href="#/test/${t.id}"><span class="code">${t.id.replace("T-MOI-","MOI ")}</span><span class="tt">${t.prio?"★ ":""}${esc(t.nom)} <span class="bdg">mon test</span><small>${DOMN[t.dom]||""} · ligne${(t.lignes||[]).length>1?"s":""} ${(t.lignes||[]).join(", ")||"–"} · ${nbAges(t.id)} âges avec barème</small></span></a>`).join("")}</div>`:`<div class="empty">Aucun test perso. ${RO()?"":`<a href="#/test-nouveau">Crée le premier</a>.`}</div>`}</div>`;
+  h += `<div class="sec"><h2>Mes tests</h2>${per.length?`<div class="list">${per.map(t=>`<a class="li" href="#/test/${t.id}"><span class="code">${t.id.replace("T-MOI-","MOI ")}</span><span class="tt">${t.prio?"★ ":""}${esc(t.nom)} <span class="bdg">mon test</span><small>${DOMN[t.dom]||""} · ligne${(t.lignes||[]).length>1?"s":""} ${(t.lignes||[]).join(", ")||"–"} · ${nbAges(t.id)} âges avec barème</small></span></a>`).join("")}</div>`:`<div class="empty">Aucun test personnel. ${RO()?"":`<a href="#/test-nouveau">Crée le premier</a>.`}</div>`}</div>`;
   h += `<div class="sec"><h2>Tests d'origine modifiés</h2>${ov.length?`<div class="list">${ov.map(t=>`<a class="li" href="#d/${t}"><span class="code">${t}</span><span class="tt">${esc(tnom(t))} <span class="bdg mod">modifié</span><small>${esc(BY[t].ch)}</small></span></a>`).join("")}</div>`:`<div class="empty">Aucun. Ouvre un test du catalogue et touche « Modifier ce test ».</div>`}</div>`;
-  m.innerHTML = h;
+  m.innerHTML = h; ecran("mestests");
 }
 const ageRows = (t, sx) => AGES.filter(a=>seuilsOf(t,sx,a));
 function nbAges(t){ let n = 0; for(const sx of ["F","G"]) for(const a of AGES) if(seuilsOf(t,sx,a)) n++; return n; }
@@ -1268,7 +1474,7 @@ function showTestPerso(id, hint){
    <p><b>Mesure${pmes(t).length>1?"s":""}.</b> ${pmes(t).map(x=>esc(x.nom)+(x.unite?" ("+esc(x.unite)+")":"")+(x.essais>1?" · "+x.essais+" essais, "+(x.calc==="mean"?"moyenne retenue":"meilleur retenu"):"")).join(" ; ")} · ${t.sens==="petit"?"plus petit = meilleur":"plus grand = meilleur"}</p></section>
    ${baremeTable(id,"F")}${baremeTable(id,"G")}
    ${uses.F.length||uses.G.length?`<h3>Dans les grilles</h3>${["F","G"].map(sx=>uses[sx].length?`<p><b>${sx==="F"?"Filles":"Garçons"} :</b> ${uses[sx].map(([a,n])=>`<a class="ref" href="#/ligne/${t.dom}${n}/${sx}/${a}">${a} ans</a>`).join(" · ")}</p>`:"").join("")}`:`<p class="msg">Pas encore de barème : ajoute des seuils pour qu'il apparaisse dans les grilles.</p>`}</article>`;
-  $("#tpdf").onclick = ()=>print();
+  $("#tpdf").onclick = ()=>pdfGo($("#tpdf"), ()=>pdfTestPerso(id)); ecran("test-perso");
   if(hint && hint.startsWith("b")) goBareme(hint.slice(1));
 }
 /* éditeur (test perso ou modification d'un test d'origine) */
@@ -1287,7 +1493,7 @@ function showTestEdit(id, q){
   if(RO()){ $("#main").innerHTML = `<div class="empty">La création et la modification des tests sont réservées au coach.</div>`; return; }
   if(id && !tc().by[id] && !BY[id]){ location.hash = "/mestests"; return; }
   const opt = Object.fromEntries(new URLSearchParams(q||""));
-  TE = teInit(id, opt); renderTE();
+  TE = teInit(id, opt); TE.r = opt.r || ""; renderTE(); ecran(id ? "test-edit" : "test-nouveau");
 }
 function teAsc(k, th){ if(TE.mode==="perso"){ const m = TE.mesures.find(x=>x.k===k); return ((m&&m.sens)||TE.sens)!=="petit"; } return th[0]<th[2] || (th[0]===th[2] && /grand/.test(X.sens[TE.id]||"")); }
 function teUnit(k){ if(TE.mode==="perso"){ const m = TE.mesures.find(x=>x.k===k); return m&&m.unite ? " "+m.unite : ""; } return " "+k; }
@@ -1315,7 +1521,7 @@ function renderTE(){
     <div class="quick" style="margin-top:8px"><span class="msg">Remplir en interpolant entre</span><select id="tia">${AGES.map(a=>`<option ${a===8?"selected":""}>${a}</option>`).join("")}</select><span class="msg">et</span><select id="tib">${AGES.map(a=>`<option ${a===16?"selected":""}>${a}</option>`).join("")}</select><span class="msg">ans</span><button class="ib sm" type="button" id="tint">Interpoler</button></div>
     <div class="fold"><h3>Aperçu des 4 niveaux · ${t.sx==="F"?"fille":"garçon"} <select id="tepa" aria-label="Âge de l'aperçu">${AGESA.map(a=>`<option value="${a}" ${String(a)===String(t.pa)?"selected":""}>${agL(a)}</option>`).join("")}</select></h3><div id="teap"></div></div>
    </div>
-   <div class="tools" style="margin-top:16px"><button class="go" id="tesave" type="button">Enregistrer</button><a class="ib" href="${t.id?(orig?"#d/"+t.id:"#/test/"+t.id):"#/mestests"}">Annuler</a>${isOv?`<button class="ib" id="tereset" type="button">Remettre l'original</button>`:""}${t.mode==="perso"&&t.id?`<button class="ib" id="tedel" type="button">Supprimer ce test</button>`:""}</div><p class="msg" id="temsg"></p>`;
+   <div class="tools grun-actbar" style="margin-top:16px"><button class="gs-btn main" id="tesave" type="button">Enregistrer</button><a class="ib" href="${t.r?"#"+esc(t.r):t.id?(orig?"#d/"+t.id:"#/test/"+t.id):"#/mestests"}">Annuler</a>${isOv?`<button class="ib" id="tereset" type="button">Remettre l'original</button>`:""}${t.mode==="perso"&&t.id?`<button class="ib" id="tedel" type="button">Supprimer ce test</button>`:""}</div><p class="msg" id="temsg"></p>`;
   m.innerHTML = h; bindTE(); apercu();
 }
 function apercu(){ const t = TE, a = t.pa, box = $("#teap"); if(!box) return; const th = teRow(t.sx,a,t.mk);
@@ -1360,13 +1566,16 @@ function bindTE(){ const t = TE, re = ()=>{ teRead(); const y = scrollY; renderT
     if(bad.length){ msg.textContent = "Seuils dans le désordre : "+bad.slice(0,6).join(", ")+(bad.length>6?"…":"")+". Corrige avant d'enregistrer."; return; }
     if(part.length){ msg.textContent = "Barème incomplet (3 seuils nécessaires) : "+part.slice(0,6).join(", ")+(part.length>6?"…":"")+"."; return; }
     if(t.mode==="perso"){ const rec = {nom:t.nom.trim(), dom:t.dom, lignes:t.lignes, protocole:t.protocole, materiel:t.materiel, mesures:t.mesures, sens:t.sens, prio:t.prio, vid:t.vid, seuils:out};
-      let id = t.id; if(id) GR.tests.edit(id, rec); else id = GR.tests.add(rec).id; TC = null; location.hash = "/test/"+id; return; }
+      let id = t.id; const neuf = !id; if(id) GR.tests.edit(id, rec); else id = GR.tests.add(rec).id; TC = null;
+      /* créé depuis un bilan : ajouté à ce bilan, retour au bilan */
+      if(neuf && t.r){ const mm = /^\/joueur\/([^/]+)/.exec(t.r); const jj = mm && getP(mm[1]); const bb = jj && curB(jj); if(bb && !bb.sel.includes(id)){ bb.sel.push(id); jsave(jj); } GR.ui.toast("Test créé et ajouté au bilan"); location.hash = t.r; return; }
+      location.hash = "/test/"+id; return; }
     const patch = {}; if(t.protocole.trim()) patch.protocole = t.protocole; if(t.materiel!==(X.mat[t.id]||"")) patch.materiel = t.materiel; if(t.vid) patch.vid = t.vid;
     const same = ["F","G"].every(sx=>AGESA.every(a=>JSON.stringify(out[sx][a]||null)===JSON.stringify((X.s[t.id]&&X.s[t.id][sx]&&X.s[t.id][sx][a])||null)));
     if(!same) patch.seuils = out;
     GR.tests.reset(t.id); if(Object.keys(patch).length) GR.tests.edit(t.id, patch); TC = null; location.hash = "d/"+t.id; };
-  const rs = $("#tereset"); if(rs) rs.onclick = ()=>{ if(!rs.dataset.ok){ rs.dataset.ok = 1; rs.textContent = "Toucher encore pour remettre l'original"; return; } GR.tests.reset(t.id); TC = null; location.hash = "d/"+t.id; };
-  const dl = $("#tedel"); if(dl) dl.onclick = ()=>{ if(!dl.dataset.ok){ dl.dataset.ok = 1; dl.textContent = "Toucher encore pour supprimer"; return; } GR.tests.remove(t.id); TC = null; location.hash = "/mestests"; };
+  const rs = $("#tereset"); if(rs) rs.onclick = ()=>{ const undo = GR.ui.photo([GR.K.tests]); GR.tests.reset(t.id); TC = null; location.hash = "d/"+t.id; GR.ui.annuler("Test d'origine remis", ()=>{ undo(); TC = null; route(); }); };
+  const dl = $("#tedel"); if(dl) dl.onclick = ()=>{ const undo = GR.ui.photo([GR.K.tests]), id = t.id; GR.tests.remove(id); TC = null; location.hash = "/mestests"; GR.ui.annuler("Test supprimé", ()=>{ undo(); TC = null; location.hash = "/test/"+id; }); };
 }
 
 /* ---------- enrichissement des documents (grilles et fiches de tests) ---------- */
@@ -1385,7 +1594,7 @@ function enhanceTest(x){ const t = x.c, o = tov(t);
   if(!o) return;
   const h1 = document.querySelector(".dochead h1"); if(h1) h1.insertAdjacentHTML("beforeend", ' <span class="bdg mod">modifié</span>');
   const doc = $("#doc"); doc.insertAdjacentHTML("afterbegin", `<div class="att mine"><b>Ta version</b>${o.protocole?`<p>${esc(o.protocole).replace(/\n/g,"<br>")}</p>`:""}${o.materiel!=null&&o.materiel!==(X.mat[t]||"")?`<p><b>Matériel :</b> ${esc(o.materiel)}</p>`:""}${o.seuils?"<p>Barèmes modifiés (ci-dessous).</p>":""}${RO()?"":`<p class="tools"><a class="ib sm" href="#/test-edit/${t}">Modifier</a><button class="ib sm" type="button" id="treset">Remettre l'original</button></p>`}</div>`);
-  const rs = $("#treset"); if(rs) rs.onclick = ()=>{ if(!rs.dataset.ok){ rs.dataset.ok = 1; rs.textContent = "Toucher encore pour remettre l'original"; return; } GR.tests.reset(t); TC = null; route(); };
+  const rs = $("#treset"); if(rs) rs.onclick = ()=>{ const undo = GR.ui.photo([GR.K.tests]); GR.tests.reset(t); TC = null; route(); GR.ui.annuler("Test d'origine remis", ()=>{ undo(); TC = null; route(); }); };
   if(o.seuils) doc.querySelectorAll("details").forEach(det=>{ const s = det.querySelector("summary").textContent; const k = /^Barèmes · (filles|garçons)/.exec(s); if(!k) return; const sx = k[1]==="filles"?"F":"G";
     const tb = det.querySelector("tbody"); if(!tb) return; det.querySelector("summary").textContent = s+" (modifiés)";
     tb.innerHTML = ageRows(t,sx).map(a=>`<tr id="b${sx}${a}"><td><b>${agL(a)}</b></td>${[1,2,3,4].map(lv=>`<td>${esc(btxt(t,sx,a,lv))}</td>`).join("")}</tr>`).join("") || `<tr><td colspan="5">Aucun barème.</td></tr>`; });
@@ -1418,6 +1627,218 @@ GR.on("grun:joueurs", ()=>{ if(SELF) return; const h = location.hash;
   const a = document.activeElement; if(DRAG!=null || (a && a.matches && a.matches("input,textarea,select") && $("#main").contains(a))){ if(!pendingRe){ pendingRe = true; addEventListener("focusout", ()=>{ pendingRe = false; setTimeout(reroute, 0); }, {once:true}); } return; }
   reroute(); });
 function reroute(){ const y = scrollY; route(); scrollTo(0,y); }
+
+/* ===================== CHEMIN ULTRA INTUITIF (§10) ===================== */
+/* ---------- « ? » : une aide par écran (G.aide) ---------- */
+const AIDES = {
+  accueil: "Grilles et tests : la grille de compétences de chaque âge (filles et garçons), les tests (un test = une mesure) et les bilans (un bilan = une batterie de tests). En haut, les grilles de ton joueur en cours ; « Saisir un test ou un bilan » fait tout en un écran.",
+  porte: "Une porte : tous les documents d'un même ensemble (grilles filles, grilles garçons, fiches de tests, mode d'emploi). Touche un document pour l'ouvrir.",
+  grille: "Une grille : les lignes de compétences de cet âge et leurs 4 niveaux (3 = attendu du haut niveau de sa génération). Touche une ligne pour ses tests et ses exercices ; « Grille PDF » crée le fichier.",
+  test: "Une fiche de test : protocole, matériel et barèmes de tous les âges. « Modifier ce test » garde ta version ; « Test PDF » crée le fichier.",
+  recherche: "La recherche des grilles et des tests : tape un mot (« sprint »), ou un code de grille : « F12 » = grille fille 12 ans, « G15 DE » = déplacement garçon 15 ans.",
+  joueurs: "Tes joueurs, avec leur dernier bilan. « + Nouveau joueur » en bas (prénom, sexe, naissance), le reste se complète dans son dossier. Le filtre garde le groupe choisi.",
+  joueur: "Le dossier grilles du joueur : profil radar, tests et grilles du bilan, progression, croissance. Le bouton du bas crée le bilan du jour (tests conseillés pour son âge) ou ouvre la saisie ; « Bilan PDF » crée le fichier.",
+  fiche: "La fiche bilan à partager : radars, axes de travail, résultats. « Bilan PDF » crée un vrai fichier ; « Partager le texte » l'envoie par message.",
+  gbilan: "Le bilan de groupe : le groupe, la date et les tests sont préremplis (★ = conseillés). « Créer les bilans » ajoute un bilan daté dans le dossier de chaque joueur, puis tu saisis en mode terrain.",
+  "gbilan-saisie": "La saisie du bilan de groupe, test par test. « ▶ Mode terrain » : un joueur après l'autre, gros champs, chrono ou compteur. Tout s'enregistre seul.",
+  terrain: "Le mode terrain : un test, les joueurs l'un après l'autre. Le niveau s'affiche dès que tu tapes ; « Joueur suivant » enchaîne.",
+  feuille: "La feuille à imprimer : une ligne par joueur et par test, avec le repère du niveau 3. « Feuille PDF » crée le fichier.",
+  mestests: "Tes tests personnels et les tests d'origine que tu as modifiés. Ils apparaissent partout comme ceux d'origine.",
+  "test-perso": "Ton test : protocole, mesures et barèmes par âge. « Modifier » pour changer ; « Test PDF » crée le fichier.",
+  "test-edit": "L'éditeur de test : nom, lignes, mesures, puis les 3 seuils par âge (passage aux niveaux 2, 3 et 4). Copier filles → garçons et Interpoler remplissent vite.",
+  "test-nouveau": "Créer un test personnel : nom, domaine, lignes de la grille, mesures, puis les barèmes par âge et par sexe.",
+  saisie: "Tout en un écran : 1 · choisis un bilan prêt ou un test, 2 · le joueur ou le groupe (le joueur en cours est déjà choisi), 3 · tape les résultats. Tout s'enregistre seul dans le bilan du jour de chaque joueur."
+};
+Object.entries(AIDES).forEach(([k,t])=>{ try{ GR.aide("grilles/"+k, t); }catch(e){} });
+function ecran(k){ try{ GR.aide.ecran("grilles/"+k); }catch(e){} }
+
+/* ---------- BATTERIES PRÊTES (bilans) : construites à partir des tests ★ des grilles de l'âge de chaque joueur ---------- */
+const BANDES = [[4,6],[7,8],[9,10],[11,12],[13,14],[15,16],[17,18]];
+const bandeTxt = ages => { if(!ages.length) return ""; const lo = Math.min(...ages), hi = Math.max(...ages); const b1 = BANDES.find(([x,y])=>lo>=x&&lo<=y)||[lo,lo], b2 = BANDES.find(([x,y])=>hi>=x&&hi<=y)||[hi,hi]; return b1[0]+"-"+b2[1]+" ans"; };
+function prioFor(sx, age, doms, lines){ const out = []; doms.forEach(d=>(X.g[gcode(sx,age,d)]||[]).forEach((L,i)=>{ if(!L || (lines && !lines.includes(i+1))) return; const T = lineT(sx,age,d,i); if(!T) return; T.p.forEach(p=>{ if(p && !out.includes(p) && seuilsOf(p,sx,age)) out.push(p); }); })); return out; }
+const testsLigne = (sx, age, d, n) => { const T = lineT(sx, age, d, n-1); return T ? T.t.filter(t=>seuilsOf(t,sx,age)) : []; };
+const BATT = [
+  {k:"rentree", n:"Bilan de rentrée", s:"Le bilan complet de début de saison : les tests ★ des 3 grilles de son âge.", f:(sx,a)=>prioFor(sx,a,DOM3)},
+  {k:"mi", n:"Bilan mi-saison", s:"Le physique à mi-parcours : force, gainage, sauts, vitesse, agilité, endurance (tests ★).", f:(sx,a)=>prioFor(sx,a,["PP"],[1,3,4,6,7,8])},
+  {k:"blessure", n:"Bilan retour de blessure", s:"Avant de reprendre l'intensité, sans sprint ni test maximal : équilibre, mobilité, gainage, force du bas du corps, contrôle des réceptions.", f:(sx,a)=>[...new Set([...prioFor(sx,a,["PP"],[1,3,11,12]), ...testsLigne(sx,a,"PP",4).filter(t=>/r[ée]ception|contr[ôo]le du genou/i.test(tnom(t)))])]},
+  {k:"express", n:"Bilan express", s:"3 tests en 10 minutes pour un groupe : saut, vitesse, changement de direction.", f:(sx,a)=>prioFor(sx,a,["PP"],[4,6,7])},
+  {k:"geste", n:"Bilan du geste", s:"Les tests ★ de la grille Biomécanique du geste.", f:(sx,a)=>prioFor(sx,a,["GE"])},
+  {k:"depl", n:"Bilan du déplacement", s:"Les tests ★ de la grille Biomécanique du déplacement.", f:(sx,a)=>prioFor(sx,a,["DE"])}
+];
+const ageJ = j => conseil(j) || (lastB(j) ? ak(lastB(j)) : 10);
+function battTests(k, js){ const B = BATT.find(x=>x.k===k); if(!B) return []; const out = []; (js.length ? js : []).forEach(j=>B.f(j.sexe, ageJ(j)).forEach(t=>{ if(!out.includes(t)) out.push(t); })); return out; }
+const battNom = (k, js) => { const B = BATT.find(x=>x.k===k); if(!B) return ""; const t = bandeTxt(js.map(ageJ)); return B.n+(t?" "+t:""); };
+
+/* ---------- SAISIR UN TEST OU UN BILAN EN 1 ÉCRAN : quoi · pour qui · résultats ---------- */
+const SA = {bat:"", t:[], jids:[], gid:"", date:"", q:"", key:null};
+function showSaisie(q){
+  if(RO()) return showJoueur();
+  ecran("saisie"); document.documentElement.style.setProperty("--acc", "var(--p3)"); const m = $("#main"); m.style.setProperty("--pc", "var(--p3)");
+  const qs = new URLSearchParams(q||""), key = q||"";
+  if(SA.key!==key){ SA.key = key; SA.bat = qs.get("b")||""; SA.t = (qs.get("t")||"").split(",").filter(texists); SA.date = qs.get("d")||today(); SA.cache = {};
+    const gj = qs.get("g") && GR.groupes.get(qs.get("g")), jj = qs.get("j") && GR.joueurs.get(qs.get("j"));
+    if(jj){ SA.jids = [jj.id]; SA.gid = ""; } else if(gj){ SA.gid = gj.id; SA.jids = [...gj.jids]; }
+    else { const c = GR.courant && GR.courant.get(); if(c && c.t==="j" && GR.joueurs.get(c.id)){ SA.jids = [c.id]; SA.gid = ""; } else if(c && c.t==="g" && GR.groupes.get(c.id)){ SA.gid = c.id; SA.jids = [...GR.groupes.get(c.id).jids]; } else { SA.jids = []; SA.gid = ""; } }
+    if(!SA.bat && !SA.t.length && SA.jids.length) SA.bat = "rentree"; }
+  const J = GR.joueurs.all(), Gs = GR.groupes.all(), js = SA.jids.map(getP).filter(Boolean);
+  const tests = [...new Set([...battTests(SA.bat, js), ...SA.t])];
+  let h = `<h1 style="color:var(--p3)">Saisir un test ou un bilan</h1><p class="lead">Un test = une mesure ; un bilan = une batterie de tests. Les résultats s'enregistrent seuls dans le bilan du jour de chaque joueur.</p>`;
+  h += `<div class="sec"><h2>1 · Quoi ?</h2><div class="chips sabat">${BATT.map(B=>`<button type="button" class="chip${SA.bat===B.k?" on":""}" data-bat="${B.k}" aria-pressed="${SA.bat===B.k}">${esc(js.length?battNom(B.k, js):B.n)}</button>`).join("")}</div>
+    ${SA.bat?`<p class="msg">${esc(BATT.find(x=>x.k===SA.bat).s)}${js.length?` · ${battTests(SA.bat, js).length} tests`:""}</p>`:""}
+    <div class="f" style="margin-top:10px"><label for="saq">Ou un test (nom, mot, code)</label><input id="saq" class="inp" type="search" autocomplete="off" enterkeyhint="search" placeholder="sprint, saut, équilibre…" value="${esc(SA.q)}"></div><div id="sares"></div>
+    ${SA.t.length?`<div class="chips" style="margin-top:8px">${SA.t.map(t=>`<button type="button" class="chip on" data-tx="${esc(t)}" aria-label="Retirer ${esc(tnom(t))}">${esc(tnom(t))} ✕</button>`).join("")}</div>`:""}</div>`;
+  h += `<div class="sec"><h2>2 · Pour qui ?</h2>${J.length?`<div class="chips">${J.map(j=>`<button type="button" class="chip${SA.jids.includes(j.id)?" on":""}" data-sj="${j.id}" aria-pressed="${SA.jids.includes(j.id)}">${esc(j.nom)}</button>`).join("")}<button type="button" class="chip" id="sanj">+ Nouveau joueur</button></div>
+    ${Gs.length?`<div class="chips" style="margin-top:6px">${Gs.map(g=>`<button type="button" class="chip g${SA.gid===g.id?" on":""}" data-sg="${g.id}" aria-pressed="${SA.gid===g.id}">Groupe · ${esc(g.nom)} (${g.jids.length})</button>`).join("")}</div>`:""}`:`<div class="empty">Aucun joueur. <button type="button" class="ib" id="sanj">+ Nouveau joueur</button></div>`}
+    <div class="quick" style="margin-top:8px"><div class="f"><label for="sad">Date</label><input id="sad" class="inp" type="date" value="${SA.date}"></div></div></div>`;
+  h += `<div class="sec"><h2>3 · Résultats</h2>`;
+  if(!tests.length || !js.length) h += `<p class="msg">${!js.length?"Choisis un joueur ou un groupe.":"Choisis un bilan prêt ou un test."}</p>`;
+  else if(js.length===1){ const j = js[0], b = saB(j, false), age = b ? ak(b) : ageJ(j);
+    h += `<p class="msg">${esc(j.nom)} · ${j.sexe==="F"?"barème filles":"barème garçons"} · grille ${age} ans${b?` · bilan du ${frD(b.date)}`:" · le bilan du jour se crée au premier résultat"}</p>
+      <div class="tw"><table class="jt"><thead><tr><th>Test</th><th>Résultat</th><th>Niveau</th></tr></thead><tbody>${tests.map(t=>{ const r = (b&&b.res[t])||{}, lv = niveau(t,j.sexe,age,r);
+      return `<tr><td><a class="ref" href="${tlink(t,j.sexe,age)}">${esc(tnom(t))}</a>${badgeT(t)}<div class="lvtxt">${esc(tunite(t))}</div><div class="lvtxt" id="sbt_${j.id}_${esc(t)}">${lv?esc(btxt(t,j.sexe,age,lv)):""}</div></td><td>${mesHTML(t,j.sexe,age,r,`data-saj="${j.id}" data-sat="${esc(t)}"`)}</td><td class="c" id="slv_${j.id}_${esc(t)}">${lv?lvB(lv):"–"}</td></tr>`; }).join("")}</tbody></table></div>`; }
+  else h += tests.map(t=>`<div class="fold" style="--pc:var(--${tdom(t).toLowerCase()})"><h3><a class="ref" href="${isPerso(t)?"#/test/"+t:"#d/"+t}">${esc(tnom(t))}</a>${badgeT(t)} <small class="msg">${esc(tunite(t))}</small></h3><div class="tw"><table class="jt"><thead><tr><th>Joueur</th><th>Résultat</th><th>Niveau</th></tr></thead><tbody>${js.map(j=>{ const b = saB(j,false), age = b?ak(b):ageJ(j), r = (b&&b.res[t])||{}, lv = niveau(t,j.sexe,age,r);
+      return `<tr><td>${esc(j.nom)}<div class="lvtxt">${j.sexe} · grille ${age} ans</div><div class="lvtxt" id="sbt_${j.id}_${esc(t)}">${lv?esc(btxt(t,j.sexe,age,lv)):""}</div></td><td>${mesHTML(t,j.sexe,age,r,`data-saj="${j.id}" data-sat="${esc(t)}"`)}</td><td class="c" id="slv_${j.id}_${esc(t)}">${lv?lvB(lv):"–"}</td></tr>`; }).join("")}</tbody></table></div></div>`).join("");
+  h += `</div>`;
+  if(tests.length && js.length) h += `<div class="grun-actbar">${js.length>1?`<button class="gs-btn main" id="saterr" type="button">▶ Mode terrain (${js.length} joueurs)</button>`:`<a class="gs-btn main" href="#/joueur/${js[0].id}/bilan">Voir le bilan de ${esc(js[0].nom.split(" ")[0])}</a>`}</div>`;
+  m.innerHTML = h;
+  const re = ()=>{ const y = scrollY; showSaisie(SA.key); scrollTo(0,y); };
+  document.querySelectorAll("[data-bat]").forEach(b=>b.onclick = ()=>{ SA.bat = SA.bat===b.dataset.bat ? "" : b.dataset.bat; re(); });
+  document.querySelectorAll("[data-tx]").forEach(b=>b.onclick = ()=>{ SA.t = SA.t.filter(x=>x!==b.dataset.tx); re(); });
+  document.querySelectorAll("[data-sj]").forEach(b=>b.onclick = ()=>{ const id = b.dataset.sj; SA.gid = ""; SA.jids = SA.jids.includes(id) ? SA.jids.filter(x=>x!==id) : [...SA.jids, id]; if(SA.jids.length===1 && GR.courant) GR.courant.set("j", SA.jids[0]); re(); });
+  document.querySelectorAll("[data-sg]").forEach(b=>b.onclick = ()=>{ const g = GR.groupes.get(b.dataset.sg); if(SA.gid===g.id){ SA.gid = ""; SA.jids = []; } else { SA.gid = g.id; SA.jids = [...g.jids]; if(GR.courant) GR.courant.set("g", g.id); } re(); });
+  const nj = $("#sanj"); if(nj) nj.onclick = ()=>GR.ui.nouveauJoueur({groupe:SA.gid||undefined}).then(j=>{ if(j){ SA.jids = SA.gid ? [...SA.jids, j.id] : [j.id]; re(); } });
+  $("#sad").onchange = e=>{ SA.date = e.target.value||today(); SA.cache = {}; re(); };
+  const sq = $("#saq"); const lst = ()=>{ SA.q = sq.value; const box = $("#sares"), ws = terms(sq.value); if(!ws.length){ box.innerHTML = ""; return; }
+    const all = [...DOCS.filter(x=>x.p==="3").map(x=>x.c), ...tc().per.map(t=>t.id)];
+    const hit = all.filter(t=>{ const f = fold(tnom(t)+" "+t); return ws.every(w=>f.includes(w)); }).slice(0,12);
+    box.innerHTML = hit.length ? `<div class="list" style="margin-top:6px">${hit.map(t=>{ const sans = js.length && js.every(j=>!seuilsOf(t,j.sexe,ageJ(j)));
+      return `<button type="button" class="li" data-ta="${esc(t)}" style="text-align:left;width:100%"><span class="code">${DCOURT[tdom(t)]||""}</span><span class="tt">${esc(tnom(t))}${badgeT(t)}<small>${esc(tunite(t))}${sans?" · pas de barème à son âge":""}<span class="xp"> · ${esc(t)}</span></small></span></button>`; }).join("")}</div>` : `<p class="msg">Aucun test pour « ${esc(sq.value)} ».</p>`;
+    box.querySelectorAll("[data-ta]").forEach(b=>b.onclick = ()=>{ const t = b.dataset.ta; if(!SA.t.includes(t)) SA.t.push(t); SA.q = ""; re(); }); };
+  sq.oninput = lst; if(SA.q) lst();
+  document.querySelectorAll("#main input[data-saj][data-k]").forEach(inp=>inp.oninput = ()=>{ const j0 = SA.jids.map(getP).find(x=>x&&x.id===inp.dataset.saj); if(!j0) return; const c = saC(j0); const {j, b} = c, t = inp.dataset.sat;
+    setRes(j,b,t,inp.dataset.k,inp.value); mresUpd(inp, t, b.res[t]); if(!b.sel.includes(t)) b.sel.push(t); jsave(j);
+    const lv = niveau(t,j.sexe,ak(b),b.res[t]); const e1 = document.getElementById("slv_"+j.id+"_"+t), e2 = document.getElementById("sbt_"+j.id+"_"+t); if(e1) e1.innerHTML = lv?lvB(lv):"–"; if(e2) e2.textContent = lv?btxt(t,j.sexe,ak(b),lv):""; GR.ui.enregistre && GR.ui.enregistre(); });
+  const st = $("#saterr"); if(st) st.onclick = ()=>{ const s = {id:uid(), date:SA.date, nom:SA.bat?battNom(SA.bat, js):"Tests du "+frD(SA.date), gid:SA.gid||"", jids:[], tests:[...tests], bids:{}, cree:today()};
+    js.forEach(j=>{ const c = saC(j); s.jids.push(c.j.id); s.bids[c.j.id] = c.b.id; }); gbs().push(s); save(); location.hash = "/gbilan/"+s.id+"/terrain"; };
+}
+/* bilan du jour d'un joueur pour la saisie (créé au premier résultat seulement : pas de bilan vide) */
+function saB(j, creer){ const c = SA.cache && SA.cache[j.id]; if(c) return c.b; const b = (j.bilans||[]).filter(x=>x.date===SA.date).slice(-1)[0]; if(b) return b; if(!creer) return null;
+  const js = SA.jids.map(getP).filter(Boolean); return creerBilanDuJour(j, {date:SA.date, tests:[...new Set([...battTests(SA.bat, [j]), ...SA.t])], note:SA.bat?battNom(SA.bat, js):""}); }
+function saC(j0){ SA.cache = SA.cache||{}; if(SA.cache[j0.id]) return SA.cache[j0.id]; const j = getP(j0.id); const b = saB(j, true); const jj = getP(j.id); const bb = jj.bilans.find(x=>x.id===b.id); return SA.cache[j0.id] = {j:jj, b:bb}; }
+
+/* ===================== PDF : un vrai fichier (partage sur iPhone / iPad, sinon téléchargement) ===================== */
+/* MiniPDF : copie de apps/pdfmini.js (Grilles n'est pas assemblé avec ce fichier) — même moteur que le « Rapport PDF » de l'accueil */
+const MiniPDF = (()=>{
+  const CP = {"€":128,"‚":130,"ƒ":131,"„":132,"…":133,"†":134,"‡":135,"ˆ":136,"‰":137,"Š":138,"‹":139,"Œ":140,"Ž":142,"‘":145,"’":146,"“":147,"”":148,"•":149,"–":150,"—":151,"˜":152,"™":153,"š":154,"›":155,"œ":156,"ž":158,"Ÿ":159};
+  const SUB = {"→":"->","←":"<-","≤":"<=","≥":">=","✓":"OK","★":"*","☆":"*","ⓘ":"i","✎":""," ":" "," ":" ","‑":"-","≈":"~","×":"×","…":"…","Δ":"D","°":"°","▶":">","✕":"x","−":"-","↔":"<->"};
+  function enc(s){ let o=""; for(const ch of String(s??"")){ let c=ch; if(c.charCodeAt(0)>255 && !(c in CP) && SUB[c]!=null) c=SUB[c]; for(const k of c){ const n=k.charCodeAt(0); if(n<256) o+=k; else if(CP[k]) o+=String.fromCharCode(CP[k]); else o+="?"; } } return o.replace(/\\/g,"\\\\").replace(/\(/g,"\\(").replace(/\)/g,"\\)"); }
+  let ctx=null;
+  function width(s,size,bold){ if(!ctx){ ctx=document.createElement("canvas").getContext("2d"); } ctx.font=(bold?"bold ":"")+"100px Helvetica, Arial, sans-serif"; return ctx.measureText(String(s)).width/100*size*1.02; }
+  function hex(c){ const m=/^#?([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})$/i.exec(c||"#000000"); return m?[1,2,3].map(i=>(parseInt(m[i],16)/255).toFixed(3)).join(" "):"0 0 0"; }
+  class Doc{
+    constructor(opt={}){ this.W=opt.landscape?842:595; this.H=opt.landscape?595:842; this.M=opt.margin||36; this.pages=[]; this.addPage(); }
+    addPage(){ this.cur=[]; this.pages.push(this.cur); this.y=this.M; return this; }
+    text(x,y,s,o={}){ const sz=o.size||10; this.cur.push(`BT /${o.bold?"F2":"F1"} ${sz} Tf ${hex(o.color)} rg ${x.toFixed(2)} ${(this.H-y-sz*0.8).toFixed(2)} Td (${enc(s)}) Tj ET`); }
+    rect(x,y,w,h,o={}){ const c=[]; if(o.fill) c.push(hex(o.fill)+" rg"); if(o.stroke) c.push(hex(o.stroke)+" RG "+(o.lw||0.6)+" w"); c.push(`${x.toFixed(2)} ${(this.H-y-h).toFixed(2)} ${w.toFixed(2)} ${h.toFixed(2)} re ${o.fill&&o.stroke?"B":o.fill?"f":"S"}`); this.cur.push(c.join(" ")); }
+    line(x1,y1,x2,y2,o={}){ this.cur.push(`${hex(o.color||"#C8CDD4")} RG ${o.lw||0.6} w ${x1.toFixed(2)} ${(this.H-y1).toFixed(2)} m ${x2.toFixed(2)} ${(this.H-y2).toFixed(2)} l S`); }
+    wrap(s,size,maxw,bold){ const out=[]; for(const para of String(s??"").split("\n")){ let line=""; for(const w of para.split(/\s+/)){ if(!w) continue; const t=line?line+" "+w:w; if(width(t,size,bold)<=maxw||!line) line=t; else { out.push(line); line=w; } } out.push(line); } return out; }
+    need(h){ if(this.y+h>this.H-this.M) { this.addPage(); return true; } return false; }
+    para(s,o={}){ const sz=o.size||10, lh=sz*(o.lh||1.3), x=o.x??this.M, w=o.w??(this.W-this.M-x); for(const l of this.wrap(s,sz,w,o.bold)){ this.need(lh); this.text(x,this.y,l,o); this.y+=lh; } this.y+=o.after??2; }
+    out(){
+      const objs=[]; const add=s=>{ objs.push(s); return objs.length; };
+      add("<< /Type /Catalog /Pages 2 0 R >>"); add("PAGES");
+      add("<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>");
+      add("<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>");
+      const kids=[];
+      for(const p of this.pages){ const st=p.join("\n"); const c=add(`<< /Length ${st.length} >>\nstream\n${st}\nendstream`); kids.push(add(`<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ${this.W} ${this.H}] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents ${c} 0 R >>`)); }
+      objs[1]=`<< /Type /Pages /Kids [${kids.map(k=>k+" 0 R").join(" ")}] /Count ${kids.length} >>`;
+      let s="%PDF-1.4\n%\xE2\xE3\xCF\xD3\n"; const off=[];
+      objs.forEach((o,i)=>{ off.push(s.length); s+=`${i+1} 0 obj\n${o}\nendobj\n`; });
+      const x=s.length; s+=`xref\n0 ${objs.length+1}\n0000000000 65535 f \n`+off.map(o=>String(o).padStart(10,"0")+" 00000 n \n").join("")+`trailer\n<< /Size ${objs.length+1} /Root 1 0 R >>\nstartxref\n${x}\n%%EOF`;
+      const b=new Uint8Array(s.length); for(let i=0;i<s.length;i++) b[i]=s.charCodeAt(i)&255; return new Blob([b],{type:"application/pdf"});
+    }
+  }
+  async function deliver(blob,name){
+    const file=new File([blob],name,{type:"application/pdf"});
+    try{ if(navigator.canShare && navigator.canShare({files:[file]})){ await navigator.share({files:[file],title:name}); return "share"; } }catch(e){ if(e && e.name==="AbortError") return "abort"; }
+    const u=URL.createObjectURL(blob), a=document.createElement("a"); a.href=u; a.download=name; a.rel="noopener"; document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(u), 60000);
+    return "download";
+  }
+  return {Doc, deliver, width};
+})();
+const PDFICO = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M12 11v6M9 14l3 3 3-3"/></svg>';
+function pdfBtn(attrs, lab){ return `<button type="button" class="grun-pdf" ${attrs}>${PDFICO}<span>${esc(lab||"PDF")}</span></button>`; }
+function pdfGo(btn, fn){ if(!btn || btn.disabled) return; btn.disabled = true; const sp = btn.querySelector("span"), t0 = sp ? sp.textContent : ""; if(sp) sp.textContent = "PDF…";
+  Promise.resolve().then(fn).then(r=>{ if(r==="download") GR.ui.toast("PDF enregistré dans tes téléchargements"); }).catch(e=>{ console.error(e); GR.ui.toast("Le PDF n'a pas pu être créé"); }).finally(()=>{ btn.disabled = false; if(sp) sp.textContent = t0; }); }
+const pdfNom = s => "GRUN_"+fold(s).replace(/[^a-z0-9]+/g,"_").replace(/^_|_$/g,"").slice(0,60)+".pdf";
+const PV = "#0B3B36", PG = "#5D6675", PCOL = {PP:"#C2410C", GE:"#1D4ED8", DE:"#0F766E"};
+function pdfEntete(D, titre, sous){ D.rect(0, 0, D.W, 62, {fill:PV}); D.text(D.M, 16, "GRÜN", {size:18, bold:true, color:"#FFFFFF"}); D.text(D.M+70, 22, "Grilles et tests · "+frD(today()), {size:10, color:"#CFE8E3"});
+  D.y = 80; D.para(titre, {size:18, bold:true, after:4}); if(sous) D.para(sous, {size:10, color:PG, after:8}); }
+function pdfPied(D, t){ const np = D.pages.length; D.pages.forEach((pg,i)=>{ D.cur = pg; D.text(D.M, D.H-24, "GRÜN · "+t+"   ·   page "+(i+1)+" / "+np, {size:7.5, color:"#9AA3AE"}); }); }
+function pdfTitre(D, t, size, col){ size = size||12; D.need(size*2.6); D.y += size*0.45; D.para(t, {size, bold:true, color:col||PV, after:3}); }
+/* tableau : rows = [[cellules]], o.head = 1re ligne d'en-tête, o.w = largeurs relatives, o.minH = hauteur mini (cases à remplir) */
+function pdfTable(D, rows, o){ o = o||{}; if(!rows.length) return; const M = D.M, W = D.W-2*M, n = Math.max(...rows.map(r=>r.length)); if(!n) return;
+  let w = o.w ? o.w.slice(0,n) : (n===1 ? [1] : [n>3?1.7:1.3, ...Array(n-1).fill(1)]); while(w.length<n) w.push(1); const sw = w.reduce((a,x)=>a+x,0); w = w.map(x=>x/sw*W);
+  const sz = o.size||8, lh = sz*1.25, draw = (r, hd) => { const L = r.map((c,i)=>D.wrap(String(c??""), sz, w[i]-6, hd)); const h = Math.max(o.minH||0, ...L.map(l=>l.length*lh))+6;
+      if(D.need(h) && o.head && !hd) draw(rows[0], true); let x = M;
+      for(let i=0;i<n;i++){ D.rect(x, D.y, w[i], h, hd ? {fill:"#EEF1F4", stroke:"#C8CDD4", lw:0.5} : {stroke:"#C8CDD4", lw:0.5}); (L[i]||[]).forEach((l,k)=>D.text(x+3, D.y+3+k*lh, l, {size:sz, bold:hd, color:"#1F2328"})); x += w[i]; }
+      D.y += h; };
+  rows.forEach((r,i)=>draw(r, !!o.head && i===0)); D.y += 6; }
+/* document HTML → PDF (titres, paragraphes, listes, tableaux, sections dépliables comprises) */
+const pTxt = el => (el.textContent||"").replace(/\s+/g," ").trim();
+const BLOC = /^(DIV|P|TABLE|UL|OL|H[1-6]|DETAILS|SECTION|ARTICLE|BLOCKQUOTE|DL|FIGURE|NAV)$/;
+function pdfDOM(D, root){
+  const walk = el => { for(const n of el.children){ const tg = n.tagName;
+    if(n.matches(".noprint,.tools,.acts,.xlp,.xl,script,style,button,.pn,.notes,nav,select,input,textarea,svg,img,.jump")) continue;
+    if(tg==="DETAILS"){ const s = n.querySelector(":scope>summary"); if(s) pdfTitre(D, pTxt(s), 11.5); walk(n); continue; }
+    if(tg==="SUMMARY") continue;
+    if(/^H[1-6]$/.test(tg)){ pdfTitre(D, pTxt(n), {H1:15,H2:13,H3:11.5,H4:10.5,H5:10,H6:10}[tg]); continue; }
+    if(tg==="TABLE"){ const rows = [...n.rows].map(r=>[...r.cells].map(pTxt)); pdfTable(D, rows, {head: !!(n.tHead && n.tHead.rows.length) || (n.rows[0] && [...n.rows[0].cells].every(c=>c.tagName==="TH"))}); continue; }
+    if(tg==="UL"||tg==="OL"){ [...n.children].forEach((li,i)=>{ const t = pTxt(li); if(t) D.para((tg==="OL"?(i+1)+". ":"• ")+t, {x:D.M+8, size:9.5, after:1}); }); D.y += 3; continue; }
+    if(tg==="DL"){ [...n.children].forEach(x=>{ const t = pTxt(x); if(t) D.para(t, {size:9.5, bold:x.tagName==="DT", after:1}); }); continue; }
+    if([...n.children].some(c=>BLOC.test(c.tagName))){ walk(n); continue; }
+    const t = pTxt(n); if(t) D.para(t, {size:9.5, after:4, bold:/^(B|STRONG)$/.test(tg)}); } };
+  walk(root); }
+async function pdfDoc(code){ const x = BY[code]; if(!x) return; const D = new MiniPDF.Doc();
+  pdfEntete(D, x.t, (x.ch||"")+(GR.expert&&GR.expert()?" · "+code:""));
+  const doc = $("#doc"); if(doc) pdfDOM(D, doc);
+  const nt = P.notes && P.notes[code]; if(nt){ pdfTitre(D, "Mes notes", 11.5); D.para(nt, {size:9.5}); }
+  D.para("Niveaux : 1 non acquis · 2 en cours d'acquisition · 3 acquis = attendu du haut niveau de sa génération · 4 maîtrisé.", {size:8, color:PG});
+  pdfPied(D, x.t); return MiniPDF.deliver(D.out(), pdfNom(x.t)); }
+function radarPDF(D, cx, cy, R, vals, mk, prev, col){ const n = vals.length, A = i => -Math.PI/2 + i*2*Math.PI/n, pt = (i,v) => [cx+Math.cos(A(i))*R*v/4, cy+Math.sin(A(i))*R*v/4];
+  const poly = (v, o) => { for(let i=0;i<n;i++){ const [x1,y1] = pt(i,v[i]), [x2,y2] = pt((i+1)%n, v[(i+1)%n]); D.line(x1,y1,x2,y2,o); } };
+  for(let k=1;k<=4;k++) poly(Array(n).fill(k), {color:k===3?"#8FBFA8":"#D5DAE0", lw:k===3?0.9:0.5});
+  for(let i=0;i<n;i++){ const [x,y] = pt(i,4); D.line(cx,cy,x,y,{color:"#E2E6EA", lw:0.4}); const [tx,ty] = pt(i,4.7); D.text(tx-3, ty-4, String(i+1), {size:7, color:mk[i]?"#333333":"#BBBBBB"}); }
+  const cl = v => v.map((x,i)=>mk[i] && x!=null ? Math.max(0, Math.min(4, +x)) : 0);
+  if(prev && prev.some(v=>v!=null)) poly(cl(prev), {color:"#9AA3AE", lw:0.8});
+  if(vals.some(v=>v!=null)) poly(cl(vals), {color:col, lw:1.8}); }
+async function pdfBilan(j, b){ const D = new MiniPDF.Doc(), M = D.M, W = D.W-2*M, cb = compB(j,b), mt = GR.maturite(j), ac = ageCiv(j.naissance, b.date);
+  pdfEntete(D, "Bilan · "+j.nom, [frD(b.date), b.note, j.sexe==="F"?"fille":"garçon", ac!=null?ac+" ans":"", gL(b), mt?"âge biologique "+f1(mt.bio)+" ans ("+mt.avance+")":""].filter(Boolean).join(" · "));
+  D.need(190); const y0 = D.y, cw = W/3;
+  DOM3.forEach((d,k)=>{ const r = radarData(j,b,d), pv = cb ? radarData(j,cb,d).v : null, cx = M+cw*k+cw/2;
+    D.text(cx-MiniPDF.width(DOMN[d],9.5,true)/2, y0, DOMN[d], {size:9.5, bold:true, color:PCOL[d]});
+    radarPDF(D, cx, y0+82, 58, r.v, r.g.map(Boolean), pv, PCOL[d]);
+    const mo = moy(j,b,d), mp = cb ? moy(j,cb,d) : null, t2 = "moyenne "+fmtN(mo)+(mo!=null&&mp!=null?" (avant "+fmtN(mp)+")":"");
+    D.text(cx-MiniPDF.width(t2,9)/2, y0+158, t2, {size:9, color:PG}); });
+  D.y = y0+176; D.para("Niveaux de 1 à 4 ; le cercle vert clair est le niveau 3, l'attendu du haut niveau de sa génération. Numéros = lignes de la grille."+(cb?" Gris : bilan du "+frD(cb.date)+".":""), {size:8, color:PG, after:6});
+  const ax = [], fo = []; DOM3.forEach(d=>(X.g[gcode(j.sexe,ak(b),d)]||[]).forEach((L,i)=>{ const v = b.v[d][i]; if(!L||v==null) return; const o = [DCOURT[d]+" "+(i+1)+" · "+LIGNES[d][i], fmtN(v)]; if(v<3) ax.push(o); else if(v>=3.5) fo.push(o); }));
+  if(ax.length){ pdfTitre(D, "Axes de travail (niveau < 3)", 11, "#C2410C"); pdfTable(D, [["Ligne","Niveau"], ...ax], {head:true, w:[5,1]}); }
+  if(fo.length){ pdfTitre(D, "Points forts (3,5 et plus)", 11, "#0F766E"); pdfTable(D, [["Ligne","Niveau"], ...fo], {head:true, w:[5,1]}); }
+  const ts = Object.keys(b.res||{}).filter(texists).filter(t=>resKeys(b.res[t]).length);
+  if(ts.length){ pdfTitre(D, "Résultats des tests", 11); pdfTable(D, [["Test","Résultat","Niveau","Repère"], ...ts.map(t=>{ const lv = niveau(t,j.sexe,ak(b),b.res[t]); return [tnom(t)+(tunite(t)?" ("+tunite(t)+")":""), resKeys(b.res[t]).map(k=>(resKeys(b.res[t]).length>1?mlabel(t,k)+" : ":"")+fmtN(b.res[t][k])).join(" ; "), lv?String(lv)+" · "+NVN[lv]:"–", lv?btxt(t,j.sexe,ak(b),lv):""]; })], {head:true, w:[2.2,1.3,1.1,2.2]}); }
+  if(b.note){ pdfTitre(D, "Notes", 11); D.para(b.note, {size:9.5}); }
+  D.para("Niveaux : 1 non acquis · 2 en cours d'acquisition · 3 acquis = attendu du haut niveau de l'âge · 4 maîtrisé.", {size:8, color:PG});
+  pdfPied(D, j.nom+" · document personnel, ne pas diffuser"); return MiniPDF.deliver(D.out(), pdfNom("bilan "+j.nom+" "+b.date)); }
+async function pdfFeuille(s){ const R = sessRows(s), D = new MiniPDF.Doc();
+  pdfEntete(D, "Feuille de bilan · "+(s.nom||"Bilan de groupe"), frD(s.date)+" · "+R.length+" joueurs · "+s.tests.length+" tests · note à la main, puis saisis dans l'appli");
+  s.tests.forEach((t,n)=>{ const ms = [...new Set(R.flatMap(({j,b})=>mesuresOf(t,j.sexe,ak(b))||[]))];
+    pdfTitre(D, (n+1)+" · "+tnom(t)+(tunite(t)?" ("+tunite(t)+")":""), 11, PCOL[tdom(t)]);
+    pdfTable(D, [["Joueur","Grille", ...(ms.length?ms:["Résultat"]).map(k=>mlabel(t,k)), "Repère niveau 3"], ...R.map(({j,b})=>[j.nom, j.sexe+" "+ak(b), ...(ms.length?ms:["x"]).map(()=>""), btxt(t,j.sexe,ak(b),3)||"–"])], {head:true, minH:16, w:[2,0.8, ...(ms.length?ms:["x"]).map(()=>1.2), 2]}); });
+  pdfPied(D, (s.nom||"Bilan de groupe")+" · "+frD(s.date)); return MiniPDF.deliver(D.out(), pdfNom("feuille "+(s.nom||"bilan groupe")+" "+s.date)); }
+async function pdfTestPerso(id){ const t = tc().by[id]; if(!t) return; const D = new MiniPDF.Doc();
+  pdfEntete(D, t.nom, "Mon test · "+(DOMN[t.dom]||"")+" · lignes "+((t.lignes||[]).join(", ")||"–"));
+  const a = document.querySelector("#main article.doc"); if(a) pdfDOM(D, a);
+  pdfPied(D, t.nom); return MiniPDF.deliver(D.out(), pdfNom(t.nom)); }
 
 /* JOUEURS-FIN */
 boot();

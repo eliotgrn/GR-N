@@ -62,12 +62,157 @@ html.grun-simple .cx{display:none!important}
 .grun-pdf:disabled{opacity:.6}
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .grun-pdf{color:#2DD4BF;border-color:#2DD4BF}}
 :root[data-theme="dark"] .grun-pdf{color:#2DD4BF;border-color:#2DD4BF}
+
+/* ===================== SOCLE 1.1 « chemin ultra intuitif » =====================
+   RÈGLES DE MISE EN PAGE (toutes les pages) :
+   - retour « ‹ » en haut à gauche (#back) ; joueur en cours + « ? » en haut à droite (.grun-topx, injectés par GRUN.nav) ;
+   - action principale EN BAS, grande, dans la zone du pouce : <div class="grun-actbar"><button class="gs-btn main">…</button></div> ;
+   - options secondaires repliées : <details class="grun-plus"><summary>Plus d'options</summary><div class="grun-plusb">…</div></details> ;
+   - « + » unique au centre de la barre du bas (#grun-plus) ; créations dans une feuille (.grun-ov > .grun-sheet). */
+:root{--grun-hi:#0F766E;--grun-on:#fff}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--grun-hi:#2DD4BF;--grun-on:#0B1117}}
+:root[data-theme="dark"]{--grun-hi:#2DD4BF;--grun-on:#0B1117}
+/* « + » au centre de la barre du bas */
+#grun-nav #grun-plus{flex:0 0 64px;border:0;background:none;padding:0;display:flex;align-items:center;justify-content:center;min-height:var(--nav-h);cursor:pointer}
+#grun-nav #grun-plus span{width:48px;height:48px;border-radius:16px;background:var(--grun-hi);color:var(--grun-on);display:flex;align-items:center;justify-content:center;box-shadow:0 3px 10px rgba(15,118,110,.35)}
+#grun-nav #grun-plus svg{width:26px;height:26px;stroke-width:2.6;stroke:currentColor}
+#grun-nav #grun-plus:active span{transform:scale(.94)}
+@media (max-width:380px){#grun-nav a{font-size:10.5px}#grun-nav #grun-plus{flex-basis:56px}}
+/* barre du haut : joueur en cours + aide */
+.grun-topx{display:inline-flex;gap:6px;align-items:center;flex:0 0 auto}
+.grun-chip{display:inline-flex;align-items:center;gap:6px;min-height:36px;max-width:118px;padding:0 10px 0 4px;border:1px solid var(--line,#D9DDE3);border-radius:999px;background:var(--panel,#fff);color:var(--ink,#16202E);font:600 14px/1 var(--ui,system-ui,sans-serif);cursor:pointer}
+.grun-chip .gc-nm{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+.gc-av{flex:0 0 28px;width:28px;height:28px;border-radius:50%;background:var(--grun-hi);color:var(--grun-on);display:inline-flex;align-items:center;justify-content:center;font-weight:800;font-size:13px}
+.gc-av.g{border-radius:8px;background:#6D3FC0;color:#fff}
+.gc-av.vide{background:var(--soft,#ECEFF3);color:var(--mute,#5D6675)}
+.grun-q{width:36px;height:36px;border-radius:50%;border:1px solid var(--line,#D9DDE3);background:var(--panel,#fff);color:var(--mute,#5D6675);font:800 17px/1 var(--ui,system-ui,sans-serif);cursor:pointer;padding:0}
+@media (max-width:430px){.grun-chip{max-width:92px;padding-right:8px}.grun-chip .gc-nm{font-size:13px}}
+@media (max-width:360px){.grun-chip .gc-nm{display:none}.grun-chip{padding:0 4px}}
+/* feuille (bottom sheet) */
+.grun-ov{position:fixed;inset:0;z-index:200;background:rgba(10,16,24,.42);display:flex;align-items:flex-end;justify-content:center;opacity:0;transition:opacity .16s ease}
+.grun-ov.in{opacity:1}.grun-ov.out{opacity:0}
+.grun-sheet{width:100%;max-width:560px;max-height:min(90vh,calc(100vh - env(safe-area-inset-top,0px) - 24px));display:flex;flex-direction:column;background:var(--panel,#fff);color:var(--ink,#16202E);border-radius:18px 18px 0 0;box-shadow:0 -10px 40px rgba(0,0,0,.25);transform:translateY(24px);transition:transform .18s ease;font-family:var(--ui,system-ui,sans-serif);font-size:16px;line-height:1.4}
+.grun-sheet.large{max-width:720px}
+.grun-ov.in .grun-sheet{transform:none}
+@media (min-width:700px){.grun-ov{align-items:center}.grun-sheet{border-radius:18px;max-height:86vh}}
+.gs-h{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:14px 16px 8px;border-bottom:1px solid var(--line,#D9DDE3)}
+.gs-h b{font-family:var(--display,"Barlow Condensed",system-ui,sans-serif);font-size:1.45em;font-weight:700;line-height:1.1}
+.gs-x{width:40px;height:40px;border-radius:50%;border:0;background:var(--soft,#ECEFF3);color:var(--ink,#16202E);font-size:24px;line-height:1;cursor:pointer;flex:0 0 auto}
+.gs-b{padding:12px 16px 14px;overflow-y:auto;-webkit-overflow-scrolling:touch;display:flex;flex-direction:column;gap:12px;flex:1 1 auto;min-height:0}
+.gs-f{display:flex;gap:8px;padding:10px 16px calc(12px + env(safe-area-inset-bottom,0px));border-top:1px solid var(--line,#D9DDE3)}
+.gs-btn{min-height:52px;border-radius:13px;border:1px solid var(--line,#D9DDE3);background:var(--panel,#fff);color:var(--ink,#16202E);font:700 16px/1.1 var(--ui,system-ui,sans-serif);padding:0 16px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;text-decoration:none;gap:6px}
+.gs-btn.main{flex:1;background:var(--grun-hi);border-color:var(--grun-hi);color:var(--grun-on)}
+.gs-btn.sec{flex:0 1 auto}
+.gs-btn.sm{min-height:40px;font-size:14.5px;border-radius:10px;padding:0 12px;flex:0 0 auto}
+.gs-btn:disabled{opacity:.5}
+.grun-ov.danger .gs-btn.main{background:#B91C1C;border-color:#B91C1C;color:#fff}
+.gs-form{display:flex;flex-direction:column;gap:12px;margin:0}
+.gs-l{display:flex;flex-direction:column;gap:5px;font-weight:600;font-size:14.5px;color:var(--ink,#16202E);min-width:0}
+.gs-l small{font-weight:500;color:var(--mute,#5D6675)}
+.gs-inp{min-height:48px;border:1px solid var(--line,#D9DDE3);border-radius:11px;background:var(--bg,#F4F5F7);color:var(--ink,#16202E);padding:0 12px;font:500 17px/1.2 var(--ui,system-ui,sans-serif);width:100%;max-width:100%;box-sizing:border-box}
+.gs-ta{padding:10px 12px;min-height:84px;resize:vertical;line-height:1.4}
+.gs-inp:focus{outline:2px solid var(--grun-hi);outline-offset:1px}
+.gs-seg{display:flex;border:1px solid var(--line,#D9DDE3);border-radius:11px;overflow:hidden;background:var(--bg,#F4F5F7)}
+.gs-seg button{flex:1;min-height:46px;border:0;background:none;color:var(--ink,#16202E);font:600 16px/1 var(--ui,system-ui,sans-serif);cursor:pointer}
+.gs-seg button+button{border-left:1px solid var(--line,#D9DDE3)}
+.gs-seg button[aria-checked=true]{background:var(--grun-hi);color:var(--grun-on)}
+.gs-chips{display:flex;flex-wrap:wrap;gap:6px}
+.gs-chip{min-height:40px;border:1px solid var(--line,#D9DDE3);background:var(--panel,#fff);color:var(--ink,#16202E);border-radius:999px;padding:0 14px;font:600 15px/1 var(--ui,system-ui,sans-serif);cursor:pointer;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.gs-chips.big .gs-chip{min-height:46px;font-size:16px}
+.gs-chip.g{border-style:dashed}
+.gs-chip[aria-pressed=true]{background:var(--grun-hi);border-color:var(--grun-hi);color:var(--grun-on)}
+.gs-err{color:#B91C1C;font-weight:600;margin:0;min-height:0}
+.gs-err:empty{display:none}
+.gs-m{color:var(--mute,#5D6675);font-size:14.5px;margin:0}
+.gs-p{margin:0;font-size:16.5px;line-height:1.5}
+.gs-sert{color:var(--grun-hi);font-weight:600;font-size:13px}
+.gs-lien{align-self:flex-start;border:0;background:none;color:var(--grun-hi);font:700 15.5px/1.2 var(--ui,system-ui,sans-serif);padding:6px 0;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+.gs-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.gs-n .gs-inp{font-variant-numeric:tabular-nums}
+.gs-c{display:flex;gap:10px;align-items:flex-start;font-weight:600;font-size:15px}
+.gs-c input{width:22px;height:22px;flex:0 0 auto;margin-top:1px}
+.gs-c small{font-weight:500;color:var(--mute,#5D6675)}
+.gs-cp fieldset{border:1px solid var(--line,#D9DDE3);border-radius:13px;padding:10px 12px 12px;margin:0;display:flex;flex-direction:column;gap:10px;min-width:0}
+.gs-cp legend{font-weight:800;font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:var(--mute,#5D6675);padding:0 4px}
+.gs-cp legend small{text-transform:none;letter-spacing:0;font-weight:500}
+details.gs-plus>summary{cursor:pointer;color:var(--grun-hi);font-weight:700;padding:4px 0;list-style:none}
+details.gs-plus>summary::-webkit-details-marker{display:none}
+details.gs-plus[open]>summary{margin-bottom:8px}
+.gs-list{border:1px solid var(--line,#D9DDE3);border-radius:11px;overflow:hidden}
+.gs-row{display:flex;flex-wrap:wrap;gap:2px 10px;align-items:baseline;padding:8px 12px;border-top:1px solid var(--line,#D9DDE3)}
+.gs-row:first-child{border-top:0}
+.gs-row span{color:var(--mute,#5D6675);font-size:14px}
+.gs-row small{flex-basis:100%;color:#B91C1C;font-weight:600}
+.gs-row.ko b{color:#B91C1C}
+.gs-menu{display:flex;flex-direction:column;gap:8px}
+.gs-menu.plus{display:grid;grid-template-columns:minmax(0,1fr);gap:6px}
+@media (min-width:560px){.gs-menu.plus{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.gs-it{display:grid;grid-template-columns:auto minmax(0,1fr);gap:1px 12px;align-items:center;text-align:left;min-height:60px;padding:9px 12px;border:1px solid var(--line,#D9DDE3);border-radius:13px;background:var(--panel,#fff);color:var(--ink,#16202E);text-decoration:none;cursor:pointer;font:inherit}
+.gs-it b{font-size:16.5px;grid-column:2}
+.gs-it span{grid-column:2;color:var(--mute,#5D6675);font-size:13.5px;line-height:1.3}
+.gs-it:not(:has(.pi)){grid-template-columns:minmax(0,1fr)}.gs-it:not(:has(.pi)) b,.gs-it:not(:has(.pi)) span{grid-column:1}
+.gs-it.x{border-color:var(--grun-hi);border-width:1.5px}
+.gs-it.st{cursor:default}
+.gs-it.st .gs-seg{grid-column:1/-1;margin-top:6px}
+.gs-it:active{background:var(--soft,#ECEFF3)}
+.pi{grid-row:1/3;width:38px;height:38px;border-radius:11px;background:var(--soft,#ECEFF3);position:relative}
+.pi::after{content:"";position:absolute;inset:9px;background:var(--grun-hi);-webkit-mask:var(--m) center/contain no-repeat;mask:var(--m) center/contain no-repeat}
+.pi-joueur{--m:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.2'%3E%3Ccircle cx='12' cy='8' r='4'/%3E%3Cpath d='M4 21c0-4 4-6 8-6s8 2 8 6'/%3E%3C/svg%3E")}
+.pi-groupe{--m:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.2'%3E%3Ccircle cx='8' cy='9' r='3'/%3E%3Ccircle cx='16' cy='9' r='3'/%3E%3Cpath d='M2 20c0-3 3-5 6-5s6 2 6 5M12 20c0-3 2-5 4-5s6 2 6 5'/%3E%3C/svg%3E")}
+.pi-session{--m:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='black'%3E%3Cpath d='M8 5v14l11-7z'/%3E%3C/svg%3E")}
+.pi-test{--m:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.2'%3E%3Cpath d='M12 3l8.5 6.2-3.2 10H6.7L3.5 9.2z'/%3E%3C/svg%3E")}
+.pi-exo{--m:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.2'%3E%3Cpath d='M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2z'/%3E%3Cpath d='M4 19V5'/%3E%3C/svg%3E")}
+.pi-note{--m:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.2'%3E%3Cpath d='M4 20h4L19 9l-4-4L4 16z'/%3E%3C/svg%3E")}
+.pi-wu{--m:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.2'%3E%3Cpath d='M12 3c2 3 5 5 5 9a5 5 0 0 1-10 0c0-2 1-3 2-4 0 2 1 3 2 3 0-3-1-5 1-8z'/%3E%3C/svg%3E")}
+.gs-cur{display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center;padding:10px 12px;border-radius:13px;background:var(--soft,#ECEFF3)}
+.gs-cur b{font-size:17px}.gs-cur span{color:var(--mute,#5D6675);font-size:14px;flex:1}
+.gs-bar{display:flex;flex-direction:column;gap:5px}
+.gs-bar>div,.gc-bar{display:block;height:8px;border-radius:99px;background:var(--soft,#ECEFF3);overflow:hidden}
+.gs-bar i,.gc-bar i{display:block;height:100%;background:var(--grun-hi);border-radius:99px;transition:width .3s}
+/* toast avec « Annuler » */
+#grun-toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(var(--nav-h,62px) + 14px + env(safe-area-inset-bottom,0px));z-index:260;display:flex;gap:12px;align-items:center;max-width:calc(100vw - 32px);background:var(--ink,#16202E);color:var(--bg,#fff);padding:8px 8px 8px 16px;border-radius:13px;box-shadow:0 8px 28px rgba(0,0,0,.28);font:600 15px/1.3 var(--ui,system-ui,sans-serif)}
+#grun-toast:not(:has(button)){padding:11px 16px}
+#grun-toast button{min-height:40px;border:0;border-radius:9px;background:var(--grun-hi);color:var(--grun-on);font:800 15px/1 var(--ui,system-ui,sans-serif);padding:0 14px;cursor:pointer;white-space:nowrap}
+body:not(.grun-has-nav) #grun-toast{bottom:calc(16px + env(safe-area-inset-bottom,0px))}
+#grun-saved{position:fixed;top:calc(8px + env(safe-area-inset-top,0px));right:12px;z-index:270;background:var(--grun-hi);color:var(--grun-on);font:700 13px/1 var(--ui,system-ui,sans-serif);padding:7px 11px;border-radius:99px;opacity:0;transform:translateY(-6px);transition:opacity .2s,transform .2s;pointer-events:none}
+#grun-saved.on{opacity:1;transform:none}
+/* barre de complétude (dossier) */
+.grun-compl{border:1px solid var(--line,#D9DDE3);border-radius:13px;background:var(--panel,#fff);padding:10px 12px;display:flex;flex-direction:column;gap:6px}
+.grun-compl .gc-h{display:flex;gap:10px;align-items:center}.grun-compl .gc-h b{white-space:nowrap}.grun-compl .gc-bar{flex:1}
+.grun-compl ul{margin:0;padding-left:18px;font-size:14.5px;color:var(--mute,#5D6675)}
+.grun-compl ul b{color:var(--ink,#16202E);font-weight:600}
+.grun-compl .gs-btn{align-self:flex-start}
+.grun-compl.ok{padding:8px 12px}
+/* action principale en bas (zone du pouce), au-dessus de la barre du bas */
+.grun-actbar{position:sticky;bottom:calc(var(--nav-h,62px) + env(safe-area-inset-bottom,0px) + 8px);z-index:20;display:flex;gap:8px;margin-top:16px}
+body:not(.grun-has-nav) .grun-actbar{bottom:calc(8px + env(safe-area-inset-bottom,0px))}
+.grun-actbar>*{flex:1;min-height:52px;box-shadow:0 6px 18px rgba(0,0,0,.14)}
+/* visite guidée, schéma */
+.gv h3{font-family:var(--display,"Barlow Condensed",system-ui,sans-serif);font-size:1.6em;margin:4px 0 6px;line-height:1.1}
+.gv-dots{display:flex;gap:5px}.gv-dots i{width:22px;height:5px;border-radius:9px;background:var(--line,#D9DDE3)}.gv-dots i.vu{background:var(--mute,#5D6675)}.gv-dots i.on{background:var(--grun-hi)}
+.grun-schema{width:100%;max-width:440px;display:block;margin:10px auto 0;font-family:var(--ui,system-ui,sans-serif)}
+.grun-schema rect{stroke-width:2}
+.grun-schema .s-ind{fill:rgba(15,118,110,.12);stroke:#0F766E}.grun-schema .s-tests{fill:rgba(109,63,192,.12);stroke:#6D3FC0}.grun-schema .s-res{fill:rgba(29,78,216,.10);stroke:#1D4ED8}.grun-schema .s-create{fill:rgba(194,65,12,.10);stroke:#C2410C}
+.grun-schema .s-d1{fill:rgba(194,65,12,.14);stroke:#C2410C}.grun-schema .s-d2{fill:rgba(194,65,12,.22);stroke:#C2410C}.grun-schema .s-d3{fill:#C2410C;stroke:#C2410C}
+.grun-schema text{fill:var(--ink,#16202E);text-anchor:middle}.grun-schema .s-t{font-weight:800;font-size:15px}.grun-schema .s-s{font-size:12px;fill:var(--mute,#5D6675)}
+.grun-schema .s-k{font-size:11px;font-weight:700;text-anchor:start}.grun-schema .s-k.c{text-anchor:middle;fill:#fff}
+.grun-doll{margin-top:8px}.grun-doll div{border:2px solid #C2410C;border-radius:12px;padding:8px 10px 10px;font-weight:800;color:#C2410C;background:rgba(194,65,12,.07)}.grun-doll div div{margin-top:6px;background:rgba(194,65,12,.12)}.grun-doll div div div{background:#C2410C;color:#fff}
+.grun-demo-bar{display:flex;gap:14px;align-items:center;justify-content:center;margin-top:8px}
+.grun-chip.demo{pointer-events:none}
+.grun-plus-demo{width:48px;height:48px;border-radius:16px;background:var(--grun-hi);color:var(--grun-on);display:inline-flex;align-items:center;justify-content:center;font:800 30px/1 var(--ui,system-ui,sans-serif)}
+html.grun-sheet-on body{overflow:hidden}
+@media print{.grun-topx,#grun-toast,#grun-saved,.grun-ov,.grun-actbar{display:none!important}}
+/* barre du haut des modules sur téléphone : le joueur en cours se réduit à son initiale, le titre s'abrège */
+html.grun-mod .topin .brand{min-width:0;overflow:hidden;text-overflow:ellipsis;flex:0 1 auto}
+@media (max-width:430px){html.grun-mod .grun-chip .gc-nm{display:none}html.grun-mod .grun-chip{padding:0 3px;max-width:none}.grun-topx{gap:4px}.grun-q{width:34px;height:34px}}
+.grun-chip:has(.gc-av.vide){max-width:none}.grun-chip:has(.gc-av.vide) .gc-nm{overflow:visible}
 </style>
-<script src="grun.js?v=1"></script>
+<script src="grun.js?v=1.4"></script>
+<script src="assistant.js?v=1.4"></script>
 <meta name="grun-module" content="banque"></head><body><title>Banque d'exercices</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Barlow:wght@400;500;600;700&display=swap">
 <style>
-/* Layout : barre fixe (retour, recherche, + exo) ; explorateur = filtres en puces + liste des exercices ; fiche = en-tête coloré par domaine, photo, vidéo, repères, consignes, liens croisés ; formulaire de création / modification ; propositions */
+/* Layout : barre fixe (retour, recherche, + exercice) ; explorateur = filtres en puces + liste des exercices ; fiche = en-tête coloré par domaine, photo, vidéo, repères, consignes, liens croisés ; formulaire de création / modification ; propositions */
 :root{
   --bg:#F3F4F6; --panel:#FFFFFF; --ink:#141B26; --mute:#5E6776; --line:#DADEE4; --soft:#ECEEF2;
   --pp:#C2410C; --ge:#1D4ED8; --de:#0F766E; --ph:#7A5A16; --jeu:#7C3AED; --acc:#141B26;
@@ -183,7 +328,11 @@ select.sel{min-height:34px;border:1px solid var(--line);border-radius:999px;back
 .video.has{padding:0;background:#000;aspect-ratio:16/9;max-height:62vh}
 .video .ph{font-family:var(--display);font-size:22px;color:var(--mute)}
 .video code{font-size:13px;background:var(--panel);padding:2px 8px;border-radius:6px}
-.vtools{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+.vtools{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;position:relative;z-index:2;clear:both;padding:10px 0 4px;background:var(--bg,transparent)}
+.vtools:empty{display:none}
+.vfile{position:absolute;width:1px;height:1px;opacity:0;overflow:hidden;clip:rect(0 0 0 0);pointer-events:none}
+.video.has{overflow:hidden;position:relative;isolation:isolate}
+.video.has video{object-fit:contain;max-height:100%;height:100%}
 .ref{color:var(--dc);font-weight:600;text-decoration:none;border-bottom:1px dotted currentColor;white-space:nowrap}
 .links{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
 .links a{font-size:13px;text-decoration:none;border:1px solid var(--line);border-radius:999px;padding:3px 10px;background:var(--bg)}
@@ -264,13 +413,19 @@ html.grun-simple .list.compact .row{grid-template-columns:4px minmax(0,1fr) auto
 html.grun-simple .row .id{display:none}
 @media (max-width:560px){html.grun-simple .row,html.grun-simple .list.compact .row{grid-template-columns:5px minmax(0,1fr)}}
 .btn.big{min-height:46px;padding:0 18px;font-size:16px}
+.frow.scroll{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:4px}
+.frow.scroll .chip{flex:0 0 auto}
+.row .rfav{display:inline-flex;align-items:center;justify-content:center;min-width:40px;min-height:40px;margin:-8px -6px -8px 0;border-radius:20px;font-size:20px;color:var(--mute);cursor:pointer}
+.row .rfav[aria-pressed="true"]{color:var(--bad,#C2410C)}
+.chip.cur{border-style:dashed}
+.propst{border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin:0 0 12px;background:var(--panel)}
 </style>
 
 <header class="top"><div class="topin">
   <button class="btn" id="back" type="button" aria-label="Retour">‹</button>
   <a class="brand" href="#">Banque</a>
   <div class="sbox"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
-    <input id="q" type="search" placeholder="Chercher un exo : nom, matériel, mot…" autocomplete="off" enterkeyhint="search"></div>
+    <input id="q" type="search" placeholder="Chercher un exercice : nom, matériel, mot…" autocomplete="off" enterkeyhint="search"></div>
   <a class="btn new" id="newb" href="#/nouveau" aria-label="Créer un exercice" hidden>+ Créer</a>
 </div></header>
 <main id="main"><div class="load">Chargement des exercices…</div></main>
@@ -280,7 +435,7 @@ html.grun-simple .row .id{display:none}
 "use strict";
 /* Correspondance ligne de grille → documents de la veille (écrite par build_data.py à partir de plan/liste_documents.tsv) */
 const LV = /*LV*/{"L":{"PP1":{"c":["2.1.1"],"a":["2.1.2"],"s":["2.1.3"],"b":["2.13.1","2.13.2","2.13.4"],"t":["2.16.7","2.16.12","2.16.13"]},"PP2":{"c":["2.2.1"],"a":["2.2.2"],"s":["2.2.3"],"b":["2.13.1","2.13.2","2.13.4","3.2.4"],"t":["2.16.7","2.16.12","2.16.13"]},"PP3":{"c":["2.3.1"],"a":["2.3.2"],"s":["2.3.3"],"b":["3.1.1"],"t":["2.16.9","2.16.12","2.16.13"]},"PP4":{"c":["2.4.1"],"a":["2.4.2"],"s":["2.4.3"],"b":["3.20.2"],"t":["2.16.5","2.16.12","2.16.13"]},"PP5":{"c":["2.5.1"],"a":["2.5.2"],"s":["2.5.3"],"b":["3.1.1","3.6.1"],"t":["2.16.6","2.16.12","2.16.13"]},"PP6":{"c":["2.6.1"],"a":["2.6.2"],"s":["2.6.3"],"b":["3.20.3"],"t":["2.16.3","2.16.12","2.16.13"]},"PP7":{"c":["2.7.1"],"a":["2.7.2"],"s":["2.7.3"],"b":["3.20.8","3.20.9"],"t":["2.16.4","2.16.12","2.16.13"]},"PP8":{"c":["2.8.1"],"a":["2.8.2"],"s":["2.8.3"],"b":["4.2.3"],"t":["2.16.8","2.16.12","2.16.13"]},"PP9":{"c":["2.9.1"],"a":["2.9.2"],"s":["2.9.3"],"b":["4.2.2","4.2.3"],"t":["2.16.8","2.16.12","2.16.13"]},"PP10":{"c":["2.10.1"],"a":["2.10.2"],"s":["2.10.3"],"b":["3.19.1"],"t":["2.16.9","2.16.12","2.16.13"]},"PP11":{"c":["2.11.1"],"a":["2.11.2"],"s":["2.11.3"],"b":["3.1.1"],"t":["2.16.9","2.16.12","2.16.13"]},"PP12":{"c":["2.12.1"],"a":["2.12.2"],"s":["2.12.3"],"b":["2.14.2","3.2.5"],"t":["2.16.9","2.16.12","2.16.13"]},"GE1":{"c":["3.3.1"],"a":["3.3.2"],"s":["4.6.8"],"b":["3.2.1","3.2.2","3.2.3","3.2.4","3.2.5","3.1.1","3.1.5"],"t":["2.16.11"]},"GE2":{"c":["3.4.1"],"a":["3.4.2"],"s":["4.6.8"],"b":["3.2.1","3.2.2","3.2.3","3.2.4","3.2.5","3.1.1","3.1.5"],"t":["2.16.11"]},"GE3":{"c":["3.5.1"],"a":["3.5.2"],"s":["4.6.8"],"b":["3.2.1","3.2.2","3.2.3","3.2.4","3.2.5","3.1.1","3.1.5"],"t":["2.16.11"]},"GE4":{"c":["3.7.1"],"a":["3.7.2"],"s":["4.6.8"],"b":["3.6.1","3.6.2","3.6.3","3.6.4","3.1.1","3.1.5"],"t":["2.16.11"]},"GE5":{"c":["3.8.1"],"a":["3.8.2"],"s":["4.6.8"],"b":["3.6.1","3.6.2","3.6.3","3.6.4","3.1.1","3.1.5"],"t":["2.16.11"]},"GE6":{"c":["3.9.1"],"a":["3.9.2"],"s":["4.6.8"],"b":["3.6.1","3.6.2","3.6.3","3.6.4","3.1.1","3.1.5"],"t":["2.16.11"]},"GE7":{"c":["3.11.1"],"a":["3.11.2"],"s":["4.6.8"],"b":["3.10.1","3.10.2","3.10.3","3.10.4","3.1.1","3.1.5"],"t":["2.16.11"]},"GE8":{"c":["3.12.1"],"a":["3.12.2"],"s":["4.6.8"],"b":["3.10.1","3.10.2","3.10.3","3.10.4","3.1.1","3.1.5"],"t":["2.16.11"]},"GE9":{"c":["3.13.1"],"a":["3.13.2"],"s":["4.6.8"],"b":["3.10.1","3.10.2","3.10.3","3.10.4","3.1.1","3.1.5"],"t":["2.16.11"]},"GE10":{"c":["3.15.1"],"a":["3.15.2"],"s":["4.6.8"],"b":["3.14.1","3.14.2","3.1.1","3.1.5"],"t":["2.16.11"]},"GE11":{"c":["3.16.1"],"a":["3.16.2"],"s":["4.6.8"],"b":["3.14.1","3.14.2","3.1.1","3.1.5"],"t":["2.16.11"]},"GE12":{"c":["3.17.1"],"a":["3.17.2"],"s":["4.6.8"],"b":["3.2.4","3.1.1","3.1.5"],"t":["2.16.11"]},"GE13":{"c":["3.18.3"],"a":[],"s":["4.6.8"],"b":["3.14.1","3.1.1","3.1.5"],"t":["2.16.11"]},"DE1":{"c":["3.20.1","3.19.1"],"a":["3.21.2","3.21.3"],"s":["3.21.4"],"b":["3.21.1","2.6.1"],"t":["2.16.11"]},"DE2":{"c":["3.20.2","3.19.1"],"a":["3.21.2","3.21.3"],"s":["3.21.4"],"b":["3.21.1","2.4.1"],"t":["2.16.11"]},"DE3":{"c":["3.20.3","3.19.1"],"a":["3.21.2","3.21.3"],"s":["3.21.4"],"b":["3.21.1","2.6.1"],"t":["2.16.3","2.16.11"]},"DE4":{"c":["3.20.4","3.19.1"],"a":["3.21.2","3.21.3"],"s":["3.21.4"],"b":["3.21.1","2.7.1"],"t":["2.16.4","2.16.11"]},"DE5":{"c":["3.20.5","3.19.1"],"a":["3.21.2","3.21.3"],"s":["3.21.4"],"b":["3.21.1","2.6.1"],"t":["2.16.11"]},"DE6":{"c":["3.20.6","3.19.1"],"a":["3.21.2","3.21.3"],"s":["3.21.4"],"b":["3.21.1","3.6.3"],"t":["2.16.11"]},"DE7":{"c":["3.20.7","3.19.1"],"a":["3.21.2","3.21.3"],"s":["3.21.4"],"b":["3.21.1","3.6.3","3.1.1"],"t":["2.16.11"]},"DE8":{"c":["3.20.8","3.19.1"],"a":["3.21.2","3.21.3"],"s":["3.21.4"],"b":["3.21.1","2.7.1"],"t":["2.16.4","2.16.11"]},"DE9":{"c":["3.20.9","3.19.1"],"a":["3.21.2","3.21.3"],"s":["3.21.4"],"b":["3.21.1","2.7.1"],"t":["2.16.4","2.16.11"]},"DE10":{"c":["3.20.10","3.19.1"],"a":["3.21.2","3.21.3"],"s":["3.21.4"],"b":["3.21.1","4.2.2"],"t":["2.16.11"]},"DE11":{"c":["3.20.11","3.19.1"],"a":["3.21.2","3.21.3"],"s":["3.21.4"],"b":["3.21.1","2.10.1"],"t":["2.16.11"]}},"g":{"c":"Comprendre","a":"Âge par âge","s":"Séances et routines","b":"Biomécanique et liens","t":"Tests et évaluation"},"t":{"2.1.1":"Comprendre et développer : bases, méthodes, application au tennis","2.1.2":"Âge par âge, filles et garçons : ce qu'on attend et ce qu'on travaille","2.1.3":"Séances, routines et programmes types","2.2.1":"Comprendre et développer : bases, méthodes, application au tennis","2.2.2":"Âge par âge, filles et garçons : ce qu'on attend et ce qu'on travaille","2.2.3":"Séances, routines et programmes types","2.3.1":"Comprendre et développer : bases, méthodes, application au tennis","2.3.2":"Âge par âge, filles et garçons : ce qu'on attend et ce qu'on travaille","2.3.3":"Séances, routines et programmes types","2.4.1":"Comprendre et développer : bases, méthodes, application au tennis","2.4.2":"Âge par âge, filles et garçons : ce qu'on attend et ce qu'on travaille","2.4.3":"Séances, routines et programmes types","2.5.1":"Comprendre et développer : bases, méthodes, application au tennis","2.5.2":"Âge par âge, filles et garçons : ce qu'on attend et ce qu'on travaille","2.5.3":"Séances, routines et programmes types","2.6.1":"Comprendre et développer : bases, méthodes, application au tennis","2.6.2":"Âge par âge, filles et garçons : ce qu'on attend et ce qu'on travaille","2.6.3":"Séances, routines et programmes types","2.7.1":"Comprendre et développer : bases, méthodes, application au tennis","2.7.2":"Âge par âge, filles et garçons : ce qu'on attend et ce qu'on travaille","2.7.3":"Séances, routines et programmes types","2.8.1":"Comprendre et développer : bases, méthodes, application au tennis","2.8.2":"Âge par âge, filles et garçons : ce qu'on attend et ce qu'on travaille","2.8.3":"Séances, routines et programmes types","2.9.1":"Comprendre et développer : bases, méthodes, application au tennis","2.9.2":"Âge par âge, filles et garçons : ce qu'on attend et ce qu'on travaille","2.9.3":"Séances, routines et programmes types","2.10.1":"Comprendre et développer : bases, méthodes, application au tennis","2.10.2":"Âge par âge, filles et garçons : ce qu'on attend et ce qu'on travaille","2.10.3":"Séances, routines et programmes types","2.11.1":"Comprendre et développer : bases, méthodes, application au tennis","2.11.2":"Âge par âge, filles et garçons : ce qu'on attend et ce qu'on travaille","2.11.3":"Séances, routines et programmes types","2.12.1":"Comprendre et développer : bases, méthodes, application au tennis","2.12.2":"Âge par âge, filles et garçons : ce qu'on attend et ce qu'on travaille","2.12.3":"Séances, routines et programmes types","2.13.1":"Charge, tempo et méthodes de musculation","2.13.2":"Technique et sécurité des mouvements de musculation","2.13.4":"La musculation du jeune : principes et précautions","2.14.2":"Les briques de l'échauffement","2.16.3":"Tests de vitesse et d'accélération","2.16.4":"Tests de changement de direction et d'agilité","2.16.5":"Tests de détente et de puissance des jambes","2.16.6":"Tests de puissance du haut du corps et de frappe","2.16.7":"Tests de force et profil force-vitesse","2.16.8":"Tests d'endurance et de sprints répétés","2.16.9":"Tests de souplesse, de gainage, d'équilibre et de coordination","2.16.11":"Observer et évaluer le joueur sur le court","2.16.12":"Valeurs de référence par âge : filles","2.16.13":"Valeurs de référence par âge : garçons","3.1.1":"Chaîne cinétique, transferts d'énergie, appuis et équilibre","3.1.5":"Contraintes mécaniques et fondamentaux des frappes par tranche d'âge","3.2.1":"Vue d'ensemble et repères chiffrés","3.2.2":"Position de départ, lancer de balle, armé","3.2.3":"Appuis, jambes et tronc","3.2.4":"Bras de frappe, impact, accompagnement, muscles","3.2.5":"Erreurs, contraintes articulaires, fatigue, enseigner le service","3.3.1":"Technique : ce qui est propre à ce coup, repères, erreurs, usages","3.3.2":"Âge par âge : attendus et étapes d'apprentissage","3.4.1":"Technique : ce qui est propre à ce coup, repères, erreurs, usages","3.4.2":"Âge par âge : attendus et étapes d'apprentissage","3.5.1":"Technique : ce qui est propre à ce coup, repères, erreurs, usages","3.5.2":"Âge par âge : attendus et étapes d'apprentissage","3.6.1":"Situer le coup droit, prises, chaîne cinétique","3.6.2":"Le coup droit phase par phase","3.6.3":"Appuis, situations de jeu, repères chiffrés, muscles, hommes et femmes","3.6.4":"Erreurs, contraintes articulaires, fatigue, préparation physique du coup droit","3.7.1":"Technique : ce qui est propre à ce coup, repères, erreurs, usages","3.7.2":"Âge par âge : attendus et étapes d'apprentissage","3.8.1":"Technique : ce qui est propre à ce coup, repères, erreurs, usages","3.8.2":"Âge par âge : attendus et étapes d'apprentissage","3.9.1":"Technique : ce qui est propre à ce coup, repères, erreurs, usages","3.9.2":"Âge par âge : attendus et étapes d'apprentissage","3.10.1":"Situer le revers, prises, tronc commun aux revers","3.10.2":"Le revers à deux mains phase par phase","3.10.3":"Le revers à une main phase par phase","3.10.4":"Repères chiffrés, muscles, erreurs, contraintes, préparation physique du revers","3.11.1":"Technique : ce qui est propre à ce coup, repères, erreurs, usages","3.11.2":"Âge par âge : attendus et étapes d'apprentissage","3.12.1":"Technique : ce qui est propre à ce coup, repères, erreurs, usages","3.12.2":"Âge par âge : attendus et étapes d'apprentissage","3.13.1":"Technique : ce qui est propre à ce coup, repères, erreurs, usages","3.13.2":"Âge par âge : attendus et étapes d'apprentissage","3.14.1":"Le jeu au filet : prises, phases, hauteurs, volées particulières, demi-volée, montée","3.14.2":"Muscles, erreurs, contraintes, préparation physique de la volée","3.15.1":"Technique : ce qui est propre à ce coup, repères, erreurs, usages","3.15.2":"Âge par âge : attendus et étapes d'apprentissage","3.16.1":"Technique : ce qui est propre à ce coup, repères, erreurs, usages","3.16.2":"Âge par âge : attendus et étapes d'apprentissage","3.17.1":"Technique : phases, formes de smash, exigences, erreurs","3.17.2":"Âge par âge : attendus, enseigner et entraîner","3.18.3":"La main, l'amortie et la contre-amortie","3.19.1":"Comprendre le jeu de jambes : rôle, cycle de déplacement, exigences","3.20.1":"Ligne 1 · Position d'attention : technique, repères, erreurs, attendus par âge","3.20.2":"Ligne 2 · Allègement et reprise d'appuis : technique, repères, erreurs, attendus par âge","3.20.3":"Ligne 3 · Démarrage et premiers pas : technique, repères, erreurs, attendus par âge","3.20.4":"Ligne 4 · Déplacements latéraux : technique, repères, erreurs, attendus par âge","3.20.5":"Ligne 5 · Déplacements vers l'avant et vers l'arrière : technique, repères, erreurs, attendus par âge","3.20.6":"Ligne 6 · Pas d'ajustement et mise à distance : technique, repères, erreurs, attendus par âge","3.20.7":"Ligne 7 · Appuis de frappe : technique, repères, erreurs, attendus par âge","3.20.8":"Ligne 8 · Freinage et décélération : technique, repères, erreurs, attendus par âge","3.20.9":"Ligne 9 · Changement de direction et réaccélération : technique, repères, erreurs, attendus par âge","3.20.10":"Ligne 10 · Replacement : technique, repères, erreurs, attendus par âge","3.20.11":"Ligne 11 · Enchaînements et liaison des actions : technique, repères, erreurs, attendus par âge","3.21.1":"Le jeu de jambes selon la surface","3.21.2":"Le jeu de jambes âge par âge : de 3 à 10 ans","3.21.3":"Le jeu de jambes âge par âge : de 11 ans à l'adulte","3.21.4":"Observer, corriger, routines et séances types","4.2.2":"Déplacements et frappes en match","4.2.3":"Exigences physiologiques et mentales du match","4.6.8":"Situations types par secteur de jeu"}}/*/LV*/;
-const DOM = {PP:["Préparation physique","--pp"], PH:["Prépa physique hors grille","--ph"], GE:["Biomécanique du geste","--ge"], DE:["Biomécanique du déplacement","--de"], JEU:["Situations de jeu","--jeu"]};
+const DOM = {PP:["Préparation physique","--pp"], PH:["Préparation physique hors grille","--ph"], GE:["Biomécanique du geste","--ge"], DE:["Biomécanique du déplacement","--de"], JEU:["Situations de jeu","--jeu"]};
 const LIG = {
  PP:["Force du bas du corps","Force du haut du corps","Gainage et stabilité du tronc","Puissance des jambes : sauts et pliométrie","Puissance du haut du corps et rotation","Vitesse et accélération","Freinage, changements de direction et agilité","Endurance aérobie","Répétition d'efforts intenses","Coordination, motricité fondamentale et rythme","Équilibre et proprioception","Mobilité et souplesse"],
  GE:["Service à plat","Service slicé","Service lifté","Coup droit lifté","Coup droit à plat","Coup droit slicé","Revers lifté","Revers à plat","Revers slicé","Volée de coup droit","Volée de revers","Smash","Amortie et touché de balle"],
@@ -298,7 +453,7 @@ const CIB = {MR:[["cardio","Cardio"],["gammes","Gammes"],["appuis","Appuis"]],MO
 const CIBN = Object.fromEntries(Object.values(CIB).flat());
 const FMTN = {seul:"Seul",deux:"À deux",groupe:"En groupe"};
 const LIEUN = {court:"Court",salle:"Salle",ext:"Extérieur",bord:"Bord de court",hotel:"Chambre d'hôtel"};
-const APRN = {tennis:"Avant le tennis",pp:"Avant la prépa physique",match:"Avant un match",bilan:"Avant un bilan / tests"};
+const APRN = {tennis:"Avant le tennis",pp:"Avant la préparation physique",match:"Avant un match",bilan:"Avant un bilan / tests"};
 const WMAT = new Set(["rb","plots","lattes","echelle","cerceaux","haies","corde","mb","ballon","elast","banc","mur","cibles","chasubles","tapis"]);
 const STN = {perso:"Perso",propose:"Proposé",valide:"Exercice de la méthode"};
 const PAGE = 60;
@@ -315,6 +470,17 @@ const J = () => window.GRUN && GRUN.isJoueur();
 const today = () => (window.GRUN ? GRUN.today() : new Date().toISOString().slice(0,10));
 const MOIFAM = {c:"MOI", t:"Mes exercices", dom:"PH", dossier:"Mes exercices", intro:"<p>Les exercices que tu as créés et rangés dans « Mes exercices ».</p>", subs:[]};
 
+/* « ? » : une aide par écran (G.aide) */
+const AIDES = {explorer:"La banque : tous les exercices, rangés selon les lignes des grilles. Filtre d'une touche (domaine, âge, ligne, niveau…), ♡ sur une ligne = favori en un geste ; tes exercices sont en tête.",
+  fiche:"La fiche d'un exercice : but, consignes, matériel, vidéo, dosage. « Utiliser dans une séance » en bas ; « Exercices proches de celui-ci » propose les mêmes qualités à côté ; ♡ le met en favori.",
+  form:"Créer ou modifier un exercice, en un écran : le nom suffit pour commencer, le reste (fiche, matériel, vidéo, échauffement, statut) se remplit si tu veux. « Proposer » l'envoie au créateur de GRÜN.",
+  ligne:"Les exercices d'une ligne de grille pour l'âge choisi, du plus simple au plus dur.",
+  familles:"Les familles d'exercices, chacune avec son mode d'emploi et ses sous-familles.", favoris:"Tes exercices ♡ : ils reviennent en priorité dans Create my session et le warm-up.",
+  listes:"Tes collections : un thème, un joueur, une période. Personnelles.", tournage:"Le suivi des vidéos : à tourner, tourné, monté. Change le statut d'une touche.",
+  propositions:"Proposer un exercice à la méthode, exporter tes propositions, valider ou refuser celles reçues."};
+Object.entries(AIDES).forEach(([k,t])=>{ try{ GRUN.aide("banque/"+k, t); }catch(e){} });
+const ecran = k => { try{ GRUN.aide.ecran("banque/"+k); }catch(e){} };
+const cur = () => { try{ const c = GRUN.courant.get(); if(c && c.t==="j" && c.joueur){ const a = GRUN.grilleConseillee ? GRUN.grilleConseillee(c.joueur) : null; return a ? {nom:String(c.nom||"").split(" ")[0], a:Math.max(4,Math.min(18,a))} : null; } }catch(e){} return null; };
 let FAMS=[], EX=[], BY={}, FBY={}, VID={}, MATC=[], FAV=new Set(), HIDE=new Set(), EDITING=false, FLASH="";
 const dmsg = t => { FLASH=t; const m=$("#dmsg"); if(m) m.textContent=t; };
 /* ---------- données personnelles du module (appareil, clé historique banque_v1) : listes, notes, liens vidéo, filtres, propositions reçues ---------- */
@@ -332,7 +498,7 @@ const IDB = { db:null,
   async keys(){ try{ const db=await this.open(); return await new Promise(ok=>{ const r=db.transaction("v").objectStore("v").getAllKeys(); r.onsuccess=()=>ok(r.result); r.onerror=()=>ok([]); }); }catch(e){ return []; } } };
 let LOCALV = new Set();
 
-/* ---------- chargement : base + exos perso + modifications + masqués (GRUN.banque) ---------- */
+/* ---------- chargement : base + exercices perso + modifications + masqués (GRUN.banque) ---------- */
 function index(B){
   FAMS = [...B.fams, MOIFAM]; EX = B.ex; MATC = B.mat||[]; BY = {}; FBY = {};
   FAV = new Set(B.fav||[]); HIDE = new Set(B.hide||[]);
@@ -412,7 +578,7 @@ function filtered(){
     return true;
   });
   const by = {nom:(a,b)=>a.n.localeCompare(b.n,"fr"), niv:(a,b)=>a.v-b.v||a.a-b.a||a.i-b.i, age:(a,b)=>a.a-b.a||a.v-b.v||a.i-b.i}[f.tri];
-  /* mes exos d'abord (créés ou ajoutés par moi), puis l'ordre choisi */
+  /* mes exercices d'abord (créés ou ajoutés par moi), puis l'ordre choisi */
   r.sort((a,b)=>((b.perso?1:0)-(a.perso?1:0)) || (by?by(a,b):0));
   return r;
 }
@@ -420,30 +586,35 @@ function showExplore(){
   document.documentElement.style.setProperty("--acc","var(--ink)");
   const f=P.f;
   const domChips = Object.entries(DOM).map(([k,[n,c]])=>`<button class="chip" type="button" data-dom="${k}" aria-pressed="${f.dom===k}" style="--cc:var(${c})"><i></i>${n}</button>`).join("");
-  const ligOpts = ["PP","GE","DE"].map(d=>`<optgroup label="${DOM[d][0]}">${LIG[d].map((n,i)=>`<option value="${d}${i+1}">${XP()?d+(i+1)+" · ":""}${esc(n)}</option>`).join("")}</optgroup>`).join("");
   const tog = (k,t) => `<button class="chip" type="button" data-tog="${k}" aria-pressed="${!!f[k]}">${t}</button>`;
+  const ck = (k, v, t, extra) => `<button class="chip${extra||""}" type="button" data-fk="${k}" data-fv="${esc(v)}" aria-pressed="${String(f[k])===String(v)}">${t}</button>`;
+  const ldoms = f.dom==="PP"||f.dom==="PH" ? ["PP"] : f.dom==="GE" ? ["GE"] : f.dom==="DE" ? ["DE"] : (f.lig ? [f.lig.slice(0,2)] : []);
+  const cj = cur();
+  ecran("explorer");
   const nMine = EX.filter(e=>e.perso).length;
   $("#main").innerHTML = `<div class="headrow"><div><h1>Banque d'exercices</h1><p class="lead">${EX.length.toLocaleString("fr-FR")} exercices${nMine?` dont ${nMine} à toi`:""} · une fiche par exercice · rangés selon les lignes des grilles</p></div></div>${tabs("")}
   <div class="filters">
     <div class="frow"><b>Domaine</b>${domChips}</div>
-    <div class="frow"><b>Ligne</b><select class="sel" id="flig" aria-label="Ligne de grille"><option value="">Toutes les lignes</option>${ligOpts}</select>
-      <b class="in">Âge</b><select class="sel" id="fage" aria-label="Âge du joueur"><option value="">Tous âges</option>${Array.from({length:15},(_,i)=>`<option value="${i+4}">Joueur de ${i+4} ans</option>`).join("")}</select>
-    </div><details id="fplus" class="fplus" ${f.niv||f.lieu||f.wu||f.vid||f.fav||f.mine||f.mod||f.hid||f.dispo.length||f.mat?"open":""}><summary>Plus de filtres</summary><div class="frow">
-      <b>Niveau</b><select class="sel" id="fniv" aria-label="Niveau"><option value="">Tous</option>${[1,2,3,4].map(n=>`<option value="${n}">${n} · ${NIV[n]}</option>`).join("")}</select></div>
-    <div class="frow"><b>Lieu</b><select class="sel" id="flieu" aria-label="Lieu"><option value="">Partout</option><option value="court">Sur le court</option><option value="hors">Hors court</option><option value="grand">Grand espace</option></select>
-      <b class="in">Échauff.</b><select class="sel" id="fwu" aria-label="Étape d'échauffement"><option value="">Tous les exos</option><option value="1">Utilisables en échauffement</option>${Object.entries(ETN).map(([k,n])=>`<option value="${k}">Étape · ${n}</option>`).join("")}</select>
-      <b class="in">Vidéo</b><select class="sel" id="fvid" aria-label="Vidéo"><option value="">Toutes</option><option value="1">Avec vidéo</option><option value="0">Sans vidéo</option></select></div>
-    <div class="frow"><b>Afficher</b>${tog("fav","♥ Favoris")}${tog("mine","Mes exos")}${tog("mod","Modifiés")}${tog("hid","Masqués")}<button class="chip" type="button" id="freset">Tout effacer</button></div>
+    <div class="frow scroll"><b>Âge</b>${cj?ck("age", cj.a, `Âge de ${esc(cj.nom)} · ${cj.a} ans`, " cur"):""}${Array.from({length:15},(_,i)=>ck("age", i+4, (i+4)+" ans")).join("")}</div>
+    <div class="frow${ldoms.length?" scroll":""}"><b>Ligne</b>${ldoms.length ? ldoms.flatMap(d=>LIG[d].map((n,i)=>ck("lig", d+(i+1), (XP()?d+(i+1)+" · ":"")+esc(n)))).join("") : `<span class="msg">Touche un domaine pour voir ses lignes${f.lig?` · choisie : ${esc(ligNom(f.lig))}`:""}.</span>`}</div>
+    <details id="fplus" class="fplus" ${f.niv||f.lieu||f.wu||f.vid||f.fav||f.mine||f.mod||f.hid||f.dispo.length||f.mat?"open":""}><summary>Plus de filtres</summary>
+    <div class="frow"><b>Niveau</b>${[1,2,3,4].map(n=>ck("niv", n, n+" · "+NIV[n])).join("")}</div>
+    <div class="frow"><b>Lieu</b>${ck("lieu","court","Sur le court")}${ck("lieu","hors","Hors court")}${ck("lieu","grand","Grand espace")}</div>
+    <div class="frow"><b>Échauff.</b>${ck("wu","1","Utilisables en échauffement")}${Object.entries(ETN).map(([k,n])=>ck("wu",k,"Étape · "+n)).join("")}</div>
+    <div class="frow"><b>Vidéo</b>${ck("vid","1","Avec vidéo")}${ck("vid","0","Sans vidéo")}</div>
+    <div class="frow"><b>Afficher</b>${tog("fav","♥ Favoris")}${tog("mine","Mes exercices")}${tog("mod","Modifiés")}${tog("hid","Masqués")}<button class="chip" type="button" id="freset">Tout effacer</button></div>
     <details id="fmore" ${f.dispo.length||f.mat?"open":""}><summary>Matériel${f.dispo.length?` · ${f.dispo.length} disponible${f.dispo.length>1?"s":""}`:""}</summary>
       <div class="frow" style="margin-top:6px"><b>Disponible</b>${MATC.map(([k,n])=>`<button class="chip" type="button" data-mat="${k}" aria-pressed="${f.dispo.includes(k)}">${esc(n)}</button>`).join("")}</div>
-      <p class="msg" style="margin:4px 0 8px">Coche le matériel que tu as : seuls les exos faisables avec ce matériel (ou sans rien) restent.</p>
-      <div class="frow"><b>Utilise</b><select class="sel" id="fmat" aria-label="Matériel utilisé"><option value="">Tout matériel</option>${MAT.map((m,i)=>`<option value="${i}">${m[0]}</option>`).join("")}</select></div>
+      <p class="msg" style="margin:4px 0 8px">Coche le matériel que tu as : seuls les exercices faisables avec ce matériel (ou sans rien) restent.</p>
+      <div class="frow"><b>Utilise</b>${MAT.map((m,i)=>ck("mat", i, esc(m[0]))).join("")}</div>
     </details></details>
   </div>
   <div class="count"><span id="cnt"></span><span class="actbar"><select class="sel" id="ftri" aria-label="Trier"><option value="">Ordre de la banque</option><option value="nom">Trier par nom</option><option value="niv">Trier par niveau</option><option value="age">Trier par âge</option></select>
     <span class="seg" role="group" aria-label="Vue"><button type="button" data-vue="liste" aria-pressed="${f.vue!=="compacte"}">Liste</button><button type="button" data-vue="compacte" aria-pressed="${f.vue==="compacte"}">Compacte</button></span></span></div><div id="res"></div>`;
-  [["flig","lig"],["fage","age"],["fniv","niv"],["fmat","mat"],["fvid","vid"],["flieu","lieu"],["fwu","wu"],["ftri","tri"]].forEach(([id,k])=>{ const s=$("#"+id); s.value=f[k]; s.onchange=()=>{ f[k]=s.value; if(k==="lig" && s.value){ const d=s.value.slice(0,2); if(f.dom && !(f.dom===d || (f.dom==="PH"&&d==="PP") || f.dom==="JEU")) f.dom=""; } save(); shown=PAGE; showExplore(); }; });
-  $$("[data-dom]").forEach(b=>b.onclick=()=>{ f.dom = f.dom===b.dataset.dom ? "" : b.dataset.dom; save(); shown=PAGE; showExplore(); });
+  [["ftri","tri"]].forEach(([id,k])=>{ const s=$("#"+id); s.value=f[k]; s.onchange=()=>{ f[k]=s.value; save(); shown=PAGE; showExplore(); }; });
+  /* filtres en pastilles : une touche choisit, une seconde touche retire */
+  $$("[data-fk]").forEach(b=>b.onclick=()=>{ const k=b.dataset.fk, v=b.dataset.fv; f[k] = String(f[k])===v ? "" : v; save(); shown=PAGE; const y=scrollY; showExplore(); scrollTo(0,y); });
+  $$("[data-dom]").forEach(b=>b.onclick=()=>{ f.dom = f.dom===b.dataset.dom ? "" : b.dataset.dom; if(f.lig){ const d=f.lig.slice(0,2); if(f.dom && !(f.dom===d || (f.dom==="PH"&&d==="PP") || f.dom==="JEU")) f.lig=""; } save(); shown=PAGE; const y=scrollY; showExplore(); scrollTo(0,y); });
   $$("[data-tog]").forEach(b=>b.onclick=()=>{ const k=b.dataset.tog; f[k]=!f[k]; save(); shown=PAGE; showExplore(); });
   $$("[data-mat]").forEach(b=>b.onclick=()=>{ const k=b.dataset.mat; f.dispo = f.dispo.includes(k) ? f.dispo.filter(x=>x!==k) : [...f.dispo,k]; save(); shown=PAGE; showExplore(); $("#fmore").open=true; });
   $$("[data-vue]").forEach(b=>b.onclick=()=>{ f.vue=b.dataset.vue; save(); showExplore(); });
@@ -459,21 +630,26 @@ function renderRes(){
 }
 function badges(e){ return `${e.perso?`<span class="pill mine">${e.st==="valide"?"méthode":e.st==="propose"?"proposé":"perso"}</span>`:""}${e.modifie?'<span class="pill mod">modifié</span>':""}${HIDE.has(e.id)?'<span class="pill">masqué</span>':""}`; }
 function rowsHTML(arr, compact){
-  return `<div class="list${compact?" compact":""}">${arr.map(e=>`<a class="row" href="#/ex/${e.id}" style="--dc:${dc(e.dom)}"><span class="bar"></span><span class="id">${e.id}</span><span class="nm"><b>${FAV.has(e.id)?'<span class="pill fav" style="background:none;padding:0 4px 0 0">♥</span>':""}${esc(e.n)}</b><small>${esc(liTxt(e))}</small></span><span class="meta">${badges(e)}<span class="pill">${e.a}${(e.ax||18)<18?`-${e.ax}`:"+"} ans</span><span class="pill">niv. ${e.v}</span>${e.w?'<span class="pill x">échauff.</span>':""}${hasVid(e.id)?'<span class="pill vid x">▶ vidéo</span>':""}</span></a>`).join("")}</div>`;
+  return `<div class="list${compact?" compact":""}">${arr.map(e=>`<a class="row" href="#/ex/${e.id}" style="--dc:${dc(e.dom)}"><span class="bar"></span><span class="id">${e.id}</span><span class="nm"><b>${FAV.has(e.id)?'<span class="pill fav" style="background:none;padding:0 4px 0 0">♥</span>':""}${esc(e.n)}</b><small>${esc(liTxt(e))}</small></span><span class="meta">${J()?"":`<span class="rfav" role="button" tabindex="0" data-rfav="${e.id}" aria-pressed="${FAV.has(e.id)}" aria-label="${FAV.has(e.id)?"Retirer des favoris":"Mettre en favori"}">${FAV.has(e.id)?"♥":"♡"}</span>`}${badges(e)}<span class="pill">${e.a}${(e.ax||18)<18?`-${e.ax}`:"+"} ans</span><span class="pill">niveau ${e.v}</span>${e.w?'<span class="pill x">échauff.</span>':""}${hasVid(e.id)?'<span class="pill vid x">▶ vidéo</span>':""}</span></a>`).join("")}</div>`;
 }
+/* favori en un geste, sur chaque ligne de la liste */
+document.addEventListener("click", ev=>{ const b = ev.target.closest && ev.target.closest("[data-rfav]"); if(!b) return; ev.preventDefault(); ev.stopPropagation();
+  const id = b.dataset.rfav, on = GRUN.banque.toggleFav(id); on?FAV.add(id):FAV.delete(id); b.setAttribute("aria-pressed", on); b.textContent = on?"♥":"♡";
+  if(GRUN.ui && GRUN.ui.annuler) GRUN.ui.annuler(on?"Ajouté aux favoris":"Retiré des favoris", ()=>{ const o=GRUN.banque.toggleFav(id); o?FAV.add(id):FAV.delete(id); b.setAttribute("aria-pressed",o); b.textContent=o?"♥":"♡"; }, {duree:4000}); }, true);
+document.addEventListener("keydown", ev=>{ if((ev.key==="Enter"||ev.key===" ") && ev.target.matches && ev.target.matches("[data-rfav]")){ ev.preventDefault(); ev.target.click(); } });
 let qT; $("#q").addEventListener("input",()=>{ clearTimeout(qT); qT=setTimeout(()=>{ shown=PAGE; if(location.hash && location.hash!=="#") location.hash=""; else if($("#res")) renderRes(); else showExplore(); },200); });
 $("#q").addEventListener("keydown",e=>{ if(e.key==="Enter") e.target.blur(); });
 
-/* ---------- exos d'une ligne pour un âge (du plus simple au plus dur) ---------- */
+/* ---------- exercices d'une ligne pour un âge (du plus simple au plus dur) ---------- */
 function showLigne(L, a){
-  if(!okLig(L)) return showExplore();
+  if(!okLig(L)) return showExplore(); ecran("ligne");
   const age = a && +a>=4 && +a<=18 ? +a : null;
   document.documentElement.style.setProperty("--acc",ligCol(L));
   const xs = EX.filter(e=>e.L.includes(L) && !HIDE.has(e.id) && (!age || (e.a<=age && (e.ax||18)>=age))).sort((x,y)=>x.v-y.v||x.a-y.a||x.n.localeCompare(y.n,"fr"));
   const m=$("#main"); m.style.setProperty("--dc",ligCol(L));
   const lv={}; xs.forEach(e=>{ (lv[e.v]=lv[e.v]||[]).push(e); });
   m.innerHTML = `<div class="crumb"><a href="#">Banque</a>›<span>${esc(ligNom(L))}</span></div>
-   <div class="headrow" style="margin-top:4px"><div><h1 style="color:${ligCol(L)}">${esc(ligNom(L))}<span class="xp"> · ${L}</span></h1><p class="lead">${xs.length} exercice${xs.length>1?"s":""}${age?` accessibles à ${age} ans`:""} · du plus simple au plus dur</p></div>${J()?"":`<a class="btn new" href="#/nouveau?ligne=${L}${age?`&a=${age}`:""}">+ Créer un exo pour cette ligne</a>`}</div>
+   <div class="headrow" style="margin-top:4px"><div><h1 style="color:${ligCol(L)}">${esc(ligNom(L))}<span class="xp"> · ${L}</span></h1><p class="lead">${xs.length} exercice${xs.length>1?"s":""}${age?` accessibles à ${age} ans`:""} · du plus simple au plus dur</p></div>${J()?"":`<a class="btn new" href="#/nouveau?ligne=${L}${age?`&a=${age}`:""}">+ Créer un exercice pour cette ligne</a>`}</div>
    <div class="filters"><div class="frow"><b>Âge</b><select class="sel" id="lage" aria-label="Âge du joueur"><option value="">Tous âges</option>${Array.from({length:15},(_,i)=>`<option value="${i+4}" ${age===i+4?"selected":""}>Joueur de ${i+4} ans</option>`).join("")}</select></div>
    <div class="frow"><b>Liens</b>${J()?"":`<a class="chip" href="veille.html#/l/${L}">Comprendre (veille)</a>`}<a class="chip" href="grilles.html#/ligne/${L}/G/${age||10}">Tests · garçons</a><a class="chip" href="grilles.html#/ligne/${L}/F/${age||10}">Tests · filles</a></div></div>
    ${xs.length ? Object.entries(lv).map(([v,arr])=>`<h3 class="subh">Niveau ${v} · ${NIV[v]||""} <small style="color:var(--mute);font-family:var(--ui);font-size:13px">${arr.length}</small></h3>${rowsHTML(arr)}`).join("") : '<div class="empty" style="margin-top:12px">Aucun exercice pour cette ligne à cet âge. Change l\'âge ou crée un exercice.</div>'}`;
@@ -503,18 +679,26 @@ function crossHTML(e){
     return `<div class="xline"><b style="color:${ligCol(l)}">${esc(ligNom(l))}<span class="xp"> · ${l}</span></b><div class="links">
       ${J()?"":`<a class="main" href="veille.html#/l/${l}">Comprendre · veille</a>${docs.map(c=>`<a href="veille.html#d/${c}${(d.a||[]).includes(c)?`/a${age}`:""}" title="${esc(G[(d.c||[]).includes(c)?"c":"a"]||"")}"><span class="xp">${c} · </span>${esc((T[c]||"").split(":")[0].slice(0,46))}</a>`).join("")}`}
       <a href="grilles.html#/ligne/${l}/G/${age}">Tests garçons ${age} ans</a><a href="grilles.html#/ligne/${l}/F/${age}">Tests filles ${age} ans</a>
-      <a href="#/l/${l}?a=${age}">Tous les exos de cette ligne à ${age} ans</a></div></div>`; }).join("")}</div></div>`;
+      <a href="#/l/${l}?a=${age}">Tous les exercices de cette ligne à ${age} ans</a></div></div>`; }).join("")}</div></div>`;
 }
 function neighbours(e){
   const same = EX.filter(x=>x.f===e.f && x.s===e.s && x.id!==e.id && !HIDE.has(x.id));
   const near = (v)=> same.filter(x=>x.v===v).sort((a,b)=>Math.abs(a.a-e.a)-Math.abs(b.a-e.a)).slice(0,4);
   const reg = near(e.v-1), pro = near(e.v+1), eq = near(e.v).slice(0,3);
-  const li = arr => arr.length ? arr.map(x=>`<a href="#/ex/${x.id}">${esc(x.n)} <small>· niv. ${x.v} · ${ageTxt(x)}<span class="xp"> · ${x.id}</span></small></a>`).join("") : '<span class="msg">—</span>';
-  return `<div class="cell"><div class="lab">Exos voisins · ${esc(e.s||"")}</div><div class="nb">
+  const li = arr => arr.length ? arr.map(x=>`<a href="#/ex/${x.id}">${esc(x.n)} <small>· niveau ${x.v} · ${ageTxt(x)}<span class="xp"> · ${x.id}</span></small></a>`).join("") : '<span class="msg">—</span>';
+  return `<div class="cell"><div class="lab">Exercices voisins · ${esc(e.s||"")}</div><div class="nb">
     <div><b style="font-size:13px">‹ Régression (plus simple)</b>${li(reg.length?reg:eq.filter(x=>x.a<e.a))}</div>
     <div><b style="font-size:13px">Progression (plus dur) ›</b>${li(pro.length?pro:eq.filter(x=>x.a>=e.a))}</div></div></div>`;
 }
+/* « Exercices proches de celui-ci » : mêmes lignes de grille, même famille, âge et niveau voisins (score), hors masqués */
+function proches(e, n){ const L = new Set(e.L||[]), ea = e.a||4, eb = e.ax||18;
+  return EX.filter(x=>x.id!==e.id && !HIDE.has(x.id)).map(x=>{ let sc = 0; (x.L||[]).forEach(l=>{ if(L.has(l)) sc += 4; }); if(x.f===e.f) sc += 2; if(x.s && x.s===e.s) sc += 2; if(x.dom===e.dom) sc += 1;
+    const ov = Math.min(eb, x.ax||18) - Math.max(ea, x.a||4); if(ov<0) sc -= 3; sc -= Math.abs((x.v||1)-(e.v||1))*0.8; if(FAV.has(x.id)) sc += 0.5; return [sc, x]; })
+    .filter(([sc])=>sc>=4).sort((a,b)=>b[0]-a[0]).slice(0, n||6).map(([,x])=>x); }
+function prochesHTML(e){ const xs = proches(e, 6); if(!xs.length) return "";
+  return `<div class="cell" id="proches"><div class="lab">Exercices proches de celui-ci</div><p class="msg" style="margin:2px 0 6px">Mêmes qualités travaillées, âge et niveau voisins : pour varier ou adapter.</p>${rowsHTML(xs, true)}</div>`; }
 function showEx(id){
+  ecran("fiche");
   const e=BY[id]; if(!e) return showExplore();
   const f=FBY[e.f]||MOIFAM, d=DOM[e.dom]?e.dom:"PH"; document.documentElement.style.setProperty("--acc",dc(d));
   const sib=EX.filter(x=>x.f===e.f), k=sib.indexOf(e), prev=sib[k-1], next=sib[k+1];
@@ -524,10 +708,10 @@ function showEx(id){
   m.innerHTML = `<div class="crumb"><a href="#">Banque</a>›<a href="#f/${f.c}">${esc(f.t)}</a>›<span>${esc(e.s||"")}</span></div>
   <article class="fiche">
     <div class="fhead"><div style="min-width:0"><div class="fid"><span class="xp">${e.id} · </span>${DOM[d][0]} ${badges(e)}</div><h1>${esc(e.n)}</h1><div class="fline">${esc(liTxt(e))}</div></div>
-      <div class="actbar">${co?`<button class="btn pri big" id="useS" type="button">Utiliser dans une séance</button>`:""}<button class="btn star" id="fav" type="button" aria-pressed="${fav}">${fav?"♥ Favori":"♡ Favori"}</button><button class="btn" id="addl" type="button">${inCols(id)?"✓ Collection ("+inCols(id)+")":"+ Collection"}</button>${co?`<a class="btn" id="edit" href="#/modifier/${e.id}">Modifier</a>`:""}</div></div>
-    <details class="grun-plus" style="margin:0 0 12px"><summary>Plus d'options</summary><div class="grun-plusb"><div class="actbar">${co?`${e.modifie?'<button class="btn" id="reset" type="button">Remettre l\'original</button>':""}${e.perso?'<button class="btn dan" id="del" type="button">Supprimer</button>':""}<button class="btn" id="hide" type="button">${HIDE.has(id)?"Réafficher":"Masquer"}</button>`:""}</div></div></details>
+      <div class="actbar"><a class="btn" href="#proches">Exercices proches</a><button class="btn star" id="fav" type="button" aria-pressed="${fav}">${fav?"♥ Favori":"♡ Favori"}</button><button class="btn" id="addl" type="button">${inCols(id)?"✓ Collection ("+inCols(id)+")":"+ Collection"}</button>${co?`<a class="btn" id="edit" href="#/modifier/${e.id}">Modifier</a>`:""}</div></div>
+    <details class="grun-plus" style="margin:0 0 12px"><summary>Plus d'options</summary><div class="grun-plusb"><div class="actbar">${co?`${e.modifie?'<button class="btn" id="reset" type="button">Remettre l\'original</button>':""}${e.perso?'<button class="btn dan" id="del" type="button">Supprimer</button>':""}<button class="btn" id="hide" type="button">${HIDE.has(id)?"Réafficher":"Masquer"}</button>`:""}${co?`<button class="btn" id="vidch" type="button">Changer la vidéo</button><button class="btn" id="vidrm" type="button">Retirer la vidéo</button>`:""}</div></div></details>
     ${e.img?`<div class="photo"><img src="${esc(e.img)}" alt="Photo : ${esc(e.n)}"></div>`:""}
-    <div class="video" id="vid"></div>${co?tourHTML(id):""}
+    <div class="video" id="vid"></div>${co?'<div class="vtools" id="vtools" role="group" aria-label="Vidéo de l\'exercice"></div>':""}${co?tourHTML(id):""}
     <div class="keys">
       <div class="key"><small>Âge</small><b>${ageTxt(e)}</b></div>
       <div class="key"><small>Niveau</small><b>${e.v} · ${NIV[e.v]||""}</b><span class="lv">${[1,2,3,4].map(n=>`<i class="${n<=e.v?"on":""}"></i>`).join("")}</span></div>
@@ -550,19 +734,34 @@ function showEx(id){
     </div>
     ${crossHTML(e)}
     ${neighbours(e)}
+    ${prochesHTML(e)}
     <div class="cell notes"><label class="lab" for="nt">Mes notes</label><textarea id="nt" placeholder="Variantes, joueurs, charges utilisées…"></textarea><div class="msg" id="ntm"></div></div>
   </article>
-  <div class="pn">${prev?`<a href="#/ex/${prev.id}"><small>‹ Précédent</small>${esc(prev.n)}</a>`:"<span></span>"}${next?`<a class="nx" href="#/ex/${next.id}"><small>Suivant ›</small>${esc(next.n)}</a>`:"<span></span>"}</div>`;
+  <div class="pn">${prev?`<a href="#/ex/${prev.id}"><small>‹ Précédent</small>${esc(prev.n)}</a>`:"<span></span>"}${next?`<a class="nx" href="#/ex/${next.id}"><small>Suivant ›</small>${esc(next.n)}</a>`:"<span></span>"}</div>
+  ${co?`<div class="grun-actbar"><button class="gs-btn main" id="useS" type="button">Utiliser dans une séance</button></div>`:""}`;
+  const pl = m.querySelector('a[href="#proches"]'); if(pl) pl.onclick = ev=>{ ev.preventDefault(); const t=$("#proches"); if(t) t.scrollIntoView({behavior:"smooth", block:"start"}); };
+  if(!$("#proches") && pl) pl.remove();
   $("#fav").onclick=()=>{ const on=GRUN.banque.toggleFav(id); on?FAV.add(id):FAV.delete(id); $("#fav").setAttribute("aria-pressed",on); $("#fav").textContent=on?"♥ Favori":"♡ Favori"; };
   $("#addl").onclick=()=>pickList(id, ()=>{ const n=inCols(id); $("#addl").textContent=n?"✓ Collection ("+n+")":"+ Collection"; });
   $$("[data-tour]").forEach(b=>b.onclick=()=>{ setTour(id,b.dataset.tour); $$("[data-tour]").forEach(x=>x.setAttribute("aria-pressed", x.dataset.tour===tourOf(id))); });
   if(co){
     $("#useS").onclick=()=>{ GRUN.relais.envoyer({de:"banque",vers:"seances",exo:id,retour:"banque.html#/ex/"+id}); location.href=GRUN.href("seances","#/nouvelle"); };
-    const r=$("#reset"); if(r) r.onclick=async()=>{ if(!r.dataset.c){ r.dataset.c=1; r.textContent="Confirmer : remettre l'original"; return; } GRUN.banque.reset(id); await reload(); showEx(id); };
-    const dl=$("#del"); if(dl) dl.onclick=async()=>{ if(!dl.dataset.c){ dl.dataset.c=1; dl.textContent="Confirmer la suppression"; return; } GRUN.banque.remove(id); await IDB.del(id).catch(()=>{}); LOCALV.delete(id); await reload(); location.hash=""; };
-    $("#hide").onclick=()=>{ const on=GRUN.banque.toggleHide(id); on?HIDE.add(id):HIDE.delete(id); $("#hide").textContent=on?"Réafficher":"Masquer"; };
+    const r=$("#reset"); if(r) r.onclick=async()=>{ const undo=GRUN.ui.photo([GRUN.K.banque]); GRUN.banque.reset(id); await reload(); showEx(id); GRUN.ui.annuler("Exercice d'origine remis", async()=>{ undo(); await reload(); showEx(id); }); };
+    /* supprimer un exercice perso : définitif (la vidéo de l'appareil est effacée) → seule vraie confirmation */
+    const dl=$("#del"); if(dl) dl.onclick=async()=>{ const ok = GRUN.ui && GRUN.ui.confirmer ? await GRUN.ui.confirmer({titre:"Supprimer cet exercice ?", texte:"« "+esc(e.n)+" » sera retiré de la banque et des collections.", detail:"Sa vidéo gardée sur l'appareil est effacée aussi.", ok:"Supprimer", non:"Garder"}) : confirm("Supprimer cet exercice ?"); if(!ok) return; GRUN.banque.remove(id); await IDB.del(id).catch(()=>{}); LOCALV.delete(id); await reload(); location.hash=""; };
+    /* vidéo : changer / retirer aussi depuis « Plus d'options » (toujours visible, même si les boutons sous la vidéo ne s'affichent pas) */
+    const vch=$("#vidch"); if(vch) vch.onclick=()=>linkModal(e);
+    const vrm=$("#vidrm"); if(vrm) vrm.onclick=async()=>{
+      const had = !!(P.links[id] || LOCALV.has(id) || (e.perso && e.vid));
+      if(!had){ alertBox("Cet exercice n'a pas de vidéo ajoutée par toi. Les vidéos officielles de la banque ne se retirent pas."); return; }
+      delete P.links[id]; save(); await IDB.del(id).catch(()=>{}); LOCALV.delete(id);
+      if(e.perso && e.vid){ GRUN.banque.edit(id,{vid:""}); await reload(); }
+      showEx(id); };
+    $("#hide").onclick=()=>{ const on=GRUN.banque.toggleHide(id); on?HIDE.add(id):HIDE.delete(id); $("#hide").textContent=on?"Réafficher":"Masquer"; if(on) GRUN.ui.annuler("Exercice masqué", ()=>{ GRUN.banque.toggleHide(id); HIDE.delete(id); const b=$("#hide"); if(b) b.textContent="Masquer"; }); };
   }
   const nt=$("#nt"); nt.value=P.notes[id]||""; let tm; nt.oninput=()=>{ clearTimeout(tm); tm=setTimeout(()=>{ if(nt.value.trim()) P.notes[id]=nt.value; else delete P.notes[id]; save(); $("#ntm").textContent="Note enregistrée sur cet appareil."; },500); };
+  /* outils vidéo posés tout de suite (synchrone) sous la vidéo : ils ne dépendent plus de la lecture asynchrone d'IndexedDB (iPad) */
+  if(co) addVidTools($("#vid"),e,hasVid(id));
   renderVideo(e);
 }
 function ytId(u){ const m=String(u).match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|shorts\/|embed\/))([\w-]{6,})/); return m?m[1]:null; }
@@ -582,9 +781,10 @@ async function renderVideo(e){
 }
 function addVidTools(box,e,has){
   if(J()) return;
-  const t=document.createElement("div"); t.className="vtools"; if(has){ t.style.cssText="position:static;padding:8px;background:var(--panel);width:100%"; }
-  t.innerHTML=`<button class="btn" type="button" data-a="link">${has?"Changer le lien":"Ajouter un lien vidéo"}</button><label class="btn" for="vf_${e.id}">Choisir une vidéo de l'appareil</label><input id="vf_${e.id}" type="file" accept="video/*" hidden>${has&&(P.links[e.id]||LOCALV.has(e.id))?'<button class="btn" type="button" data-a="del">Retirer</button>':""}`;
-  if(has){ box.after(t); } else box.appendChild(t);
+  /* conteneur fixe #vtools rendu dans le HTML de la fiche, juste sous #vid : on le remplit (jamais inséré dans la boîte vidéo) */
+  let t=$("#vtools"); if(!t){ t=document.createElement("div"); t.className="vtools"; t.id="vtools"; (box||$("#vid")).after(t); }
+  const sig=e.id+"|"+(has?1:0)+"|"+(P.links[e.id]||LOCALV.has(e.id)?1:0); if(t.dataset.sig===sig && t.children.length) return; t.dataset.sig=sig;
+  t.innerHTML=`<button class="btn" type="button" data-a="link">${has?"Changer le lien":"Ajouter un lien vidéo"}</button><label class="btn" for="vf_${e.id}">Choisir une vidéo de l'appareil</label><input id="vf_${e.id}" type="file" accept="video/*" class="vfile">${has&&(P.links[e.id]||LOCALV.has(e.id))?'<button class="btn" type="button" data-a="del">Retirer</button>':""}`;
   t.querySelector('[data-a="link"]').onclick=()=>linkModal(e);
   const del=t.querySelector('[data-a="del"]'); if(del) del.onclick=async()=>{ delete P.links[e.id]; save(); await IDB.del(e.id).catch(()=>{}); LOCALV.delete(e.id); showEx(e.id); };
   t.querySelector("input").onchange=async ev=>{ const file=ev.target.files[0]; if(!file) return; try{ await IDB.put(e.id,file); LOCALV.add(e.id); showEx(e.id); }catch(err){ alertBox("La vidéo n'a pas pu être enregistrée sur l'appareil (espace insuffisant ?). Utilise plutôt un lien."); } };
@@ -613,8 +813,10 @@ const optA = (v) => Array.from({length:15},(_,i)=>`<option value="${i+4}" ${+v==
 function showForm(id, q){
   if(J()) return reserve();
   const e = id ? BY[id] : null; if(id && !e) return showExplore();
-  const ql = q.get("ligne"), qa = +q.get("a") || 0, retour = q.get("retour");
-  const v = e ? JSON.parse(JSON.stringify(e)) : {n:"", f:"MOI", s:"", dom: ql ? ligDom(ql) : "PP", L: ql && okLig(ql) ? [ql] : [], a: qa||6, ax:18, v:1, ob:"", de:"", co:"", er:"", ut:"", ma:"", m:[], c:0, e:0, st:"perso"};
+  const ql = q.get("ligne"), qa = +q.get("a") || 0, retour = q.get("retour"), prop = q.get("st")==="propose";
+  let qn = q.get("n") || ""; if(!id && !qn){ try{ qn = sessionStorage.getItem("grun_exo_nom")||""; }catch(_){} } try{ sessionStorage.removeItem("grun_exo_nom"); }catch(_){}
+  ecran("form"); const cj = !id ? cur() : null;
+  const v = e ? JSON.parse(JSON.stringify(e)) : {n:qn, f:"MOI", s:"", dom: ql ? ligDom(ql) : "PP", L: ql && okLig(ql) ? [ql] : [], a: qa || (cj ? Math.max(4, cj.a-2) : 6), ax:18, v:1, ob:"", de:"", co:"", er:"", ut:"", ma:"", m:[], c:0, e:0, st:prop?"propose":"perso"};
   const dz = v.dosq || {};
   const w = v.w || {et:"MR", ets:[], ci:[], a:[v.a||6, v.ax||18], fmt:["seul","groupe"], lieu:["court"], int:2, dur:3, apres:["tennis"]};
   let IMG = v.img || "", VFILE = null;
@@ -623,8 +825,9 @@ function showForm(id, q){
   const groups={}; FAMS.filter(f=>f.c!=="MOI").forEach(f=>{ (groups[f.dossier]=groups[f.dossier]||[]).push(f); });
   const famOpts = `<option value="MOI" ${v.f==="MOI"?"selected":""}>Mes exercices</option>` + Object.entries(groups).map(([g,fs])=>`<optgroup label="${esc(g)}">${fs.map(f=>`<option value="${f.c}" ${v.f===f.c?"selected":""}>${esc(f.t)}</option>`).join("")}</optgroup>`).join("");
   const m=$("#main"); m.style.setProperty("--dc","var(--ink)");
-  m.innerHTML = `<div class="crumb"><a href="#">Banque</a>›<span>${e?"Modifier":"Créer un exercice"}</span></div>
-  <h1 style="margin-top:4px">${e?"Modifier · "+esc(e.n):"Créer un exercice"}</h1>
+  const stRadios = `${[["perso","Perso","Visible seulement par toi."],["propose","Proposé à la méthode","À exporter depuis « Propositions » pour que le créateur de GRÜN le relise."],["valide","Exercice de la méthode","Validé par le créateur de GRÜN : visible par tous les abonnés dès que les comptes en ligne seront ouverts."]].map(([k,t,s])=>`<label class="radio"><input type="radio" name="st" value="${k}" ${(v.st||"perso")===k?"checked":""}><span><b>${t}</b><small>${s}</small></span></label>`).join("")}`;
+  m.innerHTML = `<div class="crumb"><a href="#">Banque</a>›<span>${e?"Modifier":prop?"Proposer un exercice":"Créer un exercice"}</span></div>
+  <h1 style="margin-top:4px">${e?"Modifier · "+esc(e.n):prop?"Proposer un exercice":"Créer un exercice"}</h1>${prop&&!e?`<div class="propst"><b>Proposé à la méthode</b><p class="msg" style="margin:4px 0 0">Remplis l'essentiel et la fiche ci-dessous, puis « Proposer ». Il reste à toi tant que le créateur de GRÜN ne l'a pas validé ; l'export se fait depuis l'onglet Propositions.</p></div>`:""}
   <p class="lead">${e ? (e.perso ? "Ton exercice : la modification est directe." : "Exercice d'origine : tes changements s'ajoutent par-dessus (badge « modifié ») ; « Remettre l'original » les efface.") : "Mêmes champs que la banque, plus vidéo, photo, dosage et usage en échauffement."}</p>
   <form class="form" id="fx" novalidate autocomplete="off">
    <div class="fs"><h2>L'essentiel</h2><div class="fg">
@@ -644,7 +847,7 @@ function showForm(id, q){
     <div class="fld full"><label for="f_de">Description</label><textarea id="f_de" rows="3">${esc(v.de)}</textarea></div>
     <div class="fld"><label for="f_co">Consignes clés</label><textarea id="f_co">${esc(v.co)}</textarea><small>Sépare par « ; » pour une liste.</small></div>
     <div class="fld"><label for="f_er">Erreurs fréquentes</label><textarea id="f_er">${esc(v.er)}</textarea><small>Sépare par « ; ».</small></div>
-    <div class="fld full"><label for="f_ut">Utilisation et progression</label><textarea id="f_ut" rows="2">${esc(v.ut)}</textarea><small class="xp">Tu peux citer d'autres exos par leur identifiant (FOR-0002).</small></div>
+    <div class="fld full"><label for="f_ut">Utilisation et progression</label><textarea id="f_ut" rows="2">${esc(v.ut)}</textarea><small class="xp">Tu peux citer d'autres exercices par leur identifiant (FOR-0002).</small></div>
    </div></div>
    <details class="grun-plus" ${e?"open":""}><summary>Plus d'options : matériel, dosage, vidéo, photo, échauffement, statut</summary><div class="grun-plusb">
    <div class="fs"><h2>Matériel et lieu</h2><div class="fg">
@@ -665,7 +868,7 @@ function showForm(id, q){
     <div class="fld"><span class="l">Photo</span><div class="actbar"><label class="btn" for="f_img">Choisir une photo</label><button class="btn" type="button" id="f_imgx" ${IMG?"":"hidden"}>Retirer</button></div><input type="file" id="f_img" accept="image/*" hidden><img class="imgprev" id="f_imgp" alt="Aperçu de la photo" ${IMG?`src="${esc(IMG)}"`:"hidden"}><small>Réduite à 800 px.</small></div>
    </div></div>
    <div class="fs"><h2>Usage en échauffement <small class="msg" style="font-family:var(--ui)">facultatif</small></h2>
-    <label class="switch"><input type="checkbox" id="w_on" ${v.w?"checked":""}> Proposer cet exo dans Choose your warm-up et Create my session</label>
+    <label class="switch"><input type="checkbox" id="w_on" ${v.w?"checked":""}> Proposer cet exercice dans Choose your warm-up et Create my session</label>
     <div id="wbox" style="margin-top:10px" ${v.w?"":"hidden"}><div class="fg">
      <div class="fld"><label for="w_et">Étape principale</label><select id="w_et">${Object.entries(ETN).map(([k,n])=>`<option value="${k}" ${w.et===k?"selected":""}>${n}</option>`).join("")}</select></div>
      <div class="fld"><span class="l">Autres étapes couvertes</span>${ckH("ets", Object.entries(ETN), w.ets||[])}</div>
@@ -680,14 +883,15 @@ function showForm(id, q){
     </div></div>
    </div>
    <div class="fs"><h2>Statut</h2><div class="radios">
-    ${[["perso","Perso","Visible seulement par toi."],["propose","Proposé à la méthode","À exporter depuis « Propositions » pour que le créateur de GRÜN le relise."],["valide","Exercice de la méthode","Validé par le créateur de GRÜN : visible par tous les abonnés dès que les comptes en ligne seront ouverts."]].map(([k,t,s])=>`<label class="radio"><input type="radio" name="st" value="${k}" ${(v.st||"perso")===k?"checked":""}><span><b>${t}</b><small>${s}</small></span></label>`).join("")}
+    ${stRadios}
     ${e&&!e.perso?'<p class="msg">Exercice d\'origine : il fait déjà partie de la méthode.</p>':""}</div></div>
    </div></details>
-   <div class="formbar"><button class="btn pri" type="submit" id="f_ok">${e?"Enregistrer":"Créer"}</button><button class="btn" type="button" id="f_no">Annuler</button><span class="msg" id="f_msg" role="status"></span></div>
+   <div class="formbar"><span class="msg" id="f_msg" role="status"></span></div>
+   <div class="grun-actbar"><button class="btn" type="button" id="f_no">Annuler</button><button class="gs-btn main" type="submit" id="f_ok">${e?"Enregistrer":prop?"Proposer":"Créer"}</button></div>
   </form>`;
   if(e && !e.perso) $$('input[name="st"]').forEach(r=>{ r.disabled=true; });
   const fillSubs=()=>{ const f=FBY[$("#f_f").value]; $("#dl_s").innerHTML=(f?f.subs:[]).map(s=>`<option value="${esc(s)}">`).join(""); };
-  if(!e) setTimeout(()=>{ try{ $("#f_n").focus({preventScroll:true}); }catch(_){} },50);   /* nouveau : le nom est prêt à taper */
+  if(!e) setTimeout(()=>{ try{ const n=$("#f_n"); n.focus({preventScroll:true}); if(n.value) n.setSelectionRange(n.value.length, n.value.length); }catch(_){} },50);   /* nouveau : le nom est prêt à taper */
   fillSubs(); $("#f_f").onchange=()=>{ fillSubs(); const f=FBY[$("#f_f").value]; if(f && f.c!=="MOI" && !e) $("#f_dom").value=f.dom; };
   const ciSel = new Set(w.ci||[]);
   const fillCi=()=>{ $$('input[name="ci"]').forEach(x=>x.checked?ciSel.add(x.value):ciSel.delete(x.value)); const ets=[...new Set([$("#w_et").value, ...$$('input[name="ets"]:checked').map(x=>x.value)])];
@@ -739,14 +943,14 @@ function showForm(id, q){
 const PROPKEYS = ["n","f","s","dom","L","a","ax","v","an","li","ob","de","co","er","ut","ma","m","c","e","dos","dosq","vid","img","w","par","id","cree"];
 const clean = e => Object.fromEntries(PROPKEYS.filter(k=>e[k]!=null && e[k]!=="").map(k=>[k,e[k]]));
 function showProps(){
-  if(J()) return reserve();
+  if(J()) return reserve(); ecran("propositions");
   document.documentElement.style.setProperty("--acc","var(--ink)");
   const mine = EX.filter(e=>e.perso && e.st==="propose"), val = EX.filter(e=>e.perso && e.st==="valide"), rec = P.recues||[];
   const pv = x => `<details><summary>Voir la fiche</summary><dl>${[["Famille",(FBY[x.f]||MOIFAM).t+(x.s?" · "+x.s:"")],["Lignes",(x.L||[]).join(", ")],["Âge et niveau",`${x.a||"?"} à ${x.ax||18} ans · niveau ${x.v||1}`],["Objectif",x.ob],["Description",x.de],["Consignes",x.co],["Erreurs",x.er],["Matériel",x.ma],["Dosage",x.dos],["Échauffement",x.w?[ETN[x.w.et],...(x.w.ets||[]).filter(y=>y!==x.w.et).map(y=>ETN[y])].join(" + "):""],["Vidéo",x.vid]].filter(([,y])=>y).map(([k,y])=>`<dt>${k}</dt><dd>${esc(y)}</dd>`).join("")}${x.img?`<dd><img class="imgprev" src="${esc(x.img)}" alt=""></dd>`:""}</dl></details>`;
   $("#main").innerHTML = `<h1>Propositions</h1><p class="lead">Un coach propose un exercice → le créateur de GRÜN le relit et le valide → il devient un exercice de la méthode, visible par tous les abonnés (par fichier pour l'instant).</p>${tabs("/propositions")}
-   <div class="sec"><h2>Mes exercices proposés · ${mine.length}</h2><p class="msg">Mets le statut « Proposé à la méthode » sur un de tes exos (bouton Modifier), puis exporte le fichier et envoie-le au créateur de GRÜN. Les vidéos de l'appareil ne partent pas dans le fichier : mets plutôt un lien.</p>
+   <div class="sec"><h2>Mes exercices proposés · ${mine.length}</h2><p class="msg">Mets le statut « Proposé à la méthode » sur un de tes exercices (bouton Modifier), puis exporte le fichier et envoie-le au créateur de GRÜN. Les vidéos de l'appareil ne partent pas dans le fichier : mets plutôt un lien.</p>
     ${mine.length?rowsHTML(mine):'<div class="empty">Aucun exercice proposé pour l\'instant.</div>'}
-    <div class="actbar" style="margin-top:10px"><button class="btn pri" id="pexp" type="button" ${mine.length?"":"disabled"}>Exporter mes propositions (fichier)</button></div></div>
+    <div class="actbar" style="margin-top:10px"><a class="btn pri" href="#/nouveau?st=propose">+ Proposer un exercice</a><button class="btn" id="pexp" type="button" ${mine.length?"":"disabled"}>Exporter mes propositions (fichier)</button></div></div>
    <div class="sec"><h2>Propositions reçues · ${rec.length}</h2><p class="msg">Importe un fichier GRUN_propositions_….json reçu d'un coach, relis chaque exercice, puis valide-le (il entre dans la banque avec le statut « Exercice de la méthode ») ou refuse-le.</p>
     <div class="actbar" style="margin:8px 0"><label class="btn" for="pimp">Importer un fichier de propositions</label><input id="pimp" type="file" accept=".json,application/json" hidden></div><div class="msg" id="pmsg" role="status"></div>
     ${rec.map(r=>`<div class="prop" data-r="${r.rid}"><div class="headrow"><div><b>${esc(r.ex.n)}</b><div class="msg">Proposé par ${esc(r.de||"un coach")} · ${esc(GRUN.frD(r.date))}${nameTaken(r.ex.n)?' · <span style="color:var(--warn)">nom déjà pris : il sera complété par le nom du coach</span>':""}</div></div>
@@ -761,8 +965,9 @@ function showProps(){
     if(!FBY[x.f]) x.f="MOI";
     const nx=GRUN.banque.add({...x, st:"valide", propPar:r.de||"", propId:pid||""});
     P.recues=P.recues.filter(y=>y.rid!==r.rid); P.traitees=[{n:nx.n,de:r.de,date:today(),res:"validé",id:nx.id},...(P.traitees||[])]; save(); await reload(); showProps(); });
-  $$("[data-no]").forEach(b=>b.onclick=()=>{ if(!b.dataset.c){ b.dataset.c=1; b.textContent="Confirmer le refus"; return; } const r=P.recues.find(y=>y.rid===b.dataset.no); if(!r) return;
-    P.recues=P.recues.filter(y=>y.rid!==r.rid); P.traitees=[{n:r.ex.n,de:r.de,date:today(),res:"refusé"},...(P.traitees||[])]; save(); showProps(); });
+  $$("[data-no]").forEach(b=>b.onclick=()=>{ const r=P.recues.find(y=>y.rid===b.dataset.no); if(!r) return; const k=P.recues.indexOf(r);
+    P.recues=P.recues.filter(y=>y.rid!==r.rid); P.traitees=[{n:r.ex.n,de:r.de,date:today(),res:"refusé"},...(P.traitees||[])]; save(); showProps();
+    GRUN.ui.annuler("Proposition refusée", ()=>{ P.recues.splice(k,0,r); P.traitees=P.traitees.slice(1); save(); showProps(); }); });
 }
 function importProps(d){
   const L = Array.isArray(d) ? d : (d && Array.isArray(d.ex) ? d.ex : null);
@@ -774,7 +979,7 @@ function importProps(d){
 }
 
 /* ---------- familles ---------- */
-function showFams(){
+function showFams(){ ecran("familles");
   document.documentElement.style.setProperty("--acc","var(--ink)");
   const groups={}; FAMS.forEach(f=>{ if(f.c==="MOI" && !EX.some(e=>e.f==="MOI")) return; (groups[f.dossier]=groups[f.dossier]||[]).push(f); });
   $("#main").innerHTML=`<h1>Familles d'exercices</h1><p class="lead">${FAMS.length-1} familles · chacune avec son mode d'emploi, sa progression et ses repères d'âge</p>${tabs("familles")}`+
@@ -790,14 +995,14 @@ function showFam(c){
 }
 
 /* ---------- favoris et listes ---------- */
-function showFav(){
+function showFav(){ ecran("favoris");
   document.documentElement.style.setProperty("--acc","var(--ink)");
   const xs=[...FAV].map(i=>BY[i]).filter(Boolean);
   $("#main").innerHTML=`<h1>Favoris</h1><p class="lead">Touche ♡ sur une fiche pour l'ajouter ici. Tes favoris reviennent en priorité dans Create.</p>${tabs("favoris")}<div class="sec">${xs.length?rowsHTML(xs):'<div class="empty">Aucun favori pour l\'instant.</div>'}</div>`+dataBox();
   bindData();
 }
 const inCols = id => P.lists.filter(l=>l.ex.includes(id)).length;
-function showLists(){
+function showLists(){ ecran("listes");
   document.documentElement.style.setProperty("--acc","var(--ink)");
   $("#main").innerHTML=`<h1>Mes collections</h1><p class="lead">Range des exercices dans tes collections (un thème, un joueur, un groupe, une période). Elles sont personnelles : toi seul les vois. Pour une séance complète et structurée : <a class="ref" href="seances.html">Create my session</a>.</p>${tabs("listes")}
    <div class="sec"><div class="actbar"><input id="ln" type="text" placeholder="Nom de la collection (ex. Vitesse U12, Gainage…)" aria-label="Nom de la nouvelle collection" style="flex:1;min-width:200px;min-height:40px;border:1px solid var(--line);border-radius:9px;padding:0 10px;background:var(--panel)"><button class="btn pri" id="lnew" type="button">Créer</button></div></div>
@@ -814,12 +1019,12 @@ function showList(lid){
   $("#ladd").onclick=ev=>{ ev.preventDefault(); location.hash=""; };
   $$("[data-up]").forEach(b=>b.onclick=()=>{ const k=+b.dataset.up; if(k>0){ [l.ex[k-1],l.ex[k]]=[l.ex[k],l.ex[k-1]]; save(); showList(lid);} });
   $$("[data-dn]").forEach(b=>b.onclick=()=>{ const k=+b.dataset.dn; if(k<l.ex.length-1){ [l.ex[k+1],l.ex[k]]=[l.ex[k],l.ex[k+1]]; save(); showList(lid);} });
-  $$("[data-rm]").forEach(b=>b.onclick=()=>{ l.ex.splice(+b.dataset.rm,1); save(); showList(lid); });
+  $$("[data-rm]").forEach(b=>b.onclick=()=>{ const k=+b.dataset.rm, x=l.ex.splice(k,1)[0]; save(); showList(lid); GRUN.ui.annuler("Exercice retiré de la collection", ()=>{ l.ex.splice(k,0,x); save(); showList(lid); }); });
   $("#lcopy").onclick=async()=>{ const t=l.n+"\n\n"+xs.map((e,k)=>`${k+1}. ${e.n}\n   Objectif : ${e.ob}\n   Matériel : ${e.ma}\n   Consignes : ${e.co}${e.dos?`\n   Dosage : ${e.dos}`:""}`).join("\n\n"); try{ await navigator.clipboard.writeText(t); $("#lmsg").textContent="Collection copiée : colle-la dans Notes ou un message."; }catch(err){ modal((b,close)=>{ b.innerHTML='<div class="msg">Sélectionne le texte puis copie-le.</div>'; const ta=document.createElement("textarea"); ta.value=t; ta.style.cssText="width:100%;min-height:260px"; b.appendChild(ta); ta.select(); const k=document.createElement("button"); k.className="btn"; k.textContent="Fermer"; k.onclick=close; b.appendChild(k); }); } };
   $("#lren").onclick=()=>modal((b,close)=>{ b.innerHTML=`<h2>Renommer</h2><input id="rn" type="text" value="${esc(l.n)}" aria-label="Nom de la collection"><div class="actbar"><button class="btn pri" id="rok" type="button">Enregistrer</button></div>`; $("#rok").onclick=()=>{ const v=$("#rn").value.trim(); if(v){ l.n=v; save(); } close(); showList(lid); }; });
-  $("#ldel").onclick=()=>{ const b=$("#ldel"); if(b.dataset.c){ P.lists=P.lists.filter(x=>x.id!==lid); save(); location.hash="listes"; } else { b.dataset.c=1; b.textContent="Confirmer la suppression"; } };
+  $("#ldel").onclick=()=>{ const k=P.lists.indexOf(l); P.lists=P.lists.filter(x=>x.id!==lid); save(); location.hash="listes"; GRUN.ui.annuler("Collection « "+l.n+" » supprimée", ()=>{ P.lists.splice(Math.max(0,k),0,l); save(); location.hash="l/"+lid; }); };
 }
-/* une touche = ajouter ou retirer l'exo d'une collection ; « Créer et ajouter » pour une nouvelle */
+/* une touche = ajouter ou retirer l'exercice d'une collection ; « Créer et ajouter » pour une nouvelle */
 function pickList(id, done){
   modal((b,close)=>{ const fin=()=>{ close(); if(done) done(); };
     const draw=()=>{ b.innerHTML=`<h2>Ranger « ${esc(BY[id]?BY[id].n:id)} »</h2>${P.lists.length?`<p class="msg">Touche une collection pour y ajouter l'exercice (ou l'en retirer).</p>`:""}${P.lists.map(l=>`<button class="btn" type="button" data-l="${l.id}" aria-pressed="${l.ex.includes(id)}" style="justify-content:flex-start">${l.ex.includes(id)?"✓ ":""}${esc(l.n)} · ${l.ex.length} ex.</button>`).join("")}<div class="actbar"><input id="nl" type="text" placeholder="Nouvelle collection" aria-label="Nouvelle collection" style="flex:1"><button class="btn pri" id="nlok" type="button">Créer et ajouter</button></div><div class="actbar"><button class="btn" id="nlf" type="button">Fermer</button></div>`;
@@ -831,13 +1036,13 @@ function pickList(id, done){
 }
 
 /* ---------- vidéos à tourner ---------- */
-/* suivi du tournage (coach) : P.tour[id] = "a" (à tourner) | "t" (tourné) | "m" (monté) ; sans statut : « monté » si l'exo a déjà une vidéo, sinon « à tourner » */
+/* suivi du tournage (coach) : P.tour[id] = "a" (à tourner) | "t" (tourné) | "m" (monté) ; sans statut : « monté » si l'exercice a déjà une vidéo, sinon « à tourner » */
 const TOURN = {a:"À tourner", t:"Tourné", m:"Monté"};
 const tourOf = id => (P.tour&&P.tour[id]) || (hasVid(id) ? "m" : "a");
 function setTour(id, v){ P.tour = P.tour||{}; if(v===(hasVid(id)?"m":"a")) delete P.tour[id]; else P.tour[id] = v; save(); }
 function tourHTML(id){ const v=tourOf(id); return `<div class="tour"><span class="lab">Tournage</span><span class="seg" role="group" aria-label="Tournage de la vidéo">${Object.entries(TOURN).map(([k,t])=>`<button type="button" data-tour="${k}" aria-pressed="${v===k}">${t}</button>`).join("")}</span></div>`; }
 let SHOW_T = PAGE;
-function showShoot(){
+function showShoot(){ ecran("tournage");
   document.documentElement.style.setProperty("--acc","var(--ink)");
   const f = P.ft || "a", n = {a:0,t:0,m:0}; EX.forEach(e=>n[tourOf(e.id)]++);
   const xs = EX.filter(e=>tourOf(e.id)===f).sort((a,b)=>((b.perso?1:0)-(a.perso?1:0)));
@@ -857,9 +1062,9 @@ function showShoot(){
 }
 
 /* ---------- sauvegarde : une seule pour tout GRÜN (GRUN.exportAll / importAll) ; anciens fichiers Banque_exercices_….json acceptés ---------- */
-function dataBox(){ return `<div class="sec"><h2>Mes données</h2><div class="actbar" style="margin-top:8px"><button class="btn" id="dsave" type="button">Sauvegarder toute l'appli</button><label class="btn" for="drest">Restaurer</label><input id="drest" type="file" accept=".json,application/json" hidden></div><div class="msg" id="dmsg">${FLASH?esc(FLASH):`Une seule sauvegarde pour tout GRÜN : joueurs, séances, exos créés et modifiés, favoris, collections, statuts de tournage, notes, liens vidéo. Les vidéos choisies sur l'appareil ne sont pas incluses. Les anciennes sauvegardes de la banque (Banque_exercices_….json) sont acceptées.`}</div></div>`; }
+function dataBox(){ return `<div class="sec"><h2>Mes données</h2><div class="actbar" style="margin-top:8px"><button class="btn" id="dsave" type="button">${esc((GRUN.TXT&&GRUN.TXT.sauver)||"Tout sauvegarder")}</button><label class="btn" for="drest">${esc((GRUN.TXT&&GRUN.TXT.restaurer)||"Restaurer une sauvegarde")}</label><input id="drest" type="file" accept=".json,application/json" hidden></div><div class="msg" id="dmsg">${FLASH?esc(FLASH):`Une seule sauvegarde pour tout GRÜN : joueurs, séances, exercices créés et modifiés, favoris, collections, statuts de tournage, notes, liens vidéo. Les vidéos choisies sur l'appareil ne sont pas incluses. Les anciennes sauvegardes de la banque (Banque_exercices_….json) sont acceptées.`}</div></div>`; }
 function bindData(){
-  $("#dsave").onclick=()=>GRUN.telecharger(GRUN.exportAll(), "GRUN_sauvegarde_"+today()+".json");
+  $("#dsave").onclick=()=>GRUN.sauvegarder ? GRUN.sauvegarder() : GRUN.telecharger(GRUN.exportAll(), "GRUN_sauvegarde_"+today()+".json");
   $("#drest").onchange=async ev=>{ const f=ev.target.files[0]; ev.target.value=""; if(!f) return; const msg={set textContent(t){ dmsg(t); }};
     try{ const d=JSON.parse(await f.text());
       if(d && d.app==="GRUN" && d.data){ GRUN.importAll(d); P=loadP(); await reload(); msg.textContent="Sauvegarde GRÜN restaurée (fusionnée avec les données de l'appareil)."; return; }

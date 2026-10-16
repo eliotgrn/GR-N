@@ -62,8 +62,153 @@ html.grun-simple .cx{display:none!important}
 .grun-pdf:disabled{opacity:.6}
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .grun-pdf{color:#2DD4BF;border-color:#2DD4BF}}
 :root[data-theme="dark"] .grun-pdf{color:#2DD4BF;border-color:#2DD4BF}
+
+/* ===================== SOCLE 1.1 « chemin ultra intuitif » =====================
+   RÈGLES DE MISE EN PAGE (toutes les pages) :
+   - retour « ‹ » en haut à gauche (#back) ; joueur en cours + « ? » en haut à droite (.grun-topx, injectés par GRUN.nav) ;
+   - action principale EN BAS, grande, dans la zone du pouce : <div class="grun-actbar"><button class="gs-btn main">…</button></div> ;
+   - options secondaires repliées : <details class="grun-plus"><summary>Plus d'options</summary><div class="grun-plusb">…</div></details> ;
+   - « + » unique au centre de la barre du bas (#grun-plus) ; créations dans une feuille (.grun-ov > .grun-sheet). */
+:root{--grun-hi:#0F766E;--grun-on:#fff}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--grun-hi:#2DD4BF;--grun-on:#0B1117}}
+:root[data-theme="dark"]{--grun-hi:#2DD4BF;--grun-on:#0B1117}
+/* « + » au centre de la barre du bas */
+#grun-nav #grun-plus{flex:0 0 64px;border:0;background:none;padding:0;display:flex;align-items:center;justify-content:center;min-height:var(--nav-h);cursor:pointer}
+#grun-nav #grun-plus span{width:48px;height:48px;border-radius:16px;background:var(--grun-hi);color:var(--grun-on);display:flex;align-items:center;justify-content:center;box-shadow:0 3px 10px rgba(15,118,110,.35)}
+#grun-nav #grun-plus svg{width:26px;height:26px;stroke-width:2.6;stroke:currentColor}
+#grun-nav #grun-plus:active span{transform:scale(.94)}
+@media (max-width:380px){#grun-nav a{font-size:10.5px}#grun-nav #grun-plus{flex-basis:56px}}
+/* barre du haut : joueur en cours + aide */
+.grun-topx{display:inline-flex;gap:6px;align-items:center;flex:0 0 auto}
+.grun-chip{display:inline-flex;align-items:center;gap:6px;min-height:36px;max-width:118px;padding:0 10px 0 4px;border:1px solid var(--line,#D9DDE3);border-radius:999px;background:var(--panel,#fff);color:var(--ink,#16202E);font:600 14px/1 var(--ui,system-ui,sans-serif);cursor:pointer}
+.grun-chip .gc-nm{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+.gc-av{flex:0 0 28px;width:28px;height:28px;border-radius:50%;background:var(--grun-hi);color:var(--grun-on);display:inline-flex;align-items:center;justify-content:center;font-weight:800;font-size:13px}
+.gc-av.g{border-radius:8px;background:#6D3FC0;color:#fff}
+.gc-av.vide{background:var(--soft,#ECEFF3);color:var(--mute,#5D6675)}
+.grun-q{width:36px;height:36px;border-radius:50%;border:1px solid var(--line,#D9DDE3);background:var(--panel,#fff);color:var(--mute,#5D6675);font:800 17px/1 var(--ui,system-ui,sans-serif);cursor:pointer;padding:0}
+@media (max-width:430px){.grun-chip{max-width:92px;padding-right:8px}.grun-chip .gc-nm{font-size:13px}}
+@media (max-width:360px){.grun-chip .gc-nm{display:none}.grun-chip{padding:0 4px}}
+/* feuille (bottom sheet) */
+.grun-ov{position:fixed;inset:0;z-index:200;background:rgba(10,16,24,.42);display:flex;align-items:flex-end;justify-content:center;opacity:0;transition:opacity .16s ease}
+.grun-ov.in{opacity:1}.grun-ov.out{opacity:0}
+.grun-sheet{width:100%;max-width:560px;max-height:min(90vh,calc(100vh - env(safe-area-inset-top,0px) - 24px));display:flex;flex-direction:column;background:var(--panel,#fff);color:var(--ink,#16202E);border-radius:18px 18px 0 0;box-shadow:0 -10px 40px rgba(0,0,0,.25);transform:translateY(24px);transition:transform .18s ease;font-family:var(--ui,system-ui,sans-serif);font-size:16px;line-height:1.4}
+.grun-sheet.large{max-width:720px}
+.grun-ov.in .grun-sheet{transform:none}
+@media (min-width:700px){.grun-ov{align-items:center}.grun-sheet{border-radius:18px;max-height:86vh}}
+.gs-h{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:14px 16px 8px;border-bottom:1px solid var(--line,#D9DDE3)}
+.gs-h b{font-family:var(--display,"Barlow Condensed",system-ui,sans-serif);font-size:1.45em;font-weight:700;line-height:1.1}
+.gs-x{width:40px;height:40px;border-radius:50%;border:0;background:var(--soft,#ECEFF3);color:var(--ink,#16202E);font-size:24px;line-height:1;cursor:pointer;flex:0 0 auto}
+.gs-b{padding:12px 16px 14px;overflow-y:auto;-webkit-overflow-scrolling:touch;display:flex;flex-direction:column;gap:12px;flex:1 1 auto;min-height:0}
+.gs-f{display:flex;gap:8px;padding:10px 16px calc(12px + env(safe-area-inset-bottom,0px));border-top:1px solid var(--line,#D9DDE3)}
+.gs-btn{min-height:52px;border-radius:13px;border:1px solid var(--line,#D9DDE3);background:var(--panel,#fff);color:var(--ink,#16202E);font:700 16px/1.1 var(--ui,system-ui,sans-serif);padding:0 16px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;text-decoration:none;gap:6px}
+.gs-btn.main{flex:1;background:var(--grun-hi);border-color:var(--grun-hi);color:var(--grun-on)}
+.gs-btn.sec{flex:0 1 auto}
+.gs-btn.sm{min-height:40px;font-size:14.5px;border-radius:10px;padding:0 12px;flex:0 0 auto}
+.gs-btn:disabled{opacity:.5}
+.grun-ov.danger .gs-btn.main{background:#B91C1C;border-color:#B91C1C;color:#fff}
+.gs-form{display:flex;flex-direction:column;gap:12px;margin:0}
+.gs-l{display:flex;flex-direction:column;gap:5px;font-weight:600;font-size:14.5px;color:var(--ink,#16202E);min-width:0}
+.gs-l small{font-weight:500;color:var(--mute,#5D6675)}
+.gs-inp{min-height:48px;border:1px solid var(--line,#D9DDE3);border-radius:11px;background:var(--bg,#F4F5F7);color:var(--ink,#16202E);padding:0 12px;font:500 17px/1.2 var(--ui,system-ui,sans-serif);width:100%;max-width:100%;box-sizing:border-box}
+.gs-ta{padding:10px 12px;min-height:84px;resize:vertical;line-height:1.4}
+.gs-inp:focus{outline:2px solid var(--grun-hi);outline-offset:1px}
+.gs-seg{display:flex;border:1px solid var(--line,#D9DDE3);border-radius:11px;overflow:hidden;background:var(--bg,#F4F5F7)}
+.gs-seg button{flex:1;min-height:46px;border:0;background:none;color:var(--ink,#16202E);font:600 16px/1 var(--ui,system-ui,sans-serif);cursor:pointer}
+.gs-seg button+button{border-left:1px solid var(--line,#D9DDE3)}
+.gs-seg button[aria-checked=true]{background:var(--grun-hi);color:var(--grun-on)}
+.gs-chips{display:flex;flex-wrap:wrap;gap:6px}
+.gs-chip{min-height:40px;border:1px solid var(--line,#D9DDE3);background:var(--panel,#fff);color:var(--ink,#16202E);border-radius:999px;padding:0 14px;font:600 15px/1 var(--ui,system-ui,sans-serif);cursor:pointer;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.gs-chips.big .gs-chip{min-height:46px;font-size:16px}
+.gs-chip.g{border-style:dashed}
+.gs-chip[aria-pressed=true]{background:var(--grun-hi);border-color:var(--grun-hi);color:var(--grun-on)}
+.gs-err{color:#B91C1C;font-weight:600;margin:0;min-height:0}
+.gs-err:empty{display:none}
+.gs-m{color:var(--mute,#5D6675);font-size:14.5px;margin:0}
+.gs-p{margin:0;font-size:16.5px;line-height:1.5}
+.gs-sert{color:var(--grun-hi);font-weight:600;font-size:13px}
+.gs-lien{align-self:flex-start;border:0;background:none;color:var(--grun-hi);font:700 15.5px/1.2 var(--ui,system-ui,sans-serif);padding:6px 0;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+.gs-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.gs-n .gs-inp{font-variant-numeric:tabular-nums}
+.gs-c{display:flex;gap:10px;align-items:flex-start;font-weight:600;font-size:15px}
+.gs-c input{width:22px;height:22px;flex:0 0 auto;margin-top:1px}
+.gs-c small{font-weight:500;color:var(--mute,#5D6675)}
+.gs-cp fieldset{border:1px solid var(--line,#D9DDE3);border-radius:13px;padding:10px 12px 12px;margin:0;display:flex;flex-direction:column;gap:10px;min-width:0}
+.gs-cp legend{font-weight:800;font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:var(--mute,#5D6675);padding:0 4px}
+.gs-cp legend small{text-transform:none;letter-spacing:0;font-weight:500}
+details.gs-plus>summary{cursor:pointer;color:var(--grun-hi);font-weight:700;padding:4px 0;list-style:none}
+details.gs-plus>summary::-webkit-details-marker{display:none}
+details.gs-plus[open]>summary{margin-bottom:8px}
+.gs-list{border:1px solid var(--line,#D9DDE3);border-radius:11px;overflow:hidden}
+.gs-row{display:flex;flex-wrap:wrap;gap:2px 10px;align-items:baseline;padding:8px 12px;border-top:1px solid var(--line,#D9DDE3)}
+.gs-row:first-child{border-top:0}
+.gs-row span{color:var(--mute,#5D6675);font-size:14px}
+.gs-row small{flex-basis:100%;color:#B91C1C;font-weight:600}
+.gs-row.ko b{color:#B91C1C}
+.gs-menu{display:flex;flex-direction:column;gap:8px}
+.gs-menu.plus{display:grid;grid-template-columns:minmax(0,1fr);gap:6px}
+@media (min-width:560px){.gs-menu.plus{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.gs-it{display:grid;grid-template-columns:auto minmax(0,1fr);gap:1px 12px;align-items:center;text-align:left;min-height:60px;padding:9px 12px;border:1px solid var(--line,#D9DDE3);border-radius:13px;background:var(--panel,#fff);color:var(--ink,#16202E);text-decoration:none;cursor:pointer;font:inherit}
+.gs-it b{font-size:16.5px;grid-column:2}
+.gs-it span{grid-column:2;color:var(--mute,#5D6675);font-size:13.5px;line-height:1.3}
+.gs-it:not(:has(.pi)){grid-template-columns:minmax(0,1fr)}.gs-it:not(:has(.pi)) b,.gs-it:not(:has(.pi)) span{grid-column:1}
+.gs-it.x{border-color:var(--grun-hi);border-width:1.5px}
+.gs-it.st{cursor:default}
+.gs-it.st .gs-seg{grid-column:1/-1;margin-top:6px}
+.gs-it:active{background:var(--soft,#ECEFF3)}
+.pi{grid-row:1/3;width:38px;height:38px;border-radius:11px;background:var(--soft,#ECEFF3);position:relative}
+.pi::after{content:"";position:absolute;inset:9px;background:var(--grun-hi);-webkit-mask:var(--m) center/contain no-repeat;mask:var(--m) center/contain no-repeat}
+.pi-joueur{--m:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.2'%3E%3Ccircle cx='12' cy='8' r='4'/%3E%3Cpath d='M4 21c0-4 4-6 8-6s8 2 8 6'/%3E%3C/svg%3E")}
+.pi-groupe{--m:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.2'%3E%3Ccircle cx='8' cy='9' r='3'/%3E%3Ccircle cx='16' cy='9' r='3'/%3E%3Cpath d='M2 20c0-3 3-5 6-5s6 2 6 5M12 20c0-3 2-5 4-5s6 2 6 5'/%3E%3C/svg%3E")}
+.pi-session{--m:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='black'%3E%3Cpath d='M8 5v14l11-7z'/%3E%3C/svg%3E")}
+.pi-test{--m:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.2'%3E%3Cpath d='M12 3l8.5 6.2-3.2 10H6.7L3.5 9.2z'/%3E%3C/svg%3E")}
+.pi-exo{--m:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.2'%3E%3Cpath d='M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2z'/%3E%3Cpath d='M4 19V5'/%3E%3C/svg%3E")}
+.pi-note{--m:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.2'%3E%3Cpath d='M4 20h4L19 9l-4-4L4 16z'/%3E%3C/svg%3E")}
+.pi-wu{--m:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.2'%3E%3Cpath d='M12 3c2 3 5 5 5 9a5 5 0 0 1-10 0c0-2 1-3 2-4 0 2 1 3 2 3 0-3-1-5 1-8z'/%3E%3C/svg%3E")}
+.gs-cur{display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center;padding:10px 12px;border-radius:13px;background:var(--soft,#ECEFF3)}
+.gs-cur b{font-size:17px}.gs-cur span{color:var(--mute,#5D6675);font-size:14px;flex:1}
+.gs-bar{display:flex;flex-direction:column;gap:5px}
+.gs-bar>div,.gc-bar{display:block;height:8px;border-radius:99px;background:var(--soft,#ECEFF3);overflow:hidden}
+.gs-bar i,.gc-bar i{display:block;height:100%;background:var(--grun-hi);border-radius:99px;transition:width .3s}
+/* toast avec « Annuler » */
+#grun-toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(var(--nav-h,62px) + 14px + env(safe-area-inset-bottom,0px));z-index:260;display:flex;gap:12px;align-items:center;max-width:calc(100vw - 32px);background:var(--ink,#16202E);color:var(--bg,#fff);padding:8px 8px 8px 16px;border-radius:13px;box-shadow:0 8px 28px rgba(0,0,0,.28);font:600 15px/1.3 var(--ui,system-ui,sans-serif)}
+#grun-toast:not(:has(button)){padding:11px 16px}
+#grun-toast button{min-height:40px;border:0;border-radius:9px;background:var(--grun-hi);color:var(--grun-on);font:800 15px/1 var(--ui,system-ui,sans-serif);padding:0 14px;cursor:pointer;white-space:nowrap}
+body:not(.grun-has-nav) #grun-toast{bottom:calc(16px + env(safe-area-inset-bottom,0px))}
+#grun-saved{position:fixed;top:calc(8px + env(safe-area-inset-top,0px));right:12px;z-index:270;background:var(--grun-hi);color:var(--grun-on);font:700 13px/1 var(--ui,system-ui,sans-serif);padding:7px 11px;border-radius:99px;opacity:0;transform:translateY(-6px);transition:opacity .2s,transform .2s;pointer-events:none}
+#grun-saved.on{opacity:1;transform:none}
+/* barre de complétude (dossier) */
+.grun-compl{border:1px solid var(--line,#D9DDE3);border-radius:13px;background:var(--panel,#fff);padding:10px 12px;display:flex;flex-direction:column;gap:6px}
+.grun-compl .gc-h{display:flex;gap:10px;align-items:center}.grun-compl .gc-h b{white-space:nowrap}.grun-compl .gc-bar{flex:1}
+.grun-compl ul{margin:0;padding-left:18px;font-size:14.5px;color:var(--mute,#5D6675)}
+.grun-compl ul b{color:var(--ink,#16202E);font-weight:600}
+.grun-compl .gs-btn{align-self:flex-start}
+.grun-compl.ok{padding:8px 12px}
+/* action principale en bas (zone du pouce), au-dessus de la barre du bas */
+.grun-actbar{position:sticky;bottom:calc(var(--nav-h,62px) + env(safe-area-inset-bottom,0px) + 8px);z-index:20;display:flex;gap:8px;margin-top:16px}
+body:not(.grun-has-nav) .grun-actbar{bottom:calc(8px + env(safe-area-inset-bottom,0px))}
+.grun-actbar>*{flex:1;min-height:52px;box-shadow:0 6px 18px rgba(0,0,0,.14)}
+/* visite guidée, schéma */
+.gv h3{font-family:var(--display,"Barlow Condensed",system-ui,sans-serif);font-size:1.6em;margin:4px 0 6px;line-height:1.1}
+.gv-dots{display:flex;gap:5px}.gv-dots i{width:22px;height:5px;border-radius:9px;background:var(--line,#D9DDE3)}.gv-dots i.vu{background:var(--mute,#5D6675)}.gv-dots i.on{background:var(--grun-hi)}
+.grun-schema{width:100%;max-width:440px;display:block;margin:10px auto 0;font-family:var(--ui,system-ui,sans-serif)}
+.grun-schema rect{stroke-width:2}
+.grun-schema .s-ind{fill:rgba(15,118,110,.12);stroke:#0F766E}.grun-schema .s-tests{fill:rgba(109,63,192,.12);stroke:#6D3FC0}.grun-schema .s-res{fill:rgba(29,78,216,.10);stroke:#1D4ED8}.grun-schema .s-create{fill:rgba(194,65,12,.10);stroke:#C2410C}
+.grun-schema .s-d1{fill:rgba(194,65,12,.14);stroke:#C2410C}.grun-schema .s-d2{fill:rgba(194,65,12,.22);stroke:#C2410C}.grun-schema .s-d3{fill:#C2410C;stroke:#C2410C}
+.grun-schema text{fill:var(--ink,#16202E);text-anchor:middle}.grun-schema .s-t{font-weight:800;font-size:15px}.grun-schema .s-s{font-size:12px;fill:var(--mute,#5D6675)}
+.grun-schema .s-k{font-size:11px;font-weight:700;text-anchor:start}.grun-schema .s-k.c{text-anchor:middle;fill:#fff}
+.grun-doll{margin-top:8px}.grun-doll div{border:2px solid #C2410C;border-radius:12px;padding:8px 10px 10px;font-weight:800;color:#C2410C;background:rgba(194,65,12,.07)}.grun-doll div div{margin-top:6px;background:rgba(194,65,12,.12)}.grun-doll div div div{background:#C2410C;color:#fff}
+.grun-demo-bar{display:flex;gap:14px;align-items:center;justify-content:center;margin-top:8px}
+.grun-chip.demo{pointer-events:none}
+.grun-plus-demo{width:48px;height:48px;border-radius:16px;background:var(--grun-hi);color:var(--grun-on);display:inline-flex;align-items:center;justify-content:center;font:800 30px/1 var(--ui,system-ui,sans-serif)}
+html.grun-sheet-on body{overflow:hidden}
+@media print{.grun-topx,#grun-toast,#grun-saved,.grun-ov,.grun-actbar{display:none!important}}
+/* barre du haut des modules sur téléphone : le joueur en cours se réduit à son initiale, le titre s'abrège */
+html.grun-mod .topin .brand{min-width:0;overflow:hidden;text-overflow:ellipsis;flex:0 1 auto}
+@media (max-width:430px){html.grun-mod .grun-chip .gc-nm{display:none}html.grun-mod .grun-chip{padding:0 3px;max-width:none}.grun-topx{gap:4px}.grun-q{width:34px;height:34px}}
+.grun-chip:has(.gc-av.vide){max-width:none}.grun-chip:has(.gc-av.vide) .gc-nm{overflow:visible}
 </style>
-<script src="grun.js?v=1"></script>
+<script src="grun.js?v=1.4"></script>
+<script src="assistant.js?v=1.4"></script>
 <meta name="grun-module" content="warmup"></head><body><title>Choose your warm-up · GRÜN</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Barlow:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
 <style>
@@ -114,6 +259,7 @@ h1{font-family:var(--display);font-weight:700;font-size:32px;line-height:1.05;ma
 .note{background:#FEF3C7;color:#5B3B00;border-radius:10px;padding:9px 12px;font-size:14.5px;margin:10px 0}
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .note{background:#3A2E08;color:#F5DE9A}}
 :root[data-theme="dark"] .note{background:#3A2E08;color:#F5DE9A}
+:root .note.masq{background:transparent;border:1px dashed var(--line);color:inherit;display:flex;flex-wrap:wrap;align-items:center;gap:4px 8px}.note.masq .lnk{font-weight:700}
 
 /* filtres */
 .filt{display:flex;flex-direction:column;gap:8px;margin-top:14px}
@@ -257,6 +403,24 @@ body.has-relais .top{top:52px}
 .kit b{display:block;font-size:16px}
 .kit span{color:var(--mute);font-size:14px}
 @media print{.top,.noprint,#sheet,#relais,#grun-nav{display:none!important} body{background:#fff;color:#000} main{padding:0} details.sit{break-inside:avoid} details>.sb{display:block}}
+
+/* Choose your warm-up 1.3 : carte résumé, retour commun, ligne « pour lui, maintenant » */
+.wsum{display:flex;flex-direction:column;gap:6px;margin:12px 0 4px;font-size:14.5px}
+.wsum .wsr{display:flex;gap:10px;align-items:baseline;flex-wrap:wrap}
+.wsum .wsl{flex:0 0 74px;color:var(--mute);font-size:12.5px;text-transform:uppercase;letter-spacing:.03em;font-weight:600}
+.wsum .wsr>span:last-child{flex:1;min-width:0}
+.li.solo.pourq{display:block;border:1px solid var(--line);border-radius:12px;background:var(--panel);padding:12px 14px;margin:12px 0 4px;text-decoration:none;color:inherit}
+.li.solo.pourq small{display:block;color:var(--mute);font-size:12.5px;margin-top:2px}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end}.grow{flex:1;min-width:180px}
+.retour .msg{margin:4px 0}
+.retour details.rt-pj{margin-top:8px}.retour details.rt-pj>summary{cursor:pointer;font-weight:600;min-height:44px;display:flex;align-items:center}
+.prow{display:grid;grid-template-columns:minmax(0,1.3fr) repeat(3,minmax(0,1fr)) minmax(0,1.6fr);gap:8px;align-items:end;border-top:1px solid var(--line);padding:10px 0}
+.prow>b{align-self:center}.prow select,.prow input{width:100%}
+@media (max-width:640px){.prow{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.prow>b{grid-column:1/-1}.prow .pc{grid-column:1/-1}}
+.filt .frow{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.filt .frow::-webkit-scrollbar{display:none}
+.filt .frow .tg{flex:0 0 auto}
+.filt details .frow{flex-wrap:wrap}
 </style>
 <div id="relais" class="grun-relais" hidden></div>
 <header class="top"><div class="topin">
@@ -334,7 +498,7 @@ const Partage = (()=>{
 })();
 
 /* ===== CHOOSE YOUR WARM-UP (GRÜN) : la bibliothèque des échauffements performance → fiche → mode terrain =====
-   Données : data.json {modeles:[Modèle]} (routines/modeles/EWU-*.json, format FORMAT_MODELES.md) ; exos ajoutés : GRUN.banque.
+   Données : data.json {modeles:[Modèle]} (routines/modeles/EWU-*.json, format FORMAT_MODELES.md) ; exercices ajoutés : GRUN.banque.
    Clé propre : routines_v1 {routines:[Échauffement perso (v:3) ou ancienne routine], hist:[{id,who,date,duree,ref,titre,rpe,g:[]}], fav:[id], hide:[], profil:{}, matLieu:{}, filt}
    Échauffement perso = {id, v:3, nom, src:idModèle|null, resume, quand, objectifs, avantages, inconvenients, materiel, lieu, espace, ages, intensite_fin, principes, notes,
                          situations:[{id,n,duree(s),phase:"MR|MO|AC|CV|PO|ST",de,consignes:[],series,mat:[],exo}], jids:[], gid, date, cree, maj, duree(min)}
@@ -362,6 +526,10 @@ const isJ=()=>HAS&&GRUN.isJoueur();
 const meJid=()=>HAS?GRUN.mode().jid:null;
 const ageOf=j=>{ if(!j||!HAS) return null; const a=GRUN.ageCiv(j.naissance); return a==null?null:Math.max(4,Math.min(18,a)); };
 const main=$("#main");
+const curJ=()=>{ try{ return HAS?GRUN.courant.jid():null; }catch(e){ return null; } }, curG=()=>{ try{ return HAS?GRUN.courant.gid():null; }catch(e){ return null; } };
+const gget=id=>HAS&&id?GRUN.groupes.get(id):null;
+const aide=k=>{ try{ HAS&&GRUN.aide.ecran("warmup/"+k); }catch(e){} };
+const actbar=inner=>`<div class="grun-actbar noprint">${inner}</div>`;
 
 /* ---------- référentiels (vocabulaire simple, aucun code affiché) ---------- */
 const PH={MR:{n:"Mise en route",c:"#C2410C"},MO:{n:"Mobilité",c:"#0F766E"},AC:{n:"Activation",c:"#7C3AED"},CV:{n:"Coordination et vitesse",c:"#1D4ED8"},PO:{n:"Mise en tension",c:"#B91C1C"},ST:{n:"Spécifique tennis",c:"#B7791F"},
@@ -376,10 +544,10 @@ const FAM={warmup:{tab:"Échauffements",un:"échauffement",mes:"Mes échauffemen
 const TR=[["0-5","0 à 5 min"],["5-10","5 à 10 min"],["10-15","10 à 15 min"],["15-20","15 à 20 min"],["20-30","20 à 30 min"],["30-45","30 à 45 min"]];
 const TRN=Object.fromEntries(TR);
 const trancheOf=min=>{ for(const [t] of TR){ const b=+t.split("-")[1]; if(min<=b+0.01) return t; } return "30-45"; };
-const QUAND={match:"Avant match",entrainement:"Avant entraînement",pp_force:"Avant PP force",pp_vitesse:"Avant PP vitesse",tournoi_reprise:"Tournoi, reprise",
-  apres_match:"Après match",apres_pp_force:"Après PP force",apres_pp_vitesse:"Après vitesse, pliométrie",apres_vitesse:"Après vitesse, pliométrie",apres_endurance:"Après endurance, RSA",apres_tennis:"Après tennis intense",
+const QUAND={match:"Avant match",entrainement:"Avant entraînement",pp_force:"Avant une séance de force",pp_vitesse:"Avant une séance de vitesse",tournoi_reprise:"Tournoi, reprise",
+  apres_match:"Après match",apres_pp_force:"Après une séance de force",apres_pp_vitesse:"Après vitesse, pliométrie",apres_vitesse:"Après vitesse, pliométrie",apres_endurance:"Après endurance, RSA",apres_tennis:"Après tennis intense",
   soir_tournoi:"Soir de tournoi",entre_matchs:"Entre deux matchs",recup_active:"Récupération active",chaleur:"Après effort au chaud",soir:"Routine du soir"};
-const QCD={match:"Après match",entrainement:"Après entraînement",pp_force:"Après PP force",pp_vitesse:"Après vitesse, sauts",pp_endurance:"Après endurance, RSA",tournoi:"Tournoi",chaleur:"Après effort au chaud",soir:"Le soir",recup_active:"Récupération active",entre_matchs:"Entre deux matchs",tournoi_reprise:"Tournoi, reprise"};
+const QCD={match:"Après match",entrainement:"Après entraînement",pp_force:"Après une séance de force",pp_vitesse:"Après vitesse, sauts",pp_endurance:"Après endurance, RSA",tournoi:"Tournoi",chaleur:"Après effort au chaud",soir:"Le soir",recup_active:"Récupération active",entre_matchs:"Entre deux matchs",tournoi_reprise:"Tournoi, reprise"};
 const quandN=q=>(TY==="cooldown"&&QCD[q])||QUAND[q]||String(q).replace(/_/g," ").replace(/^./,c=>c.toUpperCase());
 const LIEU={court:"Court",salle:"Salle",bord:"Bord de court",hotel:"Chambre d'hôtel",ext:"Extérieur"};
 /* LE KIT GRÜN : ce que le joueur emporte en tournoi */
@@ -452,23 +620,26 @@ const RLK="wu_relais_v3";
 let RL=null; try{ RL=JSON.parse(sessionStorage.getItem(RLK)||"null"); }catch(e){}
 function setRL(x){ RL=x; try{ x?sessionStorage.setItem(RLK,JSON.stringify(x)):sessionStorage.removeItem(RLK); }catch(e){} }
 function rlValide(){ if(!RL) return false; if(!HAS) return true; const h=GRUN.relais.lire(); if(!h||h.res||h.t!==RL.t){ setRL(null); return false; } return true; }
-const DE_N={seances:"la séance",prog:"la prog",accueil:"l'accueil",hub:"l'accueil"};
+const DE_N={seances:"la séance",prog:"la programmation",accueil:"l'accueil",hub:"l'accueil"};
 function quandDe(ap,sous){ const t=norm((ap||"")+" "+(sous||""));
   if(/match|tournoi/.test(t)) return ["match","tournoi_reprise"];
   if(/bilan|test/.test(t)) return ["pp_vitesse"];
   if(/\bpp\b|physique|force|vitesse|plio|saut|sprint|muscu|endurance/.test(t)) return /vitesse|plio|saut|sprint|appui|explos/.test(t)?["pp_vitesse"]:["pp_force"];
   return ["entrainement"]; }
-function lieuDe(l){ return LIEU[l]?l:l==="gym"?"salle":l?"court":null; }
+function lieuDe(l){ return LIEU[l]?l:(l==="gym"||l==="gymnase")?"salle":l==="exterieur"?"ext":l==="maison"?"hotel":l?"court":null; }
 function initRL(){
   const h=HAS?GRUN.relais.lire():null;
   if(h&&!h.res&&(!h.vers||h.vers==="warmup")){
     if(!RL||RL.t!==h.t){
       const mat=Array.isArray(h.mat)?h.mat.filter(m=>MATN[m]):null;
       const fam=h.famille==="cooldown"||h.type==="cooldown"?"cooldown":"warmup";
-      setRL({t:h.t,fam,kw:h.kw||"",retour:h.retour||"",de:h.de||"seances",jid:h.jid||null,gid:h.gid||null,jids:h.jids||[],duree:+h.duree||null,quand:quandDe(h.apres||h.type,h.sous||h.theme),lieu:lieuDe(h.lieu),mat,rid:h.rid||null,titre:h.titre||""});
+      /* durée : depuis une séance = la durée visée de l'échauffement ; depuis l'accueil ou le « + » = la durée de la SÉANCE (réglages coach) → échauffement ≈ 1/5, entre 5 et 20 min */
+      const du=+h.duree||null, wd=h.sid||h.de==="seances"||!du||du<=25?du:Math.max(5,Math.min(20,Math.round(du/5)));
+      setRL({t:h.t,fam,kw:h.kw||"",retour:h.retour||"",de:h.de||"seances",jid:h.jid||null,gid:h.gid||null,jids:h.jids||[],duree:wd,quand:quandDe(h.apres||h.type,h.sous||h.theme),lieu:lieuDe(h.lieu),mat,rid:h.rid||null,titre:h.titre||""});
       /* le matériel de la séance (liste de la banque) sert au classement, pas au filtre : le kit GRÜN n'y figure pas objet par objet */
       const aj=h.jid&&jget(h.jid)?ageOf(jget(h.jid)):(+h.age||null);
-      LF={type:fam,tr:RL.duree?trancheOf(RL.duree):null,lieu:RL.lieu,mat:null,age:ageBand(aj)};
+      const ag=aj!=null?aj:(h.gid&&gget(h.gid)?Math.min(...GRUN.groupes.joueurs(h.gid).map(ageOf).filter(a=>a!=null),99):null);
+      LF={type:fam,tr:RL.duree?trancheOf(RL.duree):null,lieu:RL.lieu,mat:null,age:ageBand(ag!=null&&ag<99?ag:null),sit:fam==="warmup"&&(h.apres||h.sous||h.theme)?sitDe(RL.quand):null};
     }
   }
 }
@@ -508,16 +679,25 @@ function scoreRL(E){ let s=0; const m=minOf(E);
   return s; }
 
 /* ---------- BIBLIOTHÈQUE ---------- */
-let LF=(()=>{ const f=ST.filt||{}; return {type:f.type==="cooldown"?"cooldown":"warmup",tr:TRN[f.tr]?f.tr:null,lieu:LIEU[f.lieu]?f.lieu:null,mat:f.mat||null,age:f.age==="p"||f.age==="g"?f.age:null}; })();
-/* tranche d'âge : « p » = 4-10 ans, « g » = 11-18 ans ; un échauffement sans âges conseillés passe partout */
-const AGEB=[["p","4-10 ans"],["g","11-18 ans"]];
-function ageOk(E,b){ const c=E&&E.ages&&E.ages.conseille; if(!b||!Array.isArray(c)) return true; return b==="p"?+c[0]<=10:+c[1]>=11; }
-const ageBand=a=>a==null?null:(+a<=10?"p":"g");
+/* tranches d'âge (toujours visibles) : 4-6, 7-8, 9-10, 11-12, 13-18 ; anciennes valeurs gardées : « p » = 4-10 ans, « g » = 11-18 ans.
+   Un échauffement sans âges conseillés passe partout. */
+const AGEB=[["4-6","4-6 ans"],["7-8","7-8 ans"],["9-10","9-10 ans"],["11-12","11-12 ans"],["13-18","13-18 ans"]];
+const AGER={p:[4,10],g:[11,18],...Object.fromEntries(AGEB.map(([k])=>[k,k.split("-").map(Number)]))};
+function ageOk(E,b){ const c=E&&E.ages&&E.ages.conseille, r=AGER[b]; if(!b||!r||!Array.isArray(c)) return true; return +c[0]<=r[1]&&+c[1]>=r[0]; }
+const ageBand=a=>a==null?null:(AGEB.find(([k])=>+a>=AGER[k][0]&&+a<=AGER[k][1])||AGEB[4])[0];
+/* situation qui suit (toujours visible) : entraînement, match, tournoi */
+const SITU=[["entrainement","Entraînement"],["match","Match"],["tournoi","Tournoi"]];
+const SITQ={warmup:{entrainement:["entrainement","pp_force","pp_vitesse"],match:["match"],tournoi:["tournoi_reprise","tournoi","entre_matchs","soir_tournoi"]},
+  cooldown:{entrainement:["entrainement","pp_force","pp_vitesse","pp_endurance","recup_active","chaleur"],match:["match","entre_matchs"],tournoi:["tournoi","entre_matchs","soir","tournoi_reprise"]}};
+function sitOk(E,v){ if(!v) return true; const Q=E.quand||[]; if(!Q.length) return true; return Q.some(q=>(SITQ[typeOf(E)][v]||[]).includes(q)); }
+const sitDe=Q=>(Q||[]).includes("match")?"match":(Q||[]).some(q=>/tournoi/.test(q))?"tournoi":"entrainement";
+let LF=(()=>{ const f=ST.filt||{}; return {type:f.type==="cooldown"?"cooldown":"warmup",tr:TRN[f.tr]?f.tr:null,lieu:LIEU[f.lieu]?f.lieu:null,mat:f.mat||null,age:AGER[f.age]?f.age:null,sit:SITQ.warmup[f.sit]?f.sit:null}; })();
 function keepLF(){ if(!rlValide()){ ST.filt=LF; save(); } }
 function passe(E){
   if(typeOf(E)!==(LF.type||"warmup")) return false;
   if(LF.tr&&trancheOf(minOf(E))!==LF.tr) return false;
   if(LF.age&&!ageOk(E,LF.age)) return false;
+  if(LF.sit&&!sitOk(E,LF.sit)) return false;
   if(LF.lieu&&!lieuOf(E).includes(LF.lieu)) return false;
   const M=matOf(E);
   if(LF.mat==="none") return !M.length;
@@ -540,27 +720,38 @@ function filtresHtml(){
   const sel=Array.isArray(LF.mat)?LF.mat:[];
   return `<div class="filt" role="group" aria-label="Filtres">
    <div class="frow tabs" role="tablist">${["warmup","cooldown"].map(t=>`<button type="button" role="tab" class="tab" data-ty="${t}" aria-selected="${(LF.type||"warmup")===t}">${FAM[t].tab}</button>`).join("")}</div>
-   <div class="frow"><span class="fl">Âge</span>${t("ag","",'Tous',!LF.age)}${AGEB.map(([v,l])=>t("ag",v,l,LF.age===v)).join("")}</div>
    <div class="frow"><span class="fl">Durée</span>${t("tr","",'Toutes',!LF.tr)}${TR.map(([v,l])=>t("tr",v,l,LF.tr===v)).join("")}</div>
-   <div class="frow"><span class="fl">Lieu</span>${t("li","","Partout",!LF.lieu)}${Object.entries(LIEU).map(([v,l])=>t("li",v,l,LF.lieu===v)).join("")}</div>
-   <details class="grun-plus" ${LF.mat?"open":""}><summary>Matériel${LF.mat?" · filtré":""}</summary><div class="grun-plusb"><div class="frow">${t("ma","","Tout",!LF.mat)}${t("ma","kit","Avec le kit complet",LF.mat==="kit")}${t("ma","none","Sans matériel",LF.mat==="none")}${KIT.map(([k,n,ic])=>t("mo",k,ic+" "+n,sel.includes(k))).join("")}</div><a class="ib" href="#/kit">🎒 Le kit GRÜN</a></div></details></div>`;
+   <div class="frow"><span class="fl">Âge</span>${t("ag","",'Tous',!LF.age)}${AGEB.map(([v,l])=>t("ag",v,l,LF.age===v)).join("")}${LF.age==="p"||LF.age==="g"?t("ag",LF.age,LF.age==="p"?"4-10 ans":"11-18 ans",true):""}</div>
+   <div class="frow"><span class="fl">Avant</span>${t("si","",'Tout',!LF.sit)}${SITU.map(([v,l])=>t("si",v,l,LF.sit===v)).join("")}</div>
+   <details class="grun-plus" ${LF.mat||LF.lieu?"open":""}><summary>Plus de filtres : lieu, matériel${LF.mat||LF.lieu?" · filtré":""}</summary><div class="grun-plusb"><div class="frow"><span class="fl">Lieu</span>${t("li","","Partout",!LF.lieu)}${Object.entries(LIEU).map(([v,l])=>t("li",v,l,LF.lieu===v)).join("")}</div><div class="frow">${t("ma","","Tout",!LF.mat)}${t("ma","kit","Avec le kit complet",LF.mat==="kit")}${t("ma","none","Sans matériel",LF.mat==="none")}${KIT.map(([k,n,ic])=>t("mo",k,ic+" "+n,sel.includes(k))).join("")}</div><a class="ib" href="#/kit">🎒 Le kit GRÜN</a></div></details></div>`;
 }
 function bindFiltres(){
   $$("[data-ty]").forEach(b=>b.onclick=()=>{ LF.type=b.dataset.ty; LF.tr=null; keepLF(); showLib(); });
   $$("[data-tr]").forEach(b=>b.onclick=()=>{ LF.tr=b.dataset.tr||null; keepLF(); showLib(true); });
   $$("[data-ag]").forEach(b=>b.onclick=()=>{ LF.age=b.dataset.ag||null; keepLF(); showLib(true); });
+  $$("[data-si]").forEach(b=>b.onclick=()=>{ LF.sit=b.dataset.si||null; keepLF(); showLib(true); });
   $$("[data-li]").forEach(b=>b.onclick=()=>{ LF.lieu=b.dataset.li||null; keepLF(); showLib(true); });
   $$("[data-ma]").forEach(b=>b.onclick=()=>{ LF.mat=b.dataset.ma||null; keepLF(); showLib(true); });
   $$("[data-mo]").forEach(b=>b.onclick=()=>{ const k=b.dataset.mo; let a=Array.isArray(LF.mat)?LF.mat.slice():[]; a=a.includes(k)?a.filter(x=>x!==k):[...a,k]; LF.mat=a.length?a:null; keepLF(); showLib(true); });
+}
+/* filtres actifs (choisis ou préremplis par un relais) : on dit toujours combien d'échauffements ils masquent, avec « Tout afficher » */
+function masqHtml(T,MS){
+  const n=[...MODL,...MS].filter(E=>typeOf(E)===T&&!passe(E)).length; if(!n) return "";
+  const lab=T==="cooldown"?(n>1?"retours au calme masqués":"retour au calme masqué"):(n>1?"échauffements masqués":"échauffement masqué");
+  return `<p class="note masq" role="status">${n} ${lab} par les filtres · <button type="button" class="lnk" id="clrm">Tout afficher</button></p>`;
 }
 function showLib(keepScroll){
   const y=scrollY, fv=favSet(), rl=rlValide(), MS=mesE(), coach=!isJ(), T=LF.type||"warmup", F=FAM[T]; TY=T;
   const MT=MODL.filter(E=>typeOf(E)===T);
   const FM=MODL.filter(passe), FMine=MS.filter(passe), favL=[...MODL,...mine()].filter(E=>fv.has(E.id)).filter(passe);
+  aide(rl?"relais":"accueil");
+  const cj=!rl&&coach&&jget(curJ()), cg=!rl&&coach&&!cj&&gget(curG());
   let h=`<h1>Choose your warm-up</h1>
    <p class="lead">${MT.length?(T==="cooldown"?`${MT.length} retour${MT.length>1?"s":""} au calme de référence, prêt${MT.length>1?"s":""} à lancer.`:`${MT.length} échauffement${MT.length>1?"s":""} performance prêt${MT.length>1?"s":""} à lancer.`)+" Choisis, lance : tout s'enchaîne seul.":(T==="cooldown"?"Les retours au calme de référence arrivent ici, rangés par durée.":"Les échauffements performance arrivent ici, rangés par durée.")}</p>
-   ${coach?`<div class="tools" style="margin-top:12px"><a class="ib" href="#/creer">+ ${F.nv}</a></div>`:""}
-   ${filtresHtml()}`;
+   ${cj||cg?`<a class="li solo pourq" href="${cj?"#/joueur/"+encodeURIComponent(cj.id):"#/groupe/"+encodeURIComponent(cg.id)}"><span class="tt"><b>Pour ${esc(cj?cj.nom.split(" ")[0]:"le groupe "+cg.nom)}, maintenant ›</b><small>Les mieux adaptés ${cj?"à son âge":"au groupe"} et ${cj?"ses":"leurs"} favoris, prêts à lancer</small></span></a>`:""}
+   ${masqHtml(T,MS)}
+   ${filtresHtml()}
+   ${coach?`<div class="tools" style="margin-top:10px"><a class="ib" href="#/creer">+ ${F.nv}</a></div>`:""}`;
   const nb=FM.length+FMine.length;
   if(rl){
     const all=[...MODL,...MS].filter(passe).sort((a,b)=>scoreRL(b)-scoreRL(a));
@@ -578,12 +769,13 @@ function showLib(keepScroll){
   }
   if(coach&&!rl){ const J=joueurs(); if(J.length) h+=`<section class="sec"><h2>Par joueur</h2><div class="chips">${J.map(j=>`<a class="tg" href="#/joueur/${encodeURIComponent(j.id)}">${esc(j.nom)}${(j.favWarmup||[]).length?" ♥ "+j.favWarmup.length:""}</a>`).join("")}</div></section>`; }
   main.innerHTML=h; bindFiltres();
-  $("#clr")&&($("#clr").onclick=()=>{ LF={type:LF.type,tr:null,lieu:null,mat:null,age:null}; keepLF(); showLib(); });
+  $$("#clr,#clrm").forEach(b=>b.onclick=()=>{ LF={type:LF.type,tr:null,lieu:null,mat:null,age:null,sit:null}; keepLF(); showLib(); });
   if(keepScroll) scrollTo(0,y);
 }
 
 /* ---------- LE KIT GRÜN ---------- */
 function showKit(){
+  aide("kit");
   const n=k=>MODL.filter(E=>matOf(E).includes(k)).length;
   main.innerHTML=`<div class="crumb"><a href="#/">Bibliothèque</a> › Le kit</div><h1>Le kit GRÜN</h1>
    <p class="lead">Ce que tu emportes en tournoi. Avec ce sac, tous les échauffements se font partout.</p>
@@ -622,18 +814,20 @@ function showFiche(id){
   info.push(box("Notes",E.notes?`<p>${esc(E.notes).replace(/\n/g,"<br>")}</p>`:""));
   main.innerHTML=`<div class="crumb"><a href="#/">Bibliothèque</a> › ${orig?FA.perf:FA.mes}</div>
    <h1>${fv.has(E.id)?'<span class="fav">♥</span> ':""}${esc(E.nom)}</h1>
-   <div class="launch top1 noprint">${rl?`<button class="go big acc" id="take" type="button">✓ Prendre pour ${esc(DE_N[RL.de]||"la séance")}</button><a class="go big" href="#/go/${encodeURIComponent(E.id)}">▶ Lancer</a>`:`<a class="go big acc" id="lan" href="#/go/${encodeURIComponent(E.id)}"${S.length?"":" aria-disabled=\"true\""}>▶ Lancer</a>`}</div>
-   <div class="meta"><span><b>${esc(durLab(E))}</b></span><span>${S.length} situation${S.length>1?"s":""}</span><span>${lieuOf(E).map(l=>esc(LIEU[l]||l)).join(", ")}</span>${E.recu?`<span>Reçu${E.recu!==true?" de "+esc(E.recu):""}</span>`:""}${!orig&&E.src&&MOD[E.src]?`<span>D'après « ${esc(MOD[E.src].nom)} »</span>`:""}</div>
+   ${resumeCarte(E)}
+   <div class="meta"><span><b>${esc(durLab(E))}</b></span><span>${S.length} exercice${S.length>1?"s":""}</span><span>${lieuOf(E).map(l=>esc(LIEU[l]||l)).join(", ")}</span>${E.recu?`<span>Reçu${E.recu!==true?" de "+esc(E.recu):""}</span>`:""}${!orig&&E.src&&MOD[E.src]?`<span>D'après « ${esc(MOD[E.src].nom)} »</span>`:""}</div>
    <div class="pills" style="margin-top:8px">${(E.quand||[]).map(q=>`<span class="pill">${esc(quandN(q))}</span>`).join("")}${M.length?M.map(k=>`<span class="pill k">${KITICO[k]||""} ${esc(matN(k))}</span>`).join(""):`<span class="pill k">Sans matériel</span>`}</div>
    <div class="phl" aria-hidden="true">${S.map(s=>`<i style="background:${phOf(s.phase).c};width:${(s.duree/tot*100).toFixed(2)}%"></i>`).join("")}</div>
    ${E.resume?`<p class="resume">${esc(E.resume)}</p>`:""}
    ${E.ancienne?`<p class="note">Routine faite avec l'ancien générateur : elle reste jouable et modifiable ici.</p>`:""}
-   <div class="acts noprint"><button class="ib${fv.has(E.id)?" on":""}" id="fav" type="button" aria-pressed="${fv.has(E.id)}">♥ Favori</button>${coach?`<button class="ib" id="pj" type="button">Pour un joueur…</button><button class="ib" id="mod" type="button">✎ Modifier</button>`:""}</div>
-   <details class="grun-plus noprint"><summary>Plus d'options</summary><div class="grun-plusb"><div class="acts" style="margin:0">${coach?`<button class="ib" id="dup" type="button">⧉ Dupliquer</button>`:""}${pdfBtn("pdf",FA.un==="retour au calme"?"Retour au calme PDF":"Échauffement PDF")}${coach?`<button class="ib" id="snd" type="button">📲 Envoyer au joueur</button>`:""}
+   <div class="acts noprint"><button class="ib${fv.has(E.id)?" on":""}" id="fav" type="button" aria-pressed="${fv.has(E.id)}">♥ Favori</button>${coach?`<button class="ib" id="pj" type="button">Pour un joueur…</button><button class="ib" id="mod" type="button">✎ Modifier</button>`:""}${pdfBtn("pdf",FA.un==="retour au calme"?"Retour au calme PDF":"Échauffement PDF")}${coach?`<button class="ib" id="snd" type="button">📲 Envoyer au joueur</button>`:""}</div>
+   <details class="grun-plus noprint"><summary>Plus d'options</summary><div class="grun-plusb"><div class="acts" style="margin:0">${coach?`<button class="ib" id="dup" type="button">⧉ Dupliquer</button>`:""}
     ${coach&&!orig?`<button class="ib" id="del" type="button">Supprimer</button>`:""}</div></div></details>
-   <section class="sec"><h2>Les situations <small>${S.length} · ${esc(durLab(E))}</small></h2>
-    ${S.length?`<div class="sits">${S.map((s,i)=>`<details class="sit" style="--c:${phOf(s.phase).c}"><summary><span class="sn">${i+1}</span><span class="st"><b>${esc(s.n)}</b><small>${esc(phOf(s.phase).n)}</small></span><span class="sd">${fmtS(s.duree)}</span></summary><div class="sb">${sitBody(s)}</div></details>`).join("")}</div>`:`<div class="empty">Aucune situation pour l'instant${coach?" : touche « Modifier » pour en ajouter.":"."}</div>`}</section>
-   <section class="sec"><h2>En détail</h2><div class="info">${info.join("")}</div></section>`;
+   <section class="sec"><h2>Les exercices <small>${S.length} · ${esc(durLab(E))}</small></h2>
+    ${S.length?`<div class="sits">${S.map((s,i)=>`<details class="sit" style="--c:${phOf(s.phase).c}"><summary><span class="sn">${i+1}</span><span class="st"><b>${esc(s.n)}</b><small>${esc(phOf(s.phase).n)}</small></span><span class="sd">${fmtS(s.duree)}</span></summary><div class="sb">${sitBody(s)}</div></details>`).join("")}</div>`:`<div class="empty">Aucun exercice pour l'instant${coach?" : touche « Modifier » pour en ajouter.":"."}</div>`}</section>
+   <section class="sec"><h2>En détail</h2><div class="info">${info.join("")}</div></section>
+   ${(()=>{ const cible=lancerCible(); return actbar(rl?`<button class="gs-btn main" id="take" type="button">✓ Prendre pour ${esc(DE_N[RL.de]||"la séance")}</button><a class="gs-btn sec" href="#/go/${encodeURIComponent(E.id)}${cible.q}">▶ Lancer</a>`:`<a class="gs-btn main" id="lan" href="#/go/${encodeURIComponent(E.id)}${cible.q}"${S.length?"":" aria-disabled=\"true\""}>▶ Lancer${cible.nom?" · "+esc(cible.nom):""}</a>`); })()}`;
+  aide("fiche");
   if(rl){ RL.vu=E.id; setRL(RL); }
   $("#take")&&($("#take").onclick=()=>valider(E));
   $("#fav").onclick=()=>{ const on=toggleFav(E.id); toast(on?"Ajouté aux favoris":"Retiré des favoris"); showFiche(id); };
@@ -642,10 +836,21 @@ function showFiche(id){
   $("#pj")&&($("#pj").onclick=()=>pourJoueur(E));
   $("#pdf").onclick=()=>pdfE(E);
   $("#snd")&&($("#snd").onclick=()=>envoyer(E));
-  $("#del")&&($("#del").onclick=()=>{ const b=$("#del"); if(!b.dataset.ok){ b.dataset.ok=1; b.textContent="Toucher encore pour supprimer"; return; } ST.routines=ST.routines.filter(x=>x.id!==E.id); ST.fav=ST.fav.filter(x=>x!==E.id); saveNow(); toast("Supprimé"); go("#/"); });
+  $("#del")&&($("#del").onclick=()=>supprimerE(E));
   $$("details.sit").forEach(d=>d.addEventListener("toggle",async()=>{ if(!d.open) return; const el=$(".svid",d); if(!el||el.dataset.done) return; el.dataset.done=1; const s=S.find(x=>x.id===el.dataset.sv); const v=await videoOf(s);
     el.innerHTML=v?`<div class="tvid">${vidHtml(v)}</div>`:(coach?`<span class="vidn">Pas encore de vidéo · Nom du fichier à tourner : ${esc(/^S-/.test(s.id)&&s.exo?s.exo:s.id)}.mp4</span>`:""); }));
 }
+/* CARTE RÉSUMÉ avant « Lancer » : durée, matériel, objectif (+ quand, âges) */
+function resumeCarte(E){ const T0=TY; TY=typeOf(E); try{ const M=matOf(E), ag=E.ages&&E.ages.conseille, obj=(E.objectifs||[])[0]||shortTxt(E.resume||"",120);
+  return `<section class="card wsum" aria-label="Résumé">
+   <div class="wsr"><span class="wsl">Durée</span><b>${esc(durLab(E))}</b> <span class="msg">· ${(E.situations||[]).length} exercice${(E.situations||[]).length>1?"s":""}</span></div>
+   <div class="wsr"><span class="wsl">Matériel</span><span>${M.length?M.map(k=>(KITICO[k]?KITICO[k]+" ":"")+esc(matN(k))).join(" · "):"Sans matériel"}</span></div>
+   <div class="wsr"><span class="wsl">Objectif</span><span>${obj?esc(obj):`<span class="msg">${esc(FAM[TY].perf)}</span>`}</span></div>
+   ${(E.quand||[]).length||ag?`<div class="wsr"><span class="wsl">Pour</span><span>${(E.quand||[]).slice(0,3).map(q=>esc(quandN(q))).join(" · ")}${ag?((E.quand||[]).length?" · ":"")+ag[0]+"-"+ag[1]+" ans":""}</span></div>`:""}</section>`; } finally{ TY=T0; } }
+/* « Lancer » : pour le joueur (ou le groupe) du relais, sinon celui en cours → le retour de fin part dans son dossier */
+function lancerCible(){ if(isJ()) return {q:"",nom:""}; const rl=rlValide();
+  const jid=rl?RL.jid:curJ(), gid=rl?RL.gid:(!jid&&curG()); const j=jget(jid), g=!j&&gget(gid);
+  return j?{q:"?j="+encodeURIComponent(j.id),nom:j.nom.split(" ")[0]}:g?{q:"?g="+encodeURIComponent(g.id),nom:g.nom}:{q:"",nom:""}; }
 function copier(E,suffixe){
   const c=clone(E); const src=isMod(E)?E.id:(E.src||null);
   Object.assign(c,{id:"W-"+uid(),v:3,src,nom:(E.nom||"Échauffement")+(suffixe||(isMod(E)?" · ma version":"")),cree:todayIso(),date:todayIso(),recu:undefined,ancienne:undefined,jids:E.jids||[]});
@@ -653,7 +858,7 @@ function copier(E,suffixe){
   delete c.tranche; fixMine(c); ST.routines.push(c); saveNow(); return c;
 }
 function pourJoueur(E){
-  const J=joueurs();
+  const cj=curJ(), J=joueurs().slice().sort((a,b)=>(b.id===cj)-(a.id===cj));
   const draw=()=>{ openSheet(`<div class="shh"><b>Pour un joueur</b><button class="ib" data-close type="button" aria-label="Fermer">×</button></div>
     <p class="msg">♥ = l'échauffement devient un favori du joueur : il le retrouve en tête de sa bibliothèque (mode joueur, dossier).</p>
     ${J.length?J.map(j=>{ const on=(j.favWarmup||[]).includes(E.id); return `<div class="jrow"><span><b>${esc(j.nom)}</b>${ageOf(j)!=null?` <span class="msg">${ageOf(j)} ans</span>`:""}</span><span class="tools"><button type="button" class="ib sm${on?" on":""}" data-jf="${esc(j.id)}" aria-pressed="${on}">♥ ${on?"Son favori":"Ajouter"}</button><a class="ib sm" href="#/go/${encodeURIComponent(E.id)}?j=${encodeURIComponent(j.id)}">▶ Lancer</a></span></div>`; }).join(""):`<div class="empty">Crée d'abord tes joueurs dans Individualisation.</div>`}`);
@@ -661,24 +866,26 @@ function pourJoueur(E){
   draw();
 }
 
+function supprimerE(E){ const snap=clone(ST); ST.routines=ST.routines.filter(x=>x.id!==E.id); ST.fav=ST.fav.filter(x=>x!==E.id); saveNow(); go("#/");
+  if(HAS) GRUN.ui.annuler("« "+E.nom+" » supprimé", ()=>{ ST=snap; fixST(); saveNow(); go("#/m/"+encodeURIComponent(E.id)); }); else toast("Supprimé"); }
 /* ---------- ÉDITEUR ---------- */
 function showEdit(id){
   if(isJ()){ go("#/m/"+encodeURIComponent(id)); return; }
   let E=getE(id); if(!E){ go("#/"); return; }
   if(isMod(E)){ const c=copier(E,""); location.replace("#/edit/"+encodeURIComponent(c.id)); return; }
   const S=E.situations; TY=typeOf(E);
-  const tot=()=>`<span class="tot" id="tot">${esc(fmtS(secTot(E)))}</span> <span class="msg" id="totn">${S.length} situation${S.length>1?"s":""}</span>`;
+  const tot=()=>`<span class="tot" id="tot">${esc(fmtS(secTot(E)))}</span> <span class="msg" id="totn">${S.length} exercice${S.length>1?"s":""}</span>`;
   const phSel=(i,v)=>`<select data-ph="${i}" aria-label="Phase">${[...new Set([...phasesDe(TY),v])].map(k=>`<option value="${k}"${v===k?" selected":""}>${phOf(k).n}</option>`).join("")}</select>`;
   main.innerHTML=`<div class="crumb"><a href="#/">Bibliothèque</a> › <a href="#/m/${encodeURIComponent(E.id)}">Fiche</a> › Modifier</div>
    <div class="f" style="margin-top:8px"><label for="enom">Nom</label><input id="enom" class="nomin" value="${esc(E.nom)}" maxlength="60"></div>
-   <div class="ebar">${tot()}<span class="sp"></span><a class="ib" href="#/go/${encodeURIComponent(E.id)}">▶ Lancer</a><a class="go" href="#/m/${encodeURIComponent(E.id)}">Terminé</a></div>
-   <section class="sec"><h2>Les situations</h2><div id="sl" style="display:flex;flex-direction:column;gap:8px">
+   <div class="ebar">${tot()}<span class="sp"></span><span class="msg">enregistré au fur et à mesure</span></div>
+   <section class="sec"><h2>Les exercices</h2><div id="sl" style="display:flex;flex-direction:column;gap:8px">
    ${S.map((s,i)=>`<div class="es" style="--c:${phOf(s.phase).c}" data-i="${i}">
-     <div class="esh"><span class="sn">${i+1}</span><input data-n="${i}" value="${esc(s.n)}" aria-label="Nom de la situation"></div>
+     <div class="esh"><span class="sn">${i+1}</span><input data-n="${i}" value="${esc(s.n)}" aria-label="Nom de l'exercice"></div>
      <div class="esr">${phSel(i,s.phase)}<span class="secs"><button type="button" data-dm="${i}" aria-label="Moins 10 secondes">−</button><input type="number" inputmode="numeric" min="5" max="1800" step="5" data-d="${i}" value="${Math.round(s.duree)}" aria-label="Durée en secondes"><button type="button" data-dp="${i}" aria-label="Plus 10 secondes">+</button><span data-dl="${i}">${esc(fmtS(s.duree))}</span></span>
-      <span class="esb"><button type="button" class="ib sm" data-up="${i}" aria-label="Monter"${i?"":" disabled"}>↑</button><button type="button" class="ib sm" data-dn="${i}" aria-label="Descendre"${i<S.length-1?"":" disabled"}>↓</button><button type="button" class="ib sm" data-rp="${i}" aria-label="Remplacer par un exo de la banque" title="Remplacer">⇄</button><button type="button" class="ib sm" data-cp="${i}" aria-label="Dupliquer">⧉</button><button type="button" class="ib sm" data-rm="${i}" aria-label="Supprimer">🗑</button></span></div>
-     <details><summary>Déroulé et consignes</summary><div class="f"><label>Déroulé</label><textarea rows="2" data-de="${i}">${esc(s.de)}</textarea></div><div class="f"><label>Consignes (une par ligne)</label><textarea rows="3" data-co="${i}">${esc((s.consignes||[]).join("\n"))}</textarea></div><div class="f"><label>Séries (facultatif)</label><input data-se="${i}" value="${esc(s.series||"")}" placeholder="ex. 2 × 10 m aller-retour"></div></details></div>`).join("")||`<div class="empty">Aucune situation : ajoute la première.</div>`}</div>
-   <div class="tools" style="margin-top:10px"><button class="go" id="addb" type="button">+ Ajouter depuis la banque</button><button class="ib" id="addc" type="button">+ Créer mon exo</button></div></section>
+      <span class="esb"><button type="button" class="ib sm" data-up="${i}" aria-label="Monter"${i?"":" disabled"}>↑</button><button type="button" class="ib sm" data-dn="${i}" aria-label="Descendre"${i<S.length-1?"":" disabled"}>↓</button><button type="button" class="ib sm" data-rp="${i}" aria-label="Remplacer par un exercice de la banque" title="Remplacer">⇄</button><button type="button" class="ib sm" data-cp="${i}" aria-label="Dupliquer">⧉</button><button type="button" class="ib sm" data-rm="${i}" aria-label="Supprimer">🗑</button></span></div>
+     <details><summary>Déroulé et consignes</summary><div class="f"><label>Déroulé</label><textarea rows="2" data-de="${i}">${esc(s.de)}</textarea></div><div class="f"><label>Consignes (une par ligne)</label><textarea rows="3" data-co="${i}">${esc((s.consignes||[]).join("\n"))}</textarea></div><div class="f"><label>Séries (facultatif)</label><input data-se="${i}" value="${esc(s.series||"")}" placeholder="ex. 2 × 10 m aller-retour"></div></details></div>`).join("")||`<div class="empty">Aucun exercice : ajoute le premier.</div>`}</div>
+   <div class="tools" style="margin-top:10px"><button class="go" id="addb" type="button">+ Ajouter depuis la banque</button><button class="ib" id="addc" type="button">+ Créer mon exercice</button></div></section>
    <section class="sec"><h2>La fiche</h2><div class="eg">
     <div class="f" style="grid-column:1/-1"><label for="eres">Résumé (1 à 2 phrases)</label><textarea id="eres" rows="2">${esc(E.resume||"")}</textarea></div>
     <div class="f"><label for="eav">Avantages (un par ligne)</label><textarea id="eav" rows="4">${esc((E.avantages||[]).join("\n"))}</textarea></div>
@@ -686,8 +893,11 @@ function showEdit(id){
     <div class="f" style="grid-column:1/-1"><label for="eno">Notes</label><textarea id="eno" rows="3">${esc(E.notes||"")}</textarea></div>
     <div class="f" style="grid-column:1/-1"><label>Quand l'utiliser</label><div class="chips">${Object.entries(QUAND).map(([k,l])=>`<button type="button" class="tg sm" data-q="${k}" aria-pressed="${(E.quand||[]).includes(k)}">${l}</button>`).join("")}</div></div>
     <div class="f" style="grid-column:1/-1"><label>Lieux</label><div class="chips">${Object.entries(LIEU).map(([k,l])=>`<button type="button" class="tg sm" data-lx="${k}" aria-pressed="${lieuOf(E).includes(k)}">${l}</button>`).join("")}</div></div></div>
-    <div class="tools" style="margin-top:14px">${E.src&&MOD[E.src]?`<button class="ib" id="reset" type="button">↺ Repartir du modèle « ${esc(MOD[E.src].nom)} »</button>`:""}<button class="ib" id="edel" type="button">Supprimer cet échauffement</button></div></section>`;
-  const sv=()=>{ fixMine(E); save(); const t=$("#tot"); if(t) t.textContent=fmtS(secTot(E)); };
+    </section>
+   <details class="grun-plus noprint"><summary>Plus d'options</summary><div class="grun-plusb"><div class="tools">${E.src&&MOD[E.src]?`<button class="ib" id="reset" type="button">↺ Repartir du modèle « ${esc(MOD[E.src].nom)} »</button>`:""}<button class="ib" id="edel" type="button">Supprimer cet échauffement</button></div></div></details>
+   ${actbar(`<a class="gs-btn main" href="#/m/${encodeURIComponent(E.id)}">Terminé</a><a class="gs-btn sec" href="#/go/${encodeURIComponent(E.id)}">▶ Lancer</a>`)}`;
+  aide("edit");
+  const sv=()=>{ fixMine(E); save(); const t=$("#tot"); if(t) t.textContent=fmtS(secTot(E)); if(HAS&&GRUN.ui.enregistre) GRUN.ui.enregistre(); };
   const re=()=>{ fixMine(E); saveNow(); const y=scrollY; showEdit(E.id); scrollTo(0,y); };
   $("#enom").oninput=e=>{ E.nom=e.target.value.trim()||FAM[TY].def; sv(); };
   $("#eres").oninput=e=>{ E.resume=e.target.value; sv(); };
@@ -707,13 +917,14 @@ function showEdit(id){
   $$("[data-dp]").forEach(b=>b.onclick=()=>{ const i=+b.dataset.dp; setD(i,S[i].duree+10); $(`[data-d="${i}"]`).value=S[i].duree; });
   $$("[data-up]").forEach(b=>b.onclick=()=>{ const i=+b.dataset.up; if(i<1) return; [S[i-1],S[i]]=[S[i],S[i-1]]; re(); });
   $$("[data-dn]").forEach(b=>b.onclick=()=>{ const i=+b.dataset.dn; if(i>=S.length-1) return; [S[i+1],S[i]]=[S[i],S[i+1]]; re(); });
-  $$("[data-cp]").forEach(b=>b.onclick=()=>{ const i=+b.dataset.cp; S.splice(i+1,0,{...clone(S[i]),id:"S-"+uid()}); re(); toast("Situation dupliquée"); });
-  $$("[data-rm]").forEach(b=>b.onclick=()=>{ if(!b.dataset.ok){ b.dataset.ok=1; b.textContent="Sûr ?"; return; } S.splice(+b.dataset.rm,1); re(); });
+  $$("[data-cp]").forEach(b=>b.onclick=()=>{ const i=+b.dataset.cp; S.splice(i+1,0,{...clone(S[i]),id:"S-"+uid()}); re(); toast("Exercice dupliqué"); });
+  $$("[data-rm]").forEach(b=>b.onclick=()=>{ const i=+b.dataset.rm, x=S[i]; S.splice(i,1); re(); if(HAS) GRUN.ui.annuler("« "+x.n+" » retiré", ()=>{ S.splice(i,0,x); re(); }); });
   $$("[data-rp]").forEach(b=>b.onclick=()=>pickBanque(E,re,+b.dataset.rp));
   $("#addb").onclick=()=>pickBanque(E,re);
-  $("#addc").onclick=()=>creerExo(E,re);
-  $("#reset")&&($("#reset").onclick=()=>{ const b=$("#reset"); if(!b.dataset.ok){ b.dataset.ok=1; b.textContent="Toucher encore : tes changements seront remplacés"; return; } const m=MOD[E.src]; const keep={id:E.id,nom:E.nom,src:E.src,jids:E.jids,cree:E.cree}; Object.keys(E).forEach(k=>delete E[k]); Object.assign(E,clone(m),keep,{v:3}); delete E.tranche; re(); toast("Modèle d'origine remis"); });
-  $("#edel").onclick=()=>{ const b=$("#edel"); if(!b.dataset.ok){ b.dataset.ok=1; b.textContent="Toucher encore pour supprimer"; return; } ST.routines=ST.routines.filter(x=>x.id!==E.id); saveNow(); go("#/"); };
+  /* « + Créer mon exercice » : composant unique (G.ui.nouvelExo → fiche complète de la banque, usage échauffement compris) ; au retour, l'exercice est ajouté ici */
+  $("#addc").onclick=()=>{ if(!(HAS&&GRUN.ui&&GRUN.ui.nouvelExo)) return creerExo(E,re); history.replaceState(null,"",location.pathname+location.search+"#/edit/"+encodeURIComponent(E.id)+"?add=1"); GRUN.ui.nouvelExo({}); };
+  $("#reset")&&($("#reset").onclick=()=>{ const avant=clone(E); if(HAS) setTimeout(()=>GRUN.ui.annuler("Modèle d'origine remis", ()=>{ Object.keys(E).forEach(k=>delete E[k]); Object.assign(E,avant); re(); }),50); const m=MOD[E.src]; const keep={id:E.id,nom:E.nom,src:E.src,jids:E.jids,cree:E.cree}; Object.keys(E).forEach(k=>delete E[k]); Object.assign(E,clone(m),keep,{v:3}); delete E.tranche; re(); if(!HAS) toast("Modèle d'origine remis"); });
+  $("#edel").onclick=()=>supprimerE(E);
 }
 function newMine(){
   if(isJ()){ go("#/"); return; }
@@ -733,8 +944,8 @@ function pickBanque(E,after,ri){
   const base=BQ.ex.filter(e=>e&&e.n&&!hide.has(e.id));
   const R0=ri!=null&&E.situations[ri]?E.situations[ri]:null;
   openSheet(`<div class="shh"><b>${R0?"Remplacer « "+esc(R0.n)+" »":"Ajouter depuis la banque"}</b><button class="ib" data-close type="button" aria-label="Fermer">×</button></div>
-   <input class="srch" id="bq" type="search" placeholder="Chercher un exo : tes exos, puis toute la banque" autocomplete="off">
-   <div class="chips"><button type="button" class="tg sm" data-sc="w" aria-pressed="true">${TY==="cooldown"?"Récupération, étirements, prévention":"Jeux d'échauffement"}</button><button type="button" class="tg sm" data-sc="all" aria-pressed="false">Tous les exos</button></div>
+   <input class="srch" id="bq" type="search" placeholder="Chercher un exercice : tes exercices, puis toute la banque" autocomplete="off">
+   <div class="chips"><button type="button" class="tg sm" data-sc="w" aria-pressed="true">${TY==="cooldown"?"Récupération, étirements, prévention":"Jeux d'échauffement"}</button><button type="button" class="tg sm" data-sc="all" aria-pressed="false">Tous les exercices</button></div>
    <div class="chips" id="bph"><button type="button" class="tg sm" data-bp="" aria-pressed="true">Toutes les phases</button>${phasesDe(TY).map(k=>`<button type="button" class="tg sm" data-bp="${k}" aria-pressed="false">${phOf(k).n}</button>`).join("")}</div>
    <div id="bl"></div>`);
   const draw=()=>{ const qq=norm(q).split(/\s+/).filter(Boolean);
@@ -742,7 +953,7 @@ function pickBanque(E,after,ri){
     let L=base.filter(e=>(qq.length||inSc(e))&&(!ph||phaseExo(e)===ph));   /* une recherche tapée couvre toute la banque */
     if(qq.length) L=L.filter(e=>{ const t=e._wt||(e._wt=norm(e.n+" "+(e.s||"")+" "+(e.w&&e.w.but||"")+" "+(e.ob||""))); return qq.every(w=>t.includes(w)); });
     L.sort((a,b)=>(!!b.perso-!!a.perso)||(inSc(b)-inSc(a))||(TY==="cooldown"?0:(!!b.w-!!a.w))||a.n.localeCompare(b.n,"fr"));
-    $("#bl").innerHTML=`<p class="msg">${L.length} résultat${L.length>1?"s":""}</p>`+L.slice(0,shown).map(e=>{ const m=(e.w&&e.w.mat)||e.m||[]; return `<div class="res"><div><b>${esc(e.n)}</b><small>${esc(phOf(phaseExo(e)).n)} · ${m.length?m.map(x=>esc(matN(x))).join(", "):"sans matériel"}${e.perso?" · mon exo":""}${qq.length&&!inSc(e)&&!e.perso?" · autre exo de la banque":""}</small></div><button type="button" class="ib sm" data-add="${esc(e.id)}">${R0?"⇄ Prendre":"+ Ajouter"}</button></div>`; }).join("")+(L.length>shown?`<button type="button" class="ib" id="bmore">Voir plus</button>`:"");
+    $("#bl").innerHTML=`<p class="msg">${L.length} résultat${L.length>1?"s":""}</p>`+L.slice(0,shown).map(e=>{ const m=(e.w&&e.w.mat)||e.m||[]; return `<div class="res"><div><b>${esc(e.n)}</b><small>${esc(phOf(phaseExo(e)).n)} · ${m.length?m.map(x=>esc(matN(x))).join(", "):"sans matériel"}${e.perso?" · mon exercice":""}${qq.length&&!inSc(e)&&!e.perso?" · autre exercice de la banque":""}</small></div><button type="button" class="ib sm" data-add="${esc(e.id)}">${R0?"⇄ Prendre":"+ Ajouter"}</button></div>`; }).join("")+(L.length>shown?`<button type="button" class="ib" id="bmore">Voir plus</button>`:"");
     $$("[data-add]",sheet).forEach(b=>b.onclick=()=>{ const e=BQ.byId[b.dataset.add]; if(!e) return;
       if(R0){ const x=sitDeExo(e); x.duree=R0.duree; x.phase=R0.phase||x.phase; E.situations[ri]=x; fixMine(E); saveNow(); toast("« "+R0.n+" » remplacé par « "+e.n+" »"); closeSheet(); return; }
       E.situations.push(sitDeExo(e)); b.textContent="✓ Ajouté"; b.disabled=true; fixMine(E); saveNow(); toast("« "+e.n+" » ajouté à la fin"); });
@@ -755,7 +966,7 @@ function pickBanque(E,after,ri){
 }
 function creerExo(E,after){
   const mat=new Set();
-  openSheet(`<div class="shh"><b>Créer mon exo</b><button class="ib" data-close type="button" aria-label="Fermer">×</button></div>
+  openSheet(`<div class="shh"><b>Créer mon exercice</b><button class="ib" data-close type="button" aria-label="Fermer">×</button></div>
    <p class="msg">Il est ajouté ici et dans la banque d'exercices : tu pourras le réutiliser partout (séances, autres échauffements).</p>
    <div class="f"><label for="xn">Nom</label><input id="xn" maxlength="60" placeholder="ex. Le miroir des appuis"></div>
    <div class="eg"><div class="f"><label for="xp">Phase</label><select id="xp">${phasesDe(TY).map(k=>`<option value="${k}">${phOf(k).n}</option>`).join("")}</select></div>
@@ -775,7 +986,7 @@ function creerExo(E,after){
     if(HAS){ const x=GRUN.banque.add({n,f:cd?(et==="ET"?"5.1.24":"5.2.5"):"5.2.1",s:cd?"Mes retours au calme":"Mes jeux d'échauffement",dom:"PP",L:[],a,ax,v:1,ob:co[0]||"",de,co:co.join(" ; "),er:"",ut:"",ma:m.length?m.map(matN).join(", ").toLowerCase()+".":"aucun.",m,c:0,e:0,k:"jeu",
       an:`de ${a} à ${ax} ans · niveau 1`,dos:fmtS(sec),...(cd?{}:{w:{et,but:shortTxt(de,120),fmt:["seul","deux","groupe"],lieu:Object.keys(LIEU),mat:m,int:2,dur:Math.max(1,Math.round(sec/60)),apres:["tennis","pp","match"],ci:[],a:[a,ax]}})}); exoId=x.id; }
     E.situations.push({id:"S-"+uid(),n,duree:sec,phase:et,de,consignes:co,series:null,mat:m,exo:exoId});
-    fixMine(E); saveNow(); closeSheet(); toast("Exo créé et ajouté"); after(); };
+    fixMine(E); saveNow(); closeSheet(); toast("Exercice créé et ajouté"); after(); };
 }
 
 /* ---------- MODE TERRAIN : tout s'enchaîne seul ---------- */
@@ -796,10 +1007,12 @@ const bipTick=()=>tone(660,0,0.12,0.18);
 const bipDebut=()=>{ tone(1320,0,0.3); try{ navigator.vibrate&&navigator.vibrate(150); }catch(e){} };
 const bipFin=()=>{ tone(880,0,0.25); tone(880,0.3,0.25); tone(1320,0.6,0.45); try{ navigator.vibrate&&navigator.vibrate([250,100,250]); }catch(e){} };
 function ctxJid(q){ if(isJ()) return meJid(); if(q&&q.get("j")) return q.get("j"); if(RL&&RL.jid) return RL.jid; return null; }
+function ctxGid(q){ if(isJ()) return null; if(q&&q.get("g")) return q.get("g"); if(q&&q.get("j")) return null; if(RL&&RL.gid) return RL.gid; return null; }
 function showGo(id,q){
   const E=getE(id); if(!E||!(E.situations||[]).length){ go(E?"#/m/"+encodeURIComponent(id):"#/"); return; }
   stopRun();
-  RUN={E,id,i:0,left:E.situations[0].duree,endAt:0,on:false,t0:null,jid:ctxJid(q),T:null};
+  aide("go");
+  RUN={E,id,i:0,left:E.situations[0].duree,endAt:0,on:false,t0:null,jid:ctxJid(q),gid:ctxGid(q),T:null};
   try{ if(navigator.wakeLock) navigator.wakeLock.request("screen").then(w=>WL=w).catch(()=>{}); }catch(e){}
   drawGo();
 }
@@ -842,32 +1055,30 @@ function tick(){ const R=RUN; if(!R||!R.on) return; const l=Math.max(0,Math.ceil
   if(l<=0){ bipFin(); const fin=!R.E.situations[R.i+1]; step(1,false); if(fin) VOIX.dire("Terminé. Bravo."); } }
 function step(d,manual){ const R=RUN; if(!R) return; const S=R.E.situations, j=R.i+d;
   if(j<0) return;
-  if(j>=S.length){ const t0=R.t0; clearInterval(R.T); finGo(R.E,R.id,t0,R.jid); return; }
+  if(j>=S.length){ const t0=R.t0; clearInterval(R.T); finGo(R.E,R.id,t0,R.jid,R.gid); return; }
   const wasOn=R.on||!manual; clearInterval(R.T); R.i=j; R.left=S[j].duree; R.on=false; drawGo(); scrollTo(0,0);
   if(wasOn&&R.t0){ setTimeout(()=>{ if(RUN===R&&!R.on) start(); },manual?0:400); } }
-function finGo(E,id,t0,jid0){
-  stopRun();
+/* RETOUR APRÈS SÉANCE : composant commun du socle (GRUN.ui.retour, grun.js), le même dans Create my session et Choose your warm-up */
+const RETOUR = GRUN.ui.retour;
+
+/* FIN : le retour commun (même échelle, mêmes champs que Create my session) → journal de chaque joueur + historique du warm-up */
+function finGo(E,id,t0,jid0,gid0){
+  stopRun(); aide("fin");
   const prevu=minOf(E), ecoule=t0?(Date.now()-t0)/60000:0, reel=Math.max(1,Math.round(ecoule>=prevu*0.4?ecoule:prevu));
-  const RPEL=["Repos","Très très facile","Très facile","Facile","Modéré","Un peu dur","Dur","Dur +","Très dur","Très très dur","Maximal"];
-  let rpe=null; const sel=new Set(jid0&&jget(jid0)?[jid0]:[]);
-  const J=isJ()?[]:joueurs();
+  const J=isJ()?[]:joueurs(), g=gget(gid0), sel=jid0&&jget(jid0)?[jget(jid0)]:g?GRUN.groupes.joueurs(g.id):(!isJ()&&jget(curJ())?[jget(curJ())]:[]);
   const rl=rlValide();
   TY=typeOf(E);
-  main.innerHTML=`<div class="fin"><h1>${FAM[TY].fin}</h1><p class="lead">${esc(E.nom)} · ${E.situations.length} situations · ${reel} min</p>
-   <div class="card" id="fb"><b>Ton retour en 10 secondes</b><p class="msg" style="margin:4px 0 8px">C'était dur comment ? (0 = repos, 10 = maximal)</p>
-    <div class="rpe">${RPEL.map((l,i)=>`<button type="button" class="tg" data-rpe="${i}" aria-pressed="false" title="${l}">${i}</button>`).join("")}</div><p class="msg" id="rpel">Touche une note.</p>
-    ${J.length?`<p class="msg" style="margin-bottom:4px">Pour qui ? (le retour part dans son dossier)</p><div class="chips">${J.map(j=>`<button type="button" class="tg sm" data-wj="${esc(j.id)}" aria-pressed="${sel.has(j.id)}">${esc(j.nom)}</button>`).join("")}</div>`:""}
-    <div class="tools" style="margin-top:12px"><button class="go acc" id="fbok" type="button" disabled>Valider</button><button class="ib" id="fbno" type="button">Passer</button></div></div>
+  main.innerHTML=`<div class="fin"><h1>${FAM[TY].fin}</h1><p class="lead">${esc(E.nom)} · ${E.situations.length} exercices · ${reel} min</p>
+   <div id="fb"><p class="msg" style="margin:8px 0 0">Ton retour en 10 secondes : il part dans ${isJ()?"ton":"son"} dossier (charge, suivi).</p><div id="rtf"></div></div>
    <div id="after" hidden><div class="tools" style="justify-content:center;margin-top:18px">${rl?`<a class="go big acc" href="${esc(RL.retour||"seances.html")}" id="tos">Revenir à ${esc(DE_N[RL.de]||"la séance")}</a>`:""}<a class="go big${rl?"":" acc"}" href="#/">Bibliothèque</a><a class="ib" href="#/go/${encodeURIComponent(id)}">Relancer</a></div></div></div>`;
-  $$("[data-rpe]").forEach(b=>b.onclick=()=>{ rpe=+b.dataset.rpe; $$("[data-rpe]").forEach(x=>x.setAttribute("aria-pressed",x===b)); $("#rpel").textContent=rpe+" · "+RPEL[rpe]; $("#fbok").disabled=false; });
-  $$("[data-wj]").forEach(b=>b.onclick=()=>{ const k=b.dataset.wj; sel.has(k)?sel.delete(k):sel.add(k); b.setAttribute("aria-pressed",sel.has(k)); });
   const after=()=>{ $("#fb").hidden=true; $("#after").hidden=false; };
-  $("#fbok").onclick=()=>{ const who=isJ()?[meJid()].filter(x=>x&&jget(x)):[...sel];
-    for(const w of (who.length?who:["invite"])) ST.hist.push({id:uid(),who:w,date:todayIso(),duree:reel,ref:id,titre:E.nom,rpe,g:[]});
+  const moi=isJ()?[jget(meJid())].filter(Boolean):null;
+  RETOUR.ouvrir($("#rtf"),{quoi:"échauffement",duree:reel,fait:true,joueurs:moi||sel,choix:moi||J,moi:!!moi,sauter:"Passer",onSkip:after},res=>{
+    const who=res.lignes.length?res.lignes:[{jid:"invite",rpe:res.rpe,douleur:res.douleur,comment:res.comment}];
+    for(const L of who) ST.hist.push({id:uid(),who:L.jid,date:todayIso(),duree:res.duree,ref:id,titre:E.nom,rpe:L.rpe,g:[],...(L.douleur?{douleur:L.douleur}:{}),...(L.comment?{comment:L.comment}:{}),...(res.fait!==true?{fait:res.fait}:{})});
     if(ST.hist.length>2000) ST.hist=ST.hist.slice(-2000); saveNow();
-    if(HAS) for(const w of who) GRUN.journal.addRetour({jid:w,date:todayIso(),type:TY==="cooldown"?"autre":"warmup",ref:id,titre:(TY==="cooldown"?"Retour au calme · ":"")+E.nom,duree:reel,rpe,fait:true});
-    toast(who.length?"Retour enregistré dans "+(who.length>1?"leurs dossiers":"son dossier"):"Retour noté"); after(); };
-  $("#fbno").onclick=after;
+    if(HAS) for(const L of res.lignes) GRUN.journal.addRetour({jid:L.jid,date:todayIso(),type:TY==="cooldown"?"autre":"warmup",ref:id,titre:(TY==="cooldown"?"Retour au calme · ":"")+E.nom,duree:res.duree,rpe:L.rpe,douleur:L.douleur,fait:res.fait,comment:L.comment||""});
+    toast(res.lignes.length?"Retour enregistré dans "+(res.lignes.length>1?"leurs dossiers":"son dossier"):"Retour noté"); after(); });
   $("#tos")&&($("#tos").onclick=()=>setRL(null));
 }
 
@@ -880,16 +1091,35 @@ function showJoueur(jid){
   /* « Pour lui, maintenant » : ses favoris, sinon les échauffements conseillés à son âge (8 à 15 min d'abord) — un toucher pour lancer */
   const a=ageOf(j), vu=new Set(F.map(E=>E.id));
   const sug=MODL.filter(E=>typeOf(E)==="warmup"&&!vu.has(E.id)&&(a==null||!E.ages||!Array.isArray(E.ages.conseille)||(a>=+E.ages.conseille[0]&&a<=+E.ages.conseille[1])))
-    .sort((x,y)=>Math.abs(minOf(x)-12)-Math.abs(minOf(y)-12)).slice(0,Math.max(0,4-F.length));
+    .sort((x,y)=>Math.abs(minOf(x)-(rlValide()&&RL.duree||12))-Math.abs(minOf(y)-(rlValide()&&RL.duree||12))).slice(0,Math.max(0,4-F.length));
   const L=[...F.filter(E=>typeOf(E)==="warmup"),...sug].slice(0,6);
+  aide("joueur"); if(!isJ()) try{ GRUN.courant.set("j",jid); }catch(e){}
   const row=E=>`<div class="jrow"><a href="#/m/${encodeURIComponent(E.id)}" style="text-decoration:none;min-width:0"><b>${fv.has(E.id)?"♥ ":""}${esc(E.nom)}</b> <span class="msg">${esc(durLab(E))}</span></a><a class="go acc" href="#/go/${encodeURIComponent(E.id)}?j=${encodeURIComponent(jid)}">▶ Lancer</a></div>`;
   main.innerHTML=`<div class="crumb"><a href="#/">Bibliothèque</a> › Joueur</div><h1>Échauffement · ${esc(j.nom.split(" ")[0])}</h1>
    <p class="lead">${a!=null?a+" ans · ":""}${j.sexe==="F"?"fille":"garçon"}${HAS&&!isJ()?` · <a href="${GRUN.href("joueurs","#/j/"+jid)}">son dossier</a>`:""}</p>
+   ${L.length?resumeCarte(L[0]):""}
    <section class="sec"><h2>Pour ${esc(j.nom.split(" ")[0])}, maintenant</h2>${L.length?`<div class="card">${L.map(row).join("")}</div>`:`<div class="empty">Aucun échauffement chargé pour l'instant.</div>`}
     <div class="tools" style="margin-top:10px"><a class="ib" href="#/">Voir toute la bibliothèque</a></div></section>
    ${F.length?`<section class="sec"><h2>♥ Ses favoris <small>${F.length}</small></h2>${grid(F,fv)}</section>`:""}
    ${M.length?`<section class="sec"><h2>Ses échauffements</h2>${grid(M,fv)}</section>`:""}
-   <section class="sec"><h2>Ses derniers échauffements</h2>${ret.length?`<div class="card">${ret.slice(0,15).map(r=>`<div class="jrow"><span><b>${esc(r.titre||"Échauffement")}</b> <span class="msg">${frD(r.date)}</span></span><span class="msg">${r.duree||"?"} min · dureté ${r.rpe!=null?r.rpe+"/10":"–"}</span></div>`).join("")}</div>`:`<div class="empty">Aucun retour pour l'instant.</div>`}</section>`;
+   <section class="sec"><h2>Ses derniers échauffements</h2>${ret.length?`<div class="card">${ret.slice(0,15).map(r=>`<div class="jrow"><span><b>${esc(r.titre||"Échauffement")}</b> <span class="msg">${frD(r.date)}</span></span><span class="msg">${r.duree||"?"} min · dureté ${r.rpe!=null?r.rpe+"/10":"–"}</span></div>`).join("")}</div>`:`<div class="empty">Aucun retour pour l'instant.</div>`}</section>
+   ${L.length?actbar(`<a class="gs-btn main" href="#/go/${encodeURIComponent(L[0].id)}?j=${encodeURIComponent(jid)}">▶ Lancer « ${esc(shortTxt(L[0].nom,28))} »</a>`):""}`;
+}
+/* GROUPE : « Pour le groupe, maintenant » — âge du plus jeune, durée du relais ou des réglages coach, favoris des joueurs ; le retour de fin propose tous les joueurs */
+function showGroupe(gid, dur){
+  const g=gget(gid); if(!g||isJ()){ go("#/"); return; }
+  aide("groupe"); try{ GRUN.courant.set("g",gid); }catch(e){}
+  const M=GRUN.groupes.joueurs(gid), ages=M.map(ageOf).filter(a=>a!=null), a=ages.length?Math.min(...ages):null;
+  const fv=new Set(M.flatMap(j=>j.favWarmup||[])), cible=+dur||12;
+  const okA=E=>a==null||!E.ages||!Array.isArray(E.ages.conseille)||(a>=+E.ages.conseille[0]&&a<=+E.ages.conseille[1]);
+  const L=[...MODL,...mine()].filter(E=>typeOf(E)==="warmup"&&okA(E)).sort((x,y)=>(fv.has(y.id)-fv.has(x.id))||(Math.abs(minOf(x)-cible)-Math.abs(minOf(y)-cible))).slice(0,6);
+  const row=E=>`<div class="jrow"><a href="#/m/${encodeURIComponent(E.id)}" style="text-decoration:none;min-width:0"><b>${fv.has(E.id)?"♥ ":""}${esc(E.nom)}</b> <span class="msg">${esc(durLab(E))}</span></a><a class="go acc" href="#/go/${encodeURIComponent(E.id)}?g=${encodeURIComponent(gid)}">▶ Lancer</a></div>`;
+  main.innerHTML=`<div class="crumb"><a href="#/">Bibliothèque</a> › Groupe</div><h1>Échauffement · ${esc(g.nom)}</h1>
+   <p class="lead">${M.length} joueur${M.length>1?"s":""}${a!=null?" · le plus jeune a "+a+" ans":""}${HAS?` · <a href="${GRUN.href("joueurs","#/g/"+gid)}">dossier du groupe</a>`:""}</p>
+   ${L.length?resumeCarte(L[0]):""}
+   <section class="sec"><h2>Pour le groupe, maintenant</h2>${L.length?`<div class="card">${L.map(row).join("")}</div>`:`<div class="empty">Aucun échauffement adapté chargé pour l'instant.</div>`}
+    <div class="tools" style="margin-top:10px"><a class="ib" href="#/">Voir toute la bibliothèque</a></div></section>
+   ${L.length?actbar(`<a class="gs-btn main" href="#/go/${encodeURIComponent(L[0].id)}?g=${encodeURIComponent(gid)}">▶ Lancer « ${esc(shortTxt(L[0].nom,28))} »</a>`):""}`;
 }
 
 /* ---------- PDF ---------- */
@@ -898,7 +1128,7 @@ async function pdfE(E){
   TY=typeOf(E);
   try{ const d=new MiniPDF.Doc(), M=d.M, W=d.W-2*M;
     d.para(E.nom,{size:20,bold:true,after:3});
-    d.para(`${durLab(E)} · ${E.situations.length} situations · ${lieuOf(E).map(l=>LIEU[l]||l).join(", ")} · ${matOf(E).length?matOf(E).map(matN).join(", "):"sans matériel"}`,{size:10,color:"#5D6675",after:4});
+    d.para(`${durLab(E)} · ${E.situations.length} exercices · ${lieuOf(E).map(l=>LIEU[l]||l).join(", ")} · ${matOf(E).length?matOf(E).map(matN).join(", "):"sans matériel"}`,{size:10,color:"#5D6675",after:4});
     if((E.quand||[]).length) d.para(E.quand.map(q=>quandN(q)).join(" · "),{size:10,bold:true,color:"#C2410C",after:4});
     if(E.resume) d.para(E.resume,{size:11,after:10});
     E.situations.forEach((s,i)=>{ d.need(50); const c=phOf(s.phase).c; d.rect(M,d.y,W,18,{fill:c}); d.text(M+8,d.y+4,`${i+1}. ${s.n}`,{size:11,bold:true,color:"#FFFFFF"}); const r=fmtS(s.duree)+" · "+phOf(s.phase).n; d.text(M+W-8-MiniPDF.width(r,10,true),d.y+4.5,r,{size:10,bold:true,color:"#FFFFFF"}); d.y+=23;
@@ -945,13 +1175,17 @@ function route(){
   if(a==="x"&&b){ recevoir(b); return; }
   if(a==="r"&&b){ location.replace(getE(b)?"#/m/"+encodeURIComponent(b):"#/"); return; }
   if((a==="guide"||a==="g")&&b){ location.replace(getE(b)?"#/go/"+encodeURIComponent(b):"#/"); return; }
-  if(a==="nouveau"){ location.replace("#/"); return; }
+  /* #/nouveau : lit le relais (accueil, « + », dossier) → « Pour lui / pour le groupe, maintenant » ; depuis une séance → la bibliothèque classée pour elle */
+  if(a==="nouveau"){ const rl=rlValide(); if(rl&&RL.de!=="seances"&&RL.fam!=="cooldown"&&(RL.jid||RL.gid)){ const r=RL; setRL(null); try{ HAS&&GRUN.relais.vider(); }catch(e){} /* relais lu : rien à rendre, on lance pour lui / pour le groupe */
+      if(r.jid&&jget(r.jid)){ RL=r; showJoueur(r.jid); RL=null; } else showGroupe(r.gid,r.duree); relaisBar(); scrollTo(0,0); return; } location.replace("#/"); return; }
+  if(a==="edit"&&b&&q.get("exo")){ const E=getE(b), e=BQ&&BQ.byId[q.get("exo")]; if(E&&!isMod(E)&&e){ E.situations.push(sitDeExo(e)); fixMine(E); saveNow(); setTimeout(()=>toast("« "+e.n+" » ajouté à la fin"),300); } location.replace("#/edit/"+encodeURIComponent(b)); return; }
   if(a==="creer"){ newMine(); return; }
   if(a==="m"&&b) showFiche(b);
   else if(a==="edit"&&b) showEdit(b);
   else if(a==="go"&&b) showGo(b,q);
   else if(a==="kit") showKit();
   else if(a==="joueur"&&b) showJoueur(b);
+  else if(a==="groupe"&&b&&gget(b)) showGroupe(b);
   else if(a){ location.replace("#/"); return; }
   else showLib();
   relaisBar();
@@ -963,6 +1197,17 @@ async function boot(){
   MODL=(DATA&&Array.isArray(DATA.modeles)?DATA.modeles:[]).filter(m=>m&&m.id&&Array.isArray(m.situations)); MOD=Object.fromEntries(MODL.map(m=>[m.id,m]));
   if(HAS){ try{ BQ=await GRUN.banque.load(); }catch(e){ console.warn("banque",e); BQ=null; } }
   migrerAnciennes();
+  if(HAS) Object.entries({
+    "warmup/accueil":"Choose your warm-up : 3 filtres toujours visibles (durée, âge, ce qui suit : entraînement, match, tournoi), puis touche un échauffement. Ton joueur en cours a sa ligne « Pour lui, maintenant ».",
+    "warmup/relais":"Choisis l'échauffement de ta séance : les mieux adaptés sont en haut (durée, lieu, ce qui suit). Touche-en un, puis « ✓ Prendre » en bas.",
+    "warmup/fiche":"La fiche : la carte résumé (durée, matériel, objectif), puis les exercices et le détail. « ▶ Lancer » en bas : tout s'enchaîne seul.",
+    "warmup/edit":"Ta version : chaque changement est enregistré tout de suite. Durées, ordre, remplacer un exercice, ajouter depuis la banque ou créer ton exercice.",
+    "warmup/go":"Le mode terrain : chrono, voix et bips ; « › » pour passer. À la fin, le retour en 10 secondes.",
+    "warmup/fin":"Le retour : dureté (0-10), douleur, commentaire, pour qui. Il part dans le dossier du joueur (charge, suivi).",
+    "warmup/joueur":"Pour ce joueur, maintenant : ses favoris puis les échauffements conseillés à son âge. « ▶ Lancer » en bas.",
+    "warmup/groupe":"Pour le groupe, maintenant : adaptés au plus jeune et aux favoris des joueurs. À la fin, le retour propose tous les joueurs du groupe.",
+    "warmup/kit":"Le kit GRÜN : ce que le joueur emporte en tournoi ; avec ce sac, tous les échauffements se font partout."
+  }).forEach(([k,t])=>{ try{ GRUN.aide(k,t); }catch(e){} });
   if(HAS){ GRUN.nav("create"); GRUN.on("grun:banque",()=>{ BQ=GRUN.banque.cache()||BQ; }); GRUN.on("grun:joueurs",()=>{ if(/^#\/?$|^#\/joueur/.test(location.hash)) route(); }); }
   route();
 }
