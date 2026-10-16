@@ -24,6 +24,44 @@ body.grun-has-nav{padding-bottom:calc(var(--nav-h) + env(safe-area-inset-bottom,
 .grun-relais a,.grun-relais button{color:#fff;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.35);border-radius:8px;
   min-height:36px;padding:0 12px;display:inline-flex;align-items:center;text-decoration:none;font:inherit;white-space:nowrap}
 .grun-mod #back{visibility:visible!important}
+/* mode simple / mode expert (GRUN.expert) : « xp » = réservé au mode expert ; « xs » = seulement en mode simple */
+html.grun-simple .xp{display:none!important}
+html.grun-expert .xs{display:none!important}
+/* « Plus d'options » : réglages fins et actions rares, repliés (même aspect dans tous les modules) */
+details.grun-plus{margin-top:14px;border:1px solid var(--line,#D9DDE3);border-radius:12px;background:var(--panel,#fff)}
+details.grun-plus>summary{list-style:none;cursor:pointer;min-height:46px;display:flex;align-items:center;gap:8px;padding:0 14px;font:600 15px/1.2 var(--ui,system-ui,sans-serif);color:var(--mute,#5D6675)}
+details.grun-plus>summary::-webkit-details-marker{display:none}
+details.grun-plus>summary::before{content:"+";font-weight:700;width:1em;color:var(--mute,#5D6675)}
+details.grun-plus[open]>summary::before{content:"–"}
+details.grun-plus>.grun-plusb{padding:0 14px 14px;display:flex;flex-direction:column;gap:10px}
+/* Grilles : bilan en cours + un gros bouton « Créer un nouveau bilan » */
+.bil1{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;margin-top:14px;padding:12px 14px;border:1px solid var(--line,#D9DDE3);border-left:4px solid var(--acc,#0F766E);border-radius:12px;background:var(--panel,#fff)}
+.bil1 b{display:block;font-size:1.1rem}
+.bil1 small{color:var(--mute,#5D6675)}
+.go.big{min-height:46px;padding:0 18px;font-size:1.02rem}
+/* listes : colonne « code » masquée en mode simple (classe hasx sur la ligne, cx sur le code) */
+html.grun-simple .hasx{grid-template-columns:minmax(0,1fr)!important}
+html.grun-simple .cx{display:none!important}
+/* Grilles : « L'essentiel » en cartes sur téléphone ; toucher une ligne ouvre son détail */
+#doc table.cartes td.lgo{cursor:pointer;color:var(--acc,#0F766E);font-weight:700}
+@media (max-width:640px){
+  #doc table.cartes,#doc table.cartes tbody,#doc table.cartes tr,#doc table.cartes td{display:block;width:auto!important}
+  #doc table.cartes thead{display:none}
+  #doc table.cartes tr{padding:10px 12px;border-bottom:1px solid var(--line,#D9DDE3)}
+  #doc table.cartes td{border:none!important;padding:2px 0!important}
+  #doc table.cartes td.lgo{font-size:1.05em}
+  #doc table.cartes td.lgo::after{content:" ›"}
+  #doc table.cartes td:nth-child(3)::before{content:"Test ★ : ";font-weight:600;color:var(--mute,#5D6675)}
+}
+/* lignes de grille affichées en clair : les noms longs passent à la ligne */
+.lc{white-space:normal!important;overflow-wrap:anywhere;display:inline-block;max-width:100%}
+.boxh>div{min-width:0;flex:1 1 auto}
+/* bouton PDF commun (même aspect et même libellé « … PDF » dans tous les modules) : <button class="grun-pdf"><svg/><span>Rapport PDF</span></button> */
+.grun-pdf{display:inline-flex;align-items:center;gap:7px;min-height:42px;padding:0 14px;border-radius:10px;border:1.5px solid var(--grun,#0F766E);background:var(--panel,#fff);color:var(--grun,#0F766E);font:700 15px/1 var(--ui,system-ui,sans-serif);cursor:pointer;white-space:nowrap;text-decoration:none}
+.grun-pdf svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.grun-pdf:disabled{opacity:.6}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .grun-pdf{color:#2DD4BF;border-color:#2DD4BF}}
+:root[data-theme="dark"] .grun-pdf{color:#2DD4BF;border-color:#2DD4BF}
 </style>
 <script src="grun.js?v=1"></script>
 <meta name="grun-module" content="banque"></head><body><title>Banque d'exercices</title>
@@ -85,6 +123,8 @@ select.sel{min-height:34px;border:1px solid var(--line);border-radius:999px;back
 .seg{display:inline-flex;border:1px solid var(--line);border-radius:999px;overflow:hidden}
 .seg button{border:0;background:var(--panel);min-height:32px;padding:0 12px;font-size:13px;font-weight:600}
 .seg button[aria-pressed=true]{background:var(--ink);color:var(--bg)}
+.tour{display:flex;align-items:center;gap:10px;margin:0 0 12px;padding:10px 18px 0;flex-wrap:wrap}.tour .lab{margin:0}.tour .lab::before{display:none}
+#main .sec .seg{flex-wrap:wrap;border-radius:12px}
 .list{display:flex;flex-direction:column;background:var(--panel);border:1px solid var(--line);border-radius:12px;overflow:hidden}
 .row{display:grid;grid-template-columns:6px 88px minmax(0,1fr) auto;gap:12px;align-items:center;padding:10px 14px 10px 0;border-top:1px solid var(--line);text-decoration:none}
 .row:first-child{border-top:none}
@@ -217,14 +257,21 @@ select.sel{min-height:34px;border:1px solid var(--line);border-radius:999px;back
 .prop dt{font-weight:700;font-size:12px;text-transform:uppercase;letter-spacing:.05em;color:var(--mute);margin-top:6px}
 .prop dd{margin:0}
 .lvl{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.fplus>summary{cursor:pointer;font-weight:600;color:var(--mute);padding:6px 0;list-style:none}
+.fplus>summary::before{content:"+ "}.fplus[open]>summary::before{content:"– "}
+html.grun-simple .row{grid-template-columns:6px minmax(0,1fr) auto}
+html.grun-simple .list.compact .row{grid-template-columns:4px minmax(0,1fr) auto}
+html.grun-simple .row .id{display:none}
+@media (max-width:560px){html.grun-simple .row,html.grun-simple .list.compact .row{grid-template-columns:5px minmax(0,1fr)}}
+.btn.big{min-height:46px;padding:0 18px;font-size:16px}
 </style>
 
 <header class="top"><div class="topin">
   <button class="btn" id="back" type="button" aria-label="Retour">‹</button>
   <a class="brand" href="#">Banque</a>
   <div class="sbox"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
-    <input id="q" type="search" placeholder="Nom, identifiant (FOR-0123), matériel, mot de la fiche…" autocomplete="off" enterkeyhint="search"></div>
-  <a class="btn new" id="newb" href="#/nouveau" aria-label="Créer un exercice" hidden>+ Exo</a>
+    <input id="q" type="search" placeholder="Chercher un exo : nom, matériel, mot…" autocomplete="off" enterkeyhint="search"></div>
+  <a class="btn new" id="newb" href="#/nouveau" aria-label="Créer un exercice" hidden>+ Créer</a>
 </div></header>
 <main id="main"><div class="load">Chargement des exercices…</div></main>
 <div class="modal" id="modal" hidden><div class="box" id="mbox"></div></div>
@@ -241,7 +288,10 @@ const LIG = {
 const NIV = ["","Découverte","Maîtrise","Avancé","Expert"];
 const MAT = [["Sans matériel",/\baucun|sans materiel|poids du corps/],["Tapis",/tapis/],["Raquette et balles",/raquette|balle/],["Plots et cibles",/plot|cible|cone|coupelle/],["Élastique",/elastique/],["Médecine-ball",/medecine|ballon leste/],["Ballon suisse",/ballon suisse/],["Lattes, échelle, cerceaux",/latte|echelle|cerceau|haie/],["Corde à sauter",/corde/],["Banc, box, step",/banc|box|step|marche|plinth/],["Barre, haltères, kettlebell",/barre|haltere|kettlebell|disque|poulie|machine|charge/],["Mur",/\bmur\b/],["Partenaire",/partenaire|binome|serveur|relanceur/],["Chrono, My Sprint, My Jump",/chrono|my sprint|my jump|ipad/]];
 /* échauffement (CIBLES.md, CONSIGNES_JEUX.md) */
-const ETN = {MR:"Mise en route",MO:"Mobilité",AC:"Activation et prévention",CV:"Coordination et vitesse",ST:"Spécifique tennis",PO:"Mise en tension finale"};
+const ETN = {MR:"Mise en route",MO:"Mobilité",AC:"Activation",CV:"Coordination et vitesse",PO:"Mise en tension",ST:"Spécifique tennis"};
+/* mode expert (codes visibles) et lignes en clair */
+const XP = () => (window.GRUN&&GRUN.expert&&GRUN.expert());
+const liTxt = e => (e.L&&e.L.length) ? e.L.filter(l=>/^(PP|GE|DE)\d+$/.test(l)).map(l=>ligNom(l)+(XP()?" ("+l+")":"")).join(" · ") : String(e.li||"").replace(/\b(PP|GE|DE)\d+ · /g,"");
 const CIB = {MR:[["cardio","Cardio"],["gammes","Gammes"],["appuis","Appuis"]],MO:[["chevilles","Chevilles et pieds"],["hanches","Hanches"],["tronc","Colonne et tronc"],["epaules","Épaules"],["poignets","Poignets et avant-bras"]],
   AC:[["fessiers","Fessiers et bassin"],["gainage","Gainage"],["epaule","Épaule (coiffe, omoplate)"],["genou_cheville","Genou, pied et cheville"]],CV:[["rythme","Rythme d'appuis"],["reaction","Réaction"],["direction","Changements de direction"],["vitesse","Vitesse courte"]],
   ST:[["fond","Fond de court"],["filet","Filet"],["service_retour","Service et retour"],["deplacements","Déplacements tennis"]],PO:[["jambes","Jambes explosives"],["haut","Haut du corps"],["mental","Activation mentale"]]};
@@ -329,7 +379,7 @@ function route(keep){
   if(h==="tournage") return showShoot();
   showExplore();
 }
-function tabs(cur){ const T=[["","Explorer"],["familles","Familles"],["favoris","♥ Favoris"],["listes","Mes séances"],["tournage","Vidéos"]]; if(!J()) T.push(["/propositions","Propositions"]);
+function tabs(cur){ const T=[["","Explorer"],["familles","Familles"],["favoris","♥ Favoris"],["listes","Collections"],["tournage","Vidéos"]]; if(!J()) T.push(["/propositions","Propositions"]);
   return `<nav class="tabs">${T.map(([h,t])=>`<a class="tab" href="#${h}" ${cur===h?'aria-current="page"':""}>${t}</a>`).join("")}</nav>`; }
 function reserve(){ $("#main").innerHTML=`<h1>Réservé au coach</h1><p class="lead">En mode joueur, la banque se consulte seulement : pas de création ni de modification d'exercice.</p><div class="sec actbar"><a class="btn pri" href="#">Retour à la banque</a></div>`; }
 
@@ -362,22 +412,24 @@ function filtered(){
     return true;
   });
   const by = {nom:(a,b)=>a.n.localeCompare(b.n,"fr"), niv:(a,b)=>a.v-b.v||a.a-b.a||a.i-b.i, age:(a,b)=>a.a-b.a||a.v-b.v||a.i-b.i}[f.tri];
-  if(by) r.sort(by);
+  /* mes exos d'abord (créés ou ajoutés par moi), puis l'ordre choisi */
+  r.sort((a,b)=>((b.perso?1:0)-(a.perso?1:0)) || (by?by(a,b):0));
   return r;
 }
 function showExplore(){
   document.documentElement.style.setProperty("--acc","var(--ink)");
   const f=P.f;
   const domChips = Object.entries(DOM).map(([k,[n,c]])=>`<button class="chip" type="button" data-dom="${k}" aria-pressed="${f.dom===k}" style="--cc:var(${c})"><i></i>${n}</button>`).join("");
-  const ligOpts = ["PP","GE","DE"].map(d=>`<optgroup label="${DOM[d][0]}">${LIG[d].map((n,i)=>`<option value="${d}${i+1}">${d}${i+1} · ${esc(n)}</option>`).join("")}</optgroup>`).join("");
+  const ligOpts = ["PP","GE","DE"].map(d=>`<optgroup label="${DOM[d][0]}">${LIG[d].map((n,i)=>`<option value="${d}${i+1}">${XP()?d+(i+1)+" · ":""}${esc(n)}</option>`).join("")}</optgroup>`).join("");
   const tog = (k,t) => `<button class="chip" type="button" data-tog="${k}" aria-pressed="${!!f[k]}">${t}</button>`;
   const nMine = EX.filter(e=>e.perso).length;
-  $("#main").innerHTML = `<div class="headrow"><div><h1>Banque d'exercices</h1><p class="lead">${EX.length.toLocaleString("fr-FR")} exercices${nMine?` dont ${nMine} à toi`:""} · une fiche par exercice · rangés selon les lignes des grilles</p></div>${J()?"":`<a class="btn new" href="#/nouveau">+ Créer un exercice</a>`}</div>${tabs("")}
+  $("#main").innerHTML = `<div class="headrow"><div><h1>Banque d'exercices</h1><p class="lead">${EX.length.toLocaleString("fr-FR")} exercices${nMine?` dont ${nMine} à toi`:""} · une fiche par exercice · rangés selon les lignes des grilles</p></div></div>${tabs("")}
   <div class="filters">
     <div class="frow"><b>Domaine</b>${domChips}</div>
     <div class="frow"><b>Ligne</b><select class="sel" id="flig" aria-label="Ligne de grille"><option value="">Toutes les lignes</option>${ligOpts}</select>
       <b class="in">Âge</b><select class="sel" id="fage" aria-label="Âge du joueur"><option value="">Tous âges</option>${Array.from({length:15},(_,i)=>`<option value="${i+4}">Joueur de ${i+4} ans</option>`).join("")}</select>
-      <b class="in">Niveau</b><select class="sel" id="fniv" aria-label="Niveau"><option value="">Tous</option>${[1,2,3,4].map(n=>`<option value="${n}">${n} · ${NIV[n]}</option>`).join("")}</select></div>
+    </div><details id="fplus" class="fplus" ${f.niv||f.lieu||f.wu||f.vid||f.fav||f.mine||f.mod||f.hid||f.dispo.length||f.mat?"open":""}><summary>Plus de filtres</summary><div class="frow">
+      <b>Niveau</b><select class="sel" id="fniv" aria-label="Niveau"><option value="">Tous</option>${[1,2,3,4].map(n=>`<option value="${n}">${n} · ${NIV[n]}</option>`).join("")}</select></div>
     <div class="frow"><b>Lieu</b><select class="sel" id="flieu" aria-label="Lieu"><option value="">Partout</option><option value="court">Sur le court</option><option value="hors">Hors court</option><option value="grand">Grand espace</option></select>
       <b class="in">Échauff.</b><select class="sel" id="fwu" aria-label="Étape d'échauffement"><option value="">Tous les exos</option><option value="1">Utilisables en échauffement</option>${Object.entries(ETN).map(([k,n])=>`<option value="${k}">Étape · ${n}</option>`).join("")}</select>
       <b class="in">Vidéo</b><select class="sel" id="fvid" aria-label="Vidéo"><option value="">Toutes</option><option value="1">Avec vidéo</option><option value="0">Sans vidéo</option></select></div>
@@ -386,7 +438,7 @@ function showExplore(){
       <div class="frow" style="margin-top:6px"><b>Disponible</b>${MATC.map(([k,n])=>`<button class="chip" type="button" data-mat="${k}" aria-pressed="${f.dispo.includes(k)}">${esc(n)}</button>`).join("")}</div>
       <p class="msg" style="margin:4px 0 8px">Coche le matériel que tu as : seuls les exos faisables avec ce matériel (ou sans rien) restent.</p>
       <div class="frow"><b>Utilise</b><select class="sel" id="fmat" aria-label="Matériel utilisé"><option value="">Tout matériel</option>${MAT.map((m,i)=>`<option value="${i}">${m[0]}</option>`).join("")}</select></div>
-    </details>
+    </details></details>
   </div>
   <div class="count"><span id="cnt"></span><span class="actbar"><select class="sel" id="ftri" aria-label="Trier"><option value="">Ordre de la banque</option><option value="nom">Trier par nom</option><option value="niv">Trier par niveau</option><option value="age">Trier par âge</option></select>
     <span class="seg" role="group" aria-label="Vue"><button type="button" data-vue="liste" aria-pressed="${f.vue!=="compacte"}">Liste</button><button type="button" data-vue="compacte" aria-pressed="${f.vue==="compacte"}">Compacte</button></span></span></div><div id="res"></div>`;
@@ -407,7 +459,7 @@ function renderRes(){
 }
 function badges(e){ return `${e.perso?`<span class="pill mine">${e.st==="valide"?"méthode":e.st==="propose"?"proposé":"perso"}</span>`:""}${e.modifie?'<span class="pill mod">modifié</span>':""}${HIDE.has(e.id)?'<span class="pill">masqué</span>':""}`; }
 function rowsHTML(arr, compact){
-  return `<div class="list${compact?" compact":""}">${arr.map(e=>`<a class="row" href="#/ex/${e.id}" style="--dc:${dc(e.dom)}"><span class="bar"></span><span class="id">${e.id}</span><span class="nm"><b>${FAV.has(e.id)?'<span class="pill fav" style="background:none;padding:0 4px 0 0">♥</span>':""}${esc(e.n)}</b><small>${esc(e.li||"")}</small></span><span class="meta">${badges(e)}<span class="pill">${e.a}${(e.ax||18)<18?`-${e.ax}`:"+"} ans</span><span class="pill">niv. ${e.v}</span>${e.w?'<span class="pill x">échauff.</span>':""}${hasVid(e.id)?'<span class="pill vid x">▶ vidéo</span>':""}</span></a>`).join("")}</div>`;
+  return `<div class="list${compact?" compact":""}">${arr.map(e=>`<a class="row" href="#/ex/${e.id}" style="--dc:${dc(e.dom)}"><span class="bar"></span><span class="id">${e.id}</span><span class="nm"><b>${FAV.has(e.id)?'<span class="pill fav" style="background:none;padding:0 4px 0 0">♥</span>':""}${esc(e.n)}</b><small>${esc(liTxt(e))}</small></span><span class="meta">${badges(e)}<span class="pill">${e.a}${(e.ax||18)<18?`-${e.ax}`:"+"} ans</span><span class="pill">niv. ${e.v}</span>${e.w?'<span class="pill x">échauff.</span>':""}${hasVid(e.id)?'<span class="pill vid x">▶ vidéo</span>':""}</span></a>`).join("")}</div>`;
 }
 let qT; $("#q").addEventListener("input",()=>{ clearTimeout(qT); qT=setTimeout(()=>{ shown=PAGE; if(location.hash && location.hash!=="#") location.hash=""; else if($("#res")) renderRes(); else showExplore(); },200); });
 $("#q").addEventListener("keydown",e=>{ if(e.key==="Enter") e.target.blur(); });
@@ -420,8 +472,8 @@ function showLigne(L, a){
   const xs = EX.filter(e=>e.L.includes(L) && !HIDE.has(e.id) && (!age || (e.a<=age && (e.ax||18)>=age))).sort((x,y)=>x.v-y.v||x.a-y.a||x.n.localeCompare(y.n,"fr"));
   const m=$("#main"); m.style.setProperty("--dc",ligCol(L));
   const lv={}; xs.forEach(e=>{ (lv[e.v]=lv[e.v]||[]).push(e); });
-  m.innerHTML = `<div class="crumb"><a href="#">Banque</a>›<span>Ligne ${L}</span></div>
-   <div class="headrow" style="margin-top:4px"><div><h1 style="color:${ligCol(L)}">${L} · ${esc(ligNom(L))}</h1><p class="lead">${xs.length} exercice${xs.length>1?"s":""}${age?` accessibles à ${age} ans`:""} · du plus simple au plus dur</p></div>${J()?"":`<a class="btn new" href="#/nouveau?ligne=${L}${age?`&a=${age}`:""}">+ Créer un exo pour cette ligne</a>`}</div>
+  m.innerHTML = `<div class="crumb"><a href="#">Banque</a>›<span>${esc(ligNom(L))}</span></div>
+   <div class="headrow" style="margin-top:4px"><div><h1 style="color:${ligCol(L)}">${esc(ligNom(L))}<span class="xp"> · ${L}</span></h1><p class="lead">${xs.length} exercice${xs.length>1?"s":""}${age?` accessibles à ${age} ans`:""} · du plus simple au plus dur</p></div>${J()?"":`<a class="btn new" href="#/nouveau?ligne=${L}${age?`&a=${age}`:""}">+ Créer un exo pour cette ligne</a>`}</div>
    <div class="filters"><div class="frow"><b>Âge</b><select class="sel" id="lage" aria-label="Âge du joueur"><option value="">Tous âges</option>${Array.from({length:15},(_,i)=>`<option value="${i+4}" ${age===i+4?"selected":""}>Joueur de ${i+4} ans</option>`).join("")}</select></div>
    <div class="frow"><b>Liens</b>${J()?"":`<a class="chip" href="veille.html#/l/${L}">Comprendre (veille)</a>`}<a class="chip" href="grilles.html#/ligne/${L}/G/${age||10}">Tests · garçons</a><a class="chip" href="grilles.html#/ligne/${L}/F/${age||10}">Tests · filles</a></div></div>
    ${xs.length ? Object.entries(lv).map(([v,arr])=>`<h3 class="subh">Niveau ${v} · ${NIV[v]||""} <small style="color:var(--mute);font-family:var(--ui);font-size:13px">${arr.length}</small></h3>${rowsHTML(arr)}`).join("") : '<div class="empty" style="margin-top:12px">Aucun exercice pour cette ligne à cet âge. Change l\'âge ou crée un exercice.</div>'}`;
@@ -429,7 +481,7 @@ function showLigne(L, a){
 }
 
 /* ---------- fiche ---------- */
-function linkIds(s, self){ return esc(s).replace(/\b([A-Z]{3}-\d{4})\b/g,(m,id)=> BY[id] && id!==self ? `<a class="ref" href="#/ex/${id}">${id}</a>` : m).replace(/\b(5\.\d\.\d{1,2})\b/g,(m,c)=> FBY[c] ? `<a class="ref" href="#f/${c}">${esc(FBY[c].t)}</a>` : m); }
+function linkIds(s, self){ return esc(s).replace(/\b([A-Z]{3}-\d{4})\b/g,(m,id)=> BY[id] && id!==self ? `<a class="ref" href="#/ex/${id}">${esc(BY[id].n)}${XP()?" ("+id+")":""}</a>` : m).replace(/\b(5\.\d\.\d{1,2})\b/g,(m,c)=> FBY[c] ? `<a class="ref" href="#f/${c}">${esc(FBY[c].t)}</a>` : m); }
 function bullets(s, self){ const parts=String(s||"").split(/\s*;\s*/).filter(Boolean); return parts.length>1 ? `<ul>${parts.map(p=>`<li>${linkIds(cap(p.replace(/\.$/,"")),self)}</li>`).join("")}</ul>` : `<div class="txt">${linkIds(cap(String(s||"")),self)}</div>`; }
 const cap = s => s ? s[0].toUpperCase()+s.slice(1) : s;
 const ageTxt = e => (e.ax||18)<18 ? `${e.a} à ${e.ax} ans` : `dès ${e.a} ans`;
@@ -448,16 +500,16 @@ function crossHTML(e){
   const age = +P.f.age || Math.max(e.a||4, 4);
   const T = LV.t||{}, G = LV.g||{};
   return `<div class="cell"><div class="lab">Comprendre et évaluer</div><div class="xl">${e.L.filter(okLig).map(l=>{ const d=(LV.L||{})[l]||{}; const docs=[...(d.c||[]),...(d.a||[])].slice(0,4);
-    return `<div class="xline"><b style="color:${ligCol(l)}">${l} · ${esc(ligNom(l))}</b><div class="links">
-      ${J()?"":`<a class="main" href="veille.html#/l/${l}">Comprendre · veille</a>${docs.map(c=>`<a href="veille.html#d/${c}${(d.a||[]).includes(c)?`/a${age}`:""}" title="${esc(G[(d.c||[]).includes(c)?"c":"a"]||"")}">${c} · ${esc((T[c]||"").split(":")[0].slice(0,46))}</a>`).join("")}`}
-      <a href="grilles.html#/ligne/${l}/G/${age}">Tests de cette ligne · G ${age} ans</a><a href="grilles.html#/ligne/${l}/F/${age}">F ${age} ans</a>
-      <a href="#/l/${l}?a=${age}">Tous les exos ${l} à ${age} ans</a></div></div>`; }).join("")}</div></div>`;
+    return `<div class="xline"><b style="color:${ligCol(l)}">${esc(ligNom(l))}<span class="xp"> · ${l}</span></b><div class="links">
+      ${J()?"":`<a class="main" href="veille.html#/l/${l}">Comprendre · veille</a>${docs.map(c=>`<a href="veille.html#d/${c}${(d.a||[]).includes(c)?`/a${age}`:""}" title="${esc(G[(d.c||[]).includes(c)?"c":"a"]||"")}"><span class="xp">${c} · </span>${esc((T[c]||"").split(":")[0].slice(0,46))}</a>`).join("")}`}
+      <a href="grilles.html#/ligne/${l}/G/${age}">Tests garçons ${age} ans</a><a href="grilles.html#/ligne/${l}/F/${age}">Tests filles ${age} ans</a>
+      <a href="#/l/${l}?a=${age}">Tous les exos de cette ligne à ${age} ans</a></div></div>`; }).join("")}</div></div>`;
 }
 function neighbours(e){
   const same = EX.filter(x=>x.f===e.f && x.s===e.s && x.id!==e.id && !HIDE.has(x.id));
   const near = (v)=> same.filter(x=>x.v===v).sort((a,b)=>Math.abs(a.a-e.a)-Math.abs(b.a-e.a)).slice(0,4);
   const reg = near(e.v-1), pro = near(e.v+1), eq = near(e.v).slice(0,3);
-  const li = arr => arr.length ? arr.map(x=>`<a href="#/ex/${x.id}">${esc(x.n)} <small>· ${x.id} · niv. ${x.v} · ${ageTxt(x)}</small></a>`).join("") : '<span class="msg">—</span>';
+  const li = arr => arr.length ? arr.map(x=>`<a href="#/ex/${x.id}">${esc(x.n)} <small>· niv. ${x.v} · ${ageTxt(x)}<span class="xp"> · ${x.id}</span></small></a>`).join("") : '<span class="msg">—</span>';
   return `<div class="cell"><div class="lab">Exos voisins · ${esc(e.s||"")}</div><div class="nb">
     <div><b style="font-size:13px">‹ Régression (plus simple)</b>${li(reg.length?reg:eq.filter(x=>x.a<e.a))}</div>
     <div><b style="font-size:13px">Progression (plus dur) ›</b>${li(pro.length?pro:eq.filter(x=>x.a>=e.a))}</div></div></div>`;
@@ -471,11 +523,11 @@ function showEx(id){
   const m=$("#main"); m.style.setProperty("--dc",dc(d));
   m.innerHTML = `<div class="crumb"><a href="#">Banque</a>›<a href="#f/${f.c}">${esc(f.t)}</a>›<span>${esc(e.s||"")}</span></div>
   <article class="fiche">
-    <div class="fhead"><div style="min-width:0"><div class="fid">${e.id} · ${DOM[d][0]} ${badges(e)}</div><h1>${esc(e.n)}</h1><div class="fline">${esc(e.li||"")}</div></div>
-      <div class="actbar"><button class="btn star" id="fav" type="button" aria-pressed="${fav}">${fav?"♥ Favori":"♡ Favori"}</button><button class="btn" id="addl" type="button">+ Ma liste</button>
-       ${co?`<button class="btn pri" id="useS" type="button">Utiliser dans une séance</button><a class="btn" id="edit" href="#/modifier/${e.id}">Modifier</a>${e.modifie?'<button class="btn" id="reset" type="button">Remettre l\'original</button>':""}${e.perso?'<button class="btn dan" id="del" type="button">Supprimer</button>':""}<button class="btn" id="hide" type="button">${HIDE.has(id)?"Réafficher":"Masquer"}</button>`:""}</div></div>
+    <div class="fhead"><div style="min-width:0"><div class="fid"><span class="xp">${e.id} · </span>${DOM[d][0]} ${badges(e)}</div><h1>${esc(e.n)}</h1><div class="fline">${esc(liTxt(e))}</div></div>
+      <div class="actbar">${co?`<button class="btn pri big" id="useS" type="button">Utiliser dans une séance</button>`:""}<button class="btn star" id="fav" type="button" aria-pressed="${fav}">${fav?"♥ Favori":"♡ Favori"}</button><button class="btn" id="addl" type="button">${inCols(id)?"✓ Collection ("+inCols(id)+")":"+ Collection"}</button>${co?`<a class="btn" id="edit" href="#/modifier/${e.id}">Modifier</a>`:""}</div></div>
+    <details class="grun-plus" style="margin:0 0 12px"><summary>Plus d'options</summary><div class="grun-plusb"><div class="actbar">${co?`${e.modifie?'<button class="btn" id="reset" type="button">Remettre l\'original</button>':""}${e.perso?'<button class="btn dan" id="del" type="button">Supprimer</button>':""}<button class="btn" id="hide" type="button">${HIDE.has(id)?"Réafficher":"Masquer"}</button>`:""}</div></div></details>
     ${e.img?`<div class="photo"><img src="${esc(e.img)}" alt="Photo : ${esc(e.n)}"></div>`:""}
-    <div class="video" id="vid"></div>
+    <div class="video" id="vid"></div>${co?tourHTML(id):""}
     <div class="keys">
       <div class="key"><small>Âge</small><b>${ageTxt(e)}</b></div>
       <div class="key"><small>Niveau</small><b>${e.v} · ${NIV[e.v]||""}</b><span class="lv">${[1,2,3,4].map(n=>`<i class="${n<=e.v?"on":""}"></i>`).join("")}</span></div>
@@ -492,17 +544,18 @@ function showEx(id){
       <div class="col">
         <div class="cell"><div class="lab">Consignes au joueur</div>${bullets(e.co,id)}</div>
         ${e.er?`<div class="cell"><div class="lab">Erreurs à éviter</div>${bullets(e.er,id)}</div>`:""}
-        <div class="cell"><div class="lab">Utilisation et progression</div><div class="txt">${linkIds(cap(e.ut||""),id)}</div>${rel.length?`<div class="links">${rel.map(x=>`<a href="#/ex/${x}">${x} · ${esc(BY[x].n)}</a>`).join("")}</div>`:""}</div>
-        ${e.w?`<div class="cell"><div class="lab">Usage en échauffement</div>${wHTML(e.w)}<div class="msg">Proposé par Create my warm-up et Create my séance.</div></div>`:""}
+        <div class="cell"><div class="lab">Utilisation et progression</div><div class="txt">${linkIds(cap(e.ut||""),id)}</div>${rel.length?`<div class="links">${rel.map(x=>`<a href="#/ex/${x}">${esc(BY[x].n)}</a>`).join("")}</div>`:""}</div>
+        ${e.w?`<div class="cell"><div class="lab">Usage en échauffement</div>${wHTML(e.w)}<div class="msg">Proposé par Choose your warm-up et Create my session.</div></div>`:""}
       </div>
     </div>
     ${crossHTML(e)}
     ${neighbours(e)}
     <div class="cell notes"><label class="lab" for="nt">Mes notes</label><textarea id="nt" placeholder="Variantes, joueurs, charges utilisées…"></textarea><div class="msg" id="ntm"></div></div>
   </article>
-  <div class="pn">${prev?`<a href="#/ex/${prev.id}"><small>‹ ${prev.id}</small>${esc(prev.n)}</a>`:"<span></span>"}${next?`<a class="nx" href="#/ex/${next.id}"><small>${next.id} ›</small>${esc(next.n)}</a>`:"<span></span>"}</div>`;
+  <div class="pn">${prev?`<a href="#/ex/${prev.id}"><small>‹ Précédent</small>${esc(prev.n)}</a>`:"<span></span>"}${next?`<a class="nx" href="#/ex/${next.id}"><small>Suivant ›</small>${esc(next.n)}</a>`:"<span></span>"}</div>`;
   $("#fav").onclick=()=>{ const on=GRUN.banque.toggleFav(id); on?FAV.add(id):FAV.delete(id); $("#fav").setAttribute("aria-pressed",on); $("#fav").textContent=on?"♥ Favori":"♡ Favori"; };
-  $("#addl").onclick=()=>pickList(id);
+  $("#addl").onclick=()=>pickList(id, ()=>{ const n=inCols(id); $("#addl").textContent=n?"✓ Collection ("+n+")":"+ Collection"; });
+  $$("[data-tour]").forEach(b=>b.onclick=()=>{ setTour(id,b.dataset.tour); $$("[data-tour]").forEach(x=>x.setAttribute("aria-pressed", x.dataset.tour===tourOf(id))); });
   if(co){
     $("#useS").onclick=()=>{ GRUN.relais.envoyer({de:"banque",vers:"seances",exo:id,retour:"banque.html#/ex/"+id}); location.href=GRUN.href("seances","#/nouvelle"); };
     const r=$("#reset"); if(r) r.onclick=async()=>{ if(!r.dataset.c){ r.dataset.c=1; r.textContent="Confirmer : remettre l'original"; return; } GRUN.banque.reset(id); await reload(); showEx(id); };
@@ -541,7 +594,7 @@ $("#modal").addEventListener("click",e=>{ if(e.target.id==="modal") $("#modal").
 function alertBox(t){ modal((b,close)=>{ b.innerHTML=`<div>${esc(t)}</div>`; const k=document.createElement("button"); k.className="btn"; k.textContent="OK"; k.onclick=close; b.appendChild(k); }); }
 function linkModal(e){
   modal((b,close)=>{
-    b.innerHTML=`<h2>Vidéo · ${e.id}</h2><div class="msg">Colle le lien de la vidéo : YouTube (non répertoriée), lien direct .mp4, iCloud ou Google Drive.</div><input id="vl" type="url" placeholder="https://…" value="${esc(vidOf(e))}"><div class="actbar"><button class="btn pri" id="vok" type="button">Enregistrer</button><button class="btn" id="vno" type="button">Annuler</button></div>`;
+    b.innerHTML=`<h2>Vidéo de l'exercice</h2><div class="msg">Colle le lien de la vidéo : YouTube (non répertoriée), lien direct .mp4, iCloud ou Google Drive.</div><input id="vl" type="url" placeholder="https://…" value="${esc(vidOf(e))}"><div class="actbar"><button class="btn pri" id="vok" type="button">Enregistrer</button><button class="btn" id="vno" type="button">Annuler</button></div>`;
     $("#vno").onclick=close; $("#vok").onclick=async()=>{ const v=$("#vl").value.trim();
       if(e.perso){ GRUN.banque.edit(e.id,{vid:v}); await reload(); }
       else { if(v) P.links[e.id]=v; else delete P.links[e.id]; save(); }
@@ -570,7 +623,7 @@ function showForm(id, q){
   const groups={}; FAMS.filter(f=>f.c!=="MOI").forEach(f=>{ (groups[f.dossier]=groups[f.dossier]||[]).push(f); });
   const famOpts = `<option value="MOI" ${v.f==="MOI"?"selected":""}>Mes exercices</option>` + Object.entries(groups).map(([g,fs])=>`<optgroup label="${esc(g)}">${fs.map(f=>`<option value="${f.c}" ${v.f===f.c?"selected":""}>${esc(f.t)}</option>`).join("")}</optgroup>`).join("");
   const m=$("#main"); m.style.setProperty("--dc","var(--ink)");
-  m.innerHTML = `<div class="crumb"><a href="#">Banque</a>›<span>${e?"Modifier "+e.id:"Nouvel exercice"}</span></div>
+  m.innerHTML = `<div class="crumb"><a href="#">Banque</a>›<span>${e?"Modifier":"Créer un exercice"}</span></div>
   <h1 style="margin-top:4px">${e?"Modifier · "+esc(e.n):"Créer un exercice"}</h1>
   <p class="lead">${e ? (e.perso ? "Ton exercice : la modification est directe." : "Exercice d'origine : tes changements s'ajoutent par-dessus (badge « modifié ») ; « Remettre l'original » les efface.") : "Mêmes champs que la banque, plus vidéo, photo, dosage et usage en échauffement."}</p>
   <form class="form" id="fx" novalidate autocomplete="off">
@@ -583,16 +636,17 @@ function showForm(id, q){
     <div class="fld"><label for="f_a">Âge mini</label><select id="f_a">${optA(v.a||6)}</select></div>
     <div class="fld"><label for="f_ax">Âge maxi</label><select id="f_ax">${optA(v.ax||18)}</select></div>
     <div class="fld full"><span class="l">Lignes de grille (plusieurs possibles)</span>
-      <details ${v.L.length?"":"open"}><summary class="msg" style="cursor:pointer">${v.L.length?`Choisies : ${v.L.join(", ")}`:"Choisir les lignes"}</summary>
-      ${["PP","GE","DE"].map(d=>`<div class="lgrp"><b>${DOM[d][0]}</b>${ckH("L", LIG[d].map((n,i)=>[d+(i+1), `${d}${i+1} · ${n}`]), v.L)}</div>`).join("")}</details></div>
+      <details ${v.L.length?"":"open"}><summary class="msg" style="cursor:pointer">${v.L.length?`Choisies : ${v.L.map(ligNom).join(", ")}`:"Choisir les lignes"}</summary>
+      ${["PP","GE","DE"].map(d=>`<div class="lgrp"><b>${DOM[d][0]}</b>${ckH("L", LIG[d].map((n,i)=>[d+(i+1), (XP()?`${d}${i+1} · `:"")+n]), v.L)}</div>`).join("")}</details></div>
    </div></div>
    <div class="fs"><h2>La fiche</h2><div class="fg">
     <div class="fld full"><label for="f_ob">Objectif</label><textarea id="f_ob" rows="2">${esc(v.ob)}</textarea></div>
     <div class="fld full"><label for="f_de">Description</label><textarea id="f_de" rows="3">${esc(v.de)}</textarea></div>
     <div class="fld"><label for="f_co">Consignes clés</label><textarea id="f_co">${esc(v.co)}</textarea><small>Sépare par « ; » pour une liste.</small></div>
     <div class="fld"><label for="f_er">Erreurs fréquentes</label><textarea id="f_er">${esc(v.er)}</textarea><small>Sépare par « ; ».</small></div>
-    <div class="fld full"><label for="f_ut">Utilisation et progression</label><textarea id="f_ut" rows="2">${esc(v.ut)}</textarea><small>Tu peux citer d'autres exos par leur identifiant (FOR-0002).</small></div>
+    <div class="fld full"><label for="f_ut">Utilisation et progression</label><textarea id="f_ut" rows="2">${esc(v.ut)}</textarea><small class="xp">Tu peux citer d'autres exos par leur identifiant (FOR-0002).</small></div>
    </div></div>
+   <details class="grun-plus" ${e?"open":""}><summary>Plus d'options : matériel, dosage, vidéo, photo, échauffement, statut</summary><div class="grun-plusb">
    <div class="fs"><h2>Matériel et lieu</h2><div class="fg">
     <div class="fld full"><label for="f_ma">Matériel (texte)</label><input type="text" id="f_ma" value="${esc(v.ma)}" placeholder="aucun, 4 plots, raquette et balles…"></div>
     <div class="fld full"><span class="l">Matériel (cases, pour les filtres et Create)</span>${ckH("m", MATC, v.m||[])}</div>
@@ -611,7 +665,7 @@ function showForm(id, q){
     <div class="fld"><span class="l">Photo</span><div class="actbar"><label class="btn" for="f_img">Choisir une photo</label><button class="btn" type="button" id="f_imgx" ${IMG?"":"hidden"}>Retirer</button></div><input type="file" id="f_img" accept="image/*" hidden><img class="imgprev" id="f_imgp" alt="Aperçu de la photo" ${IMG?`src="${esc(IMG)}"`:"hidden"}><small>Réduite à 800 px.</small></div>
    </div></div>
    <div class="fs"><h2>Usage en échauffement <small class="msg" style="font-family:var(--ui)">facultatif</small></h2>
-    <label class="switch"><input type="checkbox" id="w_on" ${v.w?"checked":""}> Proposer cet exo dans Create my warm-up et Create my séance</label>
+    <label class="switch"><input type="checkbox" id="w_on" ${v.w?"checked":""}> Proposer cet exo dans Choose your warm-up et Create my session</label>
     <div id="wbox" style="margin-top:10px" ${v.w?"":"hidden"}><div class="fg">
      <div class="fld"><label for="w_et">Étape principale</label><select id="w_et">${Object.entries(ETN).map(([k,n])=>`<option value="${k}" ${w.et===k?"selected":""}>${n}</option>`).join("")}</select></div>
      <div class="fld"><span class="l">Autres étapes couvertes</span>${ckH("ets", Object.entries(ETN), w.ets||[])}</div>
@@ -626,12 +680,14 @@ function showForm(id, q){
     </div></div>
    </div>
    <div class="fs"><h2>Statut</h2><div class="radios">
-    ${[["perso","Perso","Visible seulement par toi."],["propose","Proposé à la méthode","À exporter depuis « Propositions » pour qu'Eliot le relise."],["valide","Exercice de la méthode","Validé par Eliot : visible par tous les abonnés dès que les comptes en ligne seront ouverts."]].map(([k,t,s])=>`<label class="radio"><input type="radio" name="st" value="${k}" ${(v.st||"perso")===k?"checked":""}><span><b>${t}</b><small>${s}</small></span></label>`).join("")}
+    ${[["perso","Perso","Visible seulement par toi."],["propose","Proposé à la méthode","À exporter depuis « Propositions » pour que le créateur de GRÜN le relise."],["valide","Exercice de la méthode","Validé par le créateur de GRÜN : visible par tous les abonnés dès que les comptes en ligne seront ouverts."]].map(([k,t,s])=>`<label class="radio"><input type="radio" name="st" value="${k}" ${(v.st||"perso")===k?"checked":""}><span><b>${t}</b><small>${s}</small></span></label>`).join("")}
     ${e&&!e.perso?'<p class="msg">Exercice d\'origine : il fait déjà partie de la méthode.</p>':""}</div></div>
-   <div class="formbar"><button class="btn pri" type="submit" id="f_ok">${e?"Enregistrer les modifications":"Créer l'exercice"}</button><button class="btn" type="button" id="f_no">Annuler</button><span class="msg" id="f_msg" role="status"></span></div>
+   </div></details>
+   <div class="formbar"><button class="btn pri" type="submit" id="f_ok">${e?"Enregistrer":"Créer"}</button><button class="btn" type="button" id="f_no">Annuler</button><span class="msg" id="f_msg" role="status"></span></div>
   </form>`;
   if(e && !e.perso) $$('input[name="st"]').forEach(r=>{ r.disabled=true; });
   const fillSubs=()=>{ const f=FBY[$("#f_f").value]; $("#dl_s").innerHTML=(f?f.subs:[]).map(s=>`<option value="${esc(s)}">`).join(""); };
+  if(!e) setTimeout(()=>{ try{ $("#f_n").focus({preventScroll:true}); }catch(_){} },50);   /* nouveau : le nom est prêt à taper */
   fillSubs(); $("#f_f").onchange=()=>{ fillSubs(); const f=FBY[$("#f_f").value]; if(f && f.c!=="MOI" && !e) $("#f_dom").value=f.dom; };
   const ciSel = new Set(w.ci||[]);
   const fillCi=()=>{ $$('input[name="ci"]').forEach(x=>x.checked?ciSel.add(x.value):ciSel.delete(x.value)); const ets=[...new Set([$("#w_et").value, ...$$('input[name="ets"]:checked').map(x=>x.value)])];
@@ -687,8 +743,8 @@ function showProps(){
   document.documentElement.style.setProperty("--acc","var(--ink)");
   const mine = EX.filter(e=>e.perso && e.st==="propose"), val = EX.filter(e=>e.perso && e.st==="valide"), rec = P.recues||[];
   const pv = x => `<details><summary>Voir la fiche</summary><dl>${[["Famille",(FBY[x.f]||MOIFAM).t+(x.s?" · "+x.s:"")],["Lignes",(x.L||[]).join(", ")],["Âge et niveau",`${x.a||"?"} à ${x.ax||18} ans · niveau ${x.v||1}`],["Objectif",x.ob],["Description",x.de],["Consignes",x.co],["Erreurs",x.er],["Matériel",x.ma],["Dosage",x.dos],["Échauffement",x.w?[ETN[x.w.et],...(x.w.ets||[]).filter(y=>y!==x.w.et).map(y=>ETN[y])].join(" + "):""],["Vidéo",x.vid]].filter(([,y])=>y).map(([k,y])=>`<dt>${k}</dt><dd>${esc(y)}</dd>`).join("")}${x.img?`<dd><img class="imgprev" src="${esc(x.img)}" alt=""></dd>`:""}</dl></details>`;
-  $("#main").innerHTML = `<h1>Propositions</h1><p class="lead">Un coach propose un exercice → Eliot le relit et le valide → il devient un exercice de la méthode, visible par tous les abonnés (en ligne demain ; ce soir, par fichier).</p>${tabs("/propositions")}
-   <div class="sec"><h2>Mes exercices proposés · ${mine.length}</h2><p class="msg">Mets le statut « Proposé à la méthode » sur un de tes exos (bouton Modifier), puis exporte le fichier et envoie-le à Eliot. Les vidéos de l'appareil ne partent pas dans le fichier : mets plutôt un lien.</p>
+  $("#main").innerHTML = `<h1>Propositions</h1><p class="lead">Un coach propose un exercice → le créateur de GRÜN le relit et le valide → il devient un exercice de la méthode, visible par tous les abonnés (par fichier pour l'instant).</p>${tabs("/propositions")}
+   <div class="sec"><h2>Mes exercices proposés · ${mine.length}</h2><p class="msg">Mets le statut « Proposé à la méthode » sur un de tes exos (bouton Modifier), puis exporte le fichier et envoie-le au créateur de GRÜN. Les vidéos de l'appareil ne partent pas dans le fichier : mets plutôt un lien.</p>
     ${mine.length?rowsHTML(mine):'<div class="empty">Aucun exercice proposé pour l\'instant.</div>'}
     <div class="actbar" style="margin-top:10px"><button class="btn pri" id="pexp" type="button" ${mine.length?"":"disabled"}>Exporter mes propositions (fichier)</button></div></div>
    <div class="sec"><h2>Propositions reçues · ${rec.length}</h2><p class="msg">Importe un fichier GRUN_propositions_….json reçu d'un coach, relis chaque exercice, puis valide-le (il entre dans la banque avec le statut « Exercice de la méthode ») ou refuse-le.</p>
@@ -728,7 +784,7 @@ function showFam(c){
   const f=FBY[c]; if(!f) return showFams(); document.documentElement.style.setProperty("--acc",dc(f.dom));
   const xs=EX.filter(e=>e.f===c && !HIDE.has(e.id)), subs={}; xs.forEach(e=>{ (subs[e.s]=subs[e.s]||[]).push(e); });
   const m=$("#main"); m.style.setProperty("--dc",dc(f.dom));
-  m.innerHTML=`<div class="crumb"><a href="#familles">Familles</a>›<span>${esc(f.dossier)}</span></div><h1 style="margin-top:4px">${esc(f.t)}</h1><p class="lead">${xs.length} exercices</p>
+  m.innerHTML=`<div class="crumb"><a href="#familles">Familles</a>›<span>${esc(String(f.dossier||"").replace(/^\d+(\.\d+)*\s/,""))}</span></div><h1 style="margin-top:4px">${esc(f.t)}</h1><p class="lead">${xs.length} exercices</p>
    <div class="intro"><details><summary>Mode d'emploi de la famille : à quoi elle sert, comment choisir, progression, repères d'âge</summary><div class="tw">${f.intro}</div></details></div>`+
    Object.entries(subs).map(([s,arr])=>`<h3 class="subh">${esc(s)}</h3>${rowsHTML(arr)}`).join("");
 }
@@ -740,51 +796,68 @@ function showFav(){
   $("#main").innerHTML=`<h1>Favoris</h1><p class="lead">Touche ♡ sur une fiche pour l'ajouter ici. Tes favoris reviennent en priorité dans Create.</p>${tabs("favoris")}<div class="sec">${xs.length?rowsHTML(xs):'<div class="empty">Aucun favori pour l\'instant.</div>'}</div>`+dataBox();
   bindData();
 }
+const inCols = id => P.lists.filter(l=>l.ex.includes(id)).length;
 function showLists(){
   document.documentElement.style.setProperty("--acc","var(--ink)");
-  $("#main").innerHTML=`<h1>Mes séances</h1><p class="lead">Regroupe des exercices pour une séance, un joueur ou un groupe. Pour une séance complète et structurée : <a class="ref" href="seances.html">Create my séance</a>.</p>${tabs("listes")}
-   <div class="sec"><div class="actbar"><input id="ln" type="text" placeholder="Nom de la séance (ex. U12 jeudi · vitesse)" style="flex:1;min-width:200px;min-height:40px;border:1px solid var(--line);border-radius:9px;padding:0 10px;background:var(--panel)"><button class="btn pri" id="lnew" type="button">Créer</button></div></div>
-   <div class="sec">${P.lists.length?`<div class="list">${P.lists.map(l=>`<a class="row" href="#l/${l.id}" style="--dc:var(--ink)"><span class="bar"></span><span class="id">${l.ex.length} ex.</span><span class="nm"><b>${esc(l.n)}</b><small>${l.ex.slice(0,4).map(i=>BY[i]?BY[i].n:i).map(esc).join(" · ")}</small></span><span class="meta"></span></a>`).join("")}</div>`:'<div class="empty">Aucune séance. Crée-en une ci-dessus, puis ajoute des exercices avec « + Ma liste » sur leur fiche.</div>'}</div>`;
+  $("#main").innerHTML=`<h1>Mes collections</h1><p class="lead">Range des exercices dans tes collections (un thème, un joueur, un groupe, une période). Elles sont personnelles : toi seul les vois. Pour une séance complète et structurée : <a class="ref" href="seances.html">Create my session</a>.</p>${tabs("listes")}
+   <div class="sec"><div class="actbar"><input id="ln" type="text" placeholder="Nom de la collection (ex. Vitesse U12, Gainage…)" aria-label="Nom de la nouvelle collection" style="flex:1;min-width:200px;min-height:40px;border:1px solid var(--line);border-radius:9px;padding:0 10px;background:var(--panel)"><button class="btn pri" id="lnew" type="button">Créer</button></div></div>
+   <div class="sec">${P.lists.length?`<div class="list">${P.lists.map(l=>`<a class="row" href="#l/${l.id}" style="--dc:var(--ink)"><span class="bar"></span><span class="id">${l.ex.length} ex.</span><span class="nm"><b>${esc(l.n)}</b><small>${l.ex.slice(0,4).map(i=>BY[i]?BY[i].n:i).map(esc).join(" · ")}</small></span><span class="meta"></span></a>`).join("")}</div>`:'<div class="empty">Aucune collection. Crée-en une ci-dessus, ou touche « + Collection » sur la fiche d\'un exercice.</div>'}</div>`;
   $("#lnew").onclick=()=>{ const n=$("#ln").value.trim(); if(!n){ $("#ln").focus(); return; } P.lists.unshift({id:Date.now().toString(36), n, ex:[]}); save(); showLists(); };
+  $("#ln").onkeydown=e=>{ if(e.key==="Enter") $("#lnew").click(); };
 }
 function showList(lid){
   const l=P.lists.find(x=>x.id===lid); if(!l) return showLists(); document.documentElement.style.setProperty("--acc","var(--ink)");
   const xs=l.ex.map(i=>BY[i]).filter(Boolean);
-  $("#main").innerHTML=`<div class="crumb" style="--dc:var(--ink)"><a href="#listes">Mes séances</a></div><h1 style="margin-top:4px">${esc(l.n)}</h1><p class="lead">${xs.length} exercice${xs.length>1?"s":""}</p>
-   <div class="sec actbar"><button class="btn" id="lcopy" type="button">Copier la séance en texte</button><button class="btn" id="lren" type="button">Renommer</button><button class="btn" id="ldel" type="button">Supprimer la séance</button></div><div class="msg" id="lmsg"></div>
-   <div class="sec">${xs.length?`<div class="list">${xs.map((e,k)=>`<div class="row" style="--dc:${dc(e.dom)}"><span class="bar"></span><span class="id">${k+1}. ${e.id}</span><a class="nm" href="#/ex/${e.id}" style="text-decoration:none"><b>${esc(e.n)}</b><small>${esc(e.ma||"")}</small></a><span class="meta"><button class="chip" data-up="${k}" type="button" aria-label="Monter">↑</button><button class="chip" data-dn="${k}" type="button" aria-label="Descendre">↓</button><button class="chip" data-rm="${k}" type="button" aria-label="Retirer">✕</button></span></div>`).join("")}</div>`:'<div class="empty">Ajoute des exercices avec « + Ma liste » sur leur fiche.</div>'}</div>`;
+  $("#main").innerHTML=`<div class="crumb" style="--dc:var(--ink)"><a href="#">Banque</a>›<a href="#listes">Mes collections</a></div><h1 style="margin-top:4px">${esc(l.n)}</h1><p class="lead">${xs.length} exercice${xs.length>1?"s":""} · collection personnelle</p>
+   <div class="sec actbar"><a class="btn pri" href="#" id="ladd">+ Ajouter des exercices</a><button class="btn" id="lcopy" type="button">Copier en texte</button><button class="btn" id="lren" type="button">Renommer</button><button class="btn" id="ldel" type="button">Supprimer la collection</button></div><div class="msg" id="lmsg"></div>
+   <div class="sec">${xs.length?`<div class="list">${xs.map((e,k)=>`<div class="row" style="--dc:${dc(e.dom)}"><span class="bar"></span><span class="id">${k+1}. ${e.id}</span><a class="nm" href="#/ex/${e.id}" style="text-decoration:none"><b>${esc(e.n)}</b><small>${esc(e.ma||"")}</small></a><span class="meta"><button class="chip" data-up="${k}" type="button" aria-label="Monter">↑</button><button class="chip" data-dn="${k}" type="button" aria-label="Descendre">↓</button><button class="chip" data-rm="${k}" type="button" aria-label="Retirer">✕</button></span></div>`).join("")}</div>`:'<div class="empty">Collection vide : ouvre un exercice et touche « + Collection ».</div>'}</div>`;
+  $("#ladd").onclick=ev=>{ ev.preventDefault(); location.hash=""; };
   $$("[data-up]").forEach(b=>b.onclick=()=>{ const k=+b.dataset.up; if(k>0){ [l.ex[k-1],l.ex[k]]=[l.ex[k],l.ex[k-1]]; save(); showList(lid);} });
   $$("[data-dn]").forEach(b=>b.onclick=()=>{ const k=+b.dataset.dn; if(k<l.ex.length-1){ [l.ex[k+1],l.ex[k]]=[l.ex[k],l.ex[k+1]]; save(); showList(lid);} });
   $$("[data-rm]").forEach(b=>b.onclick=()=>{ l.ex.splice(+b.dataset.rm,1); save(); showList(lid); });
-  $("#lcopy").onclick=async()=>{ const t=l.n+"\n\n"+xs.map((e,k)=>`${k+1}. ${e.id} · ${e.n}\n   Objectif : ${e.ob}\n   Matériel : ${e.ma}\n   Consignes : ${e.co}${e.dos?`\n   Dosage : ${e.dos}`:""}`).join("\n\n"); try{ await navigator.clipboard.writeText(t); $("#lmsg").textContent="Séance copiée : colle-la dans Notes ou un message."; }catch(err){ modal((b,close)=>{ b.innerHTML='<div class="msg">Sélectionne le texte puis copie-le.</div>'; const ta=document.createElement("textarea"); ta.value=t; ta.style.cssText="width:100%;min-height:260px"; b.appendChild(ta); ta.select(); const k=document.createElement("button"); k.className="btn"; k.textContent="Fermer"; k.onclick=close; b.appendChild(k); }); } };
-  $("#lren").onclick=()=>modal((b,close)=>{ b.innerHTML=`<h2>Renommer</h2><input id="rn" type="text" value="${esc(l.n)}"><div class="actbar"><button class="btn pri" id="rok" type="button">Enregistrer</button></div>`; $("#rok").onclick=()=>{ const v=$("#rn").value.trim(); if(v){ l.n=v; save(); } close(); showList(lid); }; });
+  $("#lcopy").onclick=async()=>{ const t=l.n+"\n\n"+xs.map((e,k)=>`${k+1}. ${e.n}\n   Objectif : ${e.ob}\n   Matériel : ${e.ma}\n   Consignes : ${e.co}${e.dos?`\n   Dosage : ${e.dos}`:""}`).join("\n\n"); try{ await navigator.clipboard.writeText(t); $("#lmsg").textContent="Collection copiée : colle-la dans Notes ou un message."; }catch(err){ modal((b,close)=>{ b.innerHTML='<div class="msg">Sélectionne le texte puis copie-le.</div>'; const ta=document.createElement("textarea"); ta.value=t; ta.style.cssText="width:100%;min-height:260px"; b.appendChild(ta); ta.select(); const k=document.createElement("button"); k.className="btn"; k.textContent="Fermer"; k.onclick=close; b.appendChild(k); }); } };
+  $("#lren").onclick=()=>modal((b,close)=>{ b.innerHTML=`<h2>Renommer</h2><input id="rn" type="text" value="${esc(l.n)}" aria-label="Nom de la collection"><div class="actbar"><button class="btn pri" id="rok" type="button">Enregistrer</button></div>`; $("#rok").onclick=()=>{ const v=$("#rn").value.trim(); if(v){ l.n=v; save(); } close(); showList(lid); }; });
   $("#ldel").onclick=()=>{ const b=$("#ldel"); if(b.dataset.c){ P.lists=P.lists.filter(x=>x.id!==lid); save(); location.hash="listes"; } else { b.dataset.c=1; b.textContent="Confirmer la suppression"; } };
 }
-function pickList(id){
-  modal((b,close)=>{
-    b.innerHTML=`<h2>Ajouter ${id} à une liste</h2>${P.lists.map(l=>`<button class="btn" type="button" data-l="${l.id}" style="justify-content:flex-start">${esc(l.n)} · ${l.ex.length} ex.${l.ex.includes(id)?" ✓":""}</button>`).join("")}<div class="actbar"><input id="nl" type="text" placeholder="Nouvelle liste" style="flex:1"><button class="btn pri" id="nlok" type="button">Créer et ajouter</button></div>`;
-    b.querySelectorAll("[data-l]").forEach(x=>x.onclick=()=>{ const l=P.lists.find(y=>y.id===x.dataset.l); if(!l.ex.includes(id)) l.ex.push(id); save(); close(); });
-    $("#nlok").onclick=()=>{ const n=$("#nl").value.trim(); if(!n) return; P.lists.unshift({id:Date.now().toString(36), n, ex:[id]}); save(); close(); };
+/* une touche = ajouter ou retirer l'exo d'une collection ; « Créer et ajouter » pour une nouvelle */
+function pickList(id, done){
+  modal((b,close)=>{ const fin=()=>{ close(); if(done) done(); };
+    const draw=()=>{ b.innerHTML=`<h2>Ranger « ${esc(BY[id]?BY[id].n:id)} »</h2>${P.lists.length?`<p class="msg">Touche une collection pour y ajouter l'exercice (ou l'en retirer).</p>`:""}${P.lists.map(l=>`<button class="btn" type="button" data-l="${l.id}" aria-pressed="${l.ex.includes(id)}" style="justify-content:flex-start">${l.ex.includes(id)?"✓ ":""}${esc(l.n)} · ${l.ex.length} ex.</button>`).join("")}<div class="actbar"><input id="nl" type="text" placeholder="Nouvelle collection" aria-label="Nouvelle collection" style="flex:1"><button class="btn pri" id="nlok" type="button">Créer et ajouter</button></div><div class="actbar"><button class="btn" id="nlf" type="button">Fermer</button></div>`;
+      b.querySelectorAll("[data-l]").forEach(x=>x.onclick=()=>{ const l=P.lists.find(y=>y.id===x.dataset.l); const k=l.ex.indexOf(id); if(k<0) l.ex.push(id); else l.ex.splice(k,1); save(); draw(); });
+      $("#nlok").onclick=()=>{ const n=$("#nl").value.trim(); if(!n){ $("#nl").focus(); return; } P.lists.unshift({id:Date.now().toString(36), n, ex:[id]}); save(); draw(); };
+      $("#nlf").onclick=fin; };
+    draw();
   });
 }
 
 /* ---------- vidéos à tourner ---------- */
+/* suivi du tournage (coach) : P.tour[id] = "a" (à tourner) | "t" (tourné) | "m" (monté) ; sans statut : « monté » si l'exo a déjà une vidéo, sinon « à tourner » */
+const TOURN = {a:"À tourner", t:"Tourné", m:"Monté"};
+const tourOf = id => (P.tour&&P.tour[id]) || (hasVid(id) ? "m" : "a");
+function setTour(id, v){ P.tour = P.tour||{}; if(v===(hasVid(id)?"m":"a")) delete P.tour[id]; else P.tour[id] = v; save(); }
+function tourHTML(id){ const v=tourOf(id); return `<div class="tour"><span class="lab">Tournage</span><span class="seg" role="group" aria-label="Tournage de la vidéo">${Object.entries(TOURN).map(([k,t])=>`<button type="button" data-tour="${k}" aria-pressed="${v===k}">${t}</button>`).join("")}</span></div>`; }
+let SHOW_T = PAGE;
 function showShoot(){
   document.documentElement.style.setProperty("--acc","var(--ink)");
-  const done=EX.filter(e=>hasVid(e.id)).length;
-  $("#main").innerHTML=`<h1>Vidéos de démonstration</h1><p class="lead"><b>${done}</b> exercice${done>1?"s":""} avec vidéo sur ${EX.length.toLocaleString("fr-FR")} · ${EX.length-done} à tourner</p>${tabs("tournage")}
-   <div class="sec intro" style="padding:12px 18px"><b>Comment ajouter les vidéos</b><ol style="margin:6px 0 0;padding-left:20px;line-height:1.6">
+  const f = P.ft || "a", n = {a:0,t:0,m:0}; EX.forEach(e=>n[tourOf(e.id)]++);
+  const xs = EX.filter(e=>tourOf(e.id)===f).sort((a,b)=>((b.perso?1:0)-(a.perso?1:0)));
+  $("#main").innerHTML=`<h1>Vidéos de démonstration</h1><p class="lead"><b>${n.m}</b> montées · <b>${n.t}</b> tournées à monter · <b>${n.a.toLocaleString("fr-FR")}</b> à tourner, sur ${EX.length.toLocaleString("fr-FR")} exercices</p>${tabs("tournage")}
+   <div class="sec"><div class="tbar" style="height:10px;border-radius:5px;overflow:hidden;display:flex;background:var(--line)"><i style="width:${n.m/EX.length*100}%;background:var(--de)"></i><i style="width:${n.t/EX.length*100}%;background:var(--pp)"></i></div>
+   <div class="actbar" style="margin-top:10px"><span class="seg" role="group" aria-label="Filtrer par statut">${Object.entries(TOURN).map(([k,t])=>`<button type="button" data-ft="${k}" aria-pressed="${f===k}">${t} (${n[k].toLocaleString("fr-FR")})</button>`).join("")}</span><button class="btn" id="copyshoot" type="button">Copier cette liste</button></div><div class="msg" id="smsg">Change le statut sur la fiche de l'exercice (sous la vidéo) ou ici, d'une touche.</div></div>
+   <div class="sec">${xs.length?`<div class="list">${xs.slice(0,SHOW_T).map(e=>`<div class="row" style="--dc:${dc(e.dom)}"><span class="bar"></span><span class="id">${e.id}</span><a class="nm" href="#/ex/${e.id}" style="text-decoration:none"><b>${esc(e.n)}</b><small>${esc(e.ma||"")}</small></a><span class="meta">${f!=="t"?`<button class="chip" type="button" data-mv="${e.id}" data-to="t">Tourné</button>`:""}${f!=="m"?`<button class="chip" type="button" data-mv="${e.id}" data-to="m">Monté</button>`:""}${f!=="a"?`<button class="chip" type="button" data-mv="${e.id}" data-to="a">À tourner</button>`:""}</span></div>`).join("")}</div>${xs.length>SHOW_T?`<div class="actbar" style="margin-top:10px"><button class="btn" id="tmore" type="button">Voir plus (${xs.length-SHOW_T} restants)</button></div>`:""}`:'<div class="empty">Aucun exercice dans ce statut.</div>'}</div>
+   <details class="grun-plus sec"><summary>Comment ajouter les vidéos</summary><div class="grun-plusb"><ol style="margin:6px 0 0;padding-left:20px;line-height:1.6">
    <li>Filme l'exercice et nomme le fichier avec son identifiant : <code>FOR-0123.mp4</code>.</li>
    <li>Sur la fiche, touche <b>Ajouter un lien vidéo</b> (YouTube non répertoriée, iCloud, Drive…) ou <b>Choisir une vidéo de l'appareil</b> (gardée hors ligne sur cet iPad).</li>
-   <li>Pour que les vidéos soient dans l'appli pour tout le monde et sur tous tes appareils : touche <b>Sauvegarder</b> ci-dessous et envoie le fichier à Claude, qui les ajoutera à l'appli.</li></ol></div>
-   <div class="sec actbar"><a class="btn" href="#" id="fsans">Voir les exercices sans vidéo</a><button class="btn" id="copyshoot" type="button">Copier la liste de tournage</button></div><div class="msg" id="smsg"></div>`+dataBox();
-  $("#fsans").onclick=ev=>{ ev.preventDefault(); P.f.vid="0"; save(); location.hash=""; showExplore(); };
-  $("#copyshoot").onclick=async()=>{ const t=EX.filter(e=>!hasVid(e.id)).map(e=>`${e.id}.mp4\t${e.n}\t${e.ma||""}`).join("\n"); try{ await navigator.clipboard.writeText(t); $("#smsg").textContent="Liste copiée ("+t.split("\n").length+" exercices) : colle-la dans Notes ou Numbers."; }catch(err){ $("#smsg").textContent="Copie impossible dans cette vue."; } };
+   <li>Pour que les vidéos soient dans l'appli pour tout le monde et sur tous tes appareils : touche <b>Sauvegarder</b> ci-dessous et envoie le fichier à Claude, qui les ajoutera à l'appli.</li></ol></div></details>`+dataBox();
+  $$("[data-ft]").forEach(b=>b.onclick=()=>{ P.ft=b.dataset.ft; SHOW_T=PAGE; save(); showShoot(); });
+  $$("[data-mv]").forEach(b=>b.onclick=()=>{ setTour(b.dataset.mv, b.dataset.to); const y=scrollY; showShoot(); scrollTo(0,y); });
+  const mo=$("#tmore"); if(mo) mo.onclick=()=>{ SHOW_T+=PAGE*2; const y=scrollY; showShoot(); scrollTo(0,y); };
+  $("#copyshoot").onclick=async()=>{ const t=xs.map(e=>`${e.id}.mp4\t${e.n}\t${e.ma||""}`).join("\n"); try{ await navigator.clipboard.writeText(t); $("#smsg").textContent="Liste copiée ("+xs.length+" exercices) : colle-la dans Notes ou Numbers."; }catch(err){ $("#smsg").textContent="Copie impossible dans cette vue."; } };
   bindData();
 }
 
 /* ---------- sauvegarde : une seule pour tout GRÜN (GRUN.exportAll / importAll) ; anciens fichiers Banque_exercices_….json acceptés ---------- */
-function dataBox(){ return `<div class="sec"><h2>Mes données</h2><div class="actbar" style="margin-top:8px"><button class="btn" id="dsave" type="button">Sauvegarder toute l'appli</button><label class="btn" for="drest">Restaurer</label><input id="drest" type="file" accept=".json,application/json" hidden></div><div class="msg" id="dmsg">${FLASH?esc(FLASH):`Une seule sauvegarde pour tout GRÜN : joueurs, séances, exos créés et modifiés, favoris, listes, notes, liens vidéo. Les vidéos choisies sur l'appareil ne sont pas incluses. Les anciennes sauvegardes de la banque (Banque_exercices_….json) sont acceptées.`}</div></div>`; }
+function dataBox(){ return `<div class="sec"><h2>Mes données</h2><div class="actbar" style="margin-top:8px"><button class="btn" id="dsave" type="button">Sauvegarder toute l'appli</button><label class="btn" for="drest">Restaurer</label><input id="drest" type="file" accept=".json,application/json" hidden></div><div class="msg" id="dmsg">${FLASH?esc(FLASH):`Une seule sauvegarde pour tout GRÜN : joueurs, séances, exos créés et modifiés, favoris, collections, statuts de tournage, notes, liens vidéo. Les vidéos choisies sur l'appareil ne sont pas incluses. Les anciennes sauvegardes de la banque (Banque_exercices_….json) sont acceptées.`}</div></div>`; }
 function bindData(){
   $("#dsave").onclick=()=>GRUN.telecharger(GRUN.exportAll(), "GRUN_sauvegarde_"+today()+".json");
   $("#drest").onchange=async ev=>{ const f=ev.target.files[0]; ev.target.value=""; if(!f) return; const msg={set textContent(t){ dmsg(t); }};

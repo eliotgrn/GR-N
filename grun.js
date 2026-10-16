@@ -25,6 +25,8 @@
     handoff: "grun_handoff_v1",        // passage de relais entre modules (poupée russe)
     mode: "grun_mode_v1",              // {m:"coach"|"joueur", jid}
     reglages: "grun_reglages_v1",      // {theme, fs, nomCoach}
+    objectifs: "grun_objectifs_v1",    // {obj:[Objectif]}  objectifs suivis par joueur
+    presences: "grun_presences_v1",    // {s:{cle:Seance de groupe pointée}}  assiduité
     // données propres aux modules (inchangées) :
     veille: "veille_v1", banqueDocs: "banque_v1", grillesDocs: "grilles_docs_v1", saisons: "saisons_v1",
     prog: "programmation_v1", progCache: "programmation_cache_v1", seances: "seances_v1", routines: "routines_v1",
@@ -48,14 +50,18 @@
     accueil: { f: "index.html", t: "Accueil", pole: null },
     joueurs: { f: "index.html", h: "#/joueurs", t: "Individualisation", pole: "ind" },
     prog: { f: "prog.html", t: "Create my prog", pole: "create", s: "Programmation adaptée au joueur : semaine, cycle ou saison" },
-    seances: { f: "seances.html", t: "Create my séance", pole: "create", s: "Structure automatique, exos choisis dans la banque" },
+    seances: { f: "seances.html", t: "Create my session", pole: "create", s: "Structure automatique, exos choisis dans la banque" },
     warmup: { f: "warmup.html", t: "Choose your warm-up", pole: "create", s: "30 échauffements performance prêts à lancer, modifiables" },
     veille: { f: "veille.html", t: "Veille de connaissances", pole: "res", s: "291 documents : âge, préparation physique, biomécanique, entraîner" },
     banque: { f: "banque.html", t: "Banque d'exercices", pole: "res", s: "Tous les exercices, jeux et situations, plus les tiens" },
     saisons: { f: "saisons.html", t: "Référentiel de programmation", pole: "res", s: "Les saisons de référence de la méthode, 4 à 18 ans" },
     grilles: { f: "grilles.html", t: "Grilles et tests", pole: "tests", s: "Grilles de compétences 4-18 ans, tests, barèmes, bilans, profil radar" }
   };
-  G.href = (mod, hash) => { const m = G.MODS[mod]; if (!m) return "index.html"; return m.f + (hash != null ? (String(hash).startsWith("#") ? hash : "#" + hash) : (m.h || "")); };
+  /* version « appli seule » d'un module (window.GRUN_SEUL = {mod, base}) : ses propres pages restent locales, les autres modules ouvrent GRÜN en ligne */
+  const SEUL = window.GRUN_SEUL || null; G.seul = SEUL;
+  G.href = (mod, hash) => { const m = G.MODS[mod]; const h = hash != null ? (String(hash).startsWith("#") ? hash : "#" + hash) : (m && m.h || "");
+    if (SEUL) { if (mod === SEUL.mod) return "index.html" + h; return SEUL.base + (m ? m.f : "index.html") + h; }
+    if (!m) return "index.html"; return m.f + h; };
   G.go = (mod, hash) => { location.href = G.href(mod, hash); };
 
   /* ---------- mode coach / joueur ---------- */
@@ -67,10 +73,46 @@
   G.profil = () => G.reglages().profil || "coach";
   G.moi = () => G.reglages().jidMoi || null;
   G.isAutonome = () => G.profil() === "autonome";
-  /* thème et taille du texte, appliqués à chaque module */
-  (function appliquerReglages() { const r = G.reglages(); const h = document.documentElement;
+  /* mode simple (défaut : l'essentiel) / mode expert (tout : surcouches, barèmes détaillés, détails du moteur, codes, options avancées).
+     Réglage grun_reglages_v1.expert ; chaque module le lit par GRUN.expert(). En mode simple, tout élément de classe « xp » est masqué (grun.css). */
+  G.expert = () => !!G.reglages().expert;
+  G.setExpert = on => { const r = G.reglages(); r.expert = !!on; G.save(G.K.reglages, r); };
+  /* thème, taille du texte et mode expert, appliqués à chaque module */
+  function appliquerReglages() { const r = G.reglages(); const h = document.documentElement;
     if (r.theme === "light" || r.theme === "dark") h.setAttribute("data-theme", r.theme); else if (r.theme === "auto") h.removeAttribute("data-theme");
-    if (r.fs && +r.fs !== 100) { h.style.setProperty("--grun-fs", r.fs / 100); h.style.fontSize = r.fs + "%"; } })();
+    if (r.fs && +r.fs !== 100) { h.style.setProperty("--grun-fs", r.fs / 100); h.style.fontSize = r.fs + "%"; }
+    h.classList.toggle("grun-expert", !!r.expert); h.classList.toggle("grun-simple", !r.expert); }
+  appliquerReglages();
+
+  /* ---------- NOMS EN CLAIR (aucun code interne affiché) ---------- */
+  G.LIGNES = {
+    PP: ["Force du bas du corps", "Force du haut du corps", "Gainage et stabilité du tronc", "Puissance des jambes : sauts et pliométrie", "Puissance du haut du corps et rotation", "Vitesse et accélération", "Freinage, changements de direction et agilité", "Endurance aérobie", "Répétition d'efforts intenses", "Coordination, motricité fondamentale et rythme", "Équilibre et proprioception", "Mobilité et souplesse"],
+    GE: ["Service à plat", "Service slicé", "Service lifté", "Coup droit lifté", "Coup droit à plat", "Coup droit slicé", "Revers lifté", "Revers à plat", "Revers slicé", "Volée de coup droit", "Volée de revers", "Smash", "Amortie et touché de balle"],
+    DE: ["Position d'attention", "Allègement et reprise d'appuis", "Démarrage et premiers pas", "Déplacements latéraux", "Déplacements vers l'avant et vers l'arrière", "Pas d'ajustement et mise à distance", "Appuis de frappe", "Freinage et décélération", "Changement de direction et réaccélération", "Replacement", "Enchaînements et liaison des actions"]
+  };
+  G.DOMAINES = { PP: "Préparation physique", GE: "Geste", DE: "Déplacement" };
+  /* « PP6 » → « Vitesse et accélération » (un code inconnu est rendu tel quel) */
+  G.ligne = code => { const m = /^(PP|GE|DE)(\d+)$/.exec(String(code || "").trim()); return m ? (G.LIGNES[m[1]][+m[2] - 1] || code) : code; };
+  G.lignesTxt = (L, sep) => (Array.isArray(L) ? L : []).map(G.ligne).join(sep || " · ");
+  G.ETAPES = { MR: "Mise en route", MO: "Mobilité", AC: "Activation", CV: "Coordination et vitesse", PO: "Mise en tension", ST: "Spécifique tennis" };
+  G.etape = c => G.ETAPES[c] || c;
+  /* textes des documents (veille, grilles, saisons) : en mode simple, « PP1 Force du bas du corps » devient « Force du bas du corps »
+     et un code seul (« PP6 ») devient le nom de la ligne. Rien ne change en mode expert. */
+  const RXL = /\b(PP|GE|DE)(1[0-3]|[1-9])\b(\s*[·:–]\s*|\s+)?/g;
+  G.clair = root => {
+    if (!root || G.expert()) return;
+    const W = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, { acceptNode: n => n.parentNode && /^(SCRIPT|STYLE|TEXTAREA|INPUT|CODE)$/.test(n.parentNode.nodeName) ? NodeFilter.FILTER_REJECT : NodeFilter.FILTER_ACCEPT });
+    const L = []; while (W.nextNode()) if (/\b(PP|GE|DE)\d/.test(W.currentNode.nodeValue)) L.push(W.currentNode);
+    for (const n of L) { const apres = ((n.nextSibling || (n.parentNode && n.parentNode.nextSibling) || {}).textContent || "").trimStart();
+      n.nodeValue = n.nodeValue.replace(RXL, (m, d, k, sep, off, str) => { const nom = (G.LIGNES[d] || [])[+k - 1]; if (!nom) return m;
+        let reste = str.slice(off + m.length); if (!reste.trim()) reste = apres; return reste.startsWith(nom) ? "" : nom + (sep ? (/[·:–]/.test(sep) ? " · " : " ") : ""); }); }
+    /* identifiants d'exos cités dans un texte (FOR-0021…) : remplacés par le nom de l'exo, qui ouvre sa fiche dans la banque */
+    const W2 = document.createTreeWalker(root, NodeFilter.SHOW_TEXT), E = [];
+    while (W2.nextNode()) { const n = W2.currentNode; if (/\b[A-Z]{3}-\d{4}\b/.test(n.nodeValue) && !(n.parentNode && n.parentNode.closest && n.parentNode.closest("a,code,textarea"))) E.push(n); }
+    if (E.length) G.banque.load().then(B => { for (const n of E) { if (!n.parentNode) continue; const f = document.createDocumentFragment(); let last = 0; const t = n.nodeValue;
+      t.replace(/\b[A-Z]{3}-\d{4}\b/g, (id, off) => { const e = B.byId[id]; if (!e) return id; f.appendChild(document.createTextNode(t.slice(last, off))); const a = document.createElement("a"); a.className = "ref"; a.href = G.href("banque", "#/ex/" + id); a.textContent = e.n; f.appendChild(a); last = off + id.length; return id; });
+      f.appendChild(document.createTextNode(t.slice(last))); n.parentNode.replaceChild(f, n); } }).catch(() => {});
+  };
 
   /* ---------- JOUEURS ----------
      Joueur = {id, nom, sexe:"F"|"G", naissance:"AAAA-MM-JJ", groupe:"texte libre (ancien)", notes,
@@ -96,9 +138,11 @@
       const P = G.load(G.K.prog, null); if (P) { if (Array.isArray(P.plans)) P.plans = P.plans.filter(p => p.jid !== id); if (P.profils) delete P.profils[id]; G.save(G.K.prog, P); }
       const C = G.load(G.K.progCache, null); if (C && typeof C === "object") { for (const k in C) if (C[k] && C[k].jid === id) delete C[k]; G.save(G.K.progCache, C); }
       const S = G.load(G.K.seances, null); if (S && Array.isArray(S.seances)) { S.seances = S.seances.filter(x => !(Array.isArray(x.joueurs) && x.joueurs.length === 1 && x.joueurs[0] === id && !x.gid)); S.seances.forEach(x => { if (Array.isArray(x.joueurs)) x.joueurs = x.joueurs.filter(y => y !== id); }); G.save(G.K.seances, S); }
-      const R = G.load(G.K.routines, null); if (R && Array.isArray(R.routines)) { R.routines = R.routines.filter(x => !(Array.isArray(x.jids) && x.jids.length === 1 && x.jids[0] === id && !x.gid)); R.routines.forEach(x => { if (Array.isArray(x.jids)) x.jids = x.jids.filter(y => y !== id); }); if (Array.isArray(R.hist)) R.hist = R.hist.filter(h => h.jid !== id && h.who !== id); if (R.profil) delete R.profil[id]; G.save(G.K.routines, R); }
+      const R = G.load(G.K.routines, null); if (R && typeof R === "object") { if (!Array.isArray(R.routines)) R.routines = []; R.routines = R.routines.filter(x => !(Array.isArray(x.jids) && x.jids.length === 1 && x.jids[0] === id && !x.gid)); R.routines.forEach(x => { if (Array.isArray(x.jids)) x.jids = x.jids.filter(y => y !== id); }); if (Array.isArray(R.hist)) R.hist = R.hist.filter(h => h.jid !== id && h.who !== id); if (R.profil) delete R.profil[id]; G.save(G.K.routines, R); }
       const D = G.load(G.K.grillesDocs, null); if (D && Array.isArray(D.gbs)) { D.gbs.forEach(x => { if (Array.isArray(x.jids)) x.jids = x.jids.filter(y => y !== id); }); G.save(G.K.grillesDocs, D); }
       const C2 = G.load(G.K.progCache, null); if (C2 && typeof C2 === "object") { for (const k in C2) if (C2[k] && Array.isArray(C2[k].jids)) C2[k].jids = C2[k].jids.filter(y => y !== id); G.save(G.K.progCache, C2); }
+      const O = G.load(G.K.objectifs, null); if (O && Array.isArray(O.obj)) { O.obj = O.obj.filter(x => x.jid !== id); G.save(G.K.objectifs, O); }
+      const Pr = G.load(G.K.presences, null); if (Pr && Pr.s) { for (const k in Pr.s) { const x = Pr.s[k]; if (x && x.p) delete x.p[id]; if (x && x.p && !Object.keys(x.p).length) delete Pr.s[k]; } G.save(G.K.presences, Pr); }
       const Rg = G.reglages(); if (Rg.jidMoi === id) { delete Rg.jidMoi; G.save(G.K.reglages, Rg); }
       const M = G.mode(); if (M.jid === id) G.setMode("coach", null);
     },
@@ -109,6 +153,7 @@
     ensure(f) { const s = jstore(); let j = s.joueurs.find(x => x.id === f.id) || s.joueurs.find(x => x.nom === f.nom && (x.naissance || "") === (f.naissance || "")); return j ? norm(j) : G.joueurs.create(f); }
   };
   G.on(G.K.joueurs, () => emit("grun:joueurs"));
+  G.on(G.K.reglages, appliquerReglages);
 
   /* âge civil (entier) et décimal */
   G.ageCiv = (nai, ref) => { if (!nai) return null; const a = new Date(nai), r = new Date(ref || G.today()); let y = r.getFullYear() - a.getFullYear(); if (r.getMonth() < a.getMonth() || (r.getMonth() === a.getMonth() && r.getDate() < a.getDate())) y--; return y; };
@@ -158,7 +203,8 @@
     get(id) { return gstore().groupes.find(x => x.id === id) || null; },
     save(g) { const s = gstore(); const i = s.groupes.findIndex(x => x.id === g.id); if (i < 0) s.groupes.push(g); else s.groupes[i] = g; return G.save(G.K.groupes, s); },
     create(f) { const g = { id: G.uid(), nom: (f.nom || "").trim() || "Groupe", jids: f.jids || [], notes: f.notes || "", cree: G.today() }; G.groupes.save(g); return g; },
-    remove(id) { const s = gstore(); s.groupes = s.groupes.filter(x => x.id !== id); G.save(G.K.groupes, s); },
+    remove(id) { const s = gstore(); s.groupes = s.groupes.filter(x => x.id !== id); G.save(G.K.groupes, s);
+      const Pr = G.load(G.K.presences, null); if (Pr && Pr.s) { let n = 0; for (const k in Pr.s) if (Pr.s[k] && Pr.s[k].gid === id) { delete Pr.s[k]; n++; } if (n) G.save(G.K.presences, Pr); } },
     joueurs(id) { const g = G.groupes.get(id); return g ? g.jids.map(G.joueurs.get).filter(j => j && !j.archive) : []; },   // un joueur archivé n'apparaît plus dans son groupe
     de(jid) { return gstore().groupes.filter(g => g.jids.includes(jid)); }
   };
@@ -183,6 +229,34 @@
       const semaines = []; for (let k = 11; k >= 0; k--) { const e = new Date(end - k * 7 * 864e5); semaines.push({ fin: e.toISOString().slice(0, 10), ua: R.filter(r => { const d = (e - new Date(r.date)) / 864e5; return d >= 0 && d < 7; }).reduce((a, r) => a + r.rpe * r.duree, 0) }); }
       return { aigu, chronique: chron, ratio, alerte, semaines };
     }
+  };
+
+
+  /* ---------- OBJECTIFS SUIVIS ----------
+     Objectif = {id, jid, txt, ech:"AAAA-MM-JJ"|"", statut:"encours"|"atteint"|"abandonne", cree, maj}
+     (le champ texte j.objectifs de la fiche reste l'objectif général) */
+  function ostore() { const s = G.load(G.K.objectifs, { obj: [] }); if (!Array.isArray(s.obj)) s.obj = []; return s; }
+  G.OBJ_STATUTS = { encours: "En cours", atteint: "Atteint", abandonne: "Abandonné" };
+  G.objectifs = {
+    de(jid) { const o = { encours: 0, atteint: 1, abandonne: 2 }; return ostore().obj.filter(x => x.jid === jid).sort((a, b) => ((o[a.statut] || 0) - (o[b.statut] || 0)) || String(a.ech || "9").localeCompare(String(b.ech || "9"))); },
+    add(f) { const s = ostore(); const x = { id: G.uid(), jid: f.jid, txt: String(f.txt || "").trim(), ech: f.ech || "", statut: f.statut || "encours", cree: G.today() }; if (!x.jid || !x.txt) return null; s.obj.push(x); G.save(G.K.objectifs, s); return x; },
+    update(id, patch) { const s = ostore(); const x = s.obj.find(y => y.id === id); if (!x) return null; Object.assign(x, patch, { maj: G.today() }); G.save(G.K.objectifs, s); return x; },
+    remove(id) { const s = ostore(); s.obj = s.obj.filter(x => x.id !== id); G.save(G.K.objectifs, s); }
+  };
+
+  /* ---------- ASSIDUITÉ (présences aux séances de groupe) ----------
+     grun_presences_v1 = {s:{ cle: {cle, date, gid, titre, p:{jid:true (présent) | false (absent)}} }}
+     cle = identifiant de la séance (Create my session) ou clé de la séance du plan (« p|plan|date|… »). */
+  function pstore() { const s = G.load(G.K.presences, { s: {} }); if (!s.s || typeof s.s !== "object") s.s = {}; return s; }
+  G.presences = {
+    get(cle) { return pstore().s[cle] || null; },
+    all() { return Object.values(pstore().s); },
+    /* val : true = présent, false = absent, null = effacer */
+    set(info, jid, val) { const s = pstore(); const x = s.s[info.cle] ||= { cle: info.cle, date: info.date, gid: info.gid || null, titre: info.titre || "", p: {} };
+      if (val == null) delete x.p[jid]; else x.p[jid] = !!val; if (!Object.keys(x.p).length) delete s.s[info.cle]; G.save(G.K.presences, s); },
+    /* taux d'un joueur : {present, total, pct (0-100) | null, dernieres:[{date,titre,present}]} */
+    taux(jid, depuis) { const L = Object.values(pstore().s).filter(x => x && x.p && jid in x.p && (!depuis || x.date >= depuis)).sort((a, b) => a.date < b.date ? 1 : -1);
+      const pr = L.filter(x => x.p[jid]).length; return { present: pr, total: L.length, pct: L.length ? Math.round(pr / L.length * 100) : null, dernieres: L.slice(0, 12).map(x => ({ date: x.date, titre: x.titre, gid: x.gid, present: !!x.p[jid] })) }; }
   };
 
   /* ---------- BANQUE D'EXERCICES (répertoire central) ----------
@@ -224,6 +298,8 @@
   /* ---------- TESTS PERSO ----------
      Test = {id:"T-MOI-001", nom, dom:"PP"|"GE"|"DE", lignes:[n], protocole, materiel, mesures:[{k:"m1",nom:"Essai",unite:"s"}], sens:"petit"|"grand" (meilleur résultat),
              seuils:{F:{"4":[s2,s3,s4] ou {cléMesure:[s2,s3,s4]},…,"18":…,"A":… (adulte, repli sur 18)}, G:{…}}  (3 seuils : passage au niveau 2, 3, 4), prio:false, vid, cree }
+     Mesure à plusieurs essais : mesures[i].essais (2-5) et mesures[i].calc ("best" par défaut | "mean") ; dans bilan.res[testId], chaque essai est
+     stocké sous "k#1", "k#2"… et le résultat retenu sous "k" (les affichages ignorent les clés qui contiennent « # »).
      Bilan (fiche joueur) : {id,date,age,adulte:bool,note,v:{PP,GE,DE},sel,res}.
      over : modifications d'un test d'origine (protocole, seuils…). */
   function tstore() { const s = G.load(G.K.tests, { perso: [], over: {}, seq: 0 }); s.perso ||= []; s.over ||= {}; s.seq ||= 0; return s; }
@@ -300,7 +376,7 @@
     tests: '<path d="M12 3l8.5 6.2-3.2 10H6.7L3.5 9.2z"/><path d="M12 8l4 3-1.5 4.5h-5L8 11z"/>'
   };
   G.nav = (actif) => {
-    if (document.getElementById("grun-nav")) return;
+    if (SEUL || document.getElementById("grun-nav")) return;
     const j = G.isJoueur(), auto = G.isAutonome();
     const items = auto && !j
       ? [["acc", "Mon dossier", "index.html"], ["create", "Create", "index.html#/pole/create"], ["tests", "Tests", "index.html#/pole/tests"]]

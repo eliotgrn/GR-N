@@ -24,6 +24,44 @@ body.grun-has-nav{padding-bottom:calc(var(--nav-h) + env(safe-area-inset-bottom,
 .grun-relais a,.grun-relais button{color:#fff;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.35);border-radius:8px;
   min-height:36px;padding:0 12px;display:inline-flex;align-items:center;text-decoration:none;font:inherit;white-space:nowrap}
 .grun-mod #back{visibility:visible!important}
+/* mode simple / mode expert (GRUN.expert) : « xp » = réservé au mode expert ; « xs » = seulement en mode simple */
+html.grun-simple .xp{display:none!important}
+html.grun-expert .xs{display:none!important}
+/* « Plus d'options » : réglages fins et actions rares, repliés (même aspect dans tous les modules) */
+details.grun-plus{margin-top:14px;border:1px solid var(--line,#D9DDE3);border-radius:12px;background:var(--panel,#fff)}
+details.grun-plus>summary{list-style:none;cursor:pointer;min-height:46px;display:flex;align-items:center;gap:8px;padding:0 14px;font:600 15px/1.2 var(--ui,system-ui,sans-serif);color:var(--mute,#5D6675)}
+details.grun-plus>summary::-webkit-details-marker{display:none}
+details.grun-plus>summary::before{content:"+";font-weight:700;width:1em;color:var(--mute,#5D6675)}
+details.grun-plus[open]>summary::before{content:"–"}
+details.grun-plus>.grun-plusb{padding:0 14px 14px;display:flex;flex-direction:column;gap:10px}
+/* Grilles : bilan en cours + un gros bouton « Créer un nouveau bilan » */
+.bil1{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;margin-top:14px;padding:12px 14px;border:1px solid var(--line,#D9DDE3);border-left:4px solid var(--acc,#0F766E);border-radius:12px;background:var(--panel,#fff)}
+.bil1 b{display:block;font-size:1.1rem}
+.bil1 small{color:var(--mute,#5D6675)}
+.go.big{min-height:46px;padding:0 18px;font-size:1.02rem}
+/* listes : colonne « code » masquée en mode simple (classe hasx sur la ligne, cx sur le code) */
+html.grun-simple .hasx{grid-template-columns:minmax(0,1fr)!important}
+html.grun-simple .cx{display:none!important}
+/* Grilles : « L'essentiel » en cartes sur téléphone ; toucher une ligne ouvre son détail */
+#doc table.cartes td.lgo{cursor:pointer;color:var(--acc,#0F766E);font-weight:700}
+@media (max-width:640px){
+  #doc table.cartes,#doc table.cartes tbody,#doc table.cartes tr,#doc table.cartes td{display:block;width:auto!important}
+  #doc table.cartes thead{display:none}
+  #doc table.cartes tr{padding:10px 12px;border-bottom:1px solid var(--line,#D9DDE3)}
+  #doc table.cartes td{border:none!important;padding:2px 0!important}
+  #doc table.cartes td.lgo{font-size:1.05em}
+  #doc table.cartes td.lgo::after{content:" ›"}
+  #doc table.cartes td:nth-child(3)::before{content:"Test ★ : ";font-weight:600;color:var(--mute,#5D6675)}
+}
+/* lignes de grille affichées en clair : les noms longs passent à la ligne */
+.lc{white-space:normal!important;overflow-wrap:anywhere;display:inline-block;max-width:100%}
+.boxh>div{min-width:0;flex:1 1 auto}
+/* bouton PDF commun (même aspect et même libellé « … PDF » dans tous les modules) : <button class="grun-pdf"><svg/><span>Rapport PDF</span></button> */
+.grun-pdf{display:inline-flex;align-items:center;gap:7px;min-height:42px;padding:0 14px;border-radius:10px;border:1.5px solid var(--grun,#0F766E);background:var(--panel,#fff);color:var(--grun,#0F766E);font:700 15px/1 var(--ui,system-ui,sans-serif);cursor:pointer;white-space:nowrap;text-decoration:none}
+.grun-pdf svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.grun-pdf:disabled{opacity:.6}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .grun-pdf{color:#2DD4BF;border-color:#2DD4BF}}
+:root[data-theme="dark"] .grun-pdf{color:#2DD4BF;border-color:#2DD4BF}
 </style>
 <script src="grun.js?v=1"></script>
 <meta name="grun-module" content="saisons"></head><body><title>Référentiel de programmation · GRÜN</title>
@@ -152,7 +190,11 @@ mark{background:var(--mark);color:inherit;border-radius:2px}
 .basebar{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px} .basebar a{text-decoration:none}
 .go.bl{display:inline-flex;align-items:center;justify-content:center;text-decoration:none}
 body.joueur .wkgo,body.joueur .basebar{display:none}
-@media print{.top,.wkgo,.basebar,.notes,.pn,.jump{display:none!important}}
+.pjs{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px}
+.pj{display:flex;flex-direction:column;gap:2px;text-decoration:none;background:var(--panel);border:1px solid var(--line);border-left:4px solid var(--p3);border-radius:10px;padding:10px 12px;min-height:44px}
+.pj b{font-size:15px} .pj small{color:var(--mute);font-size:12.5px}
+.pjbar{margin-top:12px;font-size:14px;background:var(--soft);border-radius:10px;padding:8px 12px} .pjbar a{color:var(--pc);font-weight:600}
+@media print{.top,.wkgo,.basebar,.notes,.pn,.jump,.pjbar{display:none!important}}
 </style>
 
 <header class="top"><div class="topin">
@@ -172,7 +214,15 @@ const PORTES = {
 };
 const GR = window.GRUN || null;
 const normCode = c => { const m=/^([FG])(\d{1,2})$/i.exec(c||""); return m ? m[1].toUpperCase()+String(+m[2]).padStart(2,"0") : c; };
-const progHref = (code, w) => (GR ? GR.href("prog","#/nouveau/") : "prog.html#/nouveau/") + "?base="+code + (w?"&w="+w:"");
+const progHref = (code, w, jid) => (GR ? GR.href("prog","#/nouveau/"+(jid||"")) : "prog.html#/nouveau/"+(jid||"")) + "?base="+code + (w?"&w="+w:"");
+/* joueurs de GRÜN : la saison de leur âge (4-18 ans ; au-delà de 18 ans, la saison 18 ans) et de leur sexe */
+const JR = () => { try{ if(!GR||!GR.joueurs) return [];
+  if(GR.isJoueur()){ const j=GR.joueurs.get(GR.mode().jid); return j?[j]:[]; }
+  if(GR.isAutonome&&GR.isAutonome()&&GR.moi()){ const j=GR.joueurs.get(GR.moi()); if(j) return [j]; }
+  return GR.joueurs.all(); }catch(e){ return []; } };
+const jAge = j => { const a = GR&&j&&j.naissance ? GR.ageCiv(j.naissance) : null; return a==null ? null : Math.max(4, Math.min(18, a)); };
+const jCode = j => { const a=jAge(j); return a!=null && /^[FG]$/.test(j.sexe||"") ? normCode(j.sexe+a) : null; };
+const jGet = id => { try{ return id&&GR&&GR.joueurs ? GR.joueurs.get(id) : null; }catch(e){ return null; } };
 let AGES = [];
 let CALW = [];
 const pad2 = n => String(n).padStart(2,"0");
@@ -181,7 +231,7 @@ const MOISC=["janv.","févr.","mars","avril","mai","juin","juil.","août","sept.
 const dd = s => { const d=new Date(s+"T12:00:00"); return d.getDate()+" "+MOISC[d.getMonth()]; };
 
 
-let DOCS = [], BY = {}, NORM = null;
+let DOCS = [], BY = {}, NORM = null, JID = null;
 const $ = s => document.querySelector(s);
 const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const fold = s => { let o=""; for(const ch of s){ const d=ch.normalize("NFD")[0]; o += (d||ch).toLowerCase(); } return o; };
@@ -217,7 +267,8 @@ function buildIndex(){
 window.addEventListener("hashchange", route);
 $("#back").onclick = () => { if(history.length > 1) history.back(); else location.hash = ""; };
 function route(){
-  const h = decodeURIComponent(location.hash.slice(1));
+  let h = decodeURIComponent(location.hash.slice(1)); const qi = h.indexOf("?j="); JID = null;
+  if(qi>=0 && !h.startsWith("s/")){ JID = h.slice(qi+3) || null; h = h.slice(0, qi); }
   const m = $("#main"); window.scrollTo(0,0);
   if(h.startsWith("/s/")) { const [c,w]=h.slice(3).split("/"); return showDoc(normCode(c), w); }   // GRÜN : saisons.html#/s/<code>[/w<n>]
   if(h.startsWith("d/")) return showDoc(normCode(h.slice(2).split("/")[0]), h.split("/")[2]);
@@ -241,14 +292,16 @@ function showHome(){
     <div class="f" style="flex:1;min-width:200px"><label for="qw">Semaine</label><select id="qw"><option value="0">Toute la saison</option>${CALW.map(w=>`<option value="${w.n}">S${w.n} · ${dd(w.du)} - ${dd(w.au)}${w.n===cw?" (en cours)":""}</option>`).join("")}</select></div>
     <button class="go" id="qgo" type="button">Ouvrir</button></div>
     <div class="tools" style="margin-top:8px"><button class="ib" id="qnow" type="button">Cette semaine (S${cw}${cwk?" · "+dd(cwk.du):""})</button></div></div>`;
-  html += `<div class="sec"><h2>Les portes</h2><div class="doors">${Object.entries(PORTES).map(([p,o])=>`<a class="door" href="#p/${p}" style="--pc:var(${o.c})"><b>${p} · ${o.n}</b><span>${o.s}</span><small>${count(p)} documents</small></a>`).join("")}</div></div>`;
+  const js = JR().filter(j=>BY[jCode(j)]);
+  if(js.length) html += `<div class="sec"><h2>${js.length>1?"La saison de mes joueurs":"Ma saison"}</h2><p class="msg" style="margin:-4px 0 8px">Ouvre la saison de son âge et de son sexe, directement à la semaine en cours (S${cw}).</p><div class="pjs">${js.slice(0,24).map(j=>`<a class="pj" href="#/s/${jCode(j)}/w${cw}?j=${encodeURIComponent(j.id)}"><b>${esc(j.nom)}</b><small>Saison ${j.sexe==="F"?"fille":"garçon"} ${jAge(j)} ans · S${cw}</small></a>`).join("")}</div></div>`;
+  html += `<div class="sec"><h2>Les portes</h2><div class="doors">${Object.entries(PORTES).map(([p,o])=>`<a class="door" href="#p/${p}" style="--pc:var(${o.c})"><b>${o.n}</b><span>${o.s}</span><small>${count(p)} documents</small></a>`).join("")}</div></div>`;
   const favs = P.fav.filter(c=>BY[c]), recs = P.rec.filter(c=>BY[c]).slice(0,8);
   html += `<div class="sec"><h2>Favoris</h2>${favs.length ? listHTML(favs.map(c=>BY[c]), true) : '<div class="empty">Touche ☆ en haut d\'un document pour le retrouver ici.</div>'}</div>`;
   if(recs.length) html += `<div class="sec"><h2>Consultés récemment</h2>${listHTML(recs.map(c=>BY[c]), true)}</div>`;
-  html += `<div class="sec"><h2>Mes données</h2><div class="tools">
+  html += `<details class="grun-plus"><summary>Plus d'options : sauvegarde, taille du texte</summary><div class="grun-plusb"><div class="tools">
      <button class="ib" id="bsave" type="button">Sauvegarder</button>
      <label class="ib" for="frest">Restaurer</label><input id="frest" type="file" accept=".json,application/json" hidden>
-     <button class="ib" id="fsm" type="button" aria-label="Texte plus petit">A−</button><button class="ib" id="fsp" type="button" aria-label="Texte plus grand">A+</button></div><p class="msg" id="dmsg">Favoris et notes sont gardés sur cet appareil.</p></div>`;
+     <button class="ib" id="fsm" type="button" aria-label="Texte plus petit">A−</button><button class="ib" id="fsp" type="button" aria-label="Texte plus grand">A+</button></div><p class="msg" id="dmsg">Favoris et notes sont gardés sur cet appareil.</p></div></details>`;
   m.innerHTML = html;
   const qs=$("#qs"), qa=$("#qa"), qw=$("#qw"); qs.value=P.sx; qa.value=AGES.includes(+P.age)?P.age:String(AGES[AGES.length-1]||14); qw.value="0";
   const cd=()=>normCode(qs.value+qa.value);
@@ -259,7 +312,7 @@ function showHome(){
 }
 function setFs(d){ P.fs=Math.max(14,Math.min(24,P.fs+d)); save(); document.documentElement.style.setProperty("--fs",P.fs+"px"); const m=$("#dmsg"); if(m) m.textContent="Taille du texte des documents : "+P.fs+" px."; }
 function listHTML(xs, withPath){
-  return `<div class="list">${xs.map(x=>`<a class="li" href="#d/${x.c}"><span class="code">${x.c}</span><span class="tt">${esc(x.t)}${withPath?`<small>${esc(x.ch)}</small>`:""}</span></a>`).join("")}</div>`;
+  return `<div class="list">${xs.map(x=>`<a class="li hasx" href="#d/${x.c}"><span class="code cx">${x.c}</span><span class="tt">${esc(x.t)}${withPath?`<small>${esc(x.ch)}</small>`:""}</span></a>`).join("")}</div>`;
 }
 
 /* ---------- porte ---------- */
@@ -268,7 +321,7 @@ function showPorte(p){
   document.documentElement.style.setProperty("--acc", pc(p));
   const xs = DOCS.filter(x=>porteOf(x)===p), groups = {};
   xs.forEach(x=>{ (groups[x.d] = groups[x.d] || []).push(x); });
-  let html = `<div class="crumb" style="--pc:${pc(p)}"><a href="#">Accueil</a></div><h1 style="color:${pc(p)}">${p} · ${PORTES[p].n}</h1><p class="lead">${PORTES[p].s}</p>`;
+  let html = `<div class="crumb" style="--pc:${pc(p)}"><a href="#">Accueil</a></div><h1 style="color:${pc(p)}">${PORTES[p].n}</h1><p class="lead">${PORTES[p].s}</p>`;
   html += Object.entries(groups).map(([d,arr])=>`<div class="fold" style="--pc:${pc(p)}"><h3>${esc(d)}</h3>${listHTML(arr,false)}</div>`).join("");
   $("#main").innerHTML = html;
 }
@@ -279,15 +332,15 @@ function showDoc(code, hint){
   const p = porteOf(x); document.documentElement.style.setProperty("--acc", pc(p));
   P.rec = [code, ...P.rec.filter(c=>c!==code)].slice(0,20); save();
   const sib = DOCS.filter(y=>y.d===x.d), k = sib.indexOf(x), prev = sib[k-1], next = sib[k+1];
-  const fav = P.fav.includes(code);
+  const fav = P.fav.includes(code), jb = jGet(JID);
   const m = $("#main"); m.style.setProperty("--pc", pc(p));
-  m.innerHTML = `<div class="crumb"><a href="#">Accueil</a>›<a href="#p/${p}">${p} · ${PORTES[p].n}</a>›<span>${esc(x.d)}</span></div>
+  m.innerHTML = `<div class="crumb"><a href="#">Accueil</a>›<a href="#p/${p}">${PORTES[p].n}</a>›<span>${esc(String(x.d).replace(/^\d+(\.\d+)*\s/,""))}</span></div>
     <div class="dochead"><h1>${esc(x.t)}</h1><div class="acts">
       <button class="ib star" id="fav" type="button" aria-pressed="${fav}">${fav?"★ Favori":"☆ Favori"}</button>
       <button class="ib" id="fsm" type="button" aria-label="Texte plus petit">A−</button><button class="ib" id="fsp" type="button" aria-label="Texte plus grand">A+</button></div></div>
-    <div class="crumb" style="margin-top:4px">${esc(x.ch||"")}</div>${jumps(x)}
-    ${x.sx?`<div class="basebar"><a class="go bl" href="${progHref(x.c)}">Utiliser comme base dans Create my prog →</a><a class="ib" href="${progHref(x.c, curWeek())}">Créer les séances de cette semaine (S${curWeek()})</a></div>`:""}
-    <nav class="toc" id="toc" hidden></nav>
+    <div class="crumb xp" style="margin-top:4px">${esc(x.ch||"")}</div>${jumps(x)}
+    ${x.sx?`${jb?`<div class="pjbar">Pour <b>${esc(jb.nom)}</b>${jCode(jb)!==x.c?` · sa saison : <a href="#/s/${jCode(jb)}/w${curWeek()}?j=${encodeURIComponent(jb.id)}">${jb.sexe==="F"?"fille":"garçon"} ${jAge(jb)} ans</a>`:""}</div>`:""}<div class="basebar"><a class="go bl" href="${progHref(x.c, 0, jb&&jb.id)}">${jb?`Créer la prog de ${esc(jb.nom)} sur cette saison →`:"Utiliser comme base dans Create my prog →"}</a><a class="ib" href="${progHref(x.c, curWeek(), jb&&jb.id)}">Créer les séances de cette semaine (S${curWeek()})</a></div>`:""}
+    <nav class="toc xp" id="toc" hidden></nav>
     <article class="doc" id="doc"></article>
     <div class="pn">${prev?`<a href="#d/${prev.c}"><small>‹ Précédent</small>${esc(prev.t)}</a>`:"<span></span>"}${next?`<a class="nx" href="#d/${next.c}"><small>Suivant ›</small>${esc(next.t)}</a>`:"<span></span>"}</div>
     <div class="notes"><label for="nt" style="font-weight:600">Mes notes sur ce document</label><textarea id="nt" placeholder="Idées, joueurs concernés, à tester…"></textarea><div class="msg" id="ntm"></div></div>`;
@@ -310,6 +363,9 @@ function showDoc(code, hint){
   if(sections.length>2){ const toc=$("#toc"); toc.hidden=false; toc.innerHTML = `<b>Le détail</b><ol>${sections.map(([id,t])=>`<li><a href="#" data-s="${id}">${esc(t.replace(/^\d+\.\s*/,""))}</a></li>`).join("")}</ol>`;
     toc.onclick = e=>{ const a=e.target.closest("a[data-s]"); if(!a) return; e.preventDefault(); const d=document.getElementById(a.dataset.s); d.open=true; d.scrollIntoView({behavior:"smooth",block:"start"}); }; }
   if(sections.length===1){ doc.querySelector("details").open = true; }
+  if(window.GRUN&&GRUN.clair) GRUN.clair(document.getElementById("doc"));   /* lignes de grille en clair (mode simple) */
+  doc.querySelectorAll('.wkgo a[href*="#/nouveau/"]').forEach(a=>{ const q=a.getAttribute("href").split("?")[1]||""; const w=(q.match(/w=(\d+)/)||[])[1]; a.href = progHref(x.c, w, jb&&jb.id); });
+  if(jb) $("#main").querySelectorAll('.jump a[href^="#/s/"]').forEach(a=>{ a.href += "?j="+encodeURIComponent(jb.id); });
   // favoris, taille, notes
   $("#fav").onclick = ()=>{ const on = !P.fav.includes(code); P.fav = on ? [code,...P.fav] : P.fav.filter(c=>c!==code); save(); $("#fav").setAttribute("aria-pressed",on); $("#fav").textContent = on?"★ Favori":"☆ Favori"; };
   $("#fsm").onclick=()=>setFs(-1); $("#fsp").onclick=()=>setFs(1);

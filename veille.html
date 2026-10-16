@@ -24,6 +24,44 @@ body.grun-has-nav{padding-bottom:calc(var(--nav-h) + env(safe-area-inset-bottom,
 .grun-relais a,.grun-relais button{color:#fff;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.35);border-radius:8px;
   min-height:36px;padding:0 12px;display:inline-flex;align-items:center;text-decoration:none;font:inherit;white-space:nowrap}
 .grun-mod #back{visibility:visible!important}
+/* mode simple / mode expert (GRUN.expert) : « xp » = réservé au mode expert ; « xs » = seulement en mode simple */
+html.grun-simple .xp{display:none!important}
+html.grun-expert .xs{display:none!important}
+/* « Plus d'options » : réglages fins et actions rares, repliés (même aspect dans tous les modules) */
+details.grun-plus{margin-top:14px;border:1px solid var(--line,#D9DDE3);border-radius:12px;background:var(--panel,#fff)}
+details.grun-plus>summary{list-style:none;cursor:pointer;min-height:46px;display:flex;align-items:center;gap:8px;padding:0 14px;font:600 15px/1.2 var(--ui,system-ui,sans-serif);color:var(--mute,#5D6675)}
+details.grun-plus>summary::-webkit-details-marker{display:none}
+details.grun-plus>summary::before{content:"+";font-weight:700;width:1em;color:var(--mute,#5D6675)}
+details.grun-plus[open]>summary::before{content:"–"}
+details.grun-plus>.grun-plusb{padding:0 14px 14px;display:flex;flex-direction:column;gap:10px}
+/* Grilles : bilan en cours + un gros bouton « Créer un nouveau bilan » */
+.bil1{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;margin-top:14px;padding:12px 14px;border:1px solid var(--line,#D9DDE3);border-left:4px solid var(--acc,#0F766E);border-radius:12px;background:var(--panel,#fff)}
+.bil1 b{display:block;font-size:1.1rem}
+.bil1 small{color:var(--mute,#5D6675)}
+.go.big{min-height:46px;padding:0 18px;font-size:1.02rem}
+/* listes : colonne « code » masquée en mode simple (classe hasx sur la ligne, cx sur le code) */
+html.grun-simple .hasx{grid-template-columns:minmax(0,1fr)!important}
+html.grun-simple .cx{display:none!important}
+/* Grilles : « L'essentiel » en cartes sur téléphone ; toucher une ligne ouvre son détail */
+#doc table.cartes td.lgo{cursor:pointer;color:var(--acc,#0F766E);font-weight:700}
+@media (max-width:640px){
+  #doc table.cartes,#doc table.cartes tbody,#doc table.cartes tr,#doc table.cartes td{display:block;width:auto!important}
+  #doc table.cartes thead{display:none}
+  #doc table.cartes tr{padding:10px 12px;border-bottom:1px solid var(--line,#D9DDE3)}
+  #doc table.cartes td{border:none!important;padding:2px 0!important}
+  #doc table.cartes td.lgo{font-size:1.05em}
+  #doc table.cartes td.lgo::after{content:" ›"}
+  #doc table.cartes td:nth-child(3)::before{content:"Test ★ : ";font-weight:600;color:var(--mute,#5D6675)}
+}
+/* lignes de grille affichées en clair : les noms longs passent à la ligne */
+.lc{white-space:normal!important;overflow-wrap:anywhere;display:inline-block;max-width:100%}
+.boxh>div{min-width:0;flex:1 1 auto}
+/* bouton PDF commun (même aspect et même libellé « … PDF » dans tous les modules) : <button class="grun-pdf"><svg/><span>Rapport PDF</span></button> */
+.grun-pdf{display:inline-flex;align-items:center;gap:7px;min-height:42px;padding:0 14px;border-radius:10px;border:1.5px solid var(--grun,#0F766E);background:var(--panel,#fff);color:var(--grun,#0F766E);font:700 15px/1 var(--ui,system-ui,sans-serif);cursor:pointer;white-space:nowrap;text-decoration:none}
+.grun-pdf svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.grun-pdf:disabled{opacity:.6}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .grun-pdf{color:#2DD4BF;border-color:#2DD4BF}}
+:root[data-theme="dark"] .grun-pdf{color:#2DD4BF;border-color:#2DD4BF}
 </style>
 <script src="grun.js?v=1"></script>
 <meta name="grun-module" content="veille"></head><body><title>Veille de connaissances</title>
@@ -140,6 +178,13 @@ mark{background:var(--mark);color:inherit;border-radius:2px}
 .lk.pri{background:var(--ink);color:var(--bg);border-color:var(--ink)}
 .lgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
 @media (max-width:640px){.lgrid{grid-template-columns:minmax(0,1fr)}}
+.resume{display:flex;flex-direction:column;gap:2px;text-decoration:none;background:var(--panel);border:1px solid var(--line);border-left:4px solid var(--pc);border-radius:12px;padding:12px 16px}
+.resume small{font-size:11px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--mute)}
+.resume b{font-size:16px} .resume span{color:var(--pc);font-size:14px;font-weight:600}
+details.toc>summary{cursor:pointer;font-weight:600;font-size:14px;list-style:none;min-height:30px;display:flex;align-items:center}
+details.toc>summary::-webkit-details-marker{display:none}
+details.toc>summary::before{content:"+";width:1.1em;color:var(--pc);font-weight:700}
+details.toc[open]>summary::before{content:"–"}
 .lgrid a{font-size:13.5px;text-decoration:none;background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:7px 10px;border-left:4px solid var(--pc)}
 </style>
 
@@ -154,7 +199,7 @@ mark{background:var(--mark);color:inherit;border-radius:2px}
 <script>
 "use strict";
 const PORTES = {
-  "1": {n:"Par âge", c:"--p1", s:"Un document par âge, de 0 à 3 ans à l'adulte : tout ce qui concerne cet âge au même endroit."},
+  "1": {n:"Par âge", c:"--p1", s:"Un document par âge, de 0 à 3 ans à 18 ans : tout ce qui concerne cet âge au même endroit."},
   "2": {n:"Préparation physique", c:"--p2", s:"Les 12 lignes des grilles, la musculation, l'échauffement, la prévention et les tests."},
   "3": {n:"Biomécanique", c:"--p3", s:"Les 13 coups du geste et les 11 lignes du déplacement, principes et âge par âge."},
   "4": {n:"Entraîner", c:"--p4", s:"Développement de l'enfant, analyse du jeu, sciences, planification, récupération, pédagogie, mental."}
@@ -189,17 +234,43 @@ async function boot(){
       $("#jback").onclick=()=>{ if(history.length>1) history.back(); else location.href="index.html"; }; return; } }
   try{
     const r = await fetch("data-veille.json"); const d = await r.json();
-    DOCS = d.docs; DOCS.forEach((x,i)=>{ x.i=i; BY[x.c]=x; });
+    DOCS = d.docs; DOCS.forEach((x,i)=>{ x.i=i; BY[x.c]=x; }); PF = d.pf || null; PH = d.ph || {};
     if(d.lv) LV = d.lv;
     for(const [l,g] of Object.entries(LV.L||{})) for(const [k,cs] of Object.entries(g)) for(const c of cs) (REV[c]=REV[c]||[]).push([l,k]);
   }catch(e){ $("#main").innerHTML = '<div class="empty">La veille n\'a pas pu se charger. Vérifie la connexion pour la première ouverture, puis recharge la page.</div>'; return; }
   route();
-  setTimeout(buildIndex, 50);
+  setTimeout(precharger, 1500);
+  $("#q").addEventListener("focus", ()=>{ tousPaquets().catch(()=>{}); }, {once:true});
 }
-function buildIndex(){
-  if(NORM) return;
-  const tmp = document.createElement("div");
-  NORM = DOCS.map(x => { tmp.innerHTML = x.h; const t = (x.t+" \n "+tmp.textContent).replace(/\s+/g," "); return {raw:t, f:fold(t)}; });
+/* ---------- chargement rapide : index léger au démarrage (titres, dossiers, lignes), texte des documents par paquets (data-veille-<n>.json) chargés à la demande ---------- */
+let PF = null, PH = {}; const PAQ = {};
+function paquet(k){
+  if(!PF || !k) return Promise.resolve();
+  return PAQ[k] || (PAQ[k] = fetch(PF+k+".json"+(PH[k]?"?v="+PH[k]:"")).then(r=>{ if(!r.ok) throw new Error("paquet "+k); return r.json(); })
+    .then(o=>{ for(const c in o) if(BY[c]) BY[c].h = o[c]; }).catch(e=>{ delete PAQ[k]; throw e; }));
+}
+function tousPaquets(){ return Promise.all([...new Set(DOCS.filter(x=>x.h==null).map(x=>x.k))].map(paquet)); }
+/* en arrière-plan, un paquet à la fois : la recherche tapée ensuite est immédiate */
+function precharger(){ const k = (DOCS.find(x=>x.h==null)||{}).k; if(!k) return; paquet(k).then(()=>setTimeout(precharger, 120), ()=>{}); }
+const ENT = {amp:"&", lt:"<", gt:">", quot:'"', apos:"'", nbsp:" "};
+const texte = h => h.replace(/<[^>]*>/g,"").replace(/&(#x[0-9a-f]+|#\d+|[a-z]+);/gi, (m,e)=> e[0]==="#" ? String.fromCodePoint(e[1]==="x"||e[1]==="X" ? parseInt(e.slice(2),16) : +e.slice(1)) : (ENT[e.toLowerCase()] ?? m));
+/* recherche plein texte directement dans le HTML des paquets (sans index à construire) : expression insensible à la casse et aux accents, occurrences hors balises */
+const ACC = {a:"aàáâãäå", e:"eèéêë", i:"iìíîï", o:"oòóôõö", u:"uùúûü", c:"cç", n:"nñ", y:"yýÿ"};
+const motif = t => new RegExp([...t].map(ch => ACC[ch] ? "["+ACC[ch]+"]" : ch.replace(/[.*+?^${}()|[\]\\\/-]/g, "\\$&")).join(""), "gi");
+function compte(s, re, html){ re.lastIndex = 0; let c = 0, first = -1, m;
+  while(c < 60 && (m = re.exec(s))){ const i = m.index;
+    if(html && s.lastIndexOf("<", i) > s.lastIndexOf(">", i)){ const g = s.indexOf(">", i); re.lastIndex = g < 0 ? s.length : g + 1; continue; }
+    if(first < 0) first = i; c++; }
+  return [c, first]; }
+function extrait(x, first, ts){ const h = x.h;
+  if(first < 0) return texte(h.slice(0, 1500).replace(/<[^>]*$/, "")).replace(/\s+/g," ").trim().slice(0, 280) + "…";
+  const a = Math.max(0, first - 700), b = first + 1200; let s = h.slice(a, b);
+  if(a > 0){ const g = s.indexOf(">"), l = s.indexOf("<"); if(g >= 0 && (l < 0 || g < l)) s = s.slice(g + 1); }
+  s = s.replace(/<[^>]*$/, "");
+  const t = texte(s).replace(/\s+/g," "), f = fold(t); let p = -1;
+  for(const w of ts){ const q = f.indexOf(w); if(q >= 0 && (p < 0 || q < p)) p = q; }
+  if(p < 0) p = 0; const u = Math.max(0, p - 90), v = Math.min(t.length, p + 190);
+  return (a > 0 || u > 0 ? "…" : "") + t.slice(u, v) + (v < t.length || b < h.length ? "…" : "");
 }
 
 /* ---------- routage ---------- */
@@ -223,25 +294,27 @@ function showHome(){
   const m = $("#main");
   const count = p => DOCS.filter(x=>porteOf(x)===p).length;
   let html = `<h1>Veille de connaissances</h1><p class="lead">Préparation physique et biomécanique du tennis · ${DOCS.length} documents · toutes les ressources réunies en un seul modèle</p>`;
+  const L = P.last && BY[P.last.c] ? P.last : null;
+  if(L) html += `<div class="sec"><a class="resume" href="#d/${L.c}${L.s?"/"+L.s:""}" style="--pc:${pc(porteOf(BY[L.c]))}"><small>Reprendre où j'en étais</small><b>${esc(BY[L.c].t)}</b>${L.st?`<span>${esc(L.st)}</span>`:""}</a></div>`;
   html += `<div class="sec"><h2>Accès direct</h2><div class="quick">
-    <div class="f"><label for="qa">Âge</label><select id="qa">${["0-3","3",...Array.from({length:15},(_,i)=>String(i+4)),"adulte"].map(a=>`<option value="${a}">${a==="adulte"?"Après 18 ans : le haut niveau visé":a==="0-3"?"0 à 3 ans":a+" ans"}</option>`).join("")}</select></div>
+    <div class="f"><label for="qa">Âge</label><select id="qa">${["0-3","3",...Array.from({length:15},(_,i)=>String(i+4))].map(a=>`<option value="${a}">${a==="0-3"?"0 à 3 ans":a+" ans"}</option>`).join("")}</select></div>
     <div class="f"><label for="qd">Domaine</label><select id="qd"><option value="AGE">Tout l'âge (document de l'âge)</option><option value="PP">Préparation physique</option><option value="GE">Biomécanique du geste</option><option value="DE">Biomécanique du déplacement</option></select></div>
     <div class="f" id="qlw" style="flex:1;min-width:200px"><label for="ql">Ligne</label><select id="ql"></select></div>
     <button class="go" id="qgo" type="button">Ouvrir</button><button class="ib" id="qline" type="button">Tout sur cette ligne</button></div></div>`;
-  html += `<div class="sec"><h2>Les portes</h2><div class="doors">${Object.entries(PORTES).map(([p,o])=>`<a class="door" href="#p/${p}" style="--pc:var(${o.c})"><b>${p} · ${o.n}</b><span>${o.s}</span><small>${count(p)} documents</small></a>`).join("")}</div>
+  html += `<div class="sec"><h2>Les portes</h2><div class="doors">${Object.entries(PORTES).map(([p,o])=>`<a class="door" href="#p/${p}" style="--pc:var(${o.c})"><b>${o.n}</b><span>${o.s}</span><small>${count(p)} documents</small></a>`).join("")}</div>
     <p class="msg" style="margin-top:8px">Les exercices de chaque ligne sont dans la <a class="ref" href="banque.html">banque d'exercices</a> ; les tests dans <a class="ref" href="grilles.html">Grilles et tests</a>.</p></div>`;
-  html += `<div class="sec"><h2>Par ligne de grille</h2><p class="msg" style="margin:-4px 0 8px">Tous les documents d'une ligne : comprendre, âge par âge, séances, biomécanique, tests.</p>${["PP","GE","DE"].map(d=>`<details class="fold" style="--pc:${LCOL[d]}" ${d==="PP"?"open":""}><summary style="cursor:pointer;font-weight:600;padding:6px 0">${DOMN[d]}</summary><div class="lgrid">${LIGNES[d].map((n,i)=>`<a href="#/l/${d}${i+1}">${d}${i+1} · ${esc(n)}</a>`).join("")}</div></details>`).join("")}</div>`;
+  html += `<div class="sec"><h2>Par ligne de grille</h2><p class="msg" style="margin:-4px 0 8px">Tous les documents d'une ligne : comprendre, âge par âge, séances, biomécanique, tests.</p>${["PP","GE","DE"].map(d=>`<details class="fold" style="--pc:${LCOL[d]}" ${d==="PP"?"open":""}><summary style="cursor:pointer;font-weight:600;padding:6px 0">${DOMN[d]}</summary><div class="lgrid">${LIGNES[d].map((n,i)=>`<a href="#/l/${d}${i+1}">${esc(n)}</a>`).join("")}</div></details>`).join("")}</div>`;
   const favs = P.fav.filter(c=>BY[c]), recs = P.rec.filter(c=>BY[c]).slice(0,8);
   html += `<div class="sec"><h2>Favoris</h2>${favs.length ? listHTML(favs.map(c=>BY[c]), true) : '<div class="empty">Touche ☆ en haut d\'un document pour le retrouver ici.</div>'}</div>`;
   if(recs.length) html += `<div class="sec"><h2>Consultés récemment</h2>${listHTML(recs.map(c=>BY[c]), true)}</div>`;
-  html += `<div class="sec"><h2>Mes données</h2><div class="tools">
+  html += `<details class="grun-plus"><summary>Plus d'options : sauvegarde, taille du texte</summary><div class="grun-plusb"><div class="tools">
      <button class="ib" id="bsave" type="button">Sauvegarder favoris et notes</button>
      <label class="ib" for="frest">Restaurer</label><input id="frest" type="file" accept=".json,application/json" hidden>
      <button class="ib" id="fsm" type="button" aria-label="Texte plus petit">A−</button><button class="ib" id="fsp" type="button" aria-label="Texte plus grand">A+</button>
-     <a class="ib" href="${RADAR}">Profil radar</a></div><p class="msg" id="dmsg">Une seule sauvegarde pour tout GRÜN (favoris et notes de la veille compris). Les anciennes sauvegardes Veille_favoris_notes_….json sont acceptées.</p></div>`;
+     <a class="ib" href="${RADAR}">Profil radar</a></div><p class="msg" id="dmsg">Une seule sauvegarde pour tout GRÜN (favoris et notes de la veille compris). Les anciennes sauvegardes Veille_favoris_notes_….json sont acceptées.</p></div></details>`;
   m.innerHTML = html;
   const qa=$("#qa"), qd=$("#qd"), ql=$("#ql");
-  qa.value=P.age; qd.value=P.dom;
+  if(![...qa.options].some(o=>o.value===P.age)) P.age="10"; qa.value=P.age; qd.value=P.dom;
   const fill=()=>{ const d=qd.value; $("#qlw").hidden = d==="AGE"; const L = d==="PP"?PP : d==="GE"?GE.map(x=>x[0]) : d==="DE"?DE : [];
     ql.innerHTML = L.map((n,i)=>`<option value="${i}">${i+1} · ${esc(n)}</option>`).join(""); if(+P.ligne < L.length) ql.value=P.ligne; };
   fill(); qd.onchange=()=>{ P.ligne="0"; fill(); };
@@ -253,7 +326,7 @@ function showHome(){
 }
 function setFs(d){ P.fs=Math.max(14,Math.min(24,P.fs+d)); save(); document.documentElement.style.setProperty("--fs",P.fs+"px"); const m=$("#dmsg"); if(m) m.textContent="Taille du texte des documents : "+P.fs+" px."; }
 function quickGo(age, dom, i){
-  const ageCode = {"0-3":"1.1.1","3":"1.1.2","adulte":"1.1.18"}[age] || ("1.1."+(+age-1));
+  const ageCode = {"0-3":"1.1.1","3":"1.1.2"}[age] || ("1.1."+(Math.min(18,+age||10)-1));
   let code = ageCode;
   if(dom==="PP") code = `2.${i+1}.2`;
   if(dom==="GE") code = GE[i][1];
@@ -261,7 +334,7 @@ function quickGo(age, dom, i){
   location.hash = `d/${code}` + (dom!=="AGE" && /^\d+$/.test(age) ? `/a${age}` : "");
 }
 function listHTML(xs, withPath){
-  return `<div class="list">${xs.map(x=>`<a class="li" href="#d/${x.c}"><span class="code">${x.c}</span><span class="tt">${esc(x.t)}${withPath?`<small>${esc(x.d.replace(/^\d+(\.\d+)?\s/,""))}</small>`:""}</span></a>`).join("")}</div>`;
+  return `<div class="list">${xs.map(x=>`<a class="li hasx" href="#d/${x.c}"><span class="code cx">${x.c}</span><span class="tt">${esc(x.t)}${withPath?`<small>${esc(x.d.replace(/^\d+(\.\d+)?\s/,""))}</small>`:""}</span></a>`).join("")}</div>`;
 }
 
 /* ---------- porte ---------- */
@@ -270,7 +343,7 @@ function showPorte(p){
   document.documentElement.style.setProperty("--acc", pc(p));
   const xs = DOCS.filter(x=>porteOf(x)===p), groups = {};
   xs.forEach(x=>{ (groups[x.d] = groups[x.d] || []).push(x); });
-  let html = `<div class="crumb" style="--pc:${pc(p)}"><a href="#">Accueil</a></div><h1 style="color:${pc(p)}">${p} · ${PORTES[p].n}</h1><p class="lead">${PORTES[p].s}</p>`;
+  let html = `<div class="crumb" style="--pc:${pc(p)}"><a href="#">Accueil</a></div><h1 style="color:${pc(p)}">${PORTES[p].n}</h1><p class="lead">${PORTES[p].s}</p>`;
   html += Object.entries(groups).map(([d,arr])=>`<div class="fold" style="--pc:${pc(p)}"><h3>${esc(d)}</h3>${listHTML(arr,false)}</div>`).join("");
   $("#main").innerHTML = html;
 }
@@ -278,18 +351,21 @@ function showPorte(p){
 /* ---------- document ---------- */
 function showDoc(code, hint){
   const x = BY[code]; if(!x) return showHome();
+  if(x.h==null){ const h0 = location.hash, tm = setTimeout(()=>{ if(location.hash===h0) $("#main").innerHTML = '<div class="load">Ouverture du document…</div>'; }, 150);
+    const ko = ()=>{ clearTimeout(tm); if(location.hash===h0) $("#main").innerHTML = '<div class="empty">Ce document n\'a pas pu se charger. Vérifie la connexion pour la première ouverture, puis réessaie.</div>'; };
+    paquet(x.k).then(()=>{ if(x.h==null) return ko(); clearTimeout(tm); if(location.hash===h0) showDoc(code, hint); }, ko); return; }
   const p = porteOf(x); document.documentElement.style.setProperty("--acc", pc(p));
   P.rec = [code, ...P.rec.filter(c=>c!==code)].slice(0,20); save();
   const sib = DOCS.filter(y=>y.d===x.d), k = sib.indexOf(x), prev = sib[k-1], next = sib[k+1];
   const fav = P.fav.includes(code);
   const m = $("#main"); m.style.setProperty("--pc", pc(p));
-  m.innerHTML = `<div class="crumb"><a href="#">Accueil</a>›<a href="#p/${p}">${p} · ${PORTES[p].n}</a>›<span>${esc(x.d)}</span></div>
+  m.innerHTML = `<div class="crumb"><a href="#">Accueil</a>›<a href="#p/${p}">${PORTES[p].n}</a>›<span>${esc(x.d.replace(/^\d+(\.\d+)*\s/,""))}</span></div>
     <div class="dochead"><h1>${esc(x.t)}</h1><div class="acts">
       <button class="ib star" id="fav" type="button" aria-pressed="${fav}">${fav?"★ Favori":"☆ Favori"}</button>
       <button class="ib" id="fsm" type="button" aria-label="Texte plus petit">A−</button><button class="ib" id="fsp" type="button" aria-label="Texte plus grand">A+</button></div></div>
-    <div class="crumb" style="margin-top:4px">${esc(x.ch||"")} · document ${x.c}</div>
+    <div class="crumb xp" style="margin-top:4px">${esc(x.ch||"")} · document ${x.c}</div>
     ${linesBox(code, hint && hint.startsWith("a") ? +hint.slice(1) : (/^\d+$/.test(P.age) ? +P.age : 10))}
-    <nav class="toc" id="toc" hidden></nav>
+    <details class="toc" id="toc" hidden></details>
     <article class="doc" id="doc"></article>
     <div class="pn">${prev?`<a href="#d/${prev.c}"><small>‹ Précédent</small>${esc(prev.t)}</a>`:"<span></span>"}${next?`<a class="nx" href="#d/${next.c}"><small>Suivant ›</small>${esc(next.t)}</a>`:"<span></span>"}</div>
     <div class="notes"><label for="nt" style="font-weight:600">Mes notes sur ce document</label><textarea id="nt" placeholder="Idées, joueurs concernés, à tester…"></textarea><div class="msg" id="ntm"></div></div>`;
@@ -309,23 +385,35 @@ function showDoc(code, hint){
     }
     (cur || doc).appendChild(node);
   }
-  if(sections.length>2){ const toc=$("#toc"); toc.hidden=false; toc.innerHTML = `<b>Le détail</b><ol>${sections.map(([id,t])=>`<li><a href="#" data-s="${id}">${esc(t.replace(/^\d+\.\s*/,""))}</a></li>`).join("")}</ol>`;
-    toc.onclick = e=>{ const a=e.target.closest("a[data-s]"); if(!a) return; e.preventDefault(); const d=document.getElementById(a.dataset.s); d.open=true; d.scrollIntoView({behavior:"smooth",block:"start"}); }; }
+  if(sections.length>2){ const toc=$("#toc"); toc.hidden=false; toc.open = matchMedia("(min-width:900px)").matches;
+    toc.innerHTML = `<summary>Sommaire · ${sections.length} sections</summary><ol>${sections.map(([id,t])=>`<li><a href="#d/${code}/${id}" data-s="${id}">${esc(t.replace(/^\d+\.\s*/,""))}</a></li>`).join("")}</ol>`;
+    toc.onclick = e=>{ const a=e.target.closest("a[data-s]"); if(!a) return; e.preventDefault(); history.replaceState(null,"","#d/"+code+"/"+a.dataset.s); ouvrirSection(a.dataset.s); }; }
   if(sections.length===1){ doc.querySelector("details").open = true; }
+  if(window.GRUN&&GRUN.clair) GRUN.clair(document.getElementById("doc"));   /* lignes de grille en clair (mode simple) */
   // favoris, taille, notes
   $("#fav").onclick = ()=>{ const on = !P.fav.includes(code); P.fav = on ? [code,...P.fav] : P.fav.filter(c=>c!==code); save(); $("#fav").setAttribute("aria-pressed",on); $("#fav").textContent = on?"★ Favori":"☆ Favori"; };
   $("#fsm").onclick=()=>setFs(-1); $("#fsp").onclick=()=>setFs(1);
   const nt=$("#nt"); nt.value = P.notes[code]||""; let tm;
   nt.oninput = ()=>{ clearTimeout(tm); tm=setTimeout(()=>{ if(nt.value.trim()) P.notes[code]=nt.value; else delete P.notes[code]; save(); $("#ntm").textContent="Note enregistrée sur cet appareil."; },500); };
-  // aller à un âge ou surligner une recherche
-  if(hint && hint.startsWith("a")) goAge(+hint.slice(1));
+  // reprendre : dernière section ouverte de ce document
+  P.last = {c:code, s:null, st:""}; save();
+  doc.addEventListener("toggle", e=>{ const d=e.target; if(d.tagName!=="DETAILS"||!d.open||!/^s\d+$/.test(d.id)) return; P.last={c:code, s:d.id, st:d.querySelector("summary").textContent.replace(/^\d+\.\s*/,"")}; save(); }, true);
+  // aller à un âge, à une section ou surligner une recherche
+  if(hint && /^s\d+$/.test(hint)) ouvrirSection(hint);
+  else if(hint && hint.startsWith("a")) goAge(+hint.slice(1));
   else if(hint && hint.startsWith("q")) highlight(hint.slice(1));
 }
+function ouvrirSection(id){ const d=document.getElementById(id); if(!d||d.tagName!=="DETAILS") return; d.open=true; setTimeout(()=>{ d.scrollIntoView({behavior:"smooth",block:"start"}); d.querySelector("summary").classList.add("flash"); },60); }
+/* créer une session sur une ligne : relais vers Create my session (séance pré-remplie avec les exercices de la ligne) */
+document.addEventListener("click", e=>{ const b=e.target.closest("[data-sess]"); if(!b) return; e.preventDefault();
+  const l=b.dataset.sess, retour="veille.html"+location.hash;
+  if(window.GRUN&&GRUN.relais){ try{ GRUN.relais.envoyer({de:"veille", vers:"seances", retour, lignes:[l], theme:ligNom(l), titre:ligNom(l), age:+b.dataset.age||null, type:l.startsWith("PP")?"PPI":"TI"}); }catch(x){} location.href=GRUN.href("seances","#/nouvelle"); }
+  else location.href="seances.html#/nouvelle"; });
 /* boutons « Exercices de cette ligne » et « Tests » sur les documents liés à des lignes de grille */
 function linesBox(code, age){
   const ls = [...new Set((REV[code]||[]).map(x=>x[0]))]; if(!ls.length || ls.length>4) return "";
   age = Math.max(4, Math.min(18, age||10));
-  return `<div class="lines"><b>Lignes de grille de ce document</b>${ls.map(l=>`<div class="lrow"><span>${l} · ${esc(ligNom(l))}</span><a class="lk pri" href="banque.html#/l/${l}?a=${age}">Exercices de cette ligne</a><a class="lk" href="grilles.html#/ligne/${l}/G/${age}">Tests · G ${age} ans</a><a class="lk" href="grilles.html#/ligne/${l}/F/${age}">F</a><a class="lk" href="#/l/${l}">Tous les documents</a></div>`).join("")}</div>`;
+  return `<div class="lines"><b>Mettre en pratique</b>${ls.map(l=>`<div class="lrow"><span>${esc(ligNom(l))}<span class="xp"> · ${l}</span></span><a class="lk pri" href="banque.html#/l/${l}?a=${age}">Exercices · ${age} ans</a><a class="lk" href="#" data-sess="${l}" data-age="${age}">Créer une session</a><a class="lk" href="grilles.html#/ligne/${l}/G/${age}">Grille garçons ${age} ans</a><a class="lk" href="grilles.html#/ligne/${l}/F/${age}">Grille filles ${age} ans</a><a class="lk" href="#/l/${l}">Tous les documents</a></div>`).join("")}</div>`;
 }
 /* ---------- documents d'une ligne de grille ---------- */
 function showLigne(l, am){
@@ -333,12 +421,12 @@ function showLigne(l, am){
   const age = am ? Math.max(4, Math.min(18, +am[1])) : (/^\d+$/.test(P.age) ? +P.age : null);
   const d = l.slice(0,2), col = LCOL[d], g = (LV.L||{})[l] || {}, G = LV.g || {};
   document.documentElement.style.setProperty("--acc", col);
-  const lst = cs => `<div class="list">${cs.filter(c=>BY[c]).map(c=>{ const x=BY[c]; return `<a class="li" href="#d/${c}${(g.a||[]).includes(c)&&age?`/a${age}`:""}"><span class="code">${c}</span><span class="tt">${esc(x.t)}<small>${esc(x.d.replace(/^\d+(\.\d+)?\s/,""))}</small></span></a>`; }).join("")}</div>`;
+  const lst = cs => `<div class="list">${cs.filter(c=>BY[c]).map(c=>{ const x=BY[c]; return `<a class="li hasx" href="#d/${c}${(g.a||[]).includes(c)&&age?`/a${age}`:""}"><span class="code cx">${c}</span><span class="tt">${esc(x.t)}<small>${esc(x.d.replace(/^\d+(\.\d+)?\s/,""))}</small></span></a>`; }).join("")}</div>`;
   const order = [["c","Comprendre"],["a","Âge par âge"],["s","Séances et routines"],["b","Biomécanique et liens"],["t","Tests et évaluation"]];
   const m = $("#main"); m.style.setProperty("--pc", col);
-  m.innerHTML = `<div class="crumb"><a href="#">Accueil</a>›<span>Ligne ${l} · ${DOMN[d]}</span></div><h1 style="color:${col};margin-top:4px">${l} · ${esc(ligNom(l))}</h1>
+  m.innerHTML = `<div class="crumb"><a href="#">Accueil</a>›<span>${DOMN[d]}</span></div><h1 style="color:${col};margin-top:4px">${esc(ligNom(l))}<span class="xp"> · ${l}</span></h1>
    <p class="lead">Les documents de la veille pour cette ligne de grille, regroupés pour comprendre, situer l'âge, construire les séances et évaluer.</p>
-   <div class="lines"><div class="lrow"><a class="lk pri" href="banque.html#/l/${l}${age?`?a=${age}`:""}">Exercices de cette ligne${age?` · ${age} ans`:""}</a><a class="lk" href="grilles.html#/ligne/${l}/G/${age||10}">Tests · G ${age||10} ans</a><a class="lk" href="grilles.html#/ligne/${l}/F/${age||10}">Tests · F ${age||10} ans</a></div></div>
+   <div class="lines"><div class="lrow"><a class="lk pri" href="banque.html#/l/${l}${age?`?a=${age}`:""}">Exercices de cette ligne${age?` · ${age} ans`:""}</a><a class="lk" href="#" data-sess="${l}" data-age="${age||""}">Créer une session</a><a class="lk" href="grilles.html#/ligne/${l}/G/${age||10}">Grille garçons ${age||10} ans</a><a class="lk" href="grilles.html#/ligne/${l}/F/${age||10}">Grille filles ${age||10} ans</a></div></div>
    ${order.filter(([k])=>(g[k]||[]).some(c=>BY[c])).map(([k,t])=>`<div class="fold" style="--pc:${col}"><h3>${esc(G[k]||t)}</h3>${lst(g[k])}</div>`).join("") || '<div class="empty" style="margin-top:12px">Aucun document lié à cette ligne.</div>'}`;
 }
 function ageIn(text, age){
@@ -362,25 +450,25 @@ let sT;
 $("#q").addEventListener("input", e=>{ clearTimeout(sT); const v=e.target.value.trim(); sT=setTimeout(()=>{ if(v.length>=2) history.replaceState(null,"","#s/"+encodeURIComponent(v)), showSearch(v); else if(!v && location.hash.startsWith("#s/")) location.hash=""; },250); });
 $("#q").addEventListener("keydown", e=>{ if(e.key==="Enter"){ e.target.blur(); } });
 function terms(q){ return fold(q).split(/\s+/).filter(w=>w.length>=2); }
-function showSearch(q){
+function showSearch(q, fini){
   document.documentElement.style.setProperty("--acc", "var(--ink)");
-  buildIndex();
   const ts = terms(q), m = $("#main");
   if(!ts.length){ showHome(); return; }
-  const res = [];
-  NORM.forEach((n,i)=>{
+  if(!fini && DOCS.some(x=>x.h==null)){ const h0 = location.hash; if(!m.querySelector(".res")) m.innerHTML = `<h1>Recherche</h1><p class="lead">Recherche de « ${esc(q)} » dans toute la veille…</p>`;
+    tousPaquets().then(()=>{ if(location.hash===h0) showSearch(q, true); }, ()=>{ if(location.hash===h0) m.innerHTML = '<div class="empty">La recherche n\'a pas pu charger tous les documents. Vérifie la connexion pour la première ouverture, puis réessaie.</div>'; }); return; }
+  const res = [], RE = ts.map(motif);
+  DOCS.forEach((x,i)=>{ if(x.h==null) return;
     let score=0, first=-1;
-    for(const t of ts){ let c=0, pos=n.f.indexOf(t); if(pos<0){ score=0; return; } if(first<0||pos<first) first=pos; while(pos>=0 && c<60){ c++; pos=n.f.indexOf(t,pos+t.length); } score+=c; }
-    if(fold(DOCS[i].t).includes(ts[0])) score+=40;
+    for(const re of RE){ const [ct] = compte(x.t, re, false), [cb, p] = compte(x.h, re, true); if(!ct && !cb) return; if(p>=0 && (first<0||p<first)) first=p; score += Math.min(60, ct+cb); }
+    if(fold(x.t).includes(ts[0])) score+=40;
     res.push({i, score, first});
   });
   res.sort((a,b)=>b.score-a.score);
   const top = res.slice(0,60);
   let html = `<h1>Recherche</h1><p class="lead">${res.length ? `${res.length} document${res.length>1?"s":""} pour « ${esc(q)} »${res.length>60?" · les 60 plus pertinents":""}` : `Aucun document ne contient « ${esc(q)} ». Essaie un mot plus court ou un synonyme.`}</p><div class="sec">`;
-  html += top.map(r=>{ const x=DOCS[r.i], n=NORM[r.i]; const a=Math.max(0,r.first-90), b=Math.min(n.raw.length,r.first+190);
-    let snip = (a?"…":"")+n.raw.slice(a,b)+(b<n.raw.length?"…":"");
-    snip = markTerms(esc(snip), ts);
-    return `<a class="res" href="#d/${x.c}/q${encodeURIComponent(q)}" style="--pc:${pc(porteOf(x))}"><div class="t">${esc(x.t)}</div><div class="w">${x.c} · ${PORTES[porteOf(x)].n} › ${esc(x.d.replace(/^\d+(\.\d+)?\s/,""))}</div><div class="s">${snip}</div></a>`; }).join("");
+  html += top.map(r=>{ const x=DOCS[r.i];
+    const snip = markTerms(esc(extrait(x, r.first, ts)), ts);
+    return `<a class="res" href="#d/${x.c}/q${encodeURIComponent(q)}" style="--pc:${pc(porteOf(x))}"><div class="t">${esc(x.t)}</div><div class="w"><span class="xp">${x.c} · </span>${PORTES[porteOf(x)].n} › ${esc(x.d.replace(/^\d+(\.\d+)?\s/,""))}</div><div class="s">${snip}</div></a>`; }).join("");
   m.innerHTML = html + "</div>";
 }
 function markTerms(htmlText, ts){

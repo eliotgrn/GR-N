@@ -24,9 +24,47 @@ body.grun-has-nav{padding-bottom:calc(var(--nav-h) + env(safe-area-inset-bottom,
 .grun-relais a,.grun-relais button{color:#fff;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.35);border-radius:8px;
   min-height:36px;padding:0 12px;display:inline-flex;align-items:center;text-decoration:none;font:inherit;white-space:nowrap}
 .grun-mod #back{visibility:visible!important}
+/* mode simple / mode expert (GRUN.expert) : « xp » = réservé au mode expert ; « xs » = seulement en mode simple */
+html.grun-simple .xp{display:none!important}
+html.grun-expert .xs{display:none!important}
+/* « Plus d'options » : réglages fins et actions rares, repliés (même aspect dans tous les modules) */
+details.grun-plus{margin-top:14px;border:1px solid var(--line,#D9DDE3);border-radius:12px;background:var(--panel,#fff)}
+details.grun-plus>summary{list-style:none;cursor:pointer;min-height:46px;display:flex;align-items:center;gap:8px;padding:0 14px;font:600 15px/1.2 var(--ui,system-ui,sans-serif);color:var(--mute,#5D6675)}
+details.grun-plus>summary::-webkit-details-marker{display:none}
+details.grun-plus>summary::before{content:"+";font-weight:700;width:1em;color:var(--mute,#5D6675)}
+details.grun-plus[open]>summary::before{content:"–"}
+details.grun-plus>.grun-plusb{padding:0 14px 14px;display:flex;flex-direction:column;gap:10px}
+/* Grilles : bilan en cours + un gros bouton « Créer un nouveau bilan » */
+.bil1{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;margin-top:14px;padding:12px 14px;border:1px solid var(--line,#D9DDE3);border-left:4px solid var(--acc,#0F766E);border-radius:12px;background:var(--panel,#fff)}
+.bil1 b{display:block;font-size:1.1rem}
+.bil1 small{color:var(--mute,#5D6675)}
+.go.big{min-height:46px;padding:0 18px;font-size:1.02rem}
+/* listes : colonne « code » masquée en mode simple (classe hasx sur la ligne, cx sur le code) */
+html.grun-simple .hasx{grid-template-columns:minmax(0,1fr)!important}
+html.grun-simple .cx{display:none!important}
+/* Grilles : « L'essentiel » en cartes sur téléphone ; toucher une ligne ouvre son détail */
+#doc table.cartes td.lgo{cursor:pointer;color:var(--acc,#0F766E);font-weight:700}
+@media (max-width:640px){
+  #doc table.cartes,#doc table.cartes tbody,#doc table.cartes tr,#doc table.cartes td{display:block;width:auto!important}
+  #doc table.cartes thead{display:none}
+  #doc table.cartes tr{padding:10px 12px;border-bottom:1px solid var(--line,#D9DDE3)}
+  #doc table.cartes td{border:none!important;padding:2px 0!important}
+  #doc table.cartes td.lgo{font-size:1.05em}
+  #doc table.cartes td.lgo::after{content:" ›"}
+  #doc table.cartes td:nth-child(3)::before{content:"Test ★ : ";font-weight:600;color:var(--mute,#5D6675)}
+}
+/* lignes de grille affichées en clair : les noms longs passent à la ligne */
+.lc{white-space:normal!important;overflow-wrap:anywhere;display:inline-block;max-width:100%}
+.boxh>div{min-width:0;flex:1 1 auto}
+/* bouton PDF commun (même aspect et même libellé « … PDF » dans tous les modules) : <button class="grun-pdf"><svg/><span>Rapport PDF</span></button> */
+.grun-pdf{display:inline-flex;align-items:center;gap:7px;min-height:42px;padding:0 14px;border-radius:10px;border:1.5px solid var(--grun,#0F766E);background:var(--panel,#fff);color:var(--grun,#0F766E);font:700 15px/1 var(--ui,system-ui,sans-serif);cursor:pointer;white-space:nowrap;text-decoration:none}
+.grun-pdf svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.grun-pdf:disabled{opacity:.6}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .grun-pdf{color:#2DD4BF;border-color:#2DD4BF}}
+:root[data-theme="dark"] .grun-pdf{color:#2DD4BF;border-color:#2DD4BF}
 </style>
 <script src="grun.js?v=1"></script>
-<meta name="grun-module" content="seances"></head><body><title>Create my séance · GRÜN</title>
+<meta name="grun-module" content="seances"></head><body><title>Create my session · GRÜN</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Barlow:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
 <style>
 /* Layout : barre fixe (retour, recherche) ; accueil = recherche, accès direct, 4 portes, favoris ; document = fil d'Ariane, sommaire, L'essentiel ouvert, Le détail en sections dépliables */
@@ -237,7 +275,7 @@ body.noscroll{overflow:hidden}
 .pit+.pit{margin-top:6px}
 .fx p{font-family:var(--read);font-size:15.5px;line-height:1.55;margin:8px 0}
 .ter h1{font-size:34px;margin-top:10px}
-.terh{display:flex;justify-content:space-between;align-items:center;color:var(--mute);font-size:14px}
+.terh{display:flex;justify-content:space-between;align-items:center;gap:8px;color:var(--mute);font-size:14px}.terh .ib.on{background:var(--p4);border-color:var(--p4);color:#fff}
 .clock{font-family:var(--display);font-size:72px;font-weight:700;font-variant-numeric:tabular-nums;margin:6px 0}
 .clock.over{color:#B91C1C}
 .terx{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin-top:12px}
@@ -318,7 +356,7 @@ body.terrain.grun-has-nav{padding-bottom:0}
 </style>
 <header class="top"><div id="relais"></div><div class="topin">
   <button class="ib" id="back" type="button" aria-label="Retour">‹</button>
-  <a class="brand" href="#/">Create my séance</a><span style="flex:1"></span>
+  <a class="brand" href="#/">Create my session</a><span style="flex:1"></span>
 </div></header>
 <main id="main"><div class="load">Chargement…</div></main>
 <div id="sheet" hidden></div>
@@ -426,7 +464,7 @@ const LN={PP:["Force du bas du corps","Force du haut du corps","Gainage et stabi
  DE:["Position d'attention","Allègement et reprise d'appuis","Démarrage et premiers pas","Déplacements latéraux","Déplacements vers l'avant et vers l'arrière","Pas d'ajustement et mise à distance","Appuis de frappe","Freinage et décélération","Changement de direction et réaccélération","Replacement","Enchaînements et liaison des actions"]};
 const ALL_L=["PP","GE","DE"].flatMap(d=>LN[d].map((_,i)=>d+(i+1)));
 const lineName=l=>{const m=/^(PP|GE|DE)(\d+)$/.exec(l);return m?LN[m[1]][+m[2]-1]:l;};
-const chip=l=>`<span class="lc ${String(l).slice(0,2).toLowerCase()}" title="${esc(lineName(l))}">${esc(l)}</span>`;
+const chip=l=>`<span class="lc ${String(l).slice(0,2).toLowerCase()}" title="${esc(l)}">${esc(lineName(l))}<span class="xp"> · ${esc(l)}</span></span>`;   /* ligne en clair (code en mode expert) */
 const CLASSEMENTS=["NC","40","30/5","30/4","30/3","30/2","30/1","30","15/5","15/4","15/3","15/2","15/1","15","5/6","4/6","3/6","2/6","1/6","0","-2/6","-4/6","-15","-30","Top 60","Top 40"];
 function seuils(a){ return a<=10?[2,6,9]:a<=12?[5,10,13]:a<=14?[8,13,16]:a<=16?[11,15,19]:[13,17,21]; }
 function niveauDe(cl,a){ const i=CLASSEMENTS.indexOf(cl); if(i<0) return 0; const s=seuils(a); return i>=s[2]?3:i>=s[1]?2:i>=s[0]?1:0; }
@@ -680,11 +718,11 @@ function pourquoiHtml(s,c){
   const third=c.crois?`<p><b>Croissance.</b> ${esc(T.croissance)}</p>`:c.sexe==="F"&&T.fille_garcon?`<p><b>Fille.</b> ${esc(sent(T.fille_garcon,2))}</p>`:"";
   return `<section class="why" id="why"><div class="whyh"><b>Pourquoi cette séance</b><span class="badge">${esc(T.nom)}</span></div>
    <p>${esc(sent(T.principes,2))}</p>
-   <p><b>${esc(PHASES[ph]||"Phase")}.</b> ${esc(phT)} <b>Charge ${ch?ch+"/5":"non précisée"}.</b> ${esc(T.charge[chK(ch)]||"")}</p>${third}
-   ${S7?`<p class="msg">Saison de référence ${esc(S7.code)}, semaine ${S7.n}${S7.m?" · "+esc(S7.m.nom):""}${S7.w?.t?" : « "+esc(S7.w.t)+" »":""}${S7.pq?" · "+esc(S7.pq):""}</p>`:""}
-   <p class="msg">Type ${esc(s.tdeduit||"")} · âge ${c.tage} ans${c.bioUsed?" (biologique)":""}${joueursDe(s).length>1?", le plus jeune du groupe":""} · durée conseillée ${T.duree[0]}-${T.duree[1]} min${s.tdrop?.length?` · retiré faute de temps : ${esc(s.tdrop.join(", "))}`:""}</p>
-   <details class="noprint"><summary>Tous les principes de la trame</summary><p>${esc(T.principes)}</p><p><b>Croissance.</b> ${esc(T.croissance)}</p><p><b>Filles et garçons.</b> ${esc(T.fille_garcon)}</p>${S7?.vig?.length?`<p><b>Vigilance (saison ${esc(S7.code)}).</b> ${esc(S7.vig.join(" "))}</p>`:""}</details>
-   <div class="tools noprint"><button type="button" class="ib sm" id="ctype">Changer le type de séance</button></div></section>`;
+   <p class="xp"><b>${esc(PHASES[ph]||"Phase")}.</b> ${esc(phT)} <b>Charge ${ch?ch+"/5":"non précisée"}.</b> ${esc(T.charge[chK(ch)]||"")}</p>${third}
+   ${S7?`<p class="msg">Saison de référence<span class="xp"> ${esc(S7.code)}</span>, semaine ${S7.n}${S7.m?" · "+esc(S7.m.nom):""}${S7.w?.t?" : « "+esc(S7.w.t)+" »":""}${S7.pq?" · "+esc(S7.pq):""}</p>`:""}
+   <p class="msg xp">Type ${esc(s.tdeduit||"")} · âge ${c.tage} ans${c.bioUsed?" (biologique)":""}${joueursDe(s).length>1?", le plus jeune du groupe":""} · durée conseillée ${T.duree[0]}-${T.duree[1]} min${s.tdrop?.length?` · retiré faute de temps : ${esc(s.tdrop.join(", "))}`:""}</p>
+   <details class="noprint xp"><summary>Tous les principes de la trame</summary><p>${esc(T.principes)}</p><p><b>Croissance.</b> ${esc(T.croissance)}</p><p><b>Filles et garçons.</b> ${esc(T.fille_garcon)}</p>${S7?.vig?.length?`<p><b>Vigilance (saison ${esc(S7.code)}).</b> ${esc(S7.vig.join(" "))}</p>`:""}</details>
+   <div class="tools noprint xp"><button type="button" class="ib sm" id="ctype">Changer le type de séance</button></div></section>`;
 }
 function piedHtml(s){ const T=trameFor(s); if(!T) return "";
   return `<section class="sec tfoot"><h2>Pour réussir la séance</h2><div class="card"><div><b>Erreurs à éviter</b><ul>${(T.erreurs||[]).map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div><div><b>Indicateurs de réussite</b><p>${esc(T.indicateurs||"")}</p></div></div></section>`; }
@@ -814,10 +852,10 @@ sheet.addEventListener("click",e=>{ if(e.target===sheet) closeSheet(); });
 
 /* ---------- relais (poupée russe) ---------- */
 function relaisActif(){ const h=GRUN.relais.lire(); if(h&&h.vers==="seances"&&!h.res&&ST.relais&&ST.relais.t===h.t&&getS(ST.relais.sid)) return {h,sid:ST.relais.sid}; return null; }
-const DE_N={prog:"la prog",banque:"la banque",accueil:"l'accueil",hub:"l'accueil",joueurs:"le dossier",grilles:"les grilles",saisons:"le référentiel"};
+const DE_N={prog:"la prog",veille:"la veille",banque:"la banque",accueil:"l'accueil",hub:"l'accueil",joueurs:"le dossier",grilles:"les grilles",saisons:"le référentiel"};
 function bandeau(){
   const el=$("#relais"); if(!el) return; const r=COACH()?relaisActif():null; if(!r){ el.innerHTML=""; return; }
-  const s=getS(r.sid), nm=DE_N[r.h.de]||"la prog";
+  const s=getS(r.sid), nm=DE_N[r.h.de]||(r.h.de?"la page d'avant":"la prog");
   el.innerHTML=`<div class="grun-relais"><button type="button" id="rlb">← Retour à ${nm}</button><span class="rlt">${esc(s?.nom||"Séance")}</span><button type="button" id="rlv">Valider et revenir</button></div>`;
   $("#rlb").onclick=()=>{ const u=r.h.retour||GRUN.href(r.h.de||"prog"); ST.relais=null; saveNow(); GRUN.relais.vider(); location.href=u; };
   $("#rlv").onclick=()=>{ const s=getS(r.sid); saveNow();
@@ -835,14 +873,19 @@ function depuisRelais(h){
   const o={nom:nomCourt(String(h.titre||h.theme||TYPES[type].n)),date:h.date||todayIso(),type,theme:h.theme||"",lignes:(Array.isArray(h.lignes)?h.lignes:[]).map(l=>typeof l==="string"?l:l?.l).filter(isLine),phase:mapPhase(h.phase),duree:Math.max(15,Math.min(180,+h.duree||defDur(type))),charge:h.charge??null,
     src:{plan:h.plan||null,key:h.cle||null,de:h.de||"prog"}};
   if(h.gid&&GRUN.groupes.get(h.gid)){ o.gid=h.gid; o.joueurs=[...(GRUN.groupes.get(h.gid).jids||[])]; } else if(h.jid) o.joueurs=[h.jid];
+  libreDe(o,h);
   if(h.lieu&&LIEUX[h.lieu]) o.lieu=h.lieu; if(/TI|TC|PM/.test(type)) o.lieu="court";
   if(Array.isArray(h.mat)&&h.mat.length) o.mat=h.mat;
   const s=newSeance(o); s.boxes=structure(s); autoFill(s); s.prerempli=true; saveNow(); return s;
 }
+/* sans joueur : l'âge, le sexe, le niveau et la croissance transmis par le relais (veille, banque, prog) servent à la séance libre (sinon 13 ans par défaut) */
+function libreDe(o,h){ if(!h||(o.joueurs&&o.joueurs.length)) return; const a=Math.round(+h.age); if(!(a>=4)) return;
+  o.libre={n:Math.max(1,+h.n||1),age:Math.max(4,Math.min(18,a)),niv:+h.niv||0,zones:Array.isArray(h.zones)?h.zones:[],crois:!!h.crois,extra:0,sexe:h.sexe==="F"?"F":"G"}; }
 function depuisExo(id,h){
   const e=EX[id]; const type=e?(e.dom==="GE"||e.dom==="JEU"||e.dom==="DE"&&e.c?"TI":"PPI"):"PPI";
   const o={nom:e?nomCourt(e.n):"Séance",type,lignes:e?e.L.filter(isLine).slice(0,3):[],lieu:e&&e.c?"court":(ST.lieu||"court")};
   if(h?.jid) o.joueurs=[h.jid]; if(h?.gid&&GRUN.groupes.get(h.gid)){ o.gid=h.gid; o.joueurs=[...GRUN.groupes.get(h.gid).jids]; }
+  libreDe(o,h);
   const s=newSeance(o); s.boxes=structure(s);
   if(e){ const c=ctxOf(s); let B=s.boxes.find(b=>b.part==="C"&&(b.L||[]).some(l=>e.L.includes(l)))||s.boxes.find(b=>b.part==="C"&&b.f?.includes(e.f));
     if(!B){ B=box(e.n.slice(0,40),"C",{L:e.L.slice(0,2),f:[e.f],min:10}); const i=s.boxes.findIndex(b=>b.part==="F"); s.boxes.splice(i<0?s.boxes.length:i,0,B); }
@@ -890,7 +933,7 @@ function wuRoutine(m){ const S=(m.situations||[]).map(x=>({id:x.id,n:x.n,duree:+
   const d=Math.round(wuSec(m)/30)/2; return {id:m.id,type:cd?"cooldown":"warmup",nom:m.nom,titre:m.nom,duree:d,dureeTotale:d,situations:S,logique:m.resume||"",blocs,lien:"warmup.html#/m/"+m.id}; }
 function wuAuto(s,c){
   if(!WULIB.length) return false; const D=s.wuCible||wuMinutes(s,c||ctxOf(s)), Q=wuQuand(s), L=lieuWU(s.lieu), mat=new Set(s.mat||[]);
-  const sc=m=>{ let x=-Math.abs(wuSec(m)/60-D)*0.8; if((m.quand||[]).some(q=>Q.includes(q))) x+=4; if(!m.lieu||!m.lieu.length||m.lieu.includes(L)) x+=2; if((m.materiel||[]).every(k=>mat.has(k)||(k==="balles"&&mat.has("rb")))) x+=2; if(m.orig) x+=0.3; if(/haut du corps/i.test(m.nom)&&!(s.lignes||[]).some(l=>/^(PP2|PP5|GE)/.test(l))&&s.tt!=="GES") x-=4; const ag=(c||ctxOf(s)).age, mn=m.ages&&m.ages.conseille?+m.ages.conseille[0]:11; if(ag&&ag<mn) x-=(mn-ag)*1.5+((m.intensite_fin||"").match(/[89]\/10/)?3:0); return x; };
+  const sc=m=>{ let x=-Math.abs(wuSec(m)/60-D)*0.8; if((m.quand||[]).some(q=>Q.includes(q))) x+=4; if(!m.lieu||!m.lieu.length||m.lieu.includes(L)) x+=2; if((m.materiel||[]).every(k=>mat.has(k)||(k==="balles"&&mat.has("rb")))) x+=2; if(m.orig) x+=0.3; if(/haut du corps/i.test(m.nom)&&!(s.lignes||[]).some(l=>/^(PP2|PP5|GE)/.test(l))&&s.tt!=="GES") x-=4; const ag=(c||ctxOf(s)).age, mn=m.ages&&m.ages.conseille?+m.ages.conseille[0]:11, mx=m.ages&&m.ages.conseille?+m.ages.conseille[1]:18; if(ag&&ag<mn) x-=(mn-ag)*1.5+((m.intensite_fin||"").match(/[89]\/10/)?3:0); if(ag&&ag>mx) x-=(ag-mx)*3; return x; };
   const best=WULIB.filter(m=>m.type!=="cooldown").sort((a,b)=>sc(b)-sc(a))[0]; if(!best) return false;
   const rt=wuRoutine(best); s.warmup={routine:rt,id:best.id,min:rt.duree,at:todayIso(),auto:true}; s.wmode="routine"; return true;
 }
@@ -936,7 +979,7 @@ const isDone=s=>!!s.faite;
 const byDateAsc=(a,b)=>(a.date||"")<(b.date||"")?-1:1, byDateDesc=(a,b)=>(a.date||"")<(b.date||"")?1:-1;
 function libRow(s){ const n=(s.boxes||[]).reduce((a,b)=>a+b.ex.filter(Boolean).length,0), J=joueursDe(s), g=s.gid&&GRUN.groupes.get(s.gid);
   const who=g?g.nom:J.map(j=>j.nom.split(" ")[0]).join(", ");
-  return `<a class="li" href="#/s/${s.id}"><span class="code">${frD(s.date).slice(0,5)}</span><span class="tt">${esc(s.nom||"Séance")} ${s.faite?`<span class="badge ok">✓ faite${s.faite.rpe!=null?" · "+s.faite.rpe+"/10":""}</span>`:""}${s.warmup&&s.wmode==="routine"?` <span class="badge">warm-up</span>`:""}<small>${TYPES[s.type]?.n||""} · ${s.duree} min · ${n} exo${n>1?"s":""}${who?" · "+esc(who):""}</small></span></a>`; }
+  return `<a class="li" href="#/s/${s.id}"><span class="code">${frD(s.date).slice(0,5)}</span><span class="tt">${esc(s.nom||"Séance")} ${s.faite?`<span class="badge ok">✓ faite${s.faite.rpe!=null?" · "+s.faite.rpe+"/10":""}</span>`:""}${s.warmup&&s.wmode==="routine"?` <span class="badge">échauffement</span>`:""}<small>${TYPES[s.type]?.n||""} · ${s.duree} min · ${n} exo${n>1?"s":""}${who?" · "+esc(who):""}</small></span></a>`; }
 function listes(L,id){
   const av=L.filter(s=>!isDone(s)).sort(byDateAsc), fa=L.filter(isDone).sort((a,b)=>(a.faite.date||a.date)<(b.faite.date||b.date)?1:-1);
   return `<div class="tabs" role="tablist"><button type="button" class="tg" data-tab="${id}:a" aria-pressed="true">À venir (${av.length})</button><button type="button" class="tg" data-tab="${id}:f" aria-pressed="false">Faites (${fa.length})</button></div>
@@ -947,13 +990,13 @@ function bindTabs(){ $$("[data-tab]").forEach(b=>b.onclick=()=>{ const [id,k]=b.
 function showHome(){
   if(!COACH()) return showHomeJoueur();
   const cache=GRUN.load(CK,{})||{}, plans=(GRUN.load(PK,{plans:[]})||{}).plans||[], J=GRUN.joueurs.all(), Gs=GRUN.groupes.all();
-  main.innerHTML=`<h1>Create my séance</h1>
-  <p class="lead">L'appli construit la structure de la séance ; pour chaque case, elle te propose les exos de la banque qui conviennent, et c'est toi qui choisis.</p>
-  <div class="tools" style="margin-top:14px"><a class="go big" href="#/nouvelle">+ Nouvelle séance</a><a class="ib" href="#/modeles">Modèles (${ST.modeles.length})</a></div>
+  main.innerHTML=`<h1>Create my session</h1>
+  <p class="lead">GRÜN construit la séance pour ton joueur. Tu choisis les exos, tu lances.</p>
+  <div class="tools" style="margin-top:14px"><a class="go big" href="#/nouvelle">+ Créer une séance</a><a class="ib" href="#/modeles">Modèles (${ST.modeles.length})</a></div>
   <section class="sec"><h2>Pour qui</h2>${J.length||Gs.length?`<div class="chips">${Gs.map(g=>`<a class="tg grp" href="#/groupe/${g.id}">👥 ${esc(g.nom)}</a>`).join("")}${J.map(j=>`<a class="tg" href="#/joueur/${j.id}">${esc(j.nom)}${ageTxt(j)}</a>`).join("")}</div>`:`<div class="empty">Crée tes joueurs et tes groupes dans <a href="index.html#/joueurs">Individualisation</a> : leur âge, leur croissance, leurs zones fragiles et leurs lignes faibles seront pris en compte.</div>`}</section>
   ${plans.length?`<section class="sec"><h2>Depuis un plan</h2><div class="list">${plans.map(p=>{const j=GRUN.joueurs.get(p.jid), g=p.gid&&GRUN.groupes.get(p.gid);const ok=!!cache[p.id];return `<a class="li" href="${ok?"#/pl/"+p.id:GRUN.href("prog")}"><span class="code">${esc(j?j.nom.split(" ")[0]:g?"👥 "+g.nom.split(" ")[0]:"–")}</span><span class="tt">${esc(p.nom||"Plan")}<small>${frD(p.debut)} → ${frD(p.fin)}${ok?"":" · ouvre ce plan une fois dans Create my prog"}</small></span></a>`}).join("")}</div></section>`:""}
   <section class="sec"><h2>Mes séances</h2>${ST.seances.length?`<input class="srch" id="lq" type="search" placeholder="Rechercher une séance">`:""}${listes(ST.seances,"hm")}</section>
-  <section class="sec"><h2>Sauvegarde</h2><div class="tools"><button class="ib" id="exp" type="button">Sauvegarder tout GRÜN</button><label class="ib">Restaurer<input type="file" id="imp" accept=".json,application/json" hidden></label></div><p class="msg" id="smsg">Une seule sauvegarde pour toute l'appli. Les anciens fichiers « Séances » sont aussi acceptés.</p></section>`;
+  <details class="grun-plus"><summary>Plus d'options : sauvegarde</summary><div class="grun-plusb"><div class="tools"><button class="ib" id="exp" type="button">Sauvegarder tout GRÜN</button><label class="ib">Restaurer<input type="file" id="imp" accept=".json,application/json" hidden></label></div><p class="msg" id="smsg">Une seule sauvegarde pour toute l'appli. Les anciens fichiers « Séances » sont aussi acceptés.</p></div></details>`;
   bindTabs();
   $("#lq")&&($("#lq").oninput=e=>{ const q=norm(e.target.value); $$("#hma .li,#hmf .li").forEach(a=>a.hidden=q&&!norm(a.textContent).includes(q)); });
   $("#exp").onclick=()=>{ saveNow(); GRUN.telecharger(GRUN.exportAll(),`GRUN_${todayIso()}.json`); $("#smsg").textContent="Fichier créé : enregistre-le dans Fichiers."; };
@@ -984,8 +1027,8 @@ function showJoueur(jid){
   main.innerHTML=`<div class="crumb"><a href="#/">Séances</a> › Joueur</div><h1>${esc(j.nom)}</h1>
    <p class="lead">${a!=null?a+" ans · ":""}${j.sexe==="F"?"Fille":"Garçon"}${j.classement&&j.classement!=="NC"?" · "+esc(j.classement):""}${croisDe(j)?" · pic de croissance":""}${(j.zones||[]).length?" · zones : "+j.zones.map(z=>esc(ZN[z]||z)).join(", "):""}${gs.length?" · "+gs.map(g=>`<a href="#/groupe/${g.id}">${esc(g.nom)}</a>`).join(", "):""}</p>
    ${F.length?`<p>Lignes à travailler : ${F.map(chip).join(" ")}</p>`:""}
-   ${ch&&(ch.aigu||ch.chronique)?`<p class="msg">Charge des 7 derniers jours : ${Math.round(ch.aigu)} UA${ch.ratio?" · rapport aigu/chronique "+ch.ratio.toFixed(2).replace(".",",")+(ch.alerte&&ch.alerte!=="ok"?" ("+ch.alerte+")":""):""}</p>`:""}
-   <div class="tools" style="margin-top:12px">${COACH()?`<a class="go" href="#/nouvelle?jid=${jid}">+ Nouvelle séance pour ${esc(j.nom.split(" ")[0])}</a>`:""}<a class="ib" href="index.html#/j/${jid}">Dossier complet</a></div>
+   ${ch&&(ch.aigu||ch.chronique)?`<p class="msg">Charge des 7 derniers jours : ${Math.round(ch.aigu)} UA${ch.alerte&&ch.alerte!=="ok"?" · charge "+({haute:"très haute",attention:"en hausse",basse:"basse"}[ch.alerte]||ch.alerte):""}${ch.ratio?`<span class="xp"> · rapport aigu/chronique ${ch.ratio.toFixed(2).replace(".",",")}</span>`:""}</p>`:""}
+   <div class="tools" style="margin-top:12px">${COACH()?`<a class="go big" href="#/nouvelle?jid=${jid}">+ Créer une séance pour ${esc(j.nom.split(" ")[0])}</a>`:""}<a class="ib" href="index.html#/j/${jid}">Dossier complet</a></div>
    <section class="sec"><h2>Séances</h2>${listes(L,"jj")}</section>`;
   bindTabs();
 }
@@ -1024,8 +1067,8 @@ function fromPlan(pid,key){
 function showReglages(id){
   const s=getS(id); if(!s){ main.innerHTML=`<div class="empty">Séance introuvable.</div>`; return; }
   const J=GRUN.joueurs.all(), Gs=GRUN.groupes.all(); s.libre||={n:1,age:13,niv:0,zones:[],crois:false,extra:0,sexe:"G"};
-  main.innerHTML=`<div class="crumb"><a href="#/">Séances</a> › Réglages de la séance</div><h1>Réglages</h1>
-  <p class="lead">Rentre la situation, puis touche « Construire la structure ».</p>
+  main.innerHTML=`<div class="crumb"><a href="#/">Séances</a> › ${s.boxes?"Modifier la séance":"Créer une séance"}</div><h1>${s.boxes?"Modifier la séance":"Créer une séance"}</h1>
+  <p class="lead">Pour qui, quoi, où : puis touche « Construire la séance ».</p>
   <section class="sec step"><h2><b>1</b> Joueurs</h2><div class="card">
    ${Gs.length?`<div class="f"><label>Groupe</label><div class="chips">${Gs.map(g=>`<button type="button" class="tg" data-g="${g.id}" aria-pressed="${s.gid===g.id}">👥 ${esc(g.nom)} (${g.jids.length})</button>`).join("")}</div></div>`:""}
    ${J.length?`<div class="f"><label>Joueurs</label><div class="chips">${J.map(j=>`<button type="button" class="tg" data-j="${j.id}" aria-pressed="${s.joueurs.includes(j.id)}">${esc(j.nom)}${ageTxt(j)}</button>`).join("")}</div></div>`:`<p class="msg">Crée tes joueurs dans <a href="index.html#/joueurs">Individualisation</a> pour que leur profil soit pris en compte.</p>`}
@@ -1042,21 +1085,21 @@ function showReglages(id){
    <div class="f"><label for="sn">Nom</label><input id="sn" value="${esc(s.nom)}" placeholder="Ex. Vitesse et freinage"></div>
    <div class="row"><div class="f"><label for="sd">Date</label><input type="date" id="sd" value="${s.date}"></div><div class="f"><label for="sdu">Durée (min)</label><input type="number" id="sdu" min="15" max="180" step="5" value="${s.duree}"></div></div>
    <div class="f"><label>Type</label><div class="chips">${Object.entries(TYPES).map(([k,t])=>`<button type="button" class="tg" data-ty="${k}" aria-pressed="${s.type===k}">${t.n}</button>`).join("")}</div></div>
-   <div class="f"><label for="stt">Contenu (trame haute performance)</label><select id="stt"><option value="">Automatique : d'après le thème et les lignes</option>${[...TORD,"MOT"].map(k=>`<option value="${k}"${s.ttype===k?" selected":""}>${esc(TNOM[k])}</option>`).join("")}</select></div>
+   <div class="f xp"><label for="stt">Contenu (trame haute performance)</label><select id="stt"><option value="">Automatique : d'après le thème et les lignes</option>${[...TORD,"MOT"].map(k=>`<option value="${k}"${s.ttype===k?" selected":""}>${esc(TNOM[k])}</option>`).join("")}</select></div>
    <div class="f"><label for="sth">Thème précis</label><textarea id="sth" rows="2" placeholder="Ex. Freinage en deux appuis puis relance latérale">${esc(s.theme)}</textarea></div>
-   <div class="f"><label>Phase</label><div class="chips">${Object.entries(PHASES).map(([k,n])=>`<button type="button" class="tg" data-ph="${k}" aria-pressed="${s.phase===k}">${n}</button>`).join("")}</div></div>
+   <div class="f xp"><label>Phase</label><div class="chips">${Object.entries(PHASES).map(([k,n])=>`<button type="button" class="tg" data-ph="${k}" aria-pressed="${s.phase===k}">${n}</button>`).join("")}</div></div>
   </div></section>
-  <section class="sec step"><h2><b>3</b> Lignes visées</h2><div class="card">
-   ${["PP","GE","DE"].map(d=>`<div class="f"><label>${d==="PP"?"Préparation physique":d==="GE"?"Geste":"Déplacements"}</label><div class="chips">${LN[d].map((n,i)=>`<button type="button" class="tg sm" data-l="${d}${i+1}" aria-pressed="${s.lignes.includes(d+(i+1))}" title="${esc(n)}">${d}${i+1}</button>`).join("")}</div></div>`).join("")}
-   <p class="msg" id="lnm">${s.lignes.map(l=>l+" "+lineName(l)).join(" · ")||"Une case de corps de séance par ligne cochée."}</p></div></section>
+  <section class="sec step"><h2><b>3</b> Qualités visées <small class="msg">facultatif</small></h2><div class="card">
+   ${["PP","GE","DE"].map(d=>`<div class="f"><label>${d==="PP"?"Préparation physique":d==="GE"?"Geste":"Déplacements"}</label><div class="chips">${LN[d].map((n,i)=>`<button type="button" class="tg sm" data-l="${d}${i+1}" aria-pressed="${s.lignes.includes(d+(i+1))}" title="${d}${i+1}">${esc(n)}</button>`).join("")}</div></div>`).join("")}
+   <p class="msg" id="lnm">${s.lignes.map(lineName).join(" · ")||"Une case de corps de séance par qualité cochée."}</p></div></section>
   <section class="sec step"><h2><b>4</b> Lieu et matériel</h2><div class="card">
    <div class="chips">${Object.entries(LIEUX).map(([k,n])=>`<button type="button" class="tg" data-li="${k}" aria-pressed="${s.lieu===k}">${n}</button>`).join("")}</div>
-   <div class="f"><label>Matériel disponible</label><div class="chips">${DATA.mat.map(([k,n])=>`<button type="button" class="tg sm" data-m="${k}" aria-pressed="${s.mat.includes(k)}">${esc(n)}</button>`).join("")}</div></div>
-   <div class="tools"><button class="ib sm" type="button" id="mall">Tout</button><button class="ib sm" type="button" id="mnone">Rien</button></div>
+   <details class="grun-plus"><summary>Matériel disponible (${s.mat.length} sur ${DATA.mat.length})</summary><div class="grun-plusb"><div class="chips">${DATA.mat.map(([k,n])=>`<button type="button" class="tg sm" data-m="${k}" aria-pressed="${s.mat.includes(k)}">${esc(n)}</button>`).join("")}</div>
+   <div class="tools"><button class="ib sm" type="button" id="mall">Tout</button><button class="ib sm" type="button" id="mnone">Rien</button></div></div></details>
   </div></section>
   <div class="card bigact"><label class="chk"><input type="checkbox" id="pre" checked> Pré-remplir chaque case avec l'exo le mieux adapté (tu pourras tout changer)</label>
-   <div class="tools"><button class="go big" id="build" type="button">${s.boxes?"Reconstruire la structure":"Construire la structure"}</button>${s.boxes?`<a class="ib" href="#/s/${s.id}">Garder la structure actuelle</a>`:""}</div>
-   ${s.boxes?`<p class="msg">Reconstruire remet les cases à zéro (les exos choisis sont retirés ; le warm-up attaché est gardé).</p>`:""}</div>`;
+   <div class="tools"><button class="go big" id="build" type="button">${s.boxes?"Reconstruire la séance":"Construire la séance"}</button>${s.boxes?`<a class="ib" href="#/s/${s.id}">Garder la séance actuelle</a>`:""}</div>
+   ${s.boxes?`<p class="msg">Reconstruire remet les cases à zéro (les exos choisis sont retirés ; l'échauffement attaché est gardé).</p>`:""}</div>`;
   const up=()=>{ s.maj=todayIso(); save(); };
   $("#sn").oninput=e=>{ s.nom=e.target.value; up(); };
   $("#sd").onchange=e=>{ s.date=e.target.value; up(); };
@@ -1070,7 +1113,7 @@ function showReglages(id){
   tog("[data-ty]",b=>{ s.type=b.dataset.ty; if(/TI|TC|PM/.test(s.type)&&s.lieu!=="court"){ s.lieu=ST.lieu="court"; $$("[data-li]").forEach(x=>x.setAttribute("aria-pressed",x.dataset.li==="court")); } $$("[data-ty]").forEach(x=>x.setAttribute("aria-pressed",x===b)); });
   tog("[data-ph]",b=>{ s.phase=b.dataset.ph; $$("[data-ph]").forEach(x=>x.setAttribute("aria-pressed",x===b)); });
   tog("[data-li]",b=>{ s.lieu=ST.lieu=b.dataset.li; $$("[data-li]").forEach(x=>x.setAttribute("aria-pressed",x===b)); });
-  tog("[data-l]",b=>{ const l=b.dataset.l; s.lignes=s.lignes.includes(l)?s.lignes.filter(x=>x!==l):[...s.lignes,l]; b.setAttribute("aria-pressed",s.lignes.includes(l)); $("#lnm").textContent=s.lignes.map(l=>l+" "+lineName(l)).join(" · ")||"Une case de corps de séance par ligne cochée."; });
+  tog("[data-l]",b=>{ const l=b.dataset.l; s.lignes=s.lignes.includes(l)?s.lignes.filter(x=>x!==l):[...s.lignes,l]; b.setAttribute("aria-pressed",s.lignes.includes(l)); $("#lnm").textContent=s.lignes.map(lineName).join(" · ")||"Une case de corps de séance par qualité cochée."; });
   tog("[data-z]",b=>{ const z=b.dataset.z, Z=s.libre.zones||[]; s.libre.zones=Z.includes(z)?Z.filter(x=>x!==z):[...Z,z]; b.setAttribute("aria-pressed",s.libre.zones.includes(z)); });
   tog("[data-m]",b=>{ const m=b.dataset.m; s.mat=s.mat.includes(m)?s.mat.filter(x=>x!==m):[...s.mat,m]; ST.mat=s.mat; b.setAttribute("aria-pressed",s.mat.includes(m)); });
   $("#mall").onclick=()=>{ s.mat=ST.mat=DATA.mat.map(m=>m[0]); up(); $$("[data-m]").forEach(b=>b.setAttribute("aria-pressed",true)); };
@@ -1097,7 +1140,7 @@ function showSeance(id){
   <div class="dochead"><div><h1>${esc(s.nom||"Séance")}</h1>
    <p class="lead">${TYPES[s.type].n} · ${frD(s.date)} · ${PHASES[s.phase]||""} · ${whoTxt(s,c)} · ${c.al} · ${LIEUX[s.lieu]||""}</p>
    ${s.theme&&s.theme!==s.nom?`<p class="thm">${esc(s.theme)}</p>`:""}${s.lignes.length?`<p>${s.lignes.map(chip).join(" ")}</p>`:""}</div>
-   <div class="acts noprint"><a class="go" href="#/terrain/${s.id}">▶ Mode terrain</a><a class="ib" href="#/r/${s.id}">Réglages</a><button class="ib" id="prt" type="button">Imprimer / PDF</button><button class="ib" id="snd" type="button">📲 Envoyer</button></div></div>
+   <div class="acts noprint"><a class="go big" href="#/terrain/${s.id}">▶ Lancer</a><a class="ib" href="#/r/${s.id}">Modifier</a></div></div>
   ${s.recu?`<p class="note">Séance reçue${s.recu!==true?" pour "+esc(s.recu):""}.</p>`:""}
   ${s.faite?`<p class="note ok">✓ Faite le ${frD(s.faite.date)}${s.faite.duree?" · "+s.faite.duree+" min":""}${s.faite.rpe!=null?" · dureté ressentie "+s.faite.rpe+"/10":""}${s.faite.fait==="partiel"?" · faite en partie":""}</p>`:""}
   ${s.prerempli?`<p class="note info">Séance pré-remplie : chaque case a reçu l'exo le mieux classé et un dosage pour ${c.al}. Touche « Changer » pour voir toute la liste. <button type="button" class="lnk" id="okp">Compris</button></p>`:""}
@@ -1110,9 +1153,10 @@ function showSeance(id){
    ${p==="E"||RP(s,p)?"":s.boxes.map((b,bi)=>b.part===p?boxHtml(s,b,bi,c,used):"").join("")+`<button class="ib noprint addb" type="button" data-addp="${p}">+ Ajouter une case</button>`}</section>`).join("")}
   ${piedHtml(s)}
   ${R.length?`<section class="sec"><h2>Retours des joueurs</h2><div class="list">${R.map(r=>`<div class="li"><span class="code">${frD(r.date).slice(0,5)}</span><span class="tt">${esc(GRUN.joueurs.get(r.jid)?.nom||"?")} · ${r.rpe!=null?r.rpe+"/10":"–"} · ${r.duree||"?"} min${r.douleur?` · <b class="neg">douleur ${esc(ZONES_RETOUR[r.douleur.zone]||r.douleur.zone)} ${r.douleur.int}/10</b>`:""}<small>${r.fait===true?"faite":r.fait==="partiel"?"en partie":"non faite"}${r.comment?" · "+esc(r.comment):""}</small></span></div>`).join("")}</div></section>`:""}
-  <section class="sec noprint"><h2>Réutiliser</h2>
+  <details class="grun-plus noprint"><summary>Plus d'options : imprimer, envoyer, dupliquer, modèle</summary><div class="grun-plusb">
+   <div class="tools">${pdfBtn("prt","Séance PDF")}<button class="ib" id="snd" type="button">📲 Envoyer au joueur</button></div>
    <div class="tools"><button class="ib" id="prg" type="button">⬆ Dupliquer en progression</button><button class="ib" id="mod" type="button">★ Enregistrer comme modèle</button><button class="ib" id="dup" type="button">Dupliquer</button><button class="ib" id="del" type="button">Supprimer</button></div>
-   <p class="msg">${RULE_PROG}</p></section>`;
+   <p class="msg">${RULE_PROG}</p></div></details>`;
   $("#okp")&&($("#okp").onclick=()=>{ s.prerempli=false; upd(s); });
   $("#okm")&&($("#okm").onclick=()=>{ s.modeleNote=null; upd(s); });
   $("#okg")&&($("#okg").onclick=()=>{ s.progNote=null; upd(s); });
@@ -1123,7 +1167,8 @@ function showSeance(id){
   $("#fill").onclick=()=>{ const n=autoFill(s,c); upd(s); toast(n?n+" case"+(n>1?"s":"")+" remplie"+(n>1?"s":""):"Aucune case vide."); };
   bindWu(s);
   $$("[data-pick]").forEach(b=>b.onclick=()=>picker(s,+b.dataset.pick,b.dataset.slot!=null?+b.dataset.slot:null,b.dataset.rep==="1"));
-  $$("[data-fiche]").forEach(b=>b.onclick=()=>fiche(b.dataset.fiche));
+  /* un exo = une page : la fiche de la banque (le retour ramène à la séance) */
+  $$("[data-fiche]").forEach(b=>b.onclick=()=>{ const id=b.dataset.fiche; if(EX[id]&&!EX[id].snap){ try{ sessionStorage.setItem("seances_y",String(scrollY)); }catch(e){} location.href=GRUN.href("banque","#/ex/"+encodeURIComponent(id)); } else fiche(id); });
   $$("[data-rm]").forEach(b=>b.onclick=()=>{ const [bi,ei]=b.dataset.rm.split(":").map(Number); const B=s.boxes[bi]; if(B.at) B.ex[ei]=null; else B.ex.splice(ei,1); upd(s); });
   $$("[data-mv]").forEach(b=>b.onclick=()=>{ const [bi,ei,d]=b.dataset.mv.split(":").map(Number); const A=s.boxes[bi].ex, j=ei+d; if(j<0||j>=A.length) return; [A[ei],A[j]]=[A[j],A[ei]]; upd(s); });
   $$("[data-dose]").forEach(i=>i.onchange=()=>{ const [bi,ei]=i.dataset.dose.split(":").map(Number); s.boxes[bi].ex[ei].d=i.value; s.maj=todayIso(); save(); });
@@ -1186,28 +1231,28 @@ function bindWu(s){
 function boxHtml(s,b,bi,c,used){
   const at=b.at, per=at?Math.round((b.min||0)/at.n):0, grp=at?Math.ceil(c.n/at.n):0;
   const exRow=(x,ei)=>{ const e=exoOf(x);
-    if(!e) return `<div class="exr empty2">${at?`<b>Atelier ${ei+1}</b> `:""}<button type="button" class="ib sm noprint" data-pick="${bi}" data-slot="${ei}">Choisir un exo</button>${x?`<small class="msg">exo ${esc(x.id)} introuvable</small>`:""}</div>`;
+    if(!e) return `<div class="exr empty2">${at?`<b>Atelier ${ei+1}</b> `:""}<button type="button" class="ib sm noprint" data-pick="${bi}" data-slot="${ei}">Choisir un exo</button>${x?`<small class="msg">exo introuvable</small>`:""}</div>`;
     const w=x.ok?null:(warnEx(e,c,b)||(b.part==="C"&&zoneHit(e,b,c)?"zone fragile ("+c.zones.map(z=>ZN[z]||z).join(", ")+") : à surveiller":null)), alt=w?altFor(e,b,c,used):null, md=upLevel(e,b,c), up=md&&e.v===md+1;
     return `<div class="exr">${at?`<b class="atl">Atelier ${ei+1}</b>`:""}<div class="exm"><button type="button" class="exn" data-fiche="${esc(e.id)}">${esc(e.n)}</button>${x.up?` <span class="badge up" title="Progression">⬆ ${x.up==="exo"?"version plus dure":"dosage +1 cran"}</span>`:up?` <span class="badge up" title="${esc(RULE_HIST)}">⬆ niv. ${e.v}</span>`:""}${e.perso?` <span class="badge">perso</span>`:""}
       <div class="exd"><input aria-label="Dosage" data-dose="${bi}:${ei}" value="${esc(x.d)}"><span class="pdose">${esc(x.d)}</span></div>
-      <small>${e.L.map(chip).join("")} niv. ${e.v} · ${esc(String(e.ma||"").replace(/\.$/,""))}</small>
+      <small><span class="xp">${e.L.map(chip).join("")} niv. ${e.v} · </span>${esc(String(e.ma||"").replace(/\.$/,""))}</small>
       ${w?`<div class="warn noprint">⚠ ${esc(w)}${alt?` · remplaçant proposé : <b>${esc(alt.n)}</b> <button type="button" class="ib sm" data-alt="${bi}:${ei}:${esc(alt.id)}">Remplacer</button>`:""}<button type="button" class="lnk" data-keep="${bi}:${ei}">Garder</button></div>`:""}</div>
-      <div class="exa noprint"><button type="button" class="ib sm" data-pick="${bi}" data-slot="${ei}" data-rep="1">Changer</button>${at?"":`<button type="button" class="ib sm" data-mv="${bi}:${ei}:-1" aria-label="Monter">↑</button><button type="button" class="ib sm" data-mv="${bi}:${ei}:1" aria-label="Descendre">↓</button>`}<button type="button" class="ib sm" data-rm="${bi}:${ei}" aria-label="Retirer">×</button></div></div>`; };
+      <div class="exa noprint"><button type="button" class="ib sm" data-pick="${bi}" data-slot="${ei}" data-rep="1">Changer</button>${at?"":`<button type="button" class="ib sm xp" data-mv="${bi}:${ei}:-1" aria-label="Monter">↑</button><button type="button" class="ib sm xp" data-mv="${bi}:${ei}:1" aria-label="Descendre">↓</button>`}<button type="button" class="ib sm" data-rm="${bi}:${ei}" aria-label="Retirer">×</button></div></div>`; };
   const T=b.t, tb=T?`<div class="tbloc">${T.obj?`<p class="bobj">${esc(T.obj)}</p>`:""}
      <div class="bdos"><label for="bd${bi}">Dosage du bloc</label><textarea id="bd${bi}" rows="2" data-bdos="${bi}">${esc(T.dos)}</textarea><span class="pdose">${esc(T.dos)}</span></div>
      ${T.int?`<p class="msg"><b>Intensité :</b> ${esc(T.int)} · ${T.nb} exo${T.nb>1?"s":""} conseillé${T.nb>1?"s":""}</p>`:""}
      ${T.cons?.length||T.excl?`<details class="bcons"><summary>Consignes${T.excl?" et ce qu'on ne met pas ici":""}</summary>${T.cons?.length?`<ul>${T.cons.map(x=>`<li>${esc(x)}</li>`).join("")}</ul>`:""}${T.excl?`<p class="msg"><b>À ne pas mettre ici :</b> ${esc(T.excl)}</p>`:""}</details>`:""}</div>`:"";
-  return `<div class="box${T?" tb":""}"><div class="boxh"><div>${T?`<span class="bcode">${esc(T.code)}</span> `:""}<b>${esc(b.nom)}</b>${b.L?.length?" "+b.L.map(chip).join(""):""}</div>
+  return `<div class="box${T?" tb":""}"><div class="boxh"><div>${T?`<span class="bcode xp">${esc(T.code)}</span> `:""}<b>${esc(b.nom)}</b>${b.L?.length?" "+b.L.map(chip).join(""):""}</div>
     <label class="mn"><input type="number" min="0" max="120" data-min="${bi}" value="${b.min}" aria-label="Minutes"> min</label></div>${tb}
    ${at?`<p class="msg atx">Ateliers : <input type="number" class="nb noprint" min="2" max="8" data-atn="${bi}" value="${at.n}"><span class="pdose">${at.n}</span> ateliers · ${per} min chacun · groupes de ${grp} joueur${grp>1?"s":""} · rotation au signal</p>`:""}
    ${b.ex.map(exRow).join("")}
    <div class="boxf noprint">${at?"":`<button type="button" class="go sm" data-pick="${bi}">+ Choisir un exo</button>`}
-    <span class="sp"></span><button type="button" class="lnk" data-bat="${bi}">${at?"Sans ateliers":"Ateliers"}</button><button type="button" class="lnk" data-bmv="${bi}:-1" aria-label="Monter la case">↑</button><button type="button" class="lnk" data-bmv="${bi}:1" aria-label="Descendre la case">↓</button><button type="button" class="lnk" data-bren="${bi}">Renommer</button><button type="button" class="lnk" data-bdel="${bi}">Supprimer</button></div></div>`;
+    <span class="sp"></span><span class="xp"><button type="button" class="lnk" data-bat="${bi}">${at?"Sans ateliers":"Ateliers"}</button><button type="button" class="lnk" data-bmv="${bi}:-1" aria-label="Monter la case">↑</button><button type="button" class="lnk" data-bmv="${bi}:1" aria-label="Descendre la case">↓</button><button type="button" class="lnk" data-bren="${bi}">Renommer</button><button type="button" class="lnk" data-bdel="${bi}">Supprimer</button></span></div></div>`;
 }
 function addBox(s,part){
   openSheet(`<div class="shh"><b>Ajouter une case · ${PARTS[part]}</b><button class="ib" data-close type="button">×</button></div>
    <p class="msg">Choisis une ligne de grille ou une famille de la banque.</p>
-   <div class="f"><label for="al">Ligne de grille</label><select id="al"><option value="">—</option>${ALL_L.map(k=>`<option value="${k}">${k} · ${esc(lineName(k))}</option>`).join("")}</select></div>
+   <div class="f"><label for="al">Ligne de grille</label><select id="al"><option value="">—</option>${ALL_L.map(k=>`<option value="${k}">${esc(lineName(k))}</option>`).join("")}</select></div>
    <div class="f"><label for="af">Ou famille d'exos</label><select id="af"><option value="">—</option>${DATA.fams.map(f=>`<option value="${f.c}">${esc(f.t)}</option>`).join("")}</select></div>
    <div class="f"><label for="an">Nom de la case</label><input id="an" placeholder="Laisse vide pour le nom automatique"></div>
    <div class="row"><div class="f"><label for="am">Minutes</label><input id="am" type="number" min="0" value="10"></div></div>
@@ -1236,11 +1281,11 @@ function picker(s,bi,slot,replace){
   let jeux=!!picker.jeux; const P0=pool(B,c,used), PJ=c.noKids?pool(B,c,used,{jeux:true}):P0; let P=jeux?PJ:P0; const fams=[...new Set(PJ.map(x=>x.e.f))];
   let q="", ff="", lv="", shown=40;
   openSheet(`<div class="shh"><b>${replace?"Changer · ":""}${esc(B.nom)}${slot!=null&&B.at?" · atelier "+(slot+1):""}</b><button class="ib" data-close type="button" aria-label="Fermer">×</button></div>
+   <input class="srch" id="pq" type="search" placeholder="Chercher un exo : tes exos, puis toute la banque" autocomplete="off">
    <p class="msg">${P.length} exos possibles (âge ${c.al}, ${(LIEUX[c.lieu]||"").toLowerCase()}, ton matériel). Les plus adaptés sont en haut. ${c.done.ids.size?RULE_HIST:""}</p>
    <div class="tools"><button type="button" class="ib" id="pnew">+ Créer un exo pour cette case</button></div>
    ${c.noKids&&PJ.length>P0.length?`<label class="chk"><input type="checkbox" id="pj"${jeux?" checked":""}> Afficher aussi les jeux (jeux d'échauffement et jeux physiques, ${PJ.length-P0.length})</label>`:""}
    ${B.t?.cles?.length?`<p class="msg">En tête : les exos clés de la trame pour ce bloc, puis les familles du bloc (niveau ${B.t.niv.join(" à ")}).</p>`:""}
-   <input class="srch" id="pq" type="search" placeholder="Rechercher dans ces exos">
    <div class="row"><div class="f grow"><label for="pf">Famille</label><select id="pf"><option value="">Toutes</option>${fams.map(f=>`<option value="${f}">${esc(FAM[f]?.t||f)}</option>`).join("")}</select></div>
    <div class="f"><label for="pv">Niveau</label><select id="pv"><option value="">Tous</option>${[1,2,3,4].map(v=>`<option>${v}</option>`).join("")}</select></div></div>
    <div id="pl"></div>`);
@@ -1249,9 +1294,17 @@ function picker(s,bi,slot,replace){
   const draw=()=>{
     const qq=norm(q).split(/\s+/).filter(Boolean);
     const L=P.filter(({e})=>(!ff||e.f===ff)&&(!lv||e.v==lv)&&(!qq.length||qq.every(w=>tx(e)._t.includes(w))));
+    if(qq.length) L.sort((a,b)=>(!!b.e.perso-!!a.e.perso));   /* tes exos d'abord */
+    const inP=new Set(P.map(x=>x.e.id));
+    const X0=qq.length?DATA.ex.filter(e=>!inP.has(e.id)&&!HIDE.has(e.id)&&(!ff||e.f===ff)&&(!lv||e.v==lv)&&qq.every(w=>tx(e)._t.includes(w))).sort((a,b)=>(!!b.perso-!!a.perso)||(warnEx(a,c,B)?1:0)-(warnEx(b,c,B)?1:0)).slice(0,40).map(e=>({e})):[];
+    const MX=qq.length?[...L.filter(x=>x.e.perso),...X0.filter(x=>x.e.perso)]:[], X=X0.filter(x=>!x.e.perso);   /* tes exos d'abord, où qu'ils soient */
+    if(MX.length){ for(let i=L.length-1;i>=0;i--) if(L[i].e.perso) L.splice(i,1); }
     const filt=q||ff||lv;
     const item=({e})=>{ const md=upLevel(e,B,c); return `<div class="pit${used.has(e.id)?" used":""}"><button type="button" class="padd" data-add="${esc(e.id)}"><b>${esc(e.n)}${B.t?.cles?.includes(e.id)?` <span class="badge ok">clé de la trame</span>`:""}${isKid(e)&&c.noKids?` <span class="badge">jeu</span>`:""}${md&&e.v===md+1?` <span class="badge up">⬆ un cran au-dessus</span>`:""}${e.perso?` <span class="badge">perso</span>`:""}</b><span>${esc(e.ob||e.de||"")}</span><small>${e.L.map(chip).join("")} niv. ${e.v} · dès ${e.a} ans · ${esc(String(e.ma||"").replace(/\.$/,""))}${used.has(e.id)?" · <em>déjà dans la séance</em>":""}</small></button><button type="button" class="ib sm" data-inf="${esc(e.id)}" aria-label="Voir la fiche">ⓘ</button></div>`; };
-    $("#pl").innerHTML=!L.length?`<div class="empty">Aucun exo. Vérifie le matériel, le lieu ou l'âge dans les réglages, ou crée ton exo.</div>`:
+    const itemX=({e})=>{ const w=warnEx(e,c,B)||(!okEx(e,c)?"matériel ou lieu différent des réglages":""); return item({e}).replace("</small>",`${w?` · <em>${esc(w)}</em>`:""}</small>`); };
+    const hM=MX.length?`<h3 class="alt">Mes exos (${MX.length})</h3>${MX.map(itemX).join("")}`:"";
+    const hX=X.length?`<h3 class="alt">Dans toute la banque (${X.length}${X.length>=40?"+":""})</h3>${X.map(itemX).join("")}`:"";
+    $("#pl").innerHTML=!L.length&&!X.length&&!MX.length?`<div class="empty">Aucun exo${q?" pour « "+esc(q)+" »":""}. Vérifie le matériel, le lieu ou l'âge dans les réglages, ou crée ton exo.</div>`:qq.length?hM+(L.length&&(MX.length||X.length)?`<h3 class="alt">Pour cette case (${L.length})</h3>`:"")+L.slice(0,shown).map(item).join("")+hX:
       filt?L.slice(0,shown).map(item).join(""):
       `<h3 class="alt">Les plus adaptés</h3>${L.slice(0,12).map(item).join("")}${L.length>12?`<h3 class="alt">Tous les autres possibles (${L.length-12})</h3>${L.slice(12,shown).map(item).join("")}`:""}`;
     if(L.length>shown) $("#pl").insertAdjacentHTML("beforeend",`<button type="button" class="ib" id="more">Voir plus (${L.length-shown} restants)</button>`);
@@ -1287,7 +1340,7 @@ function creerExo(s,bi,slot,replace){
     const item={id:e.id,d:e.dos||dose(e,c)};
     if(B.at||replace){ const k=slot!=null?slot:B.ex.findIndex(z=>!z); if(k>=0) B.ex[k]=item; else B.ex.push(item); } else B.ex.push(item);
     s.maj=todayIso(); saveNow();
-    openSheet(`<div class="shh"><b>Exo créé · ${esc(e.id)}</b><button class="ib" data-close type="button">×</button></div><p>« ${esc(e.n)} » est dans la case et dans ta banque.</p>
+    openSheet(`<div class="shh"><b>Exo créé</b><button class="ib" data-close type="button">×</button></div><p>« ${esc(e.n)} » est dans la case et dans ta banque.</p>
       <div class="tools"><a class="ib" href="${GRUN.href("banque","#/ex/"+e.id)}">Fiche complète (vidéo, photo, usage échauffement)</a><button class="go" data-close type="button">OK</button></div>`);
     $$("[data-close]",sheet).forEach(b=>b.addEventListener("click",()=>upd(s)));
   };
@@ -1306,7 +1359,7 @@ function fiche(id,back){
   const e=EX[id]||exoOf({id}); if(!e) return;
   const W=e.w||{};
   openSheet(`<div class="shh"><b>${esc(e.n)}</b><button class="ib" data-close type="button" aria-label="Fermer">×</button></div>
-   <p class="msg">${esc(e.id)} · ${esc(FAM[e.f]?.t||"")}${e.s?" · "+esc(e.s):""}</p><p>${e.L.map(chip).join(" ")} niveau ${e.v}${e.an?" · "+esc(e.an):""}</p><div id="vid"></div>
+   <p class="msg"><span class="xp">${esc(e.id)} · </span>${esc(FAM[e.f]?.t||"")}${e.s?" · "+esc(e.s):""}</p><p>${e.L.map(chip).join(" ")} niveau ${e.v}${e.an?" · "+esc(e.an):""}</p><div id="vid"></div>
    <div class="fx">${W.but?`<p><b>But.</b> ${esc(W.but)}</p>`:""}${e.ob?`<p><b>Objectif.</b> ${esc(e.ob)}</p>`:""}${e.ma?`<p><b>Matériel.</b> ${esc(e.ma)}</p>`:""}${e.de?`<p><b>Déroulement.</b> ${esc(e.de)}</p>`:""}${e.co?`<p><b>Consignes.</b> ${esc(arr(e.co))}</p>`:""}${e.er?`<p><b>Erreurs à corriger.</b> ${esc(e.er)}</p>`:""}${W.va?`<p><b>Variantes.</b> ${esc(W.va)}</p>`:""}${e.dos?`<p><b>Dosage conseillé.</b> ${esc(e.dos)}</p>`:""}${e.ut?`<p><b>Utilisation.</b> ${esc(e.ut)}</p>`:""}</div>
    <div class="tools">${back?`<button class="ib" id="fbk" type="button">‹ Retour à la liste</button>`:""}${COACH()?`<a class="ib" href="${GRUN.href("banque","#/ex/"+encodeURIComponent(e.id))}">Fiche complète dans la banque</a>`:""}</div>`);
   back&&($("#fbk").onclick=back);
@@ -1316,7 +1369,7 @@ function fiche(id,back){
 /* ---------- MODÈLES ---------- */
 function modeleSheet(s){
   openSheet(`<div class="shh"><b>Enregistrer comme modèle</b><button class="ib" data-close type="button">×</button></div>
-   <p class="msg">Le modèle garde la structure, les exos, les dosages et le warm-up. Tu pourras l'appliquer à un autre joueur ou groupe : dosages recalculés pour son âge, exos inadaptés signalés avec un remplaçant.</p>
+   <p class="msg">Le modèle garde la structure, les exos, les dosages et l'échauffement. Tu pourras l'appliquer à un autre joueur ou groupe : dosages recalculés pour son âge, exos inadaptés signalés avec un remplaçant.</p>
    <div class="f"><label for="mn">Nom du modèle</label><input id="mn" value="${esc(s.nom||"Modèle")}"></div><div class="tools"><button class="go" id="mok" type="button">Enregistrer</button></div>`);
   $("#mok").onclick=()=>{ const c=ctxOf(s); const m={id:uid(),nom:$("#mn").value.trim()||s.nom||"Modèle",type:s.type,theme:s.theme,lignes:[...s.lignes],phase:s.phase,duree:s.duree,lieu:s.lieu,mat:[...(s.mat||[])],boxes:clone(s.boxes).map(b=>({...b,ex:b.ex.map(x=>x?{id:x.id,d:x.d,snap:x.snap}:null)})),warmup:s.warmup?clone(s.warmup):null,wmode:s.wmode,cooldown:s.cooldown?clone(s.cooldown):null,cmode:s.cmode||"simple",age:c.age,de:s.id,cree:todayIso()};
     ST.modeles.push(m); saveNow(); closeSheet(); toast("Modèle enregistré"); };
@@ -1382,7 +1435,7 @@ async function recevoir(code){
 
 /* ---------- PDF DE LA SÉANCE ---------- */
 async function pdfSeance(s){
-  const b=$("#prt"); b.textContent="Préparation…";
+  pdfLab("prt","Préparation…");
   try{
   const c=ctxOf(s), d=new MiniPDF.Doc(), M=d.M, W=d.W-2*M;
   const COL={E:"#0F766E",C:"#1D4ED8",F:"#7C3AED"};
@@ -1421,13 +1474,25 @@ async function pdfSeance(s){
   }
   if(TR){ d.need(40); d.para("Erreurs à éviter",{size:11,bold:true,after:1}); for(const x of TR.erreurs||[]) d.para("· "+x,{size:9.5,x:M+8,after:0}); d.y+=4; d.para("Indicateurs de réussite",{size:11,bold:true,after:1}); d.para(TR.indicateurs||"",{size:9.5,x:M+8}); }
   const r=await MiniPDF.deliver(d.out(),`Séance ${(s.nom||"").replace(/[\\/:*?"<>|]/g,"").slice(0,40)} ${frD(s.date).replace(/\//g,"-")}.pdf`);
-  b.textContent=r==="download"?"PDF téléchargé":"Imprimer / PDF";
-  }catch(e){ b.textContent="Erreur PDF"; console.error(e); }
-  setTimeout(()=>{ const x=$("#prt"); if(x) x.textContent="Imprimer / PDF"; },2500);
+  pdfLab("prt",r==="download"?"PDF téléchargé":"Séance PDF");
+  }catch(e){ pdfLab("prt","Erreur PDF"); console.error(e); }
+  setTimeout(()=>pdfLab("prt","Séance PDF"),2500);
 }
 
 /* ---------- MODE TERRAIN COMMUN : warm-up guidé (jeu par jeu) puis séance (exo par exo), retour à la fin ---------- */
+const PDFICO='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M12 11v6M9 14l3 3 3-3"/></svg>';
+const pdfBtn=(id,lab)=>`<button type="button" class="grun-pdf" id="${id}">${PDFICO}<span>${lab}</span></button>`;   /* bouton PDF commun (grun.css .grun-pdf) */
+const pdfLab=(id,t)=>{ const b=document.getElementById(id); const sp=b&&b.querySelector("span"); if(sp) sp.textContent=t; };
 let TIMER=null, RTIMER=null, ACX=null, WL=null;
+document.addEventListener("visibilitychange",()=>{ if(document.visibilityState==="visible"&&document.body.classList.contains("terrain")&&!WL) try{ navigator.wakeLock&&navigator.wakeLock.request("screen").then(w=>{ WL=w; w.addEventListener("release",()=>WL=null); }).catch(()=>{}); }catch(e){} });
+/* VOIX (mode terrain) : annonce l'exo, le dosage et les décomptes en français ; réglage gardé dans seances_v1.voix */
+const VOIX={ ok:()=>"speechSynthesis" in window, v:null,
+  pick(){ if(this.v||!this.ok()) return this.v; const L=speechSynthesis.getVoices(); this.v=L.find(x=>/^fr[-_]FR/i.test(x.lang))||L.find(x=>/^fr/i.test(x.lang))||null; return this.v; },
+  dire(t,coupe=true){ if(!ST.voix||!this.ok()||!t) return; try{ if(coupe) speechSynthesis.cancel(); const u=new SpeechSynthesisUtterance(parler(t)); u.lang="fr-FR"; const v=this.pick(); if(v) u.voice=v; u.rate=1.02; speechSynthesis.speak(u); }catch(e){} },
+  stop(){ try{ this.ok()&&speechSynthesis.cancel(); }catch(e){} } };
+const dParle=t=>{ const m=Math.floor(t/60), r=t%60; return (m?m+(m>1?" minutes":" minute"):"")+(m&&r?" ":"")+(r?r+" secondes":""); };
+function parler(t){ return String(t||"").replace(/(\d)\s*[×x]\s*(\d)/g,"$1 fois $2").replace(/×/g," fois ").replace(/·/g,", ").replace(/(\d+)\s*s\b/g,"$1 secondes").replace(/(\d+)\s*min\b/g,"$1 minutes").replace(/(\d+)\s*m\b/g,"$1 mètres").replace(/\brécup\b/gi,"récupération").replace(/\bRPE\b/g,"effort").replace(/[«»"()]/g,""); }
+
 function beep(n=3){ try{ ACX||=new (window.AudioContext||window.webkitAudioContext)(); for(let i=0;i<n;i++){ const t=i*0.25, o=ACX.createOscillator(), g=ACX.createGain(); o.frequency.value=i<n-1?880:1320; o.connect(g); g.connect(ACX.destination); g.gain.setValueAtTime(0.25,ACX.currentTime+t); g.gain.exponentialRampToValueAtTime(0.001,ACX.currentTime+t+0.2); o.start(ACX.currentTime+t); o.stop(ACX.currentTime+t+0.22); } }catch(e){} try{ navigator.vibrate&&navigator.vibrate([300,100,300]); }catch(e){} }
 function steps(s){
   const S=[];
@@ -1456,7 +1521,7 @@ function showTerrain(id,k){
   const nWu=S.filter(y=>y.k==="wu").length, pos=wu?`Échauffement · jeu ${k+1}/${nWu}`:`${PARTS[x.part]} · ${k+1-nWu}/${S.length-nWu}`;
   const bar=`<div class="gbar" aria-hidden="true">${S.map((y,m)=>`<i class="${y.k==="wu"?"w ":""}${ST.run.etat[y.key]==="fait"?"on":ST.run.etat[y.key]==="saute"?"sk":""}${m===k?" cur":""}"></i>`).join("")}</div>`;
   const nx=S[k+1];
-  main.innerHTML=`<div class="ter"><div class="terh"><a class="ib" href="#/s/${s.id}">Quitter</a><span>${pos}</span></div>${bar}
+  main.innerHTML=`<div class="ter"><div class="terh"><a class="ib" href="#/s/${s.id}" id="tq">Quitter</a><span>${pos}</span>${VOIX.ok()?`<button type="button" class="ib${ST.voix?" on":""}" id="tvx" aria-pressed="${!!ST.voix}" title="Annonces vocales">${ST.voix?"🔊 Voix":"🔇 Voix"}</button>`:""}</div>${bar}
    <div class="etq">${esc(x.cas)}${x.at?" · atelier "+x.at:""}</div>
    <h1>${esc(e?.n||x.n||x.cas)}</h1>
    ${x.d?`<p class="dz big">${esc(x.d)}</p>`:wu&&e?.w?.but?`<p class="lead">${esc(e.w.but)}</p>`:""}
@@ -1472,12 +1537,17 @@ function showTerrain(id,k){
   clearInterval(TIMER); clearInterval(RTIMER); let left=x.sec, run=false;
   const show=()=>{ const c=$("#clk"); if(!c) return; c.textContent=mmss(left); c.classList.toggle("over",left<0); };
   show();
-  $("#st").onclick=()=>{ run=!run; $("#st").textContent=run?"Pause":"Reprendre"; clearInterval(TIMER); if(run){ try{ ACX||=new (window.AudioContext||window.webkitAudioContext)(); ACX.resume&&ACX.resume(); }catch(er){} TIMER=setInterval(()=>{ left--; show(); if(left===0) beep(3); if(x.rot&&left>0&&(x.sec-left)%x.rot===0) beep(2); },1000); } };
+  const nomX=(e?.n||x.n||x.cas), annonce=()=>VOIX.dire(`${nomX}.${x.d?" "+x.d+".":x.sec?" "+dParle(x.sec)+".":""}${x.at?" Atelier "+x.at+".":""}`);
+  annonce();
+  $("#tvx")&&($("#tvx").onclick=()=>{ ST.voix=!ST.voix; saveNow(); const b=$("#tvx"); b.classList.toggle("on",ST.voix); b.setAttribute("aria-pressed",ST.voix); b.textContent=ST.voix?"🔊 Voix":"🔇 Voix"; if(ST.voix) annonce(); else VOIX.stop(); });
+  $("#tq").addEventListener("click",()=>VOIX.stop());
+  $("#st").onclick=()=>{ run=!run; $("#st").textContent=run?"Pause":"Reprendre"; clearInterval(TIMER); if(run){ try{ ACX||=new (window.AudioContext||window.webkitAudioContext)(); ACX.resume&&ACX.resume(); }catch(er){} if(left===x.sec) VOIX.dire("C'est parti."); TIMER=setInterval(()=>{ left--; show(); if(left===10&&x.sec>20) VOIX.dire("10 secondes"); if(left<=3&&left>0) VOIX.dire(String(left)); if(left===0){ beep(3); VOIX.dire(nx?"Terminé. Ensuite : "+((nx.id&&(exoOf({id:nx.id})||{}).n)||nx.n||nx.cas):"Terminé.",false); } if(x.rot&&left>0&&(x.sec-left)%x.rot===0){ beep(2); VOIX.dire("Rotation"); } },1000); } };
   $("#rz").onclick=()=>{ left=x.sec; show(); };
   if(nSer){ let sn=1; $("#sdone").onclick=()=>{ if(sn>=nSer){ $("#sdone").textContent="Séries terminées ✓"; $("#sdone").disabled=true; beep(1); return; } let r=rec; const rc=$("#rclk"); rc.hidden=false; rc.textContent=mmss(r); $("#sdone").disabled=true; clearInterval(RTIMER);
-      RTIMER=setInterval(()=>{ r--; rc.textContent=mmss(r); if(r<=0){ clearInterval(RTIMER); beep(3); sn++; $("#sn").textContent=sn; rc.hidden=true; $("#sdone").disabled=false; $("#sdone").textContent=sn>=nSer?"Dernière série faite":"Série faite → récup "+mmss(rec); } },1000); }; }
+      VOIX.dire("Récupération "+dParle(rec));
+      RTIMER=setInterval(()=>{ r--; rc.textContent=mmss(r); if(r===10) VOIX.dire("10 secondes"); else if(r<=3&&r>0) VOIX.dire(String(r)); if(r<=0){ clearInterval(RTIMER); beep(3); VOIX.dire("Série "+(sn+1)+" sur "+nSer); sn++; $("#sn").textContent=sn; rc.hidden=true; $("#sdone").disabled=false; $("#sdone").textContent=sn>=nSer?"Dernière série faite":"Série faite → récup "+mmss(rec); } },1000); }; }
   const mark=v=>{ ST.run.etat[x.key]=v; saveNow(); clearInterval(TIMER); clearInterval(RTIMER); go(k+1>=S.length?"#/retour/"+s.id:"#/terrain/"+s.id+"/"+(k+1)); };
-  $("#ok").onclick=()=>mark("fait"); $("#sk").onclick=()=>mark("saute");
+  $("#ok").onclick=()=>{ VOIX.stop(); mark("fait"); }; $("#sk").onclick=()=>{ VOIX.stop(); mark("saute"); };
   if(x.id) videoOf(x.id).then(v=>v||(x.exo?videoOf(x.exo):null)).then(v=>{ if(!v||!$("#vb")) return; $("#vb").innerHTML=`<button type="button" class="ib" id="vbt">▶ Vidéo</button>`; $("#vbt").onclick=()=>{ const el=$("#vid"); if(el.innerHTML) el.innerHTML=""; else { el.innerHTML=vidHtml(v); if(!v.u&&!/\.(mp4|mov|webm|m4v)/i.test(v.l)) window.open(v.l,"_blank","noopener"); } }; });
 }
 /* RETOUR : dureté ressentie, durée réelle, douleur, commentaire → journal de chaque joueur */
@@ -1528,6 +1598,7 @@ function route(){
   const {a,b,c,q}=parseHash(), J=!COACH();
   const ter=a==="t"||a==="terrain"; document.body.classList.toggle("terrain",ter);
   if(!ter&&WL){ try{ WL.release(); }catch(e){} WL=null; }
+  if(!ter) VOIX.stop();
   bandeau();
   if(a==="x"&&b){ recevoir(b); return; }
   if(a==="nouvelle") nouvelle(q);
@@ -1542,6 +1613,7 @@ function route(){
   else if(a==="p"&&b&&!J) fromPlan(b,c);
   else showHome();
   if(a!=="s") scrollTo(0,0);
+  else { let y=null; try{ y=sessionStorage.getItem("seances_y"); sessionStorage.removeItem("seances_y"); }catch(e){} if(y) setTimeout(()=>scrollTo(0,+y),60); }
   $("#back").style.visibility=a?"visible":"hidden";
 }
 addEventListener("hashchange",route);

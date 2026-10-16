@@ -24,6 +24,44 @@ body.grun-has-nav{padding-bottom:calc(var(--nav-h) + env(safe-area-inset-bottom,
 .grun-relais a,.grun-relais button{color:#fff;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.35);border-radius:8px;
   min-height:36px;padding:0 12px;display:inline-flex;align-items:center;text-decoration:none;font:inherit;white-space:nowrap}
 .grun-mod #back{visibility:visible!important}
+/* mode simple / mode expert (GRUN.expert) : « xp » = réservé au mode expert ; « xs » = seulement en mode simple */
+html.grun-simple .xp{display:none!important}
+html.grun-expert .xs{display:none!important}
+/* « Plus d'options » : réglages fins et actions rares, repliés (même aspect dans tous les modules) */
+details.grun-plus{margin-top:14px;border:1px solid var(--line,#D9DDE3);border-radius:12px;background:var(--panel,#fff)}
+details.grun-plus>summary{list-style:none;cursor:pointer;min-height:46px;display:flex;align-items:center;gap:8px;padding:0 14px;font:600 15px/1.2 var(--ui,system-ui,sans-serif);color:var(--mute,#5D6675)}
+details.grun-plus>summary::-webkit-details-marker{display:none}
+details.grun-plus>summary::before{content:"+";font-weight:700;width:1em;color:var(--mute,#5D6675)}
+details.grun-plus[open]>summary::before{content:"–"}
+details.grun-plus>.grun-plusb{padding:0 14px 14px;display:flex;flex-direction:column;gap:10px}
+/* Grilles : bilan en cours + un gros bouton « Créer un nouveau bilan » */
+.bil1{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;margin-top:14px;padding:12px 14px;border:1px solid var(--line,#D9DDE3);border-left:4px solid var(--acc,#0F766E);border-radius:12px;background:var(--panel,#fff)}
+.bil1 b{display:block;font-size:1.1rem}
+.bil1 small{color:var(--mute,#5D6675)}
+.go.big{min-height:46px;padding:0 18px;font-size:1.02rem}
+/* listes : colonne « code » masquée en mode simple (classe hasx sur la ligne, cx sur le code) */
+html.grun-simple .hasx{grid-template-columns:minmax(0,1fr)!important}
+html.grun-simple .cx{display:none!important}
+/* Grilles : « L'essentiel » en cartes sur téléphone ; toucher une ligne ouvre son détail */
+#doc table.cartes td.lgo{cursor:pointer;color:var(--acc,#0F766E);font-weight:700}
+@media (max-width:640px){
+  #doc table.cartes,#doc table.cartes tbody,#doc table.cartes tr,#doc table.cartes td{display:block;width:auto!important}
+  #doc table.cartes thead{display:none}
+  #doc table.cartes tr{padding:10px 12px;border-bottom:1px solid var(--line,#D9DDE3)}
+  #doc table.cartes td{border:none!important;padding:2px 0!important}
+  #doc table.cartes td.lgo{font-size:1.05em}
+  #doc table.cartes td.lgo::after{content:" ›"}
+  #doc table.cartes td:nth-child(3)::before{content:"Test ★ : ";font-weight:600;color:var(--mute,#5D6675)}
+}
+/* lignes de grille affichées en clair : les noms longs passent à la ligne */
+.lc{white-space:normal!important;overflow-wrap:anywhere;display:inline-block;max-width:100%}
+.boxh>div{min-width:0;flex:1 1 auto}
+/* bouton PDF commun (même aspect et même libellé « … PDF » dans tous les modules) : <button class="grun-pdf"><svg/><span>Rapport PDF</span></button> */
+.grun-pdf{display:inline-flex;align-items:center;gap:7px;min-height:42px;padding:0 14px;border-radius:10px;border:1.5px solid var(--grun,#0F766E);background:var(--panel,#fff);color:var(--grun,#0F766E);font:700 15px/1 var(--ui,system-ui,sans-serif);cursor:pointer;white-space:nowrap;text-decoration:none}
+.grun-pdf svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.grun-pdf:disabled{opacity:.6}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .grun-pdf{color:#2DD4BF;border-color:#2DD4BF}}
+:root[data-theme="dark"] .grun-pdf{color:#2DD4BF;border-color:#2DD4BF}
 </style>
 <script src="grun.js?v=1"></script>
 <meta name="grun-module" content="accueil"></head><body><title>GRÜN</title>
@@ -245,7 +283,76 @@ mark{background:var(--mark);color:inherit;border-radius:2px}
 @keyframes spL{to{width:120px}}
 @keyframes spT{to{opacity:.75}}
 @media (prefers-reduced-motion: reduce){#splash{display:none}}
+/* passe simplicité : aujourd'hui, gros boutons */
+h1.auj{font-size:2.3rem}
+.go.big{min-height:46px;padding:0 20px;font-size:1.05rem;border-radius:11px}
+.wide{width:100%;justify-content:center}
+.card.vide{margin-top:16px;border-left:4px solid var(--ind);display:flex;flex-direction:column;gap:10px;padding:18px}
+.card.vide .msg{margin:0}
+.card.vide .ib.wide{min-height:46px}
+.td{display:grid;grid-template-columns:10px minmax(0,1fr) auto;gap:10px;padding:10px 14px;border-top:1px solid var(--line);align-items:center;min-height:58px}
+.day>h3+.td{border-top:none}
+.td .dot{width:10px;height:10px;border-radius:50%;background:var(--ec,var(--mute))}
+.td .tt{text-decoration:none;font-weight:600;min-width:0;overflow-wrap:anywhere}
+.td .tt small{display:block;color:var(--mute);font-size:.84rem;font-weight:500}
+details.more{border-top:1px solid var(--line)}
+details.more>summary{cursor:pointer;padding:10px 14px;color:var(--acc);font-weight:600;list-style:none}
+details.more>summary::-webkit-details-marker{display:none}
+.sec>details.more{border:1px solid var(--line);border-radius:12px;background:var(--panel)}
+.sec>details.more>.day{border:none;border-radius:0;border-top:1px solid var(--line)}
+.five{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;margin-top:12px}
+.five.four{grid-template-columns:repeat(4,minmax(0,1fr))}
+.b5{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-height:84px;padding:8px 2px;border-radius:12px;border:none;background:var(--acc);color:#fff;text-decoration:none;text-align:center}
+.b5 svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.b5 b{font-size:.84rem;line-height:1.1;font-weight:700;hyphens:manual}
+.facts .fact{flex:1 1 30%}
+.b5 small{font-size:.72rem;opacity:.85}
+:root[data-theme="dark"] .b5{color:#0B1117}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .b5{color:#0B1117}}
+@media (min-width:640px){.b5{min-height:96px}.b5 b{font-size:1rem}.b5 small{font-size:.8rem}}
+.tg.big2{min-height:44px;font-size:1rem;color:var(--ink);text-decoration:none;display:inline-flex;align-items:center}
 @media print{.top,#grun-nav,.acts,.toast{display:none}}
+
+/* Pro Max : onglets du dossier, semaine du coach, objectifs, présences, âges du groupe */
+@media (max-width:420px){.tabs button{padding:0 4px;font-size:.92rem}}
+.tabs{display:flex;gap:2px;margin-top:12px;overflow-x:auto;scrollbar-width:none;border-bottom:1px solid var(--line);-webkit-overflow-scrolling:touch}
+.tabs::-webkit-scrollbar{display:none}
+.tabs button{flex:1 0 auto;min-height:44px;padding:0 8px;border:0;background:none;font-weight:700;font-size:.98rem;color:var(--mute);border-bottom:3px solid transparent;margin-bottom:-1px}
+.tabs button[aria-selected=true]{color:var(--ink);border-bottom-color:var(--acc)}
+.wk{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px;margin-bottom:10px}
+.wk button{min-height:66px;border:1px solid var(--line);background:var(--panel);border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;padding:4px 0;color:var(--ink)}
+.wk button span{font-size:.72rem;color:var(--mute);font-weight:600}
+.wk button b{font-size:1.1rem;line-height:1.1}
+.wk button i{display:flex;gap:2px;height:7px}
+.wk button em{width:6px;height:6px;border-radius:50%}
+.wk button small{font-size:.7rem;color:var(--mute);min-height:.9em}
+.wk button.auj span{color:var(--acc)}
+.wk button[aria-selected=true]{border-color:var(--acc);box-shadow:inset 0 0 0 1.5px var(--acc)}
+.objs .obj{display:flex;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid var(--line)}
+.objs .obj:first-child{padding-top:0}
+.objs .obj .tt{flex:1;min-width:0;overflow-wrap:anywhere}
+.objs .obj .tt small{display:block;color:var(--mute);font-size:.85rem}
+.objs .obj.fini .tt{color:var(--mute)}
+.objs .obj.fini .tt>:first-child{text-decoration:line-through}
+.ost{flex:0 0 auto;width:30px;height:30px;border-radius:50%;border:2px solid var(--create);background:var(--panel);font-weight:800;color:#fff;display:inline-flex;align-items:center;justify-content:center;padding:0}
+.ost.st-atteint{background:var(--ok);border-color:var(--ok)}
+.ost.st-abandonne{background:var(--mute);border-color:var(--mute)}
+.pres{padding:8px 0;border-bottom:1px solid var(--line)}
+.pres:last-child{border-bottom:0}
+.pres .ph{display:flex;gap:8px;align-items:center;justify-content:space-between;margin-bottom:6px}
+.pres .ph small{display:block;color:var(--mute);font-size:.85rem}
+.pr{min-height:40px;min-width:44px;border:1px solid var(--line);background:var(--panel);border-radius:999px;padding:0 12px;font-weight:600;color:var(--mute)}
+.pr.oui{background:var(--ok);border-color:var(--ok);color:#fff}
+.pr.non{background:var(--panel);border-color:var(--bad);color:var(--bad);text-decoration:line-through}
+:root[data-theme="dark"] .pr.oui,:root[data-theme="dark"] .ost.st-atteint{color:#0B1117}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .pr.oui,:root:not([data-theme="light"]) .ost.st-atteint{color:#0B1117}}
+.agesv{width:100%;max-width:560px;display:block;margin-top:8px;color:var(--ink)}
+.lgd{display:inline-block;width:10px;height:10px;border-radius:50%;vertical-align:-1px}
+.lgd.o{border:2px solid var(--ink);background:var(--panel)}
+.lgd.b{background:var(--tests)}
+ul.notes{margin:8px 0 0;padding-left:18px}
+ul.notes li{margin:3px 0}
+.rads svg,.agesv{touch-action:pan-y pinch-zoom}
 </style>
 
 <div id="splash" aria-hidden="true"><div class="w">GRÜN</div><div class="l"></div><div class="s">Performance tennis</div></div>
@@ -253,7 +360,7 @@ mark{background:var(--mark);color:inherit;border-radius:2px}
   <button class="ib" id="back" type="button" aria-label="Retour">‹</button>
   <a class="brand" href="#/" aria-label="Accueil GRÜN">GR<i>Ü</i>N</a>
   <div class="sbox" id="sbox"><svg viewBox="0 0 24 24" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
-    <input id="q" type="search" placeholder="Rechercher partout : joueur, exo, test, doc…" autocomplete="off" enterkeyhint="search" aria-label="Recherche globale"></div>
+    <input id="q" type="search" placeholder="Chercher : joueur, exo, test, document…" autocomplete="off" enterkeyhint="search" aria-label="Recherche globale"></div>
   <span class="sp" id="tsp" hidden></span>
   <a class="ib" id="cfg" href="#/reglages" aria-label="Réglages"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></a>
 </div></header>
@@ -267,6 +374,49 @@ mark{background:var(--mark);color:inherit;border-radius:2px}
 "use strict";
 (function () {
 const G = window.GRUN;
+/* MiniPDF : copie de apps/pdfmini.js (l'accueil n'est pas assemblé avec ce fichier) — même moteur que les PDF des autres modules */
+/* ===== MiniPDF : vrai fichier PDF fabriqué sur l'appareil, sans bibliothèque (Helvetica, A4) ===== */
+const MiniPDF = (()=>{
+  const CP = {"€":128,"‚":130,"ƒ":131,"„":132,"…":133,"†":134,"‡":135,"ˆ":136,"‰":137,"Š":138,"‹":139,"Œ":140,"Ž":142,"‘":145,"’":146,"“":147,"”":148,"•":149,"–":150,"—":151,"˜":152,"™":153,"š":154,"›":155,"œ":156,"ž":158,"Ÿ":159};
+  const SUB = {"→":"->","←":"<-","≤":"<=","≥":">=","✓":"OK","★":"*","ⓘ":"i","✎":""," ":" "," ":" ","‑":"-","≈":"~","×":"×","…":"…","Δ":"D","°":"°"};
+  function enc(s){ let o=""; for(const ch of String(s??"")){ let c=ch; if(c.charCodeAt(0)>255 && !(c in CP) && SUB[c]!=null) c=SUB[c]; for(const k of c){ const n=k.charCodeAt(0); if(n<256) o+=k; else if(CP[k]) o+=String.fromCharCode(CP[k]); else o+="?"; } } return o.replace(/\\/g,"\\\\").replace(/\(/g,"\\(").replace(/\)/g,"\\)"); }
+  let ctx=null;
+  function width(s,size,bold){ if(!ctx){ ctx=document.createElement("canvas").getContext("2d"); } ctx.font=(bold?"bold ":"")+"100px Helvetica, Arial, sans-serif"; return ctx.measureText(String(s)).width/100*size*1.02; }
+  function hex(c){ const m=/^#?([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})$/i.exec(c||"#000000"); return m?[1,2,3].map(i=>(parseInt(m[i],16)/255).toFixed(3)).join(" "):"0 0 0"; }
+  class Doc{
+    constructor(opt={}){ this.W=opt.landscape?842:595; this.H=opt.landscape?595:842; this.M=opt.margin||36; this.pages=[]; this.addPage(); }
+    addPage(){ this.cur=[]; this.pages.push(this.cur); this.y=this.M; return this; }
+    text(x,y,s,o={}){ const sz=o.size||10; this.cur.push(`BT /${o.bold?"F2":"F1"} ${sz} Tf ${hex(o.color)} rg ${x.toFixed(2)} ${(this.H-y-sz*0.8).toFixed(2)} Td (${enc(s)}) Tj ET`); }
+    rect(x,y,w,h,o={}){ const c=[]; if(o.fill) c.push(hex(o.fill)+" rg"); if(o.stroke) c.push(hex(o.stroke)+" RG "+(o.lw||0.6)+" w"); c.push(`${x.toFixed(2)} ${(this.H-y-h).toFixed(2)} ${w.toFixed(2)} ${h.toFixed(2)} re ${o.fill&&o.stroke?"B":o.fill?"f":"S"}`); this.cur.push(c.join(" ")); }
+    line(x1,y1,x2,y2,o={}){ this.cur.push(`${hex(o.color||"#C8CDD4")} RG ${o.lw||0.6} w ${x1.toFixed(2)} ${(this.H-y1).toFixed(2)} m ${x2.toFixed(2)} ${(this.H-y2).toFixed(2)} l S`); }
+    wrap(s,size,maxw,bold){ const out=[]; for(const para of String(s??"").split("\n")){ let line=""; for(const w of para.split(/\s+/)){ if(!w) continue; const t=line?line+" "+w:w; if(width(t,size,bold)<=maxw||!line) line=t; else { out.push(line); line=w; } } out.push(line); } return out; }
+    need(h){ if(this.y+h>this.H-this.M) { this.addPage(); return true; } return false; }
+    /* paragraphe avec retour à la ligne et saut de page automatique */
+    para(s,o={}){ const sz=o.size||10, lh=sz*(o.lh||1.3), x=o.x??this.M, w=o.w??(this.W-this.M-x); for(const l of this.wrap(s,sz,w,o.bold)){ this.need(lh); this.text(x,this.y,l,o); this.y+=lh; } this.y+=o.after??2; }
+    out(){
+      const objs=[]; const add=s=>{ objs.push(s); return objs.length; };
+      add("<< /Type /Catalog /Pages 2 0 R >>"); add("PAGES");
+      add("<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>");
+      add("<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>");
+      const kids=[];
+      for(const p of this.pages){ const st=p.join("\n"); const c=add(`<< /Length ${st.length} >>\nstream\n${st}\nendstream`); kids.push(add(`<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ${this.W} ${this.H}] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents ${c} 0 R >>`)); }
+      objs[1]=`<< /Type /Pages /Kids [${kids.map(k=>k+" 0 R").join(" ")}] /Count ${kids.length} >>`;
+      let s="%PDF-1.4\n%\xE2\xE3\xCF\xD3\n"; const off=[];
+      objs.forEach((o,i)=>{ off.push(s.length); s+=`${i+1} 0 obj\n${o}\nendobj\n`; });
+      const x=s.length; s+=`xref\n0 ${objs.length+1}\n0000000000 65535 f \n`+off.map(o=>String(o).padStart(10,"0")+" 00000 n \n").join("")+`trailer\n<< /Size ${objs.length+1} /Root 1 0 R >>\nstartxref\n${x}\n%%EOF`;
+      const b=new Uint8Array(s.length); for(let i=0;i<s.length;i++) b[i]=s.charCodeAt(i)&255; return new Blob([b],{type:"application/pdf"});
+    }
+  }
+  /* remise du fichier : feuille de partage (Imprimer, Enregistrer dans Fichiers…) sinon téléchargement */
+  async function deliver(blob,name){
+    const file=new File([blob],name,{type:"application/pdf"});
+    try{ if(navigator.canShare && navigator.canShare({files:[file]})){ await navigator.share({files:[file],title:name}); return "share"; } }catch(e){ if(e && e.name==="AbortError") return "abort"; }
+    const u=URL.createObjectURL(blob), a=document.createElement("a"); a.href=u; a.download=name; a.rel="noopener"; document.body.appendChild(a); a.click(); a.remove();
+    return "download";
+  }
+  return {Doc, deliver, width};
+})();
+
 const $ = (s, r = document) => r.querySelector(s), $$ = (s, r = document) => [...r.querySelectorAll(s)];
 const esc = G.esc, arr = x => Array.isArray(x) ? x : [];
 const fold = s => String(s == null ? "" : s).normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
@@ -304,7 +454,7 @@ const ZONES = { dos: "Dos", genou: "Genou", talon: "Talon, cheville", epaule: "�
 const zn = z => ZONES[z] || z || "";
 const TYPN = { tournoi: "Tournoi", bilan: "Bilan", seance: "Séance", plan: "Séance du plan", repos: "Repos", autre: "Autre" };
 const TYPC = { tournoi: "var(--bad)", bilan: "var(--tests)", seance: "var(--create)", plan: "var(--create)", repos: "var(--low)", autre: "var(--mute)" };
-const RTYP = { seance: "Séance", warmup: "Warm-up", tennis: "Tennis", match: "Match", autre: "Autre" };
+const RTYP = { seance: "Séance", warmup: "Échauffement", tennis: "Tennis", match: "Match", autre: "Autre" };
 const APRES = { tennis: "entraînement tennis", pp: "séance de PP", match: "match", bilan: "bilan" };
 const FF = [["sommeil", "Sommeil", "Très mal dormi", "Très bien dormi"], ["fatigue", "Énergie", "Épuisé", "Plein d'énergie"], ["courbatures", "Courbatures", "Très courbaturé", "Aucune"], ["stress", "Stress", "Très stressé", "Serein"], ["humeur", "Humeur", "Au plus bas", "Au top"]];
 const RPEN = ["Repos", "Très très facile", "Très facile", "Facile", "Modéré", "Un peu dur", "Dur", "Très dur", "Très très dur", "Presque maximal", "Maximal"];
@@ -316,6 +466,10 @@ const rdP = fetch("data-recherche.json").then(r => r.ok ? r.json() : null).catch
   if (d) RD = { ...RD, ...d, lignes: d.lignes && d.lignes.PP ? d.lignes : LN0 };
   RD.tests.forEach(t => TM[t.id] = t);
 });
+/* noms des échauffements de la bibliothèque (favoris d'un joueur = id de modèle EWU-…/ECD-…) */
+let WUN = {};
+const wuP = fetch("data-warmup.json").then(r => r.ok ? r.json() : null).catch(() => null).then(d => { if (d) arr(d.modeles).forEach(m => { if (m && m.id) WUN[m.id] = m; }); });
+const wuMinM = m => Math.round(arr(m && m.situations).reduce((a, x) => a + (+x.duree || 0), 0) / 30) / 2;
 const LN = d => (RD.lignes && RD.lignes[d]) || LN0[d];
 const ligneNom = l => { const m = /^(PP|GE|DE)(\d+)$/.exec(l || ""); return m ? (LN(m[1])[+m[2] - 1] || l) : l; };
 
@@ -362,7 +516,7 @@ function evJoueur(j, a, b) {
   for (const s of S) {
     if (s.src && s.src.plan && s.src.key) built.add(s.src.plan + "|" + s.src.key);
     if (!isoOk(s.date) || s.date < a || s.date > b || !seanceJids(s).includes(jid)) continue;
-    out.push({ date: s.date, type: "seance", titre: s.nom || s.theme || "Séance", sous: [KN[s.type], s.duree ? s.duree + " min" : ""].filter(Boolean).join(" · "), href: G.href("seances", "#/s/" + s.id), terrain: G.href("seances", "#/terrain/" + s.id), ref: s.id, fait: !!s.fait, duree: s.duree, gid: grpOk(s.gid) ? s.gid : null, k: "s|" + s.id });
+    out.push({ date: s.date, type: "seance", titre: s.nom || s.theme || "Séance", sous: [KN[s.type], s.duree ? s.duree + " min" : ""].filter(Boolean).join(" · "), href: G.href("seances", "#/s/" + s.id), terrain: G.href("seances", "#/terrain/" + s.id), ref: s.id, fait: !!(s.fait || s.faite), duree: s.duree, gid: grpOk(s.gid) ? s.gid : null, k: "s|" + s.id });
   }
   for (const p of PROG().plans) {
     if (!planJids(p).includes(jid)) continue;
@@ -371,7 +525,7 @@ function evJoueur(j, a, b) {
       if (add(w.d1, 6) < a || w.d1 > b) continue;
       for (const s of w.ses) {
         if (s.date < a || s.date > b || (s.key && built.has(p.id + "|" + s.key))) continue;
-        out.push({ date: s.date, type: "plan", titre: s.t || KN[s.k] || "Séance du plan", sous: (s.t ? (KN[s.k] || "") + " · " : "") + (p.nom || "Plan"), kk: s.k, l: s.l, href: G.href("prog", "#p/" + p.id), plan: p.id, gid: grpOk(p.gid) ? p.gid : null, k: "p|" + p.id + "|" + s.date + "|" + (s.key || s.k) });
+        out.push({ date: s.date, type: "plan", titre: s.t || KN[s.k] || "Séance du plan", sous: (s.t ? (KN[s.k] || "") + " · " : "") + (p.nom || "Plan"), kk: s.k, l: s.l, key: s.key || null, href: G.href("prog", "#p/" + p.id), plan: p.id, gid: grpOk(p.gid) ? p.gid : null, k: "p|" + p.id + "|" + s.date + "|" + (s.key || s.k) });
       }
     }
     for (const c of arr(p.compets)) if (c && isoOk(c.d1) && c.d1 <= b && (isoOk(c.d2) ? c.d2 : c.d1) >= a) out.push({ date: c.d1 < a ? a : c.d1, fin: c.d2 && c.d2 !== c.d1 ? c.d2 : "", type: "tournoi", titre: c.nom || "Tournoi", sous: p.nom || "", href: G.href("prog", "#p/" + p.id), k: "c|" + p.id + "|" + c.d1 + "|" + (c.nom || "") });
@@ -398,7 +552,10 @@ function niveauTest(tid, sx, age, vals) {
 }
 const testNom = id => { const t = TM[id]; if (t) return t.n; const p = G.tests.perso().find(x => x.id === id); return p ? p.nom : id; };
 const lvB = v => v == null ? "" : `<span class="lv n${Math.min(4, Math.max(1, Math.floor(v)))}">${nf(v)}</span>`;
-function moysHTML(j, b) { return `<div class="moys">${DOMS.map(d => `<span class="mo ${d.toLowerCase()}">${d} <b>${b ? nf(moy(j, b, d)) : "–"}</b></span>`).join("")}</div>`; }
+const DOMC2 = { PP: "Physique", GE: "Geste", DE: "Déplacement" };
+function moysHTML(j, b) { return `<div class="moys">${DOMS.map(d => `<span class="mo ${d.toLowerCase()}">${DOMC2[d]} <b>${b ? nf(moy(j, b, d)) : "–"}</b></span>`).join("")}</div>`; }
+/* pastille d'une ligne de grille : son nom en clair (le code n'apparaît qu'en mode expert) */
+const lcN = l => `<span class="lc ${String(l).slice(0, 2).toLowerCase()}">${esc(ligneNom(l))}<span class="xp"> (${esc(l)})</span></span>`;
 
 /* radar SVG d'un domaine (pointillés = bilan précédent ; cercle tireté = niveau 3) */
 function radar(d, vals, mk, prev) {
@@ -452,6 +609,7 @@ let OPEN = new Set(); try { OPEN = new Set(JSON.parse(sessionStorage.getItem("hu
 const keepOpen = () => { try { sessionStorage.setItem("hub_open", JSON.stringify([...OPEN])); } catch (e) {} };
 const wide = matchMedia("(min-width:900px)");
 let CURJ = null, FILTRE = "", PREF = null, BQ = null, BQload = null;
+const DEMO = { busy: false, msg: "", ok: true };   // démonstration en cours de chargement / retrait (voir DÉMONSTRATION)
 function toast(t) { let x = $("#toast"); if (!x) { x = document.createElement("div"); x.id = "toast"; x.className = "toast"; x.setAttribute("role", "status"); document.body.appendChild(x); } x.textContent = t; x.hidden = false; clearTimeout(x._t); x._t = setTimeout(() => x.hidden = true, 2600); }
 function applyReg() { const r = REG(), h = document.documentElement; if (r.theme === "light" || r.theme === "dark") h.dataset.theme = r.theme; else h.removeAttribute("data-theme"); h.style.setProperty("--z", (Math.max(85, Math.min(135, +r.fs || 100)) / 100).toString()); }
 function sx(id, titre, resume, body, col) {
@@ -492,21 +650,21 @@ function route() {
   }
   if (a === "recherche") { navActive("acc"); return vRecherche(parts.slice(1).join("/")); }
   if (a === "pole" && G.POLES.some(p => p.id === b)) { navActive(b); return vPole(b); }
-  if (a === "joueurs") { navActive("ind"); return vJoueurs(); }
+  if (a === "joueurs") { navActive("ind"); return vJoueurs(b); }
   if (a === "j" && b) { navActive("ind"); return vDossier(b, c); }
-  if (a === "g" && b) { navActive("ind"); return vGroupe(b); }
+  if (a === "g" && b) { navActive("ind"); return vGroupe(b, c); }
   if (a === "reglages") { navActive(""); return vReglages(); }
   navActive("acc"); return vAccueil();
 }
 function render(keep) { const y = scrollY; route(); if (keep) scrollTo(0, y); }
-addEventListener("hashchange", () => { render(false); scrollTo(0, 0); });
+addEventListener("hashchange", () => { TABJ = { jid: null, t: "resume" }; render(false); scrollTo(0, 0); });
 wide.addEventListener && wide.addEventListener("change", () => render(true));
 $("#back").onclick = () => { if (history.length > 1) history.back(); else location.hash = "#/"; };
 const busy = () => { const a = document.activeElement; return a && /^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName) && main.contains(a); };
-const refresh = () => { if (mute) return; if (busy()) { pending = true; return; } render(true); };
+const refresh = () => { if (mute || DEMO.busy) return; if (busy()) { pending = true; return; } render(true); };
 let pending = false;
 main.addEventListener("focusout", () => setTimeout(() => { if (pending && !busy()) { pending = false; render(true); } }, 50));
-["grun:joueurs", G.K.groupes, G.K.journal, G.K.prog, G.K.progCache, G.K.seances, G.K.routines, G.K.tests, G.K.mode].forEach(k => G.on(k, refresh));
+["grun:joueurs", G.K.groupes, G.K.journal, G.K.prog, G.K.progCache, G.K.seances, G.K.routines, G.K.tests, G.K.mode, G.K.objectifs, G.K.presences].forEach(k => G.on(k, refresh));
 G.on(G.K.reglages, () => { applyReg(); refresh(); });
 
 /* ================= ACCUEIL COACH ================= */
@@ -515,9 +673,30 @@ function pcard(j) {
   const grs = G.groupes.de(j.id).map(g => g.nom);
   return `<a class="pc" href="#/j/${esc(j.id)}" style="border-left-color:${j.sexe === "F" ? "var(--tests)" : "var(--ind)"}"><div class="nm"><span>${esc(j.nom)}</span>${al && al.n !== "info" ? badge(al.n, al.n === "haute" ? "!" : "à surveiller") : ""}</div>
     <div class="meta">${j.sexe === "F" ? "Fille" : "Garçon"}${ageTxt(j) ? " · " + ageTxt(j) : ""}${m ? " · âge bio " + nf(m.bio) : ""}${grs.length ? " · " + esc(grs.join(", ")) : ""}</div>
-    <div class="meta">${b ? "Bilan du " + G.frD(b.date) : "Pas encore de bilan"}</div>${b ? moysHTML(j, b) : ""}${al && al.n !== "info" ? `<div class="meta" style="color:var(--${al.n === "haute" ? "bad" : "warn"})">${esc(al.t)}</div>` : ""}</a>`;
+    <div class="xp"><div class="meta">${b ? "Bilan du " + G.frD(b.date) : "Pas encore de bilan"}</div>${b ? moysHTML(j, b) : ""}</div>${al && al.n !== "info" ? `<div class="meta" style="color:var(--${al.n === "haute" ? "bad" : "warn"})">${esc(al.t)}</div>` : ""}</a>`;
 }
-function semaine() {
+/* une ligne « Aujourd'hui / Demain » : ce qui est prévu + un gros bouton (Lancer une séance prête, Construire une séance de la prog) */
+function evAction(e, jid) {
+  if (e.type === "seance") return e.fait ? badge("ok", "Faite") : `<a class="go acc big" href="${esc(e.terrain)}">Lancer</a>`;
+  if (e.type === "plan") return e.key ? `<button class="go acc big" data-a="construire" data-plan="${esc(e.plan)}" data-key="${esc(e.key)}">Construire</button>` : `<a class="go acc big" href="${esc(e.href)}">Construire</a>`;
+  return "";
+}
+function jourHTML(d, titre, max) {
+  const M = new Map();
+  for (const j of G.joueurs.all()) for (const e of evJoueur(j, d, d)) {
+    const k = e.k; if (!M.has(k)) M.set(k, { ...e, noms: [], jids: [] });
+    const x = M.get(k); x.noms.push(prenom(j)); x.jids.push(j.id);
+  }
+  const L = [...M.values()].sort((a, b) => (a.type === "tournoi" ? -1 : a.type === "seance" ? 0 : 1) - (b.type === "tournoi" ? -1 : b.type === "seance" ? 0 : 1));
+  const row = e => { const g = e.gid && G.groupes.get(e.gid), who = g ? g.nom : e.noms.length > 3 ? e.noms.slice(0, 3).join(", ") + " +" + (e.noms.length - 3) : e.noms.join(", ");
+    const lien = e.type === "seance" ? e.href : e.type === "tournoi" ? (e.jids.length === 1 ? "#/j/" + e.jids[0] + "/agenda" : null) : (e.jids.length === 1 && !e.gid ? "#/j/" + e.jids[0] : null);
+    return `<div class="td" style="--ec:${TYPC[e.type]}"><span class="dot"></span><${lien ? `a href="${esc(lien)}"` : "span"} class="tt">${esc(e.titre)}<small>${esc(who)} · ${e.type === "tournoi" ? "Tournoi" + (e.fin ? " jusqu'au " + dCourt(e.fin) : "") : e.type === "plan" ? "à construire" : "prête"}${e.type !== "tournoi" && KN[e.kk || ""] ? " · " + esc(KN[e.kk]) : ""}</small></${lien ? "a" : "span"}><span class="end">${e.gid && e.date <= G.today() && (e.type === "seance" || e.type === "plan") ? `<a class="ib sm" href="#/g/${esc(e.gid)}/presences">Présences</a>` : ""}${evAction(e)}</span></div>`; };
+  const vis = L.slice(0, max), reste = L.slice(max);
+  return `<div class="day"><h3 class="${titre === "Aujourd'hui" ? "auj" : ""}"><span>${titre ? titre + " · " : ""}${dLong(d)}</span><span>${L.length || ""}</span></h3>
+    ${L.length ? vis.map(row).join("") : `<div class="td"><span class="dot" style="--ec:var(--line)"></span><span class="tt msg">Rien de prévu.</span><span></span></div>`}
+    ${reste.length ? `<details class="more"><summary>Voir les ${reste.length} autres</summary>${reste.map(row).join("")}</details>` : ""}</div>`;
+}
+function semaine(from = 0) {
   const t = G.today(), fin = add(t, 7), M = new Map();
   for (const j of G.joueurs.all()) for (const e of evJoueur(j, t, fin)) {
     const k = e.date + "|" + e.k; if (!M.has(k)) M.set(k, { ...e, noms: [], jids: [] });
@@ -525,11 +704,11 @@ function semaine() {
   }
   const days = {}; for (const e of M.values()) (days[e.date] ||= []).push(e);
   let h = "";
-  for (let i = 0; i <= 7; i++) {
+  for (let i = from; i <= 7; i++) {
     const d = add(t, i), L = (days[d] || []).sort((a, b) => (a.type === "tournoi" ? -1 : 0) - (b.type === "tournoi" ? -1 : 0));
-    if (!L.length && i > 0) continue;
+    if (!L.length && i > from) continue;
     h += `<div class="day"><h3 class="${i === 0 ? "auj" : ""}"><span>${i === 0 ? "Aujourd'hui · " + dLong(d) : i === 1 ? "Demain · " + dLong(d) : dLong(d)}</span><span>${L.length || ""}</span></h3>`;
-    if (!L.length) h += `<div class="ev"><span class="dot" style="--ec:var(--line)"></span><span class="tt msg">Rien de prévu aujourd'hui.</span><span></span></div>`;
+    if (!L.length) h += `<div class="ev"><span class="dot" style="--ec:var(--line)"></span><span class="tt msg">Rien de prévu.</span><span></span></div>`;
     for (const e of L) {
       const g = e.gid && G.groupes.get(e.gid), who = g ? g.nom : e.noms.length > 3 ? e.noms.slice(0, 3).join(", ") + " +" + (e.noms.length - 3) : e.noms.join(", ");
       const href = e.href || (e.jids.length === 1 ? "#/j/" + e.jids[0] + "/agenda" : "#/joueurs");
@@ -537,7 +716,7 @@ function semaine() {
     }
     h += `</div>`;
   }
-  if (!Object.keys(days).length) h += `<p class="msg" style="margin-top:8px">Les séances des plans (Create my prog), les séances datées (Create my séance) et les tournois de l'agenda des joueurs apparaissent ici.</p>`;
+  if (!Object.keys(days).length) h += `<p class="msg" style="margin-top:8px">Les séances des plans (Create my prog), les séances datées (Create my session) et les tournois de l'agenda des joueurs apparaissent ici.</p>`;
   return h;
 }
 function alertesHTML(js) {
@@ -550,15 +729,21 @@ function alertesHTML(js) {
 }
 function vAccueil() {
   setAcc("var(--ind)"); document.title = "GRÜN";
-  const r = REG(), js = G.joueurs.all(), gs = G.groupes.all();
-  const rec = js.slice().sort((a, b) => ((b.maj || b.cree || "") > (a.maj || a.cree || "") ? 1 : -1)).slice(0, 6);
-  let h = `<div class="hero"><div><p class="word">GR<i>Ü</i>N</p><p class="lead">${r.nomCoach ? "Bonjour " + esc(r.nomCoach) + " · " : ""}${dLong(G.today())}</p></div>
-    <div class="tools"><a class="ib" href="#/joueurs">+ Joueur</a><a class="ib" href="#/pole/create">+ Créer</a></div></div>`;
-  if (!js.length) h += `<div class="card" style="margin-top:16px;border-left:4px solid var(--ind)"><b>Bienvenue dans GRÜN.</b><p class="msg" style="margin:4px 0 10px">Commence par créer tes joueurs et tes groupes : chaque joueur a un dossier complet (fiche, croissance, bilans, programmation, séances, warm-up, journal, agenda, blessures).</p><a class="go acc" href="#/joueurs">Créer mes joueurs</a></div>`;
-  h += `<div class="cols"><section class="sec"><h2>Aujourd'hui et 7 jours</h2>${semaine()}</section>
-    <section class="sec"><h2>Alertes</h2>${js.length ? alertesHTML(js) : empty("Les alertes de tes joueurs apparaîtront ici.")}</section></div>`;
-  if (rec.length) h += `<section class="sec"><h2>Joueurs récents <a href="#/joueurs">Tous (${js.length})${gs.length ? " · " + gs.length + " groupe" + (gs.length > 1 ? "s" : "") : ""}</a></h2><div class="pgrid">${rec.map(pcard).join("")}</div></section>`;
-  h += `<section class="sec"><h2>Les 4 pôles</h2><div class="poles">${G.POLES.map(p => { const ms = Object.values(G.MODS).filter(m => m.pole === p.id && m.f !== "index.html"); return `<a class="pole" href="${p.id === "ind" ? "#/joueurs" : "#/pole/" + p.id}" style="--pc:${POLEC[p.id]}"><b>${esc(p.t)}</b><span>${esc(p.s)}</span><small>${p.id === "ind" ? js.length + " joueur" + (js.length > 1 ? "s" : "") + " · " + gs.length + " groupe" + (gs.length > 1 ? "s" : "") : ms.map(m => esc(m.t)).join(" · ")}</small></a>`; }).join("")}</div></section>`;
+  const r = REG(), js = G.joueurs.all(), gs = G.groupes.all(), t = G.today();
+  let h = `<h1 class="auj">${r.nomCoach ? "Bonjour " + esc(r.nomCoach) : "Aujourd'hui"}</h1>`;
+  /* écran vide : un seul appel à l'action */
+  if (!js.length) {
+    h += `<div class="card vide"><b>Bienvenue dans GRÜN.</b><p class="msg">Tout part du joueur : crée ton premier joueur, son dossier se remplit ensuite tout seul.</p>
+      <a class="go acc big wide" href="#/joueurs">Crée ton premier joueur</a>
+      <button class="ib wide" data-a="demo"${DEMO.busy ? " disabled" : ""}>Charger la démonstration</button><p class="msg" id="demom" role="status">${esc(DEMO.msg)}</p></div>`;
+    main.innerHTML = h; return;
+  }
+  const sel = JOURSEL && JOURSEL >= t && JOURSEL <= add(t, 6) ? JOURSEL : t;
+  h += `<section class="sec"><h2>Ma semaine</h2>${semaineStrip(sel)}${sel === t ? jourHTML(t, "Aujourd'hui", 4) + jourHTML(add(t, 1), "Demain", 4) : jourHTML(sel, sel === add(t, 1) ? "Demain" : "", 8)}
+    <details class="more" style="margin-top:8px"><summary>Toute la semaine, jour par jour</summary>${semaine(0)}</details></section>`;
+  h += `<section class="sec"><h2>Mes joueurs <a href="#/joueurs">+ Créer un joueur</a></h2><div class="pgrid">${js.map(pcard).join("")}</div></section>`;
+  h += `<section class="sec"><h2>Mes groupes <a href="#/joueurs/groupe">+ Créer un groupe</a></h2>${gs.length ? `<div class="list">${gs.map(g => { const m = G.groupes.joueurs(g.id); return li("#/g/" + g.id, null, esc(g.nom), esc(m.map(prenom).join(", ")) || "aucun joueur", "›"); }).join("")}</div>` : empty("Aucun groupe pour l'instant.")}</section>`;
+  h += `<section class="sec"><h2>Alertes</h2>${alertesHTML(js)}</section>`;
   main.innerHTML = h;
 }
 
@@ -578,43 +763,63 @@ function vPole(id) {
   const mods = Object.entries(G.MODS).filter(([k, m]) => m.pole === id && m.f !== "index.html"), js = auto() ? [moi()].filter(Boolean) : G.joueurs.all(), gs = auto() ? [] : G.groupes.all();
   const selJ = js.length ? `<select class="inp" id="pj" aria-label="Joueur"><option value="">Choisir un joueur…</option>${js.map(j => `<option value="${esc(j.id)}">${esc(j.nom)}</option>`).join("")}</select>` : "";
   const selG = gs.length ? `<select class="inp" id="pg" aria-label="Groupe"><option value="">Choisir un groupe…</option>${gs.map(g => `<option value="${esc(g.id)}">${esc(g.nom)}</option>`).join("")}</select>` : "";
-  let h = `<div class="crumb"><a href="#/">Accueil</a></div><h1 style="color:${POLEC[id]}">${esc(p.t)}</h1><p class="lead">${esc(p.s)}</p>`;
-  h += `<div class="sec"><div class="poles">${mods.map(([k, m]) => `<div class="pole" style="--pc:${POLEC[id]}"><a href="${G.href(k)}" style="text-decoration:none"><b>${esc(m.t)}</b></a><span>${esc(m.s || "")}</span>
-     <div class="tools" style="margin-top:8px"><a class="go acc" href="${G.href(k)}">Ouvrir</a>${(RACC[k] || []).map(([t, mod, hs]) => `<a class="ib" href="${G.href(mod, hs)}">${esc(t)}</a>`).join("")}</div></div>`).join("")}</div></div>`;
-  if (id === "create") h += `<section class="sec"><h2>Pour un joueur ou un groupe</h2><div class="card"><p class="msg" style="margin-top:0">Choisis qui : la prog, la séance ou le warm-up partent de son dossier (âge, maturation, bilans, zones fragiles) et tu reviens ici à la fin.</p>
-     ${js.length ? `<div class="form"><div class="f w">${selJ}</div><button class="ib" data-a="relais" data-vers="prog" data-src="pj">Nouvelle prog</button><button class="ib" data-a="relais" data-vers="seances" data-src="pj">Nouvelle séance</button><button class="ib" data-a="relais" data-vers="warmup" data-src="pj">Nouveau warm-up</button></div>` : `<p class="msg">Crée d'abord tes joueurs dans <a href="#/joueurs">Individualisation</a>.</p>`}
-     ${gs.length ? `<div class="form" style="margin-top:10px"><div class="f w">${selG}</div><button class="ib" data-a="relais" data-vers="prog" data-src="pg">Prog de groupe</button><button class="ib" data-a="relais" data-vers="seances" data-src="pg">Séance de groupe</button><button class="ib" data-a="relais" data-vers="warmup" data-src="pg">Warm-up de groupe</button></div>` : ""}</div></section>`;
-  if (id === "tests") {
-    h += `<section class="sec"><h2>Bilans</h2><div class="card">${js.length ? `<div class="form"><div class="f w">${selJ}</div><button class="go acc" data-a="bilan" data-src="pj">Nouveau bilan</button></div>` : `<p class="msg" style="margin:0">Crée d'abord tes joueurs dans <a href="#/joueurs">Individualisation</a>.</p>`}
-      ${gs.length ? `<div class="form" style="margin-top:10px"><div class="f w">${selG}</div><button class="ib" data-a="bilangrp" data-src="pg">Bilan de groupe</button></div>` : ""}</div></section>`;
-    const af = js.map(j => ({ j, a: alertes(j).find(x => x.bil) })).filter(x => x.a);
-    if (af.length) h += `<section class="sec"><h2>Bilans à faire</h2><div class="list">${af.map(({ j, a }) => li(G.href("grilles", "#/joueur/" + j.id), j.sexe === "F" ? "Fille" : "Garçon", esc(j.nom), esc(a.t), "Nouveau bilan ›")).join("")}</div></section>`;
+  let h = `<h1 style="color:${POLEC[id]}">${esc(p.t)}</h1><p class="lead">${esc(p.s)}</p>`;
+  const big = (href, k, t, sub, attrs) => `<a class="big" href="${esc(href)}" ${attrs || ""} style="--bc:${POLEC[id]}"><span class="k">${esc(k)}</span><b>${esc(t)}</b><span>${esc(sub)}</span></a>`;
+  const chipsJ = (f, lab) => js.length ? `<div class="chips">${js.map(j => `<a class="tg big2" href="${esc(f(j))}">${esc(j.nom)}</a>`).join("")}</div>` : `<p class="msg" style="margin:0">Crée d'abord tes joueurs dans <a href="#/joueurs">Mes joueurs</a>.</p>`;
+  /* modules du pôle + raccourcis : rangés dans « Plus d'options » */
+  const modsPlus = `<details class="grun-plus"><summary>Plus d'options</summary><div class="grun-plusb"><div class="list">${mods.map(([k, m]) => li(G.href(k), null, esc(m.t), esc(m.s || ""), "Ouvrir ›")).join("")}</div>
+     <div class="tools">${mods.flatMap(([k]) => RACC[k] || []).map(([t, mod, hs]) => `<a class="ib" href="${G.href(mod, hs)}">${esc(t)}</a>`).join("")}</div>`;
+  if (id === "create") {
+    h += `<div class="sec bigs">${big(G.href("warmup"), "Choose your warm-up", "Lancer un échauffement", "Choisis un échauffement prêt, lance : tout s'enchaîne seul.")}
+      ${big(G.href("seances", "#/nouvelle"), "Create my session", "Créer une séance", "La structure se construit seule, tu choisis les exos.")}
+      ${big(G.href("prog", "#/nouveau"), "Create my prog", "Créer une prog", "Une semaine, un cycle ou une saison, séance par séance.")}</div>`;
+    h += modsPlus + `<div class="sub">Pour un joueur ou un groupe</div><p class="msg" style="margin:0">Le plus simple : ouvre le dossier du joueur et touche Séance, Échauffement ou Prog.</p>
+     ${js.length ? `<div class="form"><div class="f w">${selJ}</div><button class="ib" data-a="relais" data-vers="prog" data-src="pj">Créer une prog</button><button class="ib" data-a="relais" data-vers="seances" data-src="pj">Créer une séance</button><button class="ib" data-a="relais" data-vers="warmup" data-src="pj">Échauffement</button></div>` : ""}
+     ${gs.length ? `<div class="form"><div class="f w">${selG}</div><button class="ib" data-a="relais" data-vers="prog" data-src="pg">Prog de groupe</button><button class="ib" data-a="relais" data-vers="seances" data-src="pg">Séance de groupe</button><button class="ib" data-a="relais" data-vers="warmup" data-src="pg">Échauffement de groupe</button></div>` : ""}</div></details>`;
   }
-  if (id === "res") h += `<section class="sec"><h2>Chercher partout</h2><p class="msg">La barre de recherche en haut couvre la veille, les tests, les saisons, la banque (tes exos compris), tes joueurs, groupes, séances, plans et routines.</p></section>`;
+  if (id === "tests") {
+    h += `<section class="sec"><h2>Profil radar d'un joueur</h2>${chipsJ(j => G.href("grilles", "#/joueur/" + j.id + "/radar"))}</section>
+      <section class="sec"><h2>Faire un bilan</h2>${chipsJ(j => G.href("grilles", "#/joueur/" + j.id + "/bilan"))}
+      ${gs.length ? `<div class="chips" style="margin-top:8px">${gs.map(g => `<button class="tg big2" data-a="bilangrp" data-gid="${esc(g.id)}">Bilan de groupe · ${esc(g.nom)}</button>`).join("")}</div>` : ""}</section>`;
+    const af = js.map(j => ({ j, a: alertes(j).find(x => x.bil) })).filter(x => x.a);
+    h += `<div class="sec bigs">${big(G.href("grilles"), "Grilles et tests", "Les grilles et les tests", "Les grilles de 4 à 18 ans, filles et garçons, et toutes les fiches de tests.")}</div>`;
+    if (af.length) h += `<section class="sec"><h2>Bilans à faire</h2><div class="list">${af.map(({ j, a }) => li(G.href("grilles", "#/joueur/" + j.id + "/bilan"), null, esc(j.nom), esc(a.t), "Créer le bilan ›")).join("")}</div></section>`;
+    h += modsPlus + `</div></details>`;
+  }
+  if (id === "res") {
+    h += `<div class="sec bigs">${big(G.href("banque"), "Banque d'exercices", "Trouver un exo", "Tous les exercices, rangés par qualité travaillée.")}
+      ${big(G.href("banque", "#/nouveau"), "Banque d'exercices", "Créer un exo", "Ton exercice, avec vidéo et photo, utilisable partout.")}
+      ${big(G.href("veille"), "Veille de connaissances", "Comprendre", "Les documents de la méthode : âge, physique, geste, entraîner.")}
+      ${big(G.href("saisons"), "Référentiel de programmation", "Les saisons types", "Une saison de référence par âge, de 4 à 18 ans.")}</div>
+      <p class="msg">Astuce : la recherche en haut de l'accueil trouve tout (exos, documents, tests, joueurs).</p>`;
+    h += modsPlus + `</div></details>`;
+  }
   main.innerHTML = h;
 }
 
 /* ================= MES JOUEURS ================= */
-function vJoueurs() {
+function vJoueurs(ouvrir) {
   setAcc("var(--ind)"); document.title = "Joueurs · GRÜN";
+  if (ouvrir === "groupe") OPEN.add("ng");
   const js = G.joueurs.all(), gs = G.groupes.all(), L = FILTRE && G.groupes.get(FILTRE) ? G.groupes.joueurs(FILTRE).sort((a, b) => a.nom.localeCompare(b.nom, "fr")) : js;
-  let h = `<div class="crumb"><a href="#/">Accueil</a></div><h1 style="color:var(--ind)">Individualisation<small>${js.length} joueur${js.length > 1 ? "s" : ""} · ${gs.length} groupe${gs.length > 1 ? "s" : ""} · un dossier complet par joueur et par groupe</small></h1>`;
-  h += `<section class="sec">${sxForm("nj", "Nouveau joueur", "", `<form class="form" data-f="joueur">
+  let h = `<div class="crumb"><a href="#/">Accueil</a></div><h1 style="color:var(--ind)">Mes joueurs<small>${js.length} joueur${js.length > 1 ? "s" : ""} · ${gs.length} groupe${gs.length > 1 ? "s" : ""} · un dossier complet pour chacun</small></h1>`;
+  h += `<section class="sec">${ sxForm("nj", "+ Créer un joueur", "", `<form class="form" data-f="joueur">
       <div class="f w"><label for="jn">Prénom et nom</label><input id="jn" name="nom" autocomplete="off" required></div>
       <div class="f"><label for="jsx">Sexe</label><select id="jsx" name="sexe"><option value="G">Garçon</option><option value="F">Fille</option></select></div>
       <div class="f"><label for="jnai">Naissance (facultatif)</label><input id="jnai" name="naissance" type="date"></div>
       <div class="f"><label for="jgr">Groupe</label><select id="jgr" name="gid"><option value="">Aucun</option>${gs.map(g => `<option value="${esc(g.id)}">${esc(g.nom)}</option>`).join("")}<option value="+">+ Nouveau groupe…</option></select></div>
-      <div class="f" id="jngw" hidden><label for="jng">Nom du groupe</label><input id="jng" name="ngroupe" placeholder="Comité G1, SPUC 13-14…"></div>
-      <button class="go acc" type="submit">Créer le joueur</button></form>`, !js.length)}</section>`;
-  h += `<section class="sec"><h2>Mes joueurs</h2>${gs.length && js.length ? `<div class="chips" style="margin-bottom:10px"><button class="tg" data-a="filtre" data-g="" aria-pressed="${!FILTRE}">Tous</button>${gs.map(g => `<button class="tg" data-a="filtre" data-g="${esc(g.id)}" aria-pressed="${FILTRE === g.id}">${esc(g.nom)}</button>`).join("")}</div>` : ""}
+      <div class="f" id="jngw" hidden><label for="jng">Nom du groupe</label><input id="jng" name="ngroupe" placeholder="Groupe 1, 13-14 ans…"></div>
+      <button class="go acc" type="submit">Créer</button></form>`, !js.length)}</section>`;
+  h += `<section class="sec"><h2>Joueurs</h2>${gs.length && js.length ? `<div class="chips" style="margin-bottom:10px"><button class="tg" data-a="filtre" data-g="" aria-pressed="${!FILTRE}">Tous</button>${gs.map(g => `<button class="tg" data-a="filtre" data-g="${esc(g.id)}" aria-pressed="${FILTRE === g.id}">${esc(g.nom)}</button>`).join("")}</div>` : ""}
     ${L.length ? `<div class="pgrid">${L.map(pcard).join("")}</div>` : empty(js.length ? "Personne dans ce groupe." : "Aucun joueur. Crée ton premier joueur ci-dessus : rien n'est créé à l'avance.")}</section>`;
-  h += `<section class="sec"><h2>Mes groupes</h2>${gs.length ? `<div class="list">${gs.map(g => { const m = G.groupes.joueurs(g.id); return li("#/g/" + g.id, m.length + " j.", esc(g.nom), esc(m.map(prenom).join(", ")) || "aucun membre", "›"); }).join("")}</div>` : empty("Aucun groupe.")}
-    <div style="margin-top:10px">${sxForm("ng", "Nouveau groupe", "", `<form class="form" data-f="groupe"><div class="f w"><label for="gn">Nom du groupe</label><input id="gn" name="nom" required autocomplete="off"></div>
+  h += `<section class="sec"><h2>Mes groupes</h2>${gs.length ? `<div class="list">${gs.map(g => { const m = G.groupes.joueurs(g.id); return li("#/g/" + g.id, null, esc(g.nom), esc(m.map(prenom).join(", ")) || "aucun membre", "›"); }).join("")}</div>` : empty("Aucun groupe.")}
+    <div style="margin-top:10px">${sxForm("ng", "+ Créer un groupe", "", `<form class="form" data-f="groupe"><div class="f w"><label for="gn">Nom du groupe</label><input id="gn" name="nom" required autocomplete="off"></div>
       ${js.length ? `<div class="f full"><span class="lab">Membres</span><div class="chips">${js.map(j => `<button type="button" class="tg" data-a="tg" data-v="${esc(j.id)}" aria-pressed="false">${esc(j.nom)}</button>`).join("")}</div></div>` : ""}
-      <button class="go acc" type="submit">Créer le groupe</button></form>`, false)}</div></section>`;
+      <button class="go acc" type="submit">Créer</button></form>`, ouvrir === "groupe")}</div></section>`;
   const AR = G.joueurs.archives ? G.joueurs.archives() : [];
   if (AR.length) h += `<section class="sec">${sx("arch", "Joueurs archivés", AR.length + " · tu ne les entraînes plus", `<div class="list">${AR.map(j => li(null, j.sexe === "F" ? "Fille" : "Garçon", `<a href="#/j/${esc(j.id)}">${esc(j.nom)}</a>`, (j.archiveLe ? "archivé le " + G.frD(j.archiveLe) : "archivé") + (ageTxt(j) ? " · " + ageTxt(j) : ""), `<button class="ib sm" data-a="archiver" data-v="0" data-jid="${esc(j.id)}">Réactiver</button><a class="ib sm dang" href="#/j/${esc(j.id)}/fin">Supprimer définitivement</a>`)).join("")}</div>`, "var(--mute)")}</section>`;
   main.innerHTML = h;
+  if (ouvrir === "groupe") { const x = $("#sx-ng"); if (x) setTimeout(() => x.scrollIntoView({ block: "start" }), 60); }
 }
 function sxForm(id, t, res, body, open) { if (open) OPEN.add(id); return sx(id, t, res, body, "var(--ind)"); }
 
@@ -622,31 +827,243 @@ function sxForm(id, t, res, body, open) { if (open) OPEN.add(id); return sx(id, 
 function factsJ(j) {
   const a = ageJ(j.naissance), m = matur(j), gc = G.grilleConseillee(j), ch = G.journal.charge(j.id);
   const f = (lab, v, s) => `<div class="fact"><span class="lab">${lab}</span><b>${v}${s ? ` <small>${s}</small>` : ""}</b></div>`;
-  return `<div class="facts">${f("Âge civil", a != null ? a + " ans" : "–", a != null ? nf(G.ageDec(j.naissance)) : "")}${f("Âge biologique", m ? nf(m.bio) + " ans" : "–", m ? m.avance : "à mesurer")}
-    ${f("Grille conseillée", gc != null ? gc + " ans" : "–", m ? "âge bio" : "âge civil")}${f("Maturation", m ? esc(m.statut) : "–")}
-    ${f("Classement", esc(j.classement || "NC"))}${f("Main · revers", (j.main === "G" ? "Gaucher" : "Droitier") + " · " + (j.revers === "1" ? "1 main" : "2 mains"))}${f("Charge", ch.ratio != null ? nf(ch.ratio, 2) : "–", ch.ratio != null ? ({ ok: "bonne", attention: "en hausse", haute: "très haute", basse: "basse" }[ch.alerte]) : "")}</div>`;
+  return `<div class="facts">${f("Âge", a != null ? a + " ans" : "–", m ? "âge bio " + nf(m.bio) : "")}${f("Charge", ch.ratio != null ? nf(ch.ratio, 2) : "–", ch.ratio != null ? ({ ok: "bonne", attention: "en hausse", haute: "très haute", basse: "basse" }[ch.alerte]) : "pas encore assez de retours")}${f("Classement", esc(j.classement || "NC"))}${(() => { const T = G.presences.taux(j.id); return T.total ? f("Assiduité", T.pct + " %", T.present + "/" + T.total + " séances") : ""; })()}
+    <span class="xp" style="display:contents">${f("Âge précis", a != null ? nf(G.ageDec(j.naissance)) + " ans" : "–")}${f("Âge biologique", m ? nf(m.bio) + " ans" : "–", m ? m.avance : "à mesurer")}${f("Grille conseillée", gc != null ? gc + " ans" : "–", m ? "âge bio" : "âge civil")}${f("Maturation", m ? esc(m.statut) : "–")}${f("Main · revers", (j.main === "G" ? "Gaucher" : "Droitier") + " · " + (j.revers === "1" ? "1 main" : "2 mains"))}</span></div>`;
+}
+/* les 5 gros boutons du dossier : tout part du joueur */
+const ICO5 = {
+  seance: '<path d="M8 5v14l11-7z"/>',
+  wu: '<path d="M12 3c2 3 5 5 5 9a5 5 0 0 1-10 0c0-2 1-3 2-4 0 2 1 3 2 3 0-3-1-5 1-8z"/>',
+  bilan: '<rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 8h6M9 12h6M9 16h4"/>',
+  radar: '<path d="M12 3l8.5 6.2-3.2 10H6.7L3.5 9.2z"/><path d="M12 8l4 3-1.5 4.5h-5L8 11z"/>',
+  prog: '<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>'
+};
+function cinq(j) {
+  const t = G.today(), E = evJoueur(j, t, t), sP = E.find(e => e.type === "seance" && !e.fait), pP = E.find(e => e.type === "plan" && e.key);
+  const pl = plansDe(j.id).filter(p => (!p.debut || p.debut <= t) && (!p.fin || p.fin >= t)).sort((a, b) => (a.jid === j.id ? -1 : 1) - (b.jid === j.id ? -1 : 1))[0];
+  const b5 = (ic, lab, sub, attrs) => `<${/href=/.test(attrs) ? "a" : "button"} class="b5" ${attrs}><svg viewBox="0 0 24 24" aria-hidden="true">${ICO5[ic]}</svg><b>${lab}</b><small>${sub}</small></${/href=/.test(attrs) ? "a" : "button"}>`;
+  const se = sP ? b5("seance", "Séance", "Lancer", `href="${esc(sP.terrain)}"`)
+    : pP ? b5("seance", "Séance", "Construire", `type="button" data-a="construire" data-plan="${esc(pP.plan)}" data-key="${esc(pP.key)}"`)
+    : b5("seance", "Séance", "Créer", `type="button" data-a="relais" data-vers="seances" data-jid="${esc(j.id)}"`);
+  return `<div class="five">${se}
+    ${b5("wu", "Échauf&shy;fement", "Lancer", `href="${G.href("warmup", "#/joueur/" + j.id)}"`)}
+    ${b5("bilan", "Bilan", "Créer", `href="${G.href("grilles", "#/joueur/" + j.id + "/bilan")}"`)}
+    ${b5("radar", "Profil radar", "Voir", `href="${G.href("grilles", "#/joueur/" + j.id + "/radar")}"`)}
+    ${pl ? b5("prog", "Prog", "Voir", `href="${G.href("prog", "#p/" + pl.id)}"`) : b5("prog", "Prog", "Créer", `type="button" data-a="relais" data-vers="prog" data-jid="${esc(j.id)}"`)}</div>`;
 }
 function vDossier(jid, ouvrir) {
   const j = G.joueurs.get(jid);
   if (!j) { main.innerHTML = `<div class="crumb"><a href="#/">Accueil</a> › <a href="#/joueurs">Joueurs</a></div>` + empty("Ce joueur n'existe pas (ou plus) sur cet appareil."); return; }
   setAcc("var(--ind)"); document.title = j.nom + " · GRÜN"; CURJ = j.id;
+  /* onglet : demandé par l'adresse (#/j/<jid>/<onglet ou section>), sinon celui qu'on regardait, sinon Résumé (l'essentiel) */
+  let tab = null;
+  if (ouvrir && TABS.some(x => x[0] === ouvrir)) { tab = ouvrir; ouvrir = null; }
+  else if (ouvrir) tab = TABDE[ouvrir] || "resume";
+  else tab = TABJ.jid === j.id ? TABJ.t : "resume";
+  TABJ = { jid: j.id, t: tab };
+  const cible = ouvrir === "retour" ? "#retour-" + CSS.escape(j.id) : ouvrir ? "#sx-j-" + CSS.escape(ouvrir) : null;
+  if (ouvrir === "retour") ouvrir = "journal";
   if (ouvrir) { OPEN.add("j-" + ouvrir); keepOpen(); }
-  const grs = G.groupes.de(j.id), a = ageJ(j.naissance), al = alertes(j).sort((x, y) => NIVO[x.n] - NIVO[y.n]);
+  const grs = G.groupes.de(j.id), al = alertes(j).sort((x, y) => NIVO[x.n] - NIVO[y.n]);
   const AU = auto();
   let h = (AU ? `<div class="crumb"><span>Mon dossier</span></div>` : `<div class="crumb"><a href="#/">Accueil</a>›<a href="#/joueurs">Joueurs</a>${grs.map(g => `›<a href="#/g/${esc(g.id)}">${esc(g.nom)}</a>`).join("")}</div>`) + `
-    <div class="head"><h1>${esc(j.nom)}<small>${j.sexe === "F" ? "Fille" : "Garçon"}${ageTxt(j) ? " · " + ageTxt(j) : ""}${j.naissance ? " · né" + (j.sexe === "F" ? "e" : "") + " le " + G.frD(j.naissance) : ""}${grs.length ? " · " + grs.map(g => esc(g.nom)).join(", ") : ""}</small></h1></div>
-    ${factsJ(j)}
-    ${al.length ? `<div class="chips" style="margin-top:10px">${al.map(x => `<a href="#/j/${esc(j.id)}/${x.s}" style="text-decoration:none">${badge(x.n, x.t)}</a>`).join("")}</div>` : ""}
-    <div class="acts"><a class="go acc" href="${G.href("grilles", "#/joueur/" + j.id)}">Nouveau bilan</a>
-      <button class="ib" data-a="relais" data-vers="prog" data-jid="${esc(j.id)}">Nouvelle prog</button><button class="ib" data-a="relais" data-vers="seances" data-jid="${esc(j.id)}">Nouvelle séance</button>
-      <button class="ib" data-a="relais" data-vers="warmup" data-jid="${esc(j.id)}">Nouveau warm-up</button>${AU ? "" : `<button class="ib" data-a="modej" data-jid="${esc(j.id)}">Mode joueur sur cet appareil</button>`}</div>`;
+    <div class="head"><h1>${esc(j.nom)}<small>${j.sexe === "F" ? "Fille" : "Garçon"}${ageTxt(j) ? " · " + ageTxt(j) : ""}${j.naissance ? " · né" + (j.sexe === "F" ? "e" : "") + " le " + G.frD(j.naissance) : ""}${grs.length ? " · " + grs.map(g => esc(g.nom)).join(", ") : ""}</small></h1>${pdfBtn(`data-a="pdfj" data-jid="${esc(j.id)}"`)}</div>
+    <div class="tabs" role="tablist" aria-label="Dossier de ${esc(j.nom)}">${TABS.map(([k, t]) => `<button role="tab" data-a="tab" data-v="${k}" aria-selected="${k === tab}">${t}</button>`).join("")}</div>`;
   if (j.archive && !AU) h = `<div class="card" style="border-color:var(--warn);margin-bottom:10px"><b>Joueur archivé</b>${j.archiveLe ? " le " + G.frD(j.archiveLe) : ""} : tu ne l'entraînes plus, il n'apparaît plus dans les listes. <button class="ib sm" data-a="archiver" data-v="0" data-jid="${esc(j.id)}">Réactiver</button></div>` + h;
-  const S = { fiche: sFiche(j), croissance: sCroissance(j), grilles: sGrilles(j), programmation: sProg(j), seances: sSeances(j), warmup: sWarmup(j), journal: sJournal(j), agenda: sAgenda(j), blessures: sBlessures(j), fin: sFin(j) };
-  const ordre = ["fiche", "croissance", "grilles", "programmation", "seances", "warmup", "journal", "agenda", "blessures", "fin"];
-  h += wide.matches ? `<div class="dos"><div class="dcol">${["fiche", "croissance", "grilles", "blessures", "fin"].map(k => S[k]).join("")}</div><div class="dcol">${["programmation", "seances", "warmup", "journal", "agenda"].map(k => S[k]).join("")}</div></div>`
-    : `<div class="dos"><div class="dcol">${ordre.map(k => S[k]).join("")}</div></div>`;
+  /* iPad / grand écran : 2 colonnes (section principale à gauche) ; une seule section = toute la largeur */
+  const col = L => wide.matches && L.length > 1 ? `<div class="dos" style="margin-top:12px"><div class="dcol">${L.filter((_, i) => i % 2 === 0).join("")}</div><div class="dcol">${L.filter((_, i) => i % 2 === 1).join("")}</div></div>`
+    : `<div class="dos" style="margin-top:12px;grid-template-columns:minmax(0,1fr)"><div class="dcol">${L.join("")}</div></div>`;
+  if (tab === "resume") {
+    h += `${cinq(j)}
+    ${al.length ? `<div class="chips" style="margin-top:10px">${al.map(x => `<a href="#/j/${esc(j.id)}/${x.s}" style="text-decoration:none">${badge(x.n, x.t)}</a>`).join("")}</div>` : ""}
+    ${factsJ(j)}
+    <div class="acts"><a class="ib" href="#/j/${esc(j.id)}/retour">Noter un retour</a><a class="ib" href="#/j/${esc(j.id)}/journal">Forme du jour</a>${AU ? "" : `<a class="ib" href="#/j/${esc(j.id)}/fiche">Modifier la fiche</a>`}</div>
+    ${sObjectifs(j)}`;
+    h += `<h2 class="h2" style="margin-top:22px">Fiche, agenda et blessures</h2>` + col([sAgenda(j), sBlessures(j), sFiche(j), sFin(j)]);
+    if (!AU) h += `<details class="grun-plus"><summary>Plus d'options</summary><div class="grun-plusb"><div class="tools"><button class="ib" data-a="modej" data-jid="${esc(j.id)}">Mode joueur sur cet appareil</button><a class="ib" href="${G.href("grilles", "#/joueur/" + j.id)}">Ouvrir dans Grilles et tests</a><a class="ib" href="${G.href("seances", "#/joueur/" + j.id)}">Ses séances</a><a class="ib" href="${G.href("prog", "#/joueur/" + j.id)}">Ses progs</a></div></div></details>`;
+  }
+  if (tab === "seances") h += wide.matches ? `<div class="dos" style="margin-top:12px"><div class="dcol">${ouvre(sSeances(j))}</div><div class="dcol">${sPresences(j)}${sWarmup(j)}</div></div>` : col([ouvre(sSeances(j)), sPresences(j), sWarmup(j)]);
+  if (tab === "tests") h += col([ouvre(sGrilles(j)), sCroissance(j)]);
+  if (tab === "prog") h += col([ouvre(sProg(j))]);
+  if (tab === "journal") h += col([ouvre(sJournal(j))]);
   main.innerHTML = h;
-  if (ouvrir) { const d = $("#sx-j-" + CSS.escape(ouvrir)); if (d) setTimeout(() => d.scrollIntoView({ block: "start", behavior: "smooth" }), 60); history.replaceState(null, "", auto() ? "#/" : "#/j/" + j.id); }
+  if (ouvrir) { const d = $(cible); if (d) setTimeout(() => d.scrollIntoView({ block: "start", behavior: "smooth" }), 60); history.replaceState(null, "", auto() ? "#/" : "#/j/" + j.id); }
+  else if (location.hash.split("/").length > 3) history.replaceState(null, "", auto() ? "#/" : "#/j/" + j.id);
+}
+
+/* ================= DOSSIER : ONGLETS, OBJECTIFS, ASSIDUITÉ ================= */
+const TABS = [["resume", "Résumé"], ["seances", "Séances"], ["tests", "Tests"], ["prog", "Prog"], ["journal", "Journal"]];
+const TABDE = { seances: "seances", warmup: "seances", presences: "seances", grilles: "tests", croissance: "tests", tests: "tests", programmation: "prog", prog: "prog", journal: "journal", retour: "journal", agenda: "resume", blessures: "resume", fiche: "resume", fin: "resume", objectifs: "resume", resume: "resume" };
+let TABJ = { jid: null, t: "resume" };
+const ouvre = html => html.replace('<details class="sx"', '<details open class="sx"');
+const PDFICO = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M12 11v6M9 14l3 3 3-3"/></svg>';
+const pdfBtn = (attrs, lab) => `<button type="button" class="grun-pdf" ${attrs}>${PDFICO}<span>${lab || "Rapport PDF"}</span></button>`;
+function echTxt(o) {
+  if (!isoOk(o.ech)) return "";
+  const n = ecart(o.ech, G.today());
+  return o.statut !== "encours" ? "échéance " + G.frD(o.ech) : n < 0 ? "en retard de " + -n + " j (" + G.frD(o.ech) + ")" : n === 0 ? "échéance aujourd'hui" : "échéance " + G.frD(o.ech) + " · dans " + n + " j";
+}
+function sObjectifs(j) {
+  const L = G.objectifs.de(j.id), enc = L.filter(o => o.statut === "encours");
+  const stB = o => `<button class="ost st-${esc(o.statut)}" data-a="objst" data-v="${esc(o.id)}" aria-label="Changer le statut (${esc(G.OBJ_STATUTS[o.statut])})">${o.statut === "atteint" ? "✓" : o.statut === "abandonne" ? "–" : ""}</button>`;
+  const row = o => { const n = isoOk(o.ech) ? ecart(o.ech, G.today()) : null, tard = o.statut === "encours" && n != null && n < 0;
+    return `<div class="obj${o.statut !== "encours" ? " fini" : ""}">${stB(o)}<span class="tt">${esc(o.txt)}<small>${esc(G.OBJ_STATUTS[o.statut])}${echTxt(o) ? " · " : ""}<span${tard ? ' style="color:var(--bad);font-weight:600"' : ""}>${esc(echTxt(o))}</span></small></span><button class="ib sm" data-a="objdel" data-v="${esc(o.id)}" aria-label="Supprimer l'objectif">×</button></div>`; };
+  return `<section class="sec" id="sx-j-objectifs"><h2>Objectifs <span class="msg" style="font-size:.9rem;font-weight:500">${enc.length} en cours${L.length - enc.length ? " · " + (L.length - enc.length) + " terminé" + (L.length - enc.length > 1 ? "s" : "") : ""}</span></h2>
+    ${j.objectifs ? `<p class="msg" style="margin:0 0 8px"><b>Objectif général :</b> ${esc(j.objectifs)}</p>` : ""}
+    <div class="card objs">${L.length ? L.map(row).join("") : `<p class="msg" style="margin:0">Aucun objectif suivi. Écris un objectif précis et une date : il apparaît ici et dans le rapport PDF.</p>`}
+    <form class="form" data-f="objectif" data-jid="${esc(j.id)}" style="margin-top:10px"><div class="f w"><label for="ob-${esc(j.id)}">Nouvel objectif</label><input id="ob-${esc(j.id)}" name="txt" placeholder="Ex. 10 tractions, 3 matchs gagnés en 15/4…" autocomplete="off" required></div>
+      <div class="f"><label for="obd-${esc(j.id)}">Échéance</label><input id="obd-${esc(j.id)}" type="date" name="ech"></div><button class="go acc" type="submit">Ajouter</button></form>
+    <p class="msg" style="margin:6px 0 0">Touche le rond pour changer le statut : en cours → atteint → abandonné.</p></div></section>`;
+}
+function assidTxt(jid) { const T = G.presences.taux(jid); return T.total ? T.pct + " %" : null; }
+function sPresences(j) {
+  const T = G.presences.taux(j.id), grs = G.groupes.de(j.id);
+  const body = T.total ? `<div class="kpi"><div><span class="lab">Assiduité</span><b>${T.pct} %</b></div><div><span class="lab">Présent</span><b>${T.present} / ${T.total}</b></div></div>
+      <div class="inner">${T.dernieres.map(x => li(null, G.frD(x.date).slice(0, 5), esc(x.titre || "Séance de groupe"), x.gid && G.groupes.get(x.gid) ? "groupe " + esc(G.groupes.get(x.gid).nom) : "", x.present ? badge("ok", "présent") : badge("haute", "absent"))).join("")}</div>`
+    : `<p class="msg" style="margin:0">Aucune présence pointée. ${grs.length ? "Les présences se cochent dans le dossier du groupe." : "Ajoute ce joueur à un groupe pour pointer ses présences."}</p>`;
+  return sx("j-presences", "Assiduité", T.total ? T.pct + " % · " + T.present + "/" + T.total + " séances" : "pas encore pointée", body + (grs.length ? `<div class="tools">${grs.map(g => `<a class="ib" href="#/g/${esc(g.id)}/presences">Présences · ${esc(g.nom)}</a>`).join("")}</div>` : ""), "var(--ind)");
+}
+
+/* ================= GROUPE : PRÉSENCES, ÂGES ET MATURATION ================= */
+function seancesGroupe(gid, a, b) {
+  const M = new Map();
+  for (const j of G.groupes.joueurs(gid)) for (const e of evJoueur(j, a, b)) if (e.gid === gid && (e.type === "seance" || e.type === "plan")) { if (!M.has(e.k)) M.set(e.k, e); }
+  return [...M.values()].sort((x, y) => x.date < y.date ? 1 : x.date > y.date ? -1 : 0);
+}
+function presencesHTML(g) {
+  const t = G.today(), M = G.groupes.joueurs(g.id).sort((a, b) => a.nom.localeCompare(b.nom, "fr")), L = seancesGroupe(g.id, add(t, -21), t);
+  /* séances déjà pointées (même plus anciennes ou retirées du plan) : toujours visibles */
+  const vus = new Set(L.map(e => e.k)); G.presences.all().filter(x => x.gid === g.id && x.date <= t && !vus.has(x.cle)).forEach(x => L.push({ k: x.cle, date: x.date, titre: x.titre || "Séance de groupe" }));
+  L.sort((x, y) => x.date < y.date ? 1 : x.date > y.date ? -1 : 0);
+  if (!M.length) return "";
+  const row = e => { const P0 = G.presences.get(e.k), p = P0 ? P0.p : {}, nP = M.filter(j => p[j.id] === true).length, nA = M.filter(j => p[j.id] === false).length;
+    return `<div class="pres"><div class="ph"><span><b>${esc(e.titre)}</b><small>${e.date === t ? "Aujourd'hui" : dJour(e.date)}${nP + nA ? " · " + nP + " présent" + (nP > 1 ? "s" : "") + (nA ? ", " + nA + " absent" + (nA > 1 ? "s" : "") : "") : " · à pointer"}</small></span><button class="ib sm" data-a="prtous" data-k="${esc(e.k)}" data-d="${esc(e.date)}" data-t="${esc(e.titre)}" data-gid="${esc(g.id)}">Tous présents</button></div>
+      <div class="chips">${M.map(j => { const v = p[j.id]; return `<button class="pr ${v === true ? "oui" : v === false ? "non" : ""}" data-a="pres" data-k="${esc(e.k)}" data-d="${esc(e.date)}" data-t="${esc(e.titre)}" data-gid="${esc(g.id)}" data-jid="${esc(j.id)}" aria-label="${esc(j.nom)} : ${v === true ? "présent" : v === false ? "absent" : "non pointé"}">${v === true ? "✓ " : v === false ? "✗ " : ""}${esc(prenom(j))}</button>`; }).join("")}</div></div>`; };
+  const taux = M.map(j => { const T = G.presences.taux(j.id); return T.total ? `<span class="mo">${esc(prenom(j))} <b>${T.pct} %</b></span>` : ""; }).join("");
+  return `<section class="sec" id="sx-g-presences"><h2>Présences</h2>${taux ? `<div class="moys" style="margin-bottom:8px">${taux}</div>` : ""}
+    ${L.length ? `<div class="card">${L.slice(0, 3).map(row).join("")}${L.length > 3 ? `<details class="more"><summary>Voir les ${Math.min(L.length, 12) - 3} séances d'avant</summary>${L.slice(3, 12).map(row).join("")}</details>` : ""}</div><p class="msg" style="margin:6px 0 0">Touche un prénom : présent (✓), encore : absent (✗), encore : effacé. Séances du groupe des 3 dernières semaines et séances déjà pointées.</p>` : empty("Aucune séance du groupe ces 3 dernières semaines. Crée une séance ou une prog pour le groupe : chaque séance passée ou du jour pourra être pointée ici.")}</section>`;
+}
+function agesGroupe(M) {
+  const D = M.map(j => ({ j, a: j.naissance ? Math.min(18.99, G.ageDec(j.naissance)) : null, m: matur(j) })).filter(x => x.a != null);
+  if (D.length < 2) return "";
+  const ac = D.map(x => x.a), bi = D.filter(x => x.m).map(x => x.m.bio), all = ac.concat(bi);
+  const lo = Math.floor(Math.min(...all)), hi = Math.ceil(Math.max(...all)) + (Math.ceil(Math.max(...all)) === Math.floor(Math.min(...all)) ? 1 : 0);
+  const eA = Math.max(...ac) - Math.min(...ac), eB = bi.length > 1 ? Math.max(...bi) - Math.min(...bi) : null;
+  const W = 320, X0 = 78, X1 = W - 12, rowH = 24, H = D.length * rowH + 26, X = v => X0 + (v - lo) / (hi - lo) * (X1 - X0);
+  let svg = `<svg class="agesv" viewBox="0 0 ${W} ${H}" role="img" aria-label="Âge civil et âge biologique des joueurs du groupe">`;
+  for (let k = lo; k <= hi; k++) svg += `<line x1="${X(k)}" y1="4" x2="${X(k)}" y2="${H - 18}" style="stroke:var(--line);stroke-width:.8"/><text x="${X(k)}" y="${H - 5}" text-anchor="middle" font-size="10" style="fill:var(--mute)">${k}</text>`;
+  D.sort((x, y) => x.a - y.a).forEach((x, i) => { const y = 8 + i * rowH + rowH / 2 - 4;
+    svg += `<text x="0" y="${y + 4}" font-size="11" font-weight="600" style="fill:currentColor">${esc(prenom(x.j).slice(0, 11))}</text>`;
+    if (x.m) svg += `<line x1="${X(x.a)}" y1="${y}" x2="${X(x.m.bio)}" y2="${y}" style="stroke:var(--tests);stroke-width:3;opacity:.45"/><circle cx="${X(x.m.bio)}" cy="${y}" r="5.5" style="fill:var(--tests)"/>`;
+    svg += `<circle cx="${X(x.a)}" cy="${y}" r="5" style="fill:var(--panel);stroke:var(--ink);stroke-width:1.8"/>`; });
+  svg += `</svg>`;
+  const notes = [];
+  if (eA >= 3) notes.push(`Groupe d'âges mixtes (${nf(eA)} ans d'écart) : prévois une variante par âge dans chaque exercice.`);
+  if (eB != null && eB >= 2) notes.push(`Écart de maturation de ${nf(eB)} ans : compare et dose selon l'âge biologique (charges, sauts, volume), pas l'âge civil.`);
+  D.filter(x => x.m && /pic/.test(x.m.statut) && /autour/.test(x.m.statut)).forEach(x => notes.push(`${prenom(x.j)} est autour du pic de croissance : zone sensible (sauts, charges lourdes, coordination qui baisse un temps).`));
+  D.filter(x => x.m && x.m.avance !== "dans la moyenne").forEach(x => notes.push(`${prenom(x.j)} : maturation ${x.m.avance} (âge bio ${nf(x.m.bio)} ans pour ${nf(x.a)} ans).`));
+  const gr = [...new Set(D.map(x => G.grilleConseillee(x.j)).filter(v => v != null))].sort((a, b) => a - b);
+  return `<section class="sec"><h2>Âges et maturation</h2><div class="card">
+    <div class="kpi"><div><span class="lab">Tranche d'âge</span><b>${Math.floor(Math.min(...ac))}${Math.floor(Math.max(...ac)) !== Math.floor(Math.min(...ac)) ? " à " + Math.floor(Math.max(...ac)) : ""} ans</b></div>
+      <div><span class="lab">Âge biologique</span><b>${bi.length ? nf(Math.min(...bi)) + (bi.length > 1 ? " à " + nf(Math.max(...bi)) : "") + " ans" : "à mesurer"}</b></div>
+      <div><span class="lab">Grilles conseillées</span><b>${gr.length ? gr.join(", ") + " ans" : "–"}</b></div></div>
+    ${svg}<p class="msg" style="margin:4px 0 0"><span class="lgd o"></span> âge civil · <span class="lgd b"></span> âge biologique (taille, taille assise, poids)${bi.length < D.length ? " · sans point violet : mesures à faire" : ""}</p>
+    ${notes.length ? `<ul class="notes">${notes.map(n => `<li>${esc(n)}</li>`).join("")}</ul>` : `<p class="msg" style="margin:6px 0 0">Âges et maturations proches : le groupe est homogène.</p>`}</div></section>`;
+}
+
+/* ================= SEMAINE DU COACH (accueil) ================= */
+let JOURSEL = null;
+function semaineStrip(sel) {
+  const t = G.today(), C = {};
+  for (const j of G.joueurs.all()) for (const e of evJoueur(j, t, add(t, 6))) { const d = e.date; (C[d] ||= new Map()).set(e.k, e.type); }
+  return `<div class="wk" role="tablist" aria-label="Ma semaine">${[...Array(7)].map((_, i) => { const d = add(t, i), M = C[d] || new Map(), ty = [...M.values()], dt = new Date(P(d));
+    return `<button role="tab" aria-selected="${d === sel}" data-a="jour" data-d="${d}" class="${i === 0 ? "auj" : ""}"><span>${i === 0 ? "Auj." : JC[dt.getUTCDay()]}</span><b>${dt.getUTCDate()}</b><i>${ty.slice(0, 4).map(k => `<em style="background:${TYPC[k]}"></em>`).join("")}</i><small>${M.size || ""}</small></button>`; }).join("")}</div>`;
+}
+
+/* ================= RAPPORT JOUEUR PDF ================= */
+function radarPDF(doc, cx, cy, R, d, vals, mk, prev, col) {
+  const n = vals.length, A = i => -Math.PI / 2 + i * 2 * Math.PI / n, pt = (i, v) => [cx + Math.cos(A(i)) * R * v / 4, cy + Math.sin(A(i)) * R * v / 4];
+  const poly = (v, o) => { for (let i = 0; i < n; i++) { const [x1, y1] = pt(i, v[i]), [x2, y2] = pt((i + 1) % n, v[(i + 1) % n]); doc.line(x1, y1, x2, y2, o); } };
+  for (let k = 1; k <= 4; k++) poly(Array(n).fill(k), { color: k === 3 ? "#8FBFA8" : "#D5DAE0", lw: k === 3 ? 0.9 : 0.5 });
+  for (let i = 0; i < n; i++) { const [x, y] = pt(i, 4); doc.line(cx, cy, x, y, { color: "#E2E6EA", lw: 0.4 }); const [tx, ty] = pt(i, 4.7); doc.text(tx - 3, ty - 4, String(i + 1), { size: 7, color: mk[i] ? "#333333" : "#BBBBBB" }); }
+  const cl = v => v.map((x, i) => mk[i] && x != null ? Math.max(0, Math.min(4, +x)) : 0);
+  if (prev && prev.some(v => v != null)) poly(cl(prev), { color: "#9AA3AE", lw: 0.8 });
+  if (vals.some(v => v != null)) poly(cl(vals), { color: col, lw: 1.8 });
+}
+async function rapportPDF(jid) {
+  const j = G.joueurs.get(jid); if (!j) return;
+  const D = new MiniPDF.Doc(), M = D.M, W = D.W - 2 * M, VERT = "#0F766E", GRIS = "#5D6675";
+  const titre = (t, col) => { D.need(40); D.y += 8; D.text(M, D.y, t, { size: 13, bold: true, color: col || VERT }); D.y += 18; D.line(M, D.y - 4, M + W, D.y - 4, { color: "#D9DDE3" }); };
+  const kv = (k, v) => { if (v == null || v === "") return; D.need(14); D.text(M, D.y, k, { size: 9.5, color: GRIS }); D.para(String(v), { x: M + 150, size: 9.5, after: 1 }); };
+  /* en-tête */
+  D.rect(0, 0, D.W, 62, { fill: "#0B3B36" }); D.text(M, 16, "GRÜN", { size: 18, bold: true, color: "#FFFFFF" }); D.text(M + 70, 22, "Rapport joueur · " + G.frD(G.today()), { size: 10, color: "#CFE8E3" });
+  D.y = 80; D.text(M, D.y, j.nom, { size: 20, bold: true }); D.y += 28;
+  const grs = G.groupes.de(j.id).map(g => g.nom), a = ageJ(j.naissance), m = matur(j);
+  D.para([j.sexe === "F" ? "Fille" : "Garçon", a != null ? a + " ans" : "", j.naissance ? "née le ".replace("née", j.sexe === "F" ? "née" : "né") + G.frD(j.naissance) : "", "classement " + (j.classement || "NC"), (j.main === "G" ? "gaucher" : "droitier") + ", revers à " + (j.revers === "1" ? "1 main" : "2 mains"), grs.length ? "groupe " + grs.join(", ") : ""].filter(Boolean).join(" · "), { size: 10, color: GRIS, after: 6 });
+  /* objectifs */
+  const OB = G.objectifs.de(j.id);
+  if (j.objectifs || OB.length) { titre("Objectifs");
+    if (j.objectifs) kv("Objectif général", j.objectifs);
+    for (const o of OB) { D.need(14); const c = o.statut === "atteint" ? VERT : o.statut === "abandonne" ? "#9AA3AE" : "#C2410C"; D.rect(M, D.y + 1, 7, 7, o.statut === "atteint" ? { fill: c } : { stroke: c, lw: 1 }); D.para(o.txt + "  —  " + G.OBJ_STATUTS[o.statut] + (echTxt(o) ? ", " + echTxt(o) : ""), { x: M + 14, size: 9.5, after: 2 }); } }
+  /* maturation */
+  titre("Croissance et maturation");
+  const mes = arr(j.mesures).filter(x => x.taille).sort((x, y) => x.date < y.date ? 1 : -1)[0], vc = G.vitesseCroissance(j);
+  if (mes) kv("Dernière mesure", G.frD(mes.date) + " · " + [mes.taille ? mes.taille + " cm" : "", mes.assise ? "assis " + mes.assise + " cm" : "", mes.poids ? mes.poids + " kg" : ""].filter(Boolean).join(", "));
+  if (m) { kv("Âge biologique", nf(m.bio) + " ans (âge civil " + nf(m.age) + " ans) · maturation " + m.avance); kv("Pic de croissance", "estimé à " + nf(m.aphv) + " ans · " + m.statut); kv("Grille conseillée", m.grille + " ans (âge biologique)"); kv("Méthode", m.methode); }
+  else kv("Âge biologique", "à mesurer (taille, taille assise, poids)");
+  if (vc != null) kv("Vitesse de croissance", nf(vc) + " cm par an");
+  /* tests */
+  const B = bilans(j), b = B[0], pv = B[1];
+  titre("Derniers tests et profil radar", "#6D3FC0");
+  if (!b) D.para("Aucun bilan pour l'instant.", { size: 9.5, color: GRIS });
+  else {
+    D.para("Bilan du " + G.frD(b.date) + " · grille " + bAge(j, b) + " ans" + (b.note ? " · " + b.note : "") + (pv ? " · comparé au bilan du " + G.frD(pv.date) + " (gris)" : ""), { size: 9.5, after: 4 });
+    D.need(190); const y0 = D.y, cw = W / 3, COL = { PP: "#C2410C", GE: "#1D4ED8", DE: "#0F766E" };   /* mêmes couleurs que les radars de l'appli */
+    DOMS.forEach((d, k) => { const mk = mask(j, b, d), v = LN(d).map((_, i) => { const x = vOf(b, d)[i]; return x == null || x === "" ? null : +x; });
+      const pvv = pv ? LN(d).map((_, i) => { const x = vOf(pv, d)[i]; return x == null || x === "" ? null : +x; }) : null, cx = M + cw * k + cw / 2;
+      D.text(cx - MiniPDF.width(DOMN[d], 9.5, true) / 2, y0, DOMN[d], { size: 9.5, bold: true, color: COL[d] });
+      radarPDF(D, cx, y0 + 82, 58, d, v, mk, pvv, COL[d]);
+      const mo = moy(j, b, d), mp = pv ? moy(j, pv, d) : null, t2 = "moyenne " + nf(mo) + (mo != null && mp != null ? " (" + (mo - mp > 0 ? "+" : "") + nf(mo - mp) + ")" : "");
+      D.text(cx - MiniPDF.width(t2, 9) / 2, y0 + 158, t2, { size: 9, color: GRIS }); });
+    D.y = y0 + 176;
+    D.para("Niveaux de 1 à 4 ; le cercle vert clair est le niveau 3, l'attendu du haut niveau de sa génération. Numéros = lignes de la grille.", { size: 8, color: GRIS, after: 6 });
+    const ax = [], pf = [];
+    for (const d of DOMS) { const mk = mask(j, b, d); vOf(b, d).forEach((v, i) => { if (v == null || v === "" || !mk[i]) return; const o = { t: DOMN[d] + " " + (i + 1) + " · " + ligneNom(d + (i + 1)), v: +v }; if (+v < 3) ax.push(o); if (+v >= 3.5) pf.push(o); }); }
+    if (ax.length) { D.need(16); D.text(M, D.y, "Axes de travail (niveau < 3)", { size: 10, bold: true }); D.y += 14; ax.forEach(o => D.para("• " + o.t + " : " + nf(o.v), { x: M + 6, size: 9, after: 0 })); D.y += 4; }
+    if (pf.length) { D.need(16); D.text(M, D.y, "Points forts (3,5 et plus)", { size: 10, bold: true }); D.y += 14; pf.forEach(o => D.para("• " + o.t + " : " + nf(o.v), { x: M + 6, size: 9, after: 0 })); D.y += 4; }
+    const ids = [...new Set([...arr(b.sel), ...Object.keys(b.res || {})])].filter(id => b.res && b.res[id] && Object.keys(b.res[id]).some(k => !k.includes("#")));
+    if (ids.length) { D.need(16); D.text(M, D.y, "Résultats des tests", { size: 10, bold: true }); D.y += 14; const sxx = j.sexe === "F" ? "F" : "G";
+      for (const id of ids) { const r = b.res[id], lv = niveauTest(id, sxx, bAge(j, b), r), t = TM[id], E = Object.entries(r).filter(([k]) => !k.includes("#"));
+        D.para("• " + testNom(id) + " : " + E.map(([k, v]) => (E.length > 1 ? k + " " : "") + v).join(", ") + (t && t.u ? " " + t.u : "") + (lv ? "  → niveau " + nf(lv) : ""), { x: M + 6, size: 9, after: 0 }); } D.y += 4; }
+    if (B.length > 1) { D.need(16); D.text(M, D.y, "Historique des bilans", { size: 10, bold: true }); D.y += 14; B.slice(0, 6).forEach(x => D.para(G.frD(x.date) + " · grille " + bAge(j, x) + " ans · " + DOMS.map(d => DOMN[d] + " " + nf(moy(j, x, d))).join(" · "), { x: M + 6, size: 9, after: 0 })); }
+  }
+  /* charge */
+  const ch = G.journal.charge(j.id), F0 = G.journal.forme(j.id)[0], T = G.presences.taux(j.id);
+  titre("Charge, forme et assiduité", "#C2410C");
+  kv("Charge des 7 derniers jours", Math.round(ch.aigu) + " UA (moyenne des 4 semaines : " + Math.round(ch.chronique) + " UA)");
+  kv("Ratio aigu / chronique", ch.ratio != null ? nf(ch.ratio, 2) + " · " + ({ ok: "bonne zone", attention: "en hausse", haute: "très haute", basse: "basse" }[ch.alerte]) : "pas encore assez de retours (21 jours)");
+  const S = ch.semaines, mx = Math.max(1, ...S.map(s => s.ua));
+  if (S.some(s => s.ua)) { D.need(80); const y0 = D.y + 4, bw = W / S.length; S.forEach((s, i) => { const h = s.ua / mx * 50; D.rect(M + i * bw + 3, y0 + 50 - h, bw - 6, Math.max(h, 0.5), { fill: i === S.length - 1 ? "#C2410C" : "#F2B48C" }); D.text(M + i * bw + 3, y0 + 54, dCourt(s.fin), { size: 6.5, color: GRIS }); }); D.y = y0 + 70; D.para("Charge par semaine (UA = dureté ressentie × durée), 12 dernières semaines.", { size: 8, color: GRIS }); }
+  if (F0) kv("Dernière forme", nf(formeScore(F0)) + " / 5 le " + G.frD(F0.date) + " · " + FF.map(([k, t]) => t.toLowerCase() + " " + (F0[k] || "–")).join(", "));
+  kv("Assiduité", T.total ? T.pct + " % (" + T.present + " présences sur " + T.total + " séances pointées)" : "pas encore pointée");
+  const BL = arr(j.blessures).filter(x => x && x.statut !== "guerie");
+  if (BL.length) kv("Blessures en cours", BL.map(x => zn(x.zone) + (x.desc ? " (" + x.desc + ")" : "") + (x.debut ? " depuis le " + G.frD(x.debut) : "")).join(" ; "));
+  /* prog */
+  titre("Programmation en cours", "#C2410C");
+  const t = G.today(), act = plansDe(j.id).filter(p => (!p.debut || p.debut <= t) && (!p.fin || p.fin >= t));
+  if (!act.length) D.para("Aucune prog en cours.", { size: 9.5, color: GRIS });
+  for (const p of act) { const w = semaineCourante(p), gp = grpOk(p.gid) ? G.groupes.get(p.gid) : null;
+    kv("Prog", (p.nom || "Plan") + (gp ? " (groupe " + gp.nom + ")" : "") + (p.debut ? " · du " + G.frD(p.debut) + " au " + G.frD(p.fin) : ""));
+    if (w) { kv("Semaine en cours", "du " + dCourt(w.d1) + " au " + dCourt(add(w.d1, 6)) + (w.ph ? " · " + (PHN[w.ph] || w.ph) : "") + (w.mi ? " · " + w.mi : ""));
+      w.ses.forEach(s => D.para("• " + dJour(s.date) + " : " + (s.t || KN[s.k] || "Séance") + (KN[s.k] && s.t ? " (" + KN[s.k] + ")" : "") + (arr(s.l).length ? " · " + arr(s.l).map(ligneNom).join(", ") : ""), { x: M + 156, size: 9, after: 0 })); D.y += 4; }
+    const tc = arr(p.compets).filter(c => c && isoOk(c.d1) && c.d1 >= t).slice(0, 4); if (tc.length) kv("Prochains tournois", tc.map(c => (c.nom || "Tournoi") + " le " + G.frD(c.d1)).join(" ; ")); }
+  const av = seancesDe(j.id).filter(s => isoOk(s.date) && s.date >= t && !s.fait && !s.faite).sort((x, y) => x.date < y.date ? -1 : 1).slice(0, 5);
+  if (av.length) kv("Prochaines séances", av.map(s => dCourt(s.date) + " " + (s.nom || s.theme || "Séance")).join(" ; "));
+  /* pied de page */
+  const np = D.pages.length; D.pages.forEach((pg, i) => { D.cur = pg; D.text(M, D.H - 24, "GRÜN · " + j.nom + " · document personnel, ne pas diffuser" + "   ·   page " + (i + 1) + " / " + np, { size: 7.5, color: "#9AA3AE" }); });
+  const nom = "GRUN_rapport_" + fold(j.nom).replace(/[^a-z0-9]+/g, "_").replace(/^_|_$/g, "") + "_" + t + ".pdf";
+  const r = await MiniPDF.deliver(D.out(), nom);
+  if (r === "download") toast("Rapport PDF enregistré");
 }
 
 /* --- Fiche --- */
@@ -669,7 +1086,7 @@ function sFiche(j) {
     ${gs.length ? `<div class="f"><span class="lab">Groupes</span><div class="chips">${gs.map(g => `<button type="button" class="tg" data-a="jgrp" data-jid="${esc(j.id)}" data-v="${esc(g.id)}" aria-pressed="${mes.has(g.id)}">${esc(g.nom)}</button>`).join("")}</div></div>` : ""}
     ${fld("objectifs", "Objectifs", `<textarea id="fi-objectifs" data-fiche="objectifs" placeholder="Objectifs de la saison, tournois visés…">${esc(j.objectifs || "")}</textarea>`, "full")}
     ${fld("notes", "Notes", `<textarea id="fi-notes" data-fiche="notes" placeholder="Ce qui compte pour ce joueur…">${esc(j.notes || "")}</textarea>`, "full")}
-    <p class="msg" id="fimsg">Chaque modification est enregistrée sur la fiche unique du joueur (lue par tous les modules).</p>
+    <p class="msg" id="fimsg">Tout est enregistré tout de suite, partout dans GRÜN.</p>
     `;
   return sx("j-fiche", "Fiche", esc([j.classement || "NC", j.main === "G" ? "gaucher" : "droitier", arr(j.zones).length ? arr(j.zones).map(zn).join(", ").toLowerCase() : ""].filter(Boolean).join(" · ")), body, "var(--ind)");
 }
@@ -711,17 +1128,17 @@ function sCroissance(j) {
 
 /* --- Grilles et tests --- */
 function testsHTML(j, b) {
-  const ids = [...new Set([...arr(b.sel), ...Object.keys(b.res || {})])].filter(id => b.res && b.res[id] && Object.keys(b.res[id]).length);
+  const ids = [...new Set([...arr(b.sel), ...Object.keys(b.res || {})])].filter(id => b.res && b.res[id] && Object.keys(b.res[id]).some(k => !k.includes("#")));
   if (!ids.length) return `<p class="msg" style="margin:0">Aucun résultat de test dans ce bilan.</p>`;
   const sxx = j.sexe === "F" ? "F" : "G", age = bAge(j, b);
   return `<div class="inner">${ids.map(id => { const r = b.res[id], lv = niveauTest(id, sxx, age, r), t = TM[id];
-    return li(G.href("grilles", "#/test/" + id), esc(id.replace(/^T-/, "")), esc(testNom(id)), esc(Object.entries(r).map(([k, v]) => (Object.keys(r).length > 1 ? k + " : " : "") + v).join(" · ") + (t && t.u ? " " + t.u : "")), lv ? lvB(lv) : ""); }).join("")}</div>`;
+    return li(G.href("grilles", "#/test/" + id), null, esc(testNom(id)), esc(Object.entries(r).filter(([k]) => !k.includes("#")).map(([k, v], i, E) => (E.length > 1 ? k + " : " : "") + v).join(" · ") + (t && t.u ? " " + t.u : "")), lv ? lvB(lv) : ""); }).join("")}</div>`;
 }
 function axesHTML(j, b, cond, vide) {
   const L = [], sxx = j.sexe === "F" ? "F" : "G", age = bAge(j, b);
   for (const d of DOMS) { const mk = mask(j, b, d); vOf(b, d).forEach((v, i) => { if (v != null && v !== "" && mk[i] && cond(+v)) L.push({ l: d + (i + 1), v: +v, d }); }); }
   if (!L.length) return `<p class="msg" style="margin:0">${vide}</p>`;
-  return `<div class="inner">${L.map(x => `<div class="li"><span class="code"><span class="lc ${x.d.toLowerCase()}">${x.l}</span></span><span class="tt"><a href="${G.href("grilles", "#/ligne/" + x.l + "/" + sxx + "/" + age)}" style="text-decoration:none">${esc(ligneNom(x.l))}</a><small><a href="${G.href("banque", "#/l/" + x.l + "?a=" + age)}" style="color:var(--acc);font-weight:600;text-decoration:none">Exos de la ligne ›</a></small></span><span class="end">${lvB(x.v)}</span></div>`).join("")}</div>`;
+  return `<div class="inner">${L.map(x => `<div class="li n2c"><span class="tt"><span class="msg" style="color:${DOMC[x.d]};font-weight:600">${DOMC2[x.d]} · </span><a href="${G.href("grilles", "#/ligne/" + x.l + "/" + sxx + "/" + age)}" style="text-decoration:none">${esc(ligneNom(x.l))}</a><small><a href="${G.href("banque", "#/l/" + x.l + "?a=" + age)}" style="color:var(--acc);font-weight:600;text-decoration:none">Exos de la ligne ›</a></small></span><span class="end">${lvB(x.v)}</span></div>`).join("")}</div>`;
 }
 function sGrilles(j) {
   const B = bilans(j), b = B[0], pv = B[1];
@@ -732,7 +1149,7 @@ function sGrilles(j) {
     <div class="sub">Axes de travail (niveau &lt; 3)</div>${axesHTML(j, b, v => v < 3, "Aucune ligne sous le niveau 3.")}
     <div class="sub">Points forts (≥ 3,5)</div>${axesHTML(j, b, v => v >= 3.5, "Pas encore de ligne à 3,5 ou plus.")}
     <div class="sub">Résultats des tests</div>${testsHTML(j, b)}
-    ${B.length > 1 ? `<div class="sub">Historique des bilans</div><div class="tw"><table class="cmp" style="min-width:0"><thead><tr><th>Date</th><th>Grille</th>${DOMS.map(d => `<th style="text-align:center">${d}</th>`).join("")}</tr></thead><tbody>${B.map(x => `<tr><td>${G.frD(x.date)}</td><td>${bAge(j, x)} ans</td>${DOMS.map(d => `<td class="n">${nf(moy(j, x, d))}</td>`).join("")}</tr>`).join("")}</tbody></table></div>` : ""}
+    ${B.length > 1 ? `<div class="sub">Historique des bilans</div><div class="tw"><table class="cmp" style="min-width:0"><thead><tr><th>Date</th><th>Grille</th>${DOMS.map(d => `<th style="text-align:center">${DOMC2[d]}</th>`).join("")}</tr></thead><tbody>${B.map(x => `<tr><td>${G.frD(x.date)}</td><td>${bAge(j, x)} ans</td>${DOMS.map(d => `<td class="n">${nf(moy(j, x, d))}</td>`).join("")}</tr>`).join("")}</tbody></table></div>` : ""}
     ${lien}`;
   return sx("j-grilles", "Grilles et tests", "Bilan du " + G.frD(b.date) + " · " + DOMS.map(d => nf(moy(j, b, d))).join(" / "), body, "var(--tests)");
 }
@@ -740,7 +1157,7 @@ function sGrilles(j) {
 /* --- Programmation --- */
 function semaineCourante(p) { const t = G.today(); return planSemaines(p).find(w => w.d1 <= t && add(w.d1, 6) >= t) || null; }
 function semHTML(w) {
-  return `<div class="inner">${w.ses.length ? w.ses.map(s => li(null, JC[new Date(P(s.date)).getUTCDay()] + "<br>" + dCourt(s.date), esc(s.t || KN[s.k] || s.k || "Séance"), esc(KN[s.k] || "") + (arr(s.l).length ? " · " + arr(s.l).map(l => `<span class="lc ${String(l).slice(0, 2).toLowerCase()}">${esc(l)}</span>`).join(" ") : ""), s.date === G.today() ? badge("ok", "aujourd'hui") : "")).join("") : `<div class="li n2c"><span class="tt msg">Pas de séance cette semaine (repos ou coupure).</span><span></span></div>`}</div>`;
+  return `<div class="inner">${w.ses.length ? w.ses.map(s => li(null, JC[new Date(P(s.date)).getUTCDay()] + "<br>" + dCourt(s.date), esc(s.t || KN[s.k] || s.k || "Séance"), esc(KN[s.k] || "") + (arr(s.l).length ? " · " + arr(s.l).map(lcN).join(" ") : ""), s.date === G.today() ? badge("ok", "aujourd'hui") : "")).join("") : `<div class="li n2c"><span class="tt msg">Pas de séance cette semaine (repos ou coupure).</span><span></span></div>`}</div>`;
 }
 function sProg(j) {
   const L = plansDe(j.id).sort((a, b) => (a.debut || "") < (b.debut || "") ? 1 : -1), t = G.today();
@@ -761,13 +1178,13 @@ function sProg(j) {
 /* --- Séances --- */
 function retourDe(jid, ref) { return G.journal.retours(jid).find(r => r.ref === ref) || null; }
 function sSeances(j) {
-  const t = G.today(), S = seancesDe(j.id), av = S.filter(s => isoOk(s.date) && s.date >= t && !s.fait).sort((a, b) => a.date < b.date ? -1 : 1), fa = S.filter(s => !(isoOk(s.date) && s.date >= t && !s.fait)).sort((a, b) => (a.date || "") < (b.date || "") ? 1 : -1);
+  const t = G.today(), S = seancesDe(j.id), av = S.filter(s => isoOk(s.date) && s.date >= t && !s.fait && !s.faite).sort((a, b) => a.date < b.date ? -1 : 1), fa = S.filter(s => !(isoOk(s.date) && s.date >= t && !s.fait && !s.faite)).sort((a, b) => (a.date || "") < (b.date || "") ? 1 : -1);
   const nd = S.filter(s => !isoOk(s.date));
   const row = (s, fut) => { const r = retourDe(j.id, s.id); return li(G.href("seances", "#/s/" + s.id), isoOk(s.date) ? dJour(s.date).replace(" ", "<br>") : "–", esc(s.nom || s.theme || "Séance"), esc([KN[s.type], s.duree ? s.duree + " min" : "", grpOk(s.gid) ? "groupe " + G.groupes.get(s.gid).nom : ""].filter(Boolean).join(" · ")) + (r ? " · retour : RPE " + r.rpe + (r.duree ? ", " + r.duree + " min" : "") + (r.comment ? " · « " + esc(r.comment.slice(0, 60)) + " »" : "") : ""),
     fut ? `<a class="ib sm" href="${G.href("seances", "#/terrain/" + s.id)}">Terrain</a>` : r ? badge("ok", "fait") : `<button class="ib sm" data-a="retourde" data-jid="${esc(j.id)}" data-v="${esc(s.id)}">Retour</button>`); };
   const body = `<div class="sub">À venir</div>${av.length ? `<div class="inner">${av.slice(0, 10).map(s => row(s, true)).join("")}</div>` : `<p class="msg" style="margin:0">Aucune séance datée à venir.</p>`}
     <div class="sub">Faites ou passées</div>${fa.length ? `<div class="inner">${fa.slice(0, 12).map(s => row(s, false)).join("")}</div>` : `<p class="msg" style="margin:0">Aucune pour l'instant.</p>`}
-    <div class="tools"><button class="go acc" data-a="relais" data-vers="seances" data-jid="${esc(j.id)}">Nouvelle séance</button><a class="ib" href="${G.href("seances", "#/joueur/" + j.id)}">Ouvrir Create my séance</a></div>`;
+    <div class="tools"><button class="go acc" data-a="relais" data-vers="seances" data-jid="${esc(j.id)}">Nouvelle séance</button><a class="ib" href="${G.href("seances", "#/joueur/" + j.id)}">Ouvrir Create my session</a></div>`;
   return sx("j-seances", "Séances", av.length ? av.length + " à venir · prochaine " + dCourt(av[0].date) : fa.length + " séance" + (fa.length > 1 ? "s" : ""), body, "var(--create)");
 }
 
@@ -776,11 +1193,11 @@ function sWarmup(j) {
   const R = ROUT(), rs = routinesDe(j.id).sort((a, b) => (a.date || "") < (b.date || "") ? 1 : -1), H = R.hist.filter(h => h && h.who === j.id).sort((a, b) => (a.date || "") < (b.date || "") ? 1 : -1);
   const fav = arr(j.favWarmup), rby = Object.fromEntries(R.routines.map(r => [r.id, r]));
   const nomR = r => r.nom || ("Échauffement " + (r.duree ? r.duree + " min" : "") + (r.apres ? " avant " + (APRES[r.apres] || r.apres) : ""));
-  const body = `${fav.length ? `<div class="sub">Ses favoris</div><div class="inner">${fav.map(id => { const r = rby[id]; return li(G.href("warmup", "#/r/" + id), "♥", esc(r ? nomR(r) : id), r && r.duree ? r.duree + " min" : "", ""); }).join("")}</div>` : ""}
+  const body = `${fav.length ? `<div class="sub">Ses favoris</div><div class="inner">${fav.map(id => { const r = rby[id], m = WUN[id]; return li(G.href("warmup", r ? "#/r/" + id : "#/m/" + id), "♥", esc(r ? nomR(r) : m ? m.nom : id), r && r.duree ? r.duree + " min" : m ? nf(wuMinM(m)) + " min" + (m.type === "cooldown" ? " · retour au calme" : "") + (m.resume ? " · " + esc(String(m.resume).slice(0, 70)) + (String(m.resume).length > 70 ? "…" : "") : "") : "", ""); }).join("")}</div>` : ""}
     <div class="sub">Routines</div>${rs.length ? `<div class="inner">${rs.slice(0, 10).map(r => li(G.href("warmup", "#/r/" + r.id), isoOk(r.date) ? G.frD(r.date).slice(0, 5) : "", esc(nomR(r)), esc([r.duree ? r.duree + " min" : "", r.apres ? "avant " + (APRES[r.apres] || r.apres) : "", grpOk(r.gid) ? "groupe " + G.groupes.get(r.gid).nom : ""].filter(Boolean).join(" · ")), fav.includes(r.id) ? "♥" : "")).join("")}</div>` : `<p class="msg" style="margin:0">Aucune routine enregistrée pour ce joueur.</p>`}
-    <div class="sub">Historique</div>${H.length ? `<div class="inner">${H.slice(0, 10).map(h => li(null, isoOk(h.date) ? G.frD(h.date).slice(0, 5) : "", (h.duree ? h.duree + " min" : "Échauffement") + (h.apres ? " avant " + esc(APRES[h.apres] || h.apres) : ""), arr(h.g).length ? arr(h.g).length + " jeux" : "", "")).join("")}</div>` : `<p class="msg" style="margin:0">Aucun échauffement fait pour l'instant.</p>`}
-    <div class="tools"><button class="go acc" data-a="relais" data-vers="warmup" data-jid="${esc(j.id)}">Nouveau warm-up</button><a class="ib" href="${G.href("warmup", "#/joueur/" + j.id)}">Ouvrir Create my warm-up</a></div>`;
-  return sx("j-warmup", "Warm-up", rs.length + " routine" + (rs.length > 1 ? "s" : "") + (H.length ? " · dernier le " + G.frD(H[0].date).slice(0, 5) : ""), body, "var(--create)");
+    <div class="sub">Historique</div>${H.length ? `<div class="inner">${H.slice(0, 10).map(h => li(null, isoOk(h.date) ? G.frD(h.date).slice(0, 5) : "", (h.titre ? esc(h.titre) + (h.duree ? " · " + nf(+h.duree) + " min" : "") : (h.duree ? h.duree + " min" : "Échauffement")) + (h.apres ? " avant " + esc(APRES[h.apres] || h.apres) : ""), [arr(h.g).length ? arr(h.g).length + " jeux" : "", h.rpe != null ? "dureté " + esc(h.rpe) + "/10" : ""].filter(Boolean).join(" · "), "")).join("")}</div>` : `<p class="msg" style="margin:0">Aucun échauffement fait pour l'instant.</p>`}
+    <div class="tools"><button class="go acc" data-a="relais" data-vers="warmup" data-jid="${esc(j.id)}">Échauffement</button><a class="ib" href="${G.href("warmup", "#/joueur/" + j.id)}">Ses échauffements</a></div>`;
+  return sx("j-warmup", "Échauffements", rs.length + " routine" + (rs.length > 1 ? "s" : "") + (H.length ? " · dernier le " + G.frD(H[0].date).slice(0, 5) : ""), body, "var(--create)");
 }
 
 /* --- Journal --- */
@@ -884,28 +1301,32 @@ function sFin(j) {
 }
 
 /* ================= DOSSIER DE GROUPE ================= */
-function vGroupe(gid) {
+function vGroupe(gid, ouvrir) {
   const g = G.groupes.get(gid);
   if (!g) { main.innerHTML = `<div class="crumb"><a href="#/">Accueil</a>›<a href="#/joueurs">Joueurs</a></div>` + empty("Ce groupe n'existe pas (ou plus)."); return; }
   setAcc("var(--ind)"); document.title = g.nom + " · GRÜN";
   const M = G.groupes.joueurs(gid).sort((a, b) => a.nom.localeCompare(b.nom, "fr")), autres = G.joueurs.all().filter(j => !g.jids.includes(j.id));
   const PL = PROG().plans.filter(p => p.gid === gid), SE = SEANCES().filter(s => (s.gid || s.groupe) === gid).sort((a, b) => (a.date || "") < (b.date || "") ? 1 : -1), RO = ROUT().routines.filter(r => r.gid === gid);
-  let h = `<div class="crumb"><a href="#/">Accueil</a>›<a href="#/joueurs">Joueurs</a></div><h1>${esc(g.nom)}<small>Groupe · ${M.length} joueur${M.length > 1 ? "s" : ""}</small></h1>
-    <div class="acts"><button class="go acc" data-a="relais" data-vers="prog" data-gid="${esc(gid)}">Prog de groupe</button><button class="ib" data-a="relais" data-vers="seances" data-gid="${esc(gid)}">Séance de groupe</button>
-      <button class="ib" data-a="relais" data-vers="warmup" data-gid="${esc(gid)}">Warm-up de groupe</button><button class="ib" data-a="bilangrp" data-gid="${esc(gid)}">Bilan de groupe</button></div>`;
-  h += `<section class="sec"><h2>Tableau comparatif</h2>${M.length ? `<div class="tw"><table class="cmp"><thead><tr><th>Joueur</th><th>Âge</th><th>Bilan</th>${DOMS.map(d => `<th style="text-align:center">${d}</th>`).join("")}<th>Charge</th><th>Alertes</th></tr></thead><tbody>${M.map(j => { const b = bilans(j)[0], ch = G.journal.charge(j.id), al = alertes(j).filter(x => x.n !== "info"), m = matur(j), a = ageJ(j.naissance);
-      return `<tr><td><a href="#/j/${esc(j.id)}" style="font-weight:600;text-decoration:none">${esc(j.nom)}</a></td><td>${a != null ? a : "–"}${m ? ` <span class="msg">(bio ${nf(m.bio)})</span>` : ""}</td><td>${b ? G.frD(b.date) : "–"}</td>${DOMS.map(d => { const v = moy(j, b, d); return `<td class="n">${v != null ? lvB(v) : "–"}</td>`; }).join("")}<td>${ch.ratio != null ? chargeBadge(ch) : "–"}</td><td>${al.length ? al.map(x => badge(x.n, x.t)).join(" ") : "–"}</td></tr>`; }).join("")}</tbody></table></div>` : empty("Ajoute des joueurs au groupe ci-dessous.")}</section>`;
-  h += `<div class="cols"><section class="sec"><h2>Membres</h2>${M.length ? `<div class="list">${M.map(j => li("#/j/" + j.id, j.sexe === "F" ? "Fille" : "Garçon", esc(j.nom), ageTxt(j), `<button class="ib sm" data-a="grm" data-gid="${esc(gid)}" data-v="${esc(j.id)}" aria-label="Retirer du groupe">Retirer</button>`)).join("")}</div>` : ""}
-      ${autres.length ? `<div class="card" style="margin-top:10px"><span class="lab">Ajouter au groupe</span><div class="chips" style="margin-top:6px">${autres.map(j => `<button class="tg" data-a="gadd" data-gid="${esc(gid)}" data-v="${esc(j.id)}">+ ${esc(j.nom)}</button>`).join("")}</div></div>` : ""}</section>
-    <section class="sec"><h2>Plans, séances et warm-up du groupe</h2>
+  let h = `<div class="crumb"><a href="#/">Accueil</a>›<a href="#/joueurs">Joueurs</a></div><h1>${esc(g.nom)}<small>Groupe · ${M.length} joueur${M.length > 1 ? "s" : ""}${(() => { const A = M.map(j => ageJ(j.naissance)).filter(x => x != null); return A.length ? " · " + (Math.min(...A) === Math.max(...A) ? A[0] + " ans" : Math.min(...A) + " à " + Math.max(...A) + " ans") : ""; })()}</small></h1>
+    <div class="five four"><button class="b5" type="button" data-a="relais" data-vers="seances" data-gid="${esc(gid)}"><svg viewBox="0 0 24 24" aria-hidden="true">${ICO5.seance}</svg><b>Séance</b><small>Créer</small></button>
+      <button class="b5" type="button" data-a="relais" data-vers="warmup" data-gid="${esc(gid)}"><svg viewBox="0 0 24 24" aria-hidden="true">${ICO5.wu}</svg><b>Échauf&shy;fement</b><small>Choisir</small></button>
+      <button class="b5" type="button" data-a="bilangrp" data-gid="${esc(gid)}"><svg viewBox="0 0 24 24" aria-hidden="true">${ICO5.bilan}</svg><b>Bilan</b><small>De groupe</small></button>
+      ${PL.length ? `<a class="b5" href="${G.href("prog", "#p/" + PL[0].id)}"><svg viewBox="0 0 24 24" aria-hidden="true">${ICO5.prog}</svg><b>Prog</b><small>Voir</small></a>` : `<button class="b5" type="button" data-a="relais" data-vers="prog" data-gid="${esc(gid)}"><svg viewBox="0 0 24 24" aria-hidden="true">${ICO5.prog}</svg><b>Prog</b><small>Créer</small></button>`}</div>`;
+  h += `<section class="sec"><h2>Tableau comparatif</h2>${M.length ? `<div class="tw"><table class="cmp"><thead><tr><th>Joueur</th><th>Âge</th><th>Bilan</th>${DOMS.map(d => `<th style="text-align:center">${DOMC2[d]}</th>`).join("")}<th>Charge</th><th>Alertes</th></tr></thead><tbody>${M.map(j => { const b = bilans(j)[0], ch = G.journal.charge(j.id), al = alertes(j).filter(x => x.n !== "info"), m = matur(j), a = ageJ(j.naissance);
+      return `<tr><td><a href="#/j/${esc(j.id)}" style="font-weight:600;text-decoration:none">${esc(j.nom)}</a></td><td>${a != null ? a : "–"}${m ? ` <span class="msg">(bio ${nf(m.bio)})</span>` : ""}</td><td>${b ? G.frD(b.date) : "–"}</td>${DOMS.map(d => { const v = moy(j, b, d); return `<td class="n">${v != null ? lvB(v) : "–"}</td>`; }).join("")}<td>${ch.ratio != null ? chargeBadge(ch) : "–"}</td><td>${al.length ? al.map(x => badge(x.n, x.t)).join(" ") : "–"}</td></tr>`; }).join("")}</tbody></table></div>` : empty("Ajoute des joueurs : « Plus d'options », en bas de la page.")}</section>`;
+  h += presencesHTML(g) + agesGroupe(M);
+  h += `<div class="cols"><section class="sec"><h2>Joueurs</h2>${M.length ? `<div class="list">${M.map(j => { const m = matur(j), T = G.presences.taux(j.id); return li("#/j/" + j.id, null, esc(j.nom), (j.sexe === "F" ? "Fille" : "Garçon") + (ageTxt(j) ? " · " + ageTxt(j) : "") + (m ? " · âge bio " + nf(m.bio) + " (" + esc(m.avance) + ")" : "") + (T.total ? " · assiduité " + T.pct + " %" : ""), "›"); }).join("")}</div>` : ""}</section>
+    <section class="sec"><h2>Progs, séances et échauffements du groupe</h2>
       ${PL.length ? `<div class="list">${PL.map(p => li(G.href("prog", "#p/" + p.id), "Plan", esc(p.nom || "Plan"), p.debut ? G.frD(p.debut) + " → " + G.frD(p.fin) : "", "›")).join("")}</div>` : ""}
       ${SE.length ? `<div class="list" style="margin-top:8px">${SE.slice(0, 10).map(s => li(G.href("seances", "#/s/" + s.id), isoOk(s.date) ? G.frD(s.date).slice(0, 5) : "Séance", esc(s.nom || s.theme || "Séance"), esc(KN[s.type] || ""), "›")).join("")}</div>` : ""}
-      ${RO.length ? `<div class="list" style="margin-top:8px">${RO.map(r => li(G.href("warmup", "#/r/" + r.id), "Warm-up", esc(r.nom || "Échauffement"), r.duree ? r.duree + " min" : "", "›")).join("")}</div>` : ""}
-      ${!PL.length && !SE.length && !RO.length ? empty("Rien pour l'instant. Utilise les boutons en haut pour créer une prog, une séance ou un warm-up pour tout le groupe.") : ""}
-      <div class="tools" style="margin-top:10px"><a class="ib" href="${G.href("prog", "#/groupe/" + gid)}">Plans du groupe dans Create my prog</a><a class="ib" href="${G.href("seances", "#/groupe/" + gid)}">Séances du groupe</a></div></section></div>`;
-  h += `<section class="sec"><h2>Réglages du groupe</h2><div class="card"><form class="form" data-f="grnom" data-gid="${esc(gid)}"><div class="f w"><label>Nom</label><input name="nom" value="${esc(g.nom)}"></div><div class="f full"><label>Notes</label><textarea name="notes">${esc(g.notes || "")}</textarea></div><button class="ib" type="submit">Enregistrer</button></form>
-    <div class="tools" style="margin-top:10px"><button class="ib sm dang" data-a="delgrp" data-gid="${esc(gid)}">Supprimer le groupe</button></div><p class="msg">Supprimer le groupe ne supprime pas les joueurs ni leurs dossiers.</p></div></section>`;
+      ${RO.length ? `<div class="list" style="margin-top:8px">${RO.map(r => li(G.href("warmup", "#/r/" + r.id), "Échauff.", esc(r.nom || "Échauffement"), r.duree ? r.duree + " min" : "", "›")).join("")}</div>` : ""}
+      ${!PL.length && !SE.length && !RO.length ? empty("Rien pour l'instant. Utilise les boutons en haut pour créer une prog, une séance ou un échauffement pour tout le groupe.") : ""}
+      </section></div>`;
+  h += `<details class="grun-plus"><summary>Plus d'options</summary><div class="grun-plusb"><div class="tools"><a class="ib" href="${G.href("prog", "#/groupe/" + gid)}">Les progs du groupe</a><a class="ib" href="${G.href("seances", "#/groupe/" + gid)}">Les séances du groupe</a></div><div class="sub">Modifier le groupe</div><div class="sub">Joueurs du groupe</div>${M.length ? `<div class="chips">${M.map(j => `<button class="tg" data-a="grm" data-gid="${esc(gid)}" data-v="${esc(j.id)}">Retirer ${esc(j.nom)}</button>`).join("")}</div>` : ""}
+      ${autres.length ? `<div class="chips">${autres.map(j => `<button class="tg" data-a="gadd" data-gid="${esc(gid)}" data-v="${esc(j.id)}">+ ${esc(j.nom)}</button>`).join("")}</div>` : ""}<div><form class="form" data-f="grnom" data-gid="${esc(gid)}"><div class="f w"><label>Nom</label><input name="nom" value="${esc(g.nom)}"></div><div class="f full"><label>Notes</label><textarea name="notes">${esc(g.notes || "")}</textarea></div><button class="go acc" type="submit">Enregistrer</button></form>
+    <div class="tools" style="margin-top:10px"><button class="ib sm dang" data-a="delgrp" data-gid="${esc(gid)}">Supprimer le groupe</button></div><p class="msg">Supprimer le groupe ne supprime pas les joueurs ni leurs dossiers.</p></div></div></details>`;
   main.innerHTML = h;
+  if (ouvrir === "presences") { const d = $("#sx-g-presences"); if (d) setTimeout(() => d.scrollIntoView({ block: "start", behavior: "smooth" }), 60); history.replaceState(null, "", "#/g/" + gid); }
 }
 
 /* ================= MODE JOUEUR ================= */
@@ -930,13 +1351,13 @@ function vJoueurMode(onglet) {
   }
   if (onglet === "seance") {
     const S = seancesDe(j.id).filter(s => isoOk(s.date) && s.date >= t).sort((a, b) => a.date < b.date ? -1 : 1);
-    h = `<h1>Ma séance<small>${dLong(t)}</small></h1><div class="sec bigs">${nxCard(j, nx)}<a class="big" href="#" data-a="monwu" style="--bc:var(--create)"><span class="k">Mon échauffement</span><b>Prépare ton warm-up</b><span>Durée, ce qui suit, lieu : 3 choix et c'est parti.</span></a></div>
+    h = `<h1>Ma séance<small>${dLong(t)}</small></h1><div class="sec bigs">${nxCard(j, nx)}<a class="big" href="#" data-a="monwu" style="--bc:var(--create)"><span class="k">Mon échauffement</span><b>Prépare ton échauffement</b><span>Durée, ce qui suit, lieu : 3 choix et c'est parti.</span></a></div>
       <section class="sec"><h2>Mes prochaines séances</h2>${S.length ? `<div class="list">${S.slice(0, 8).map(s => li(G.href("seances", "#/terrain/" + s.id), dJour(s.date).replace(" ", "<br>"), esc(s.nom || s.theme || "Séance"), esc([KN[s.type], s.duree ? s.duree + " min" : ""].filter(Boolean).join(" · ")), "Terrain ›")).join("")}</div>` : empty("Pas de séance prévue pour l'instant.")}</section>
       <section class="sec"><h2>Retour après séance</h2><div class="card">${retourForm(j, true)}</div></section>`;
     main.innerHTML = h; return;
   }
   h = `<h1>Salut ${esc(prenom(j))} !<small>${dLong(t)}${ageTxt(j) ? " · " + ageTxt(j) : ""}</small></h1>
-    <div class="sec bigs">${nxCard(j, nx)}<a class="big" href="#" data-a="monwu" style="--bc:var(--create)"><span class="k">Mon échauffement</span><b>Prépare ton warm-up</b><span>Durée, ce qui suit, lieu : 3 choix et c'est parti.</span></a></div>
+    <div class="sec bigs">${nxCard(j, nx)}<a class="big" href="#" data-a="monwu" style="--bc:var(--create)"><span class="k">Mon échauffement</span><b>Prépare ton échauffement</b><span>Durée, ce qui suit, lieu : 3 choix et c'est parti.</span></a></div>
     <div class="cols"><section class="sec"><h2>Ma forme du jour</h2><div class="card">${fj ? `<p style="margin:0 0 8px"><b>Merci, c'est noté !</b> <span class="msg">${nf(formeScore(fj))} / 5 · tu peux corriger si besoin.</span></p>` : `<p class="msg" style="margin:0 0 8px">30 secondes pour dire à ton coach comment tu te sens.</p>`}${formeForm(j, true)}</div></section>
     <section class="sec"><h2>Retour après séance</h2><div class="card">${retourForm(j, true)}</div></section></div>`;
   if (b) h += `<section class="sec"><h2>Mes progrès <a href="#/pole/tests">Mes tests ›</a></h2><div class="card">${radars(j, b, pv)}</div></section>`;
@@ -955,8 +1376,9 @@ function vBienvenue() {
   main.innerHTML = `<div class="hero"><div><p class="word">GR<i>Ü</i>N</p><p class="lead">La méthode de préparation physique et de biomécanique du joueur de tennis, de 4 à 18 ans.</p></div></div>
     <section class="sec"><h2>Tu es…</h2><div class="bigs">
       <a class="big" href="#" data-a="profil" data-v="coach" style="--bc:var(--ind)"><span class="k">Je suis coach</span><b>Mes joueurs, mes groupes</b><span>Un dossier complet par joueur et par groupe, Create, ressources, tests et profilage.</span></a>
-      <a class="big" href="#" data-a="profil" data-v="autonome" style="--bc:var(--create)"><span class="k">Je suis joueur</span><b>Je suis mon propre coach</b><span>Ton dossier, tes séances, tes warm-up, tes tests et ton profil, pour toi.</span></a></div>
-    <p class="msg" style="margin-top:10px">Tu pourras changer ce choix dans les réglages.</p></section>`;
+      <a class="big" href="#" data-a="profil" data-v="autonome" style="--bc:var(--create)"><span class="k">Je suis joueur</span><b>Je suis mon propre coach</b><span>Ton dossier, tes séances, tes échauffements, tes tests et ton profil, pour toi.</span></a></div>
+    <p class="msg" style="margin-top:10px">Tu pourras changer ce choix dans les réglages.</p></section>
+    <section class="sec"><div class="card"><b>Une présentation à faire ?</b><p class="msg" style="margin:4px 0 10px">Charge la démonstration : 3 joueurs fictifs avec leurs bilans, plans, séances, journal et agenda, retirables d'un geste.</p><button class="ib" data-a="demo">Charger la démonstration</button><p class="msg" id="demom" role="status"></p></div></section>`;
 }
 function vCreerMoi() {
   setAcc("var(--create)"); document.title = "Mon profil · GRÜN";
@@ -991,17 +1413,24 @@ function chercher(q) {
   const pl = PROG().plans.filter(p => hit([p.nom, (G.joueurs.get(p.jid) || {}).nom, arr(p.compets).map(c => c.nom).join(" ")].join(" "), ts)).map(p => ({ h: G.href("prog", "#p/" + p.id), t: p.nom || "Plan", w: [(G.joueurs.get(p.jid) || {}).nom, p.debut ? G.frD(p.debut) + " → " + G.frD(p.fin) : ""].filter(Boolean).join(" · ") }));
   grp("Plans", "var(--create)", pl.slice(0, 15), pl.length);
   const ro = ROUT().routines.filter(r => hit([r.nom, APRES[r.apres], routJids(r).map(id => (G.joueurs.get(id) || {}).nom).join(" "), "echauffement warm-up"].join(" "), ts)).map(r => ({ h: G.href("warmup", "#/r/" + r.id), t: r.nom || "Échauffement", w: [r.duree ? r.duree + " min" : "", r.apres ? "avant " + (APRES[r.apres] || r.apres) : ""].filter(Boolean).join(" · ") }));
-  grp("Warm-up", "var(--create)", ro.slice(0, 15), ro.length);
-  const dv = RD.docs.filter(d => hit([d.c, d.t, d.d, d.k].join(" "), ts)).map(d => ({ s: sc(d.t, ts) + (hit(d.t, ts) ? 20 : 0), h: G.href("veille", "#d/" + d.c), t: d.t, w: d.c + " · " + String(d.p).replace(/^\d+\s*/, "").toLowerCase() + " › " + d.d.replace(/^\d+(\.\d+)*\s/, ""), x: extrait(d.k, ts) }));
+  grp("Échauffements", "var(--create)", ro.slice(0, 15), ro.length);
+  const dv = RD.docs.filter(d => hit([d.c, d.t, d.d, d.k].join(" "), ts)).map(d => ({ s: sc(d.t, ts) + (hit(d.t, ts) ? 20 : 0), h: G.href("veille", "#d/" + d.c), t: d.t, w: String(d.p).replace(/^\d+\s*/, "").toLowerCase() + " › " + d.d.replace(/^\d+(\.\d+)*\s/, ""), x: extrait(d.k, ts) }));
   if (!auto()) grp("Veille", "var(--res)", top(dv, 12), dv.length);
   const tp = G.tests.perso().map(t => ({ id: t.id, n: t.nom, l: "Test perso", dom: t.dom }));
-  const tt = [...RD.tests, ...tp].filter(t => hit([t.id, t.n, t.l].join(" "), ts)).map(t => ({ s: sc(t.n, ts), h: G.href("grilles", "#/test/" + t.id), t: t.n, w: t.id + " · " + t.l }));
+  const tt = [...RD.tests, ...tp].filter(t => hit([t.id, t.n, t.l].join(" "), ts)).map(t => ({ s: sc(t.n, ts), h: G.href("grilles", "#/test/" + t.id), t: t.n, w: t.l }));
   grp("Tests", "var(--tests)", top(tt, 12), tt.length);
-  if (BQ) { const ex = BQ.ex.filter(e => hit([e.id, e.n, e.s, e.li, e.ob, arr(e.L).join(" ")].join(" "), ts)).map(e => ({ s: sc(e.n || "", ts) + (e.perso ? 3 : 0), h: G.href("banque", "#/ex/" + e.id), t: e.n || e.id, w: [e.id, e.perso ? "mon exo" : "", e.s].filter(Boolean).join(" · "), x: e.ob ? extrait(e.ob, ts, 140) : "" }));
+  /* grilles et lignes de grille : la même page que dans Grilles et tests (grilles.html#d/F12_PP, #/ligne/PP6/F/12) */
+  const gr = [];
+  for (const sx of ["F", "G"]) for (let a = 4; a <= 18; a++) for (const d of DOMS) gr.push({ s: 0, h: G.href("grilles", "#d/" + sx + pad(a) + "_" + d), t: (d === "PP" ? "Préparation physique" : d === "GE" ? "Biomécanique du geste" : "Biomécanique du déplacement") + " · " + (sx === "F" ? "fille" : "garçon") + " " + a + " ans", w: "Grille de compétences", hay: "grille grilles " + (sx === "F" ? "fille filles" : "garcon garcons") + " " + a + " ans " + DOMN[d] + " " + (d === "PP" ? "preparation physique" : "biomecanique") });
+  const ng = ts.filter(x => /^\d+$/.test(x)).length ? gr.filter(g => hit(g.hay, ts)) : gr.filter(g => hit(g.hay, ts) && /grille/.test(fold(q)));
+  grp("Grilles", "var(--tests)", ng.slice(0, 12), ng.length);
+  const lg = []; DOMS.forEach(d => LN(d).forEach((n, i) => { if (hit(n, ts)) lg.push({ s: sc(n, ts), h: G.href("grilles", "#/ligne/" + d + (i + 1) + "/"), t: n, w: "Ligne de grille · " + DOMN[d] + " · voir la grille", x: "" }); }));
+  grp("Lignes des grilles", "var(--tests)", top(lg, 8), lg.length);
+  if (BQ) { const ex = BQ.ex.filter(e => hit([e.id, e.n, e.s, e.li, e.ob, arr(e.L).join(" ")].join(" "), ts)).map(e => ({ s: sc(e.n || "", ts) + (e.perso ? 3 : 0), h: G.href("banque", "#/ex/" + e.id), t: e.n || e.id, w: [e.perso ? "mon exo" : "", e.s].filter(Boolean).join(" · "), x: e.ob ? extrait(e.ob, ts, 140) : "" }));
     grp("Exercices", "var(--res)", top(ex, 15), ex.length); }
-  const fa = RD.fams.filter(f => hit([f.c, f.t, f.d].join(" "), ts)).map(f => ({ h: G.href("banque", "#f/" + f.c), t: f.t, w: f.c + " · famille de la banque" }));
+  const fa = RD.fams.filter(f => hit([f.c, f.t, f.d].join(" "), ts)).map(f => ({ h: G.href("banque", "#f/" + f.c), t: f.t, w: "famille de la banque" }));
   grp("Familles de la banque", "var(--res)", fa.slice(0, 10), fa.length);
-  const sa = RD.saisons.filter(s => hit([s.c, s.t, s.d, s.x].join(" "), ts)).map(s => ({ h: G.href("saisons", "#/s/" + s.c), t: s.t, w: s.c + " · " + s.d, x: s.x }));
+  const sa = RD.saisons.filter(s => hit([s.c, s.t, s.d, s.x].join(" "), ts)).map(s => ({ h: G.href("saisons", "#/s/" + s.c), t: s.t, w: s.d, x: s.x }));
   grp("Saisons de référence", "var(--res)", sa.slice(0, 10), sa.length);
   return G2;
 }
@@ -1009,7 +1438,7 @@ function vRecherche(q) {
   setAcc("var(--ink)"); document.title = "Recherche · GRÜN";
   const inp = $("#q"); if (document.activeElement !== inp) inp.value = q;
   const ts = termes(q);
-  if (!ts.length) { main.innerHTML = `<h1>Recherche</h1><p class="lead">Tape au moins 2 lettres : joueur, groupe, séance, plan, warm-up, document de la veille, test, exercice, famille, saison.</p>`; return; }
+  if (!ts.length) { main.innerHTML = `<h1>Recherche</h1><p class="lead">Tape au moins 2 lettres : joueur, groupe, séance, prog, échauffement, document de la veille, test, exercice, famille, saison.</p>`; return; }
   if (!BQ && !BQload) BQload = G.banque.load().then(b => { BQ = b; if (location.hash.startsWith("#/recherche/")) render(true); }).catch(() => { BQ = { ex: [] }; });
   const R = chercher(q), n = R.reduce((a, g) => a + g.n, 0);
   let h = `<h1>Recherche</h1><p class="lead">${n ? n + " résultat" + (n > 1 ? "s" : "") + " pour « " + esc(q) + " »" : "Rien pour « " + esc(q) + " ». Essaie un mot plus court ou un synonyme."}${!BQ ? " · chargement de la banque…" : ""}</p>`;
@@ -1028,7 +1457,9 @@ function vReglages() {
   let h = `<div class="crumb"><a href="#/">${J ? "Mon dossier" : "Accueil"}</a></div><h1>Réglages</h1>`;
   h += `<section class="sec"><h2>Affichage</h2><div class="card"><div class="form"><div class="f"><span class="lab">Thème</span><div class="seg">${[["auto", "Auto"], ["light", "Clair"], ["dark", "Sombre"]].map(([k, t]) => `<button data-a="theme" data-v="${k}" aria-pressed="${(r.theme || "auto") === k}">${t}</button>`).join("")}</div></div>
     <div class="f"><span class="lab">Taille du texte</span><div class="tools"><button class="ib" data-a="fs" data-v="-5" aria-label="Texte plus petit">A−</button><span class="ib" style="border:none;background:none">${r.fs || 100} %</span><button class="ib" data-a="fs" data-v="5" aria-label="Texte plus grand">A+</button></div></div>
-    ${J ? "" : `<div class="f w"><label for="rnc">Nom du coach</label><input id="rnc" data-reg="nomCoach" value="${esc(r.nomCoach || "")}" placeholder="Eliot"></div>`}</div></div></section>`;
+    ${J ? "" : `<div class="f w"><label for="rnc">Nom du coach</label><input id="rnc" data-reg="nomCoach" value="${esc(r.nomCoach || "")}" placeholder="Ton prénom"></div>`}</div></div></section>`;
+  if (!J) h += `<section class="sec"><h2>Mode</h2><div class="card"><div class="seg">${[["0", "Simple"], ["1", "Expert"]].map(([k, t]) => `<button data-a="expert" data-v="${k}" aria-pressed="${(G.expert() ? "1" : "0") === k}">${t}</button>`).join("")}</div>
+    <p class="msg">${G.expert() ? "Expert : tu vois tout, partout (codes des lignes, barèmes détaillés, réglages du moteur, options avancées)." : "Simple : l'essentiel, un gros bouton par écran. Rien n'est perdu : passe en Expert pour tout voir."}</p></div></section>`;
   if (J) {
     const j = G.joueurs.get(G.mode().jid);
     h += `<section class="sec"><h2>Mode joueur</h2><div class="card"><p style="margin-top:0">Cet appareil est en mode joueur${j ? " pour <b>" + esc(j.nom) + "</b>" : ""}.</p>${r.code ? `<p class="msg">Pour revenir au mode coach, tape le code à 4 chiffres du coach.</p><form data-f="pin" class="pin">${[0, 1, 2, 3].map(i => `<input inputmode="numeric" maxlength="1" pattern="[0-9]" aria-label="Chiffre ${i + 1}" data-pin="${i}" autocomplete="off">`).join("")}</form><p class="msg" id="pinm" style="text-align:center"></p>` : `<button class="go" data-a="coach">Revenir au mode coach</button>`}</div></section>`;
@@ -1045,8 +1476,9 @@ function vReglages() {
     <div class="tools"><button class="go acc" data-a="export">Tout sauvegarder</button><label class="ib" for="fimp">Restaurer ou importer…</label><input id="fimp" type="file" accept=".json,application/json" multiple hidden></div>
     <p class="msg" id="impm"></p>
     <p class="msg">La restauration fusionne avec ce qui est déjà là (rien n'est effacé). Elle reconnaît aussi les anciennes sauvegardes des applis séparées : Grilles et tests, Banque d'exercices, Programmation, Séances, Routines, Veille, Référentiel des saisons, Profil radar.</p></div></section>`;
-  h += `<section class="sec"><h2>À propos de GRÜN</h2><div class="card note"><p style="margin-top:0"><b>GRÜN</b> réunit en une seule appli la méthode de préparation physique et de biomécanique du tennis d'Eliot Gruner : la science du joueur de tennis de 4 à 18 ans : préparation physique, biomécanique, physiologie, de la méthode de formation jusqu'à la séance. Notre modèle haute performance : le niveau 3, c'est être dans les temps du haut niveau de sa génération.</p>
-    <p>Quatre pôles : <b>Individualisation</b> (le dossier complet de chaque joueur et de chaque groupe), <b>Create</b> (prog, séance, warm-up construits pour le joueur), <b>Ressources et savoirs</b> (veille, banque d'exercices, référentiel de programmation) et <b>Tests et profilage</b> (grilles, tests, profil radar).</p>
+  if (!auto()) h += demoSection();
+  h += `<section class="sec"><h2>À propos de GRÜN</h2><div class="card note"><p style="margin-top:0"><b>GRÜN</b> réunit en une seule appli la méthode Gruner de préparation physique et de biomécanique du tennis : la science du joueur de tennis de 4 à 18 ans : préparation physique, biomécanique, physiologie, de la méthode de formation jusqu'à la séance. Notre modèle haute performance : le niveau 3, c'est être dans les temps du haut niveau de sa génération.</p>
+    <p>Quatre pôles : <b>Individualisation</b> (le dossier complet de chaque joueur et de chaque groupe), <b>Create</b> (prog, séance, échauffement construits pour le joueur), <b>Ressources et savoirs</b> (veille, banque d'exercices, référentiel de programmation) et <b>Tests et profilage</b> (grilles, tests, profil radar).</p>
     <p class="msg" style="margin-bottom:0">Version ${esc(G.version)} · données sur l'appareil · hors connexion.</p></div></section>`;
   main.innerHTML = h;
 }
@@ -1127,6 +1559,7 @@ main.addEventListener("toggle", e => { const d = e.target; if (d.dataset && d.da
 /* ---------- formulaires ---------- */
 const num = v => v === "" || v == null ? null : +String(v).replace(",", ".");
 const FORMS = {
+  objectif(f, F) { const o = quiet(() => G.objectifs.add({ jid: f.dataset.jid, txt: F.get("txt"), ech: F.get("ech") || "" })); if (o) { toast("Objectif ajouté"); render(true); } },
   joueur(f, F) {
     const nom = (F.get("nom") || "").trim(); if (!nom) return;
     let gid = F.get("gid"); if (gid === "+") { const n = (F.get("ngroupe") || "").trim(); gid = n ? quiet(() => G.groupes.create({ nom: n })).id : ""; }
@@ -1180,7 +1613,32 @@ function relais(vers, jid, gid) {
   const H = { prog: jid ? "#/nouveau/" + jid : gid ? "#/groupe/" + gid : "#/nouveau", seances: gid && !jid ? "#/groupe/" + gid : "#/nouvelle", warmup: "#/nouveau" };
   G.go(vers, H[vers]);
 }
+/* « Construire » : la séance du plan part directement dans Create my session (mêmes informations que depuis Create my prog) */
+const PHS = { G: "G", S: "S", P: "P", C: "C", R: "R", T: "R" };
+const dureeDe = (k, age) => k === "PM" ? (age <= 10 ? 30 : 45) : k === "TC" ? (age <= 7 ? 45 : age <= 10 ? 60 : 90) : (age <= 7 ? 45 : 60);
+function construire(planId, key) {
+  const p = PROG().plans.find(x => x.id === planId), c = CACHE()[planId];
+  if (!p) return;
+  let w = null, s = null;
+  if (c) for (const x of arr(c.W)) { const y = arr(x.ses).find(z => z.key === key); if (y) { w = x; s = y; break; } }
+  if (!w) { G.go("prog", "#p/" + planId); return; }
+  const d1 = typeof w.d1 === "number" ? I(w.d1) : String(w.d1).slice(0, 10), jids = planJids(p), age = +c.age || 12;
+  G.relais.envoyer({ de: "accueil", vers: "seances", retour: "index.html" + location.hash, jid: p.jid || null, gid: grpOk(p.gid) ? p.gid : null, joueurs: jids, n: Math.max(1, jids.length),
+    plan: p.id, planNom: p.nom || "", cle: key, key, semaine: (+w.i || 0) + 1, jour: s.j, date: add(d1, +s.j || 0), type: s.k, typeNom: KN[s.k] || "", theme: s.t || "", nom: String(s.t || "").slice(0, 60), lignes: arr(s.l),
+    phase: w.mi === "Reprise" ? "R0" : (PHS[w.ph] || "G"), ph: w.ph, phaseNom: PHN[w.ph] || "", micro: w.mi, charge: w.c, duree: dureeDe(s.k, age), age, sexe: c.sexe });
+  G.go("seances", "#/nouvelle");
+}
 const ACT = {
+  tab(b) { TABJ.t = b.dataset.v; const y = $(".tabs") ? $(".tabs").getBoundingClientRect().top + scrollY - 70 : 0; render(false); if (scrollY > y) scrollTo(0, Math.max(0, y)); },
+  jour(b) { JOURSEL = b.dataset.d; render(true); },
+  pdfj(b) { if (b.disabled) return; b.disabled = true; const s0 = b.querySelector("span"); if (s0) s0.textContent = "Préparation…";
+    Promise.resolve().then(() => rapportPDF(b.dataset.jid)).catch(e => { console.error(e); toast("Le PDF n'a pas pu être créé"); }).finally(() => { b.disabled = false; if (s0) s0.textContent = "Rapport PDF"; }); },
+  objst(b) { const o = G.objectifs.de(CURJ).find(x => x.id === b.dataset.v); if (!o) return; const nx = { encours: "atteint", atteint: "abandonne", abandonne: "encours" }[o.statut] || "encours"; quiet(() => G.objectifs.update(o.id, { statut: nx })); toast("Objectif : " + G.OBJ_STATUTS[nx].toLowerCase()); render(true); },
+  objdel(b) { if (!confirmer(b, "Sûr ?")) return; quiet(() => G.objectifs.remove(b.dataset.v)); render(true); },
+  pres(b) { const info = { cle: b.dataset.k, date: b.dataset.d, gid: b.dataset.gid, titre: b.dataset.t }, P0 = G.presences.get(info.cle), v = P0 ? P0.p[b.dataset.jid] : undefined;
+    quiet(() => G.presences.set(info, b.dataset.jid, v === true ? false : v === false ? null : true)); render(true); },
+  prtous(b) { const info = { cle: b.dataset.k, date: b.dataset.d, gid: b.dataset.gid, titre: b.dataset.t }; quiet(() => G.groupes.joueurs(info.gid).forEach(j => G.presences.set(info, j.id, true))); toast("Tout le monde est présent"); render(true); },
+  construire(b) { construire(b.dataset.plan, b.dataset.key); },
   relais(b) { let jid = b.dataset.jid, gid = b.dataset.gid; if (b.dataset.src) { const v = $("#" + b.dataset.src).value; if (!v) { toast("Choisis d'abord " + (b.dataset.src === "pg" ? "un groupe." : "un joueur.")); return; } if (b.dataset.src === "pg") gid = v; else jid = v; } relais(b.dataset.vers, jid, gid); },
   bilan(b) { const v = $("#" + b.dataset.src).value; if (!v) { toast("Choisis d'abord un joueur."); return; } G.go("grilles", "#/joueur/" + v); },
   bilangrp(b) { const gid = b.dataset.gid || ($("#" + b.dataset.src) || {}).value; if (!gid) { toast("Choisis d'abord un groupe."); return; } G.relais.envoyer({ de: "accueil", vers: "grilles", retour: "index.html#/g/" + gid, gid, jids: G.groupes.get(gid).jids, type: "bilan-groupe" }); G.go("grilles"); },
@@ -1217,6 +1675,7 @@ const ACT = {
   coach() { G.setMode("coach"); location.hash = "#/"; location.reload(); },
   monwu(b, e) { e.preventDefault(); const jid = G.mode().jid; G.relais.envoyer({ de: "accueil", vers: "warmup", retour: "index.html", jid, mode: "joueur" }); G.go("warmup"); },
   theme(b) { setReg({ theme: b.dataset.v }); applyReg(); render(true); },
+  expert(b) { setReg({ expert: b.dataset.v === "1" }); document.documentElement.classList.toggle("grun-expert", G.expert()); document.documentElement.classList.toggle("grun-simple", !G.expert()); render(true); toast(G.expert() ? "Mode expert : tout est visible" : "Mode simple : l'essentiel"); },
   fs(b) { setReg({ fs: Math.max(85, Math.min(135, (+REG().fs || 100) + +b.dataset.v)) }); applyReg(); render(true); },
   export() { G.telecharger(G.exportAll(), "GRUN_sauvegarde_" + G.today() + ".json"); const m = $("#impm"); if (m) { m.textContent = "Sauvegarde créée : enregistre-la dans Fichiers (iCloud Drive)."; m.className = "msg ok"; } }
 };
@@ -1228,6 +1687,289 @@ main.addEventListener("click", e => {
   const f = ACT[b.dataset.a]; if (f) f(b, e);
 });
 
+/* ================= DÉMONSTRATION (présentations) =================
+   Réglages › « Charger la démonstration » : 3 joueurs fictifs (Ninon 12 ans autour du pic, Malo 15 ans, Ysée 9 ans) + « Groupe démo ».
+   Tout est généré ici, daté par rapport à aujourd'hui, et marqué demo:true (noms « … Démo ») : fiches, mesures, 2 bilans + tests ★,
+   journal de 6 semaines (retours, forme), agenda, blessure, favoris warm-up, historique d'échauffements.
+   Plans : écrits au format Create my prog, puis calculés par le VRAI moteur (prog.html#p/<id> dans un cadre caché → programmation_cache_v1).
+   Séances : construites par le VRAI Create my session (relais → seances.html#/nouvelle dans un cadre caché : trame, exos de la banque,
+   échauffement et retour au calme choisis d'office dans la bibliothèque). Repli au bon format si un module ne répond pas.
+   « Retirer la démonstration » : tout ce qui porte la marque disparaît ; les vrais joueurs ne sont pas touchés. */
+const DEMO_SEM11 = [[0, "PPI"], [0, "TC"], [1, "PM"], [1, "TI"], [2, "TC"], [3, "PPI"], [3, "TI"], [5, "PPC"], [5, "TC"]].map(([j, k]) => ({ j, k }));
+const DEMO_SEM13 = [[0, "PPI"], [0, "TC"], [1, "PM"], [1, "TI"], [2, "TC"], [3, "PPI"], [3, "TI"], [4, "TC"], [5, "PPI"], [5, "TI"]].map(([j, k]) => ({ j, k }));
+/* joueurs : âge en années à aujourd'hui ; mesures [jours avant aujourd'hui, taille, assise, poids, envergure] ;
+   tests ★ de leur grille [ligne, id] ; v1 / v2 = niveaux des 2 bilans (4 mois d'écart) ; les lignes testées reçoivent le niveau calculé du test. */
+const DEMO_J = [
+  { k: "ninon", nom: "Ninon Démo", sexe: "F", ans: 12.53, grille: 12, main: "D", revers: "2", classement: "15/4", croissance: true, zones: ["genou"], dispo: { pp: 3, tennis: 5 },
+    objectifs: "Passer le pic de croissance sans blessure, garder la vitesse et les appuis. Viser le Championnat de Gironde 12 ans en décembre.",
+    notes: "Grandit vite (plus de 8 cm par an) : sauts et volumes plafonnés, genoux surveillés. Très investie, adore les défis chronométrés. Joueuse fictive de démonstration.",
+    mes: [[556, 141.5, 73.6, 32.5, 142], [465, 143.0, 74.3, 33.6, 143.5], [374, 144.8, 75.1, 35.0, 145.5], [283, 146.9, 76.0, 36.4, 147.5], [192, 149.0, 77.0, 38.0, 150], [101, 151.1, 78.0, 39.6, 152.5], [10, 153.2, 79.0, 41.0, 155]],
+    tests: { PP: [[1, "T-PP-046"], [4, "T-PP-011"], [6, "T-PP-018"], [8, "T-PP-025"], [10, "T-PP-133"], [12, "T-PP-040"]], GE: [[4, "T-GE-131"]], DE: [[3, "T-DE-024"], [8, "T-DE-074"]] },
+    v1: { PP: [2, 2.5, 3, 2, 2, 3, 2.5, 3, 2.5, 3, 3, 2], GE: [3, 2.5, 2.5, 2, 3, 2.5, 3, 2.5, 2, 3, 2.5, 2.5, 2], DE: [3, 2.5, 2, 3, 2.5, 3, 2.5, 2, 3, 3, 2.5] },
+    v2: { PP: [3, 2.5, 3, 3, 2.5, 3, 3, 3, 3, 2, 3, 2], GE: [3, 3, 2.5, 3, 3, 2.5, 3, 3, 2.5, 3, 3, 2.5, 2.5], DE: [3, 3, 3, 3, 3, 3, 3, 2, 3, 3, 3] },
+    n1: "Premier bilan · vitesse et coordination au-dessus de l'attendu", n2: "Bilan de suivi · coordination en baisse pendant la poussée de croissance (normal), freinage à travailler",
+    fav: ["EWU-11", "EWU-07"],
+    sem: { 0: [["tennis", "Entraînement tennis", 90, 5]], 1: [["seance", "Séance PP", 60, 5]], 2: [["tennis", "Entraînement tennis", 90, 5]], 4: [["tennis", "Tennis : jeu dirigé", 75, 5]], 5: [["seance", "PP collective du samedi", 60, 4], ["match", "Match libre", 80, 6, 2]] },
+    forme: [4, 4, 4, 4, 4], fj: 5 },
+  { k: "malo", nom: "Malo Démo", sexe: "G", ans: 15.42, grille: 15, main: "G", revers: "2", classement: "15/1", croissance: false, zones: [], dispo: { pp: 3, tennis: 6 },
+    objectifs: "Gagner en puissance au service et en répétition d'efforts. Objectif : tableau final du tournoi jeunes de Mérignac.",
+    notes: "Gaucher, gros service. Entorse de cheville guérie : proprioception gardée dans l'échauffement. Stage intensif de la Toussaint en cours. Joueur fictif de démonstration.",
+    mes: [[190, 170.0, 86.5, 57.0, 174], [10, 173.0, 88.0, 60.0, 177.5]],
+    tests: { PP: [[1, "T-PP-049"], [4, "T-PP-011"], [6, "T-PP-018"], [8, "T-PP-113"], [9, "T-PP-122"]], GE: [[1, "T-GE-010"]], DE: [[3, "T-DE-024"], [9, "T-DE-083"]] },
+    v1: { PP: [2, 3, 3, 3, 3, 3, 3, 2, 2, 3, 3, 2.5], GE: [3, 3, 2.5, 3.5, 3, 2.5, 3, 3, 2.5, 3, 2.5, 3, 2.5], DE: [3, 3, 3, 3, 2.5, 3, 3, 2.5, 2, 3, 3] },
+    v2: { PP: [3, 3, 3.5, 3, 3.5, 4, 3, 3, 2, 3, 3, 3], GE: [4, 3, 3, 3.5, 3, 3, 3, 3, 2.5, 3, 3, 3, 2.5], DE: [3, 3, 4, 3, 3, 3, 3, 3, 3, 3, 3] },
+    n1: "Premier bilan · force et endurance sous l'attendu", n2: "Bilan de suivi · force et VMA au niveau 3, service plus rapide ; répétition de sprints à travailler",
+    fav: ["EWU-10", "EWU-12"],
+    sem: { 0: [["tennis", "Entraînement tennis", 90, 5]], 1: [["seance", "Séance PP : force", 60, 6]], 2: [["tennis", "Entraînement tennis", 90, 6]], 3: [["seance", "Séance PP : vitesse", 60, 6]], 4: [["tennis", "Tennis : thème service-retour", 75, 5]], 5: [["match", "Match d'entraînement", 90, 7]] },
+    forme: [4, 4, 4, 4, 4], fj: 5 },
+  { k: "ysee", nom: "Ysée Démo", sexe: "F", ans: 9.45, grille: 9, main: "D", revers: "2", classement: "30/3", croissance: false, zones: [], dispo: { pp: 1, tennis: 2 },
+    objectifs: "Construire la motricité et les appuis par le jeu ; premiers plateaux de sa catégorie.",
+    notes: "Très vive, apprend vite en jouant. Avant le pic de croissance. Joueuse fictive de démonstration.",
+    mes: [[10, 131.0, 68.0, 27.0, 130]],
+    tests: { PP: [[3, "T-PP-008"], [4, "T-PP-012"], [6, "T-PP-018"], [10, "T-PP-030"], [11, "T-PP-031"]], GE: [[4, "T-GE-130"]], DE: [[4, "T-DE-034"], [6, "T-DE-055"]] },
+    v1: { PP: [2.5, 2, 2, 2, 2.5, 2, 2.5, 3, 2.5, 3, 2, 3], GE: [2, 2, 1.5, 2, 2.5, 2, 2, 2, 1.5, 2, 2, 2, 1.5], DE: [3, 2.5, 2.5, 2, 2.5, 2, 2.5, 2, 2.5, 2, 2.5] },
+    v2: { PP: [3, 2.5, 3, 3, 2.5, 3, 3, 3, 2.5, 3, 3, 3], GE: [2.5, 2, 2, 3, 2.5, 2, 2.5, 2, 2, 2.5, 2, 2, 2], DE: [3, 3, 3, 3, 2.5, 3, 3, 2.5, 3, 2.5, 3] },
+    n1: "Premier bilan · bases motrices en construction", n2: "Bilan de suivi · gros progrès en gainage, saut et vitesse",
+    fav: [],
+    sem: { 0: [["seance", "PP collective : motricité", 45, 4]], 2: [["tennis", "Entraînement tennis", 60, 4]], 5: [["tennis", "Entraînement du samedi", 60, 4]] },
+    forme: [5, 4, 5, 5, 5], fj: 3 }
+];
+const demoJoueurs = () => G.joueurs.all({ archives: true }).filter(j => j && j.demo);
+const demoCharge = () => demoJoueurs().length > 0;
+function demoRnd(seed) { let a = seed >>> 0; return () => { a = (a + 0x6D2B79F5) >>> 0; let t = a; t = Math.imul(t ^ (t >>> 15), t | 1); t ^= t + Math.imul(t ^ (t >>> 7), t | 61); return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; }
+const dow = s => (new Date(P(s)).getUTCDay() + 6) % 7;   // 0 = lundi
+const prochain = (t, jour, min, max) => { for (let i = min; i <= max; i++) if (dow(add(t, i)) === jour) return add(t, i); return add(t, min); };
+const demoMsg = t => { DEMO.msg = t; const m = $("#demom"); if (m) { m.textContent = t; m.className = "msg" + (/prête|retirée|chargée/.test(t) ? " ok" : ""); } };
+const pause = ms => new Promise(r => setTimeout(r, ms));
+async function attendre(test, ms) { const t0 = Date.now(); while (Date.now() - t0 < ms) { let v = null; try { v = test(); } catch (e) {} if (v) return v; await pause(150); } return null; }
+/* cadre caché où tourne un vrai module (même origine : il lit et écrit le même stockage) */
+function cadre(url) {
+  const f = document.createElement("iframe"); f.setAttribute("aria-hidden", "true"); f.tabIndex = -1; f.title = "Calcul de la démonstration";
+  f.style.cssText = "position:fixed;left:-12000px;top:0;width:390px;height:800px;border:0;opacity:0;pointer-events:none"; f.src = url; document.body.appendChild(f); return f;
+}
+function allerDans(f, hash) { try { f.contentWindow.location.hash = hash; } catch (e) {} }
+
+/* valeur plausible d'un test pour viser un niveau (barèmes de data-recherche.json, mêmes que Grilles) */
+function demoTest(tid, sx, age, lv, rnd) {
+  const S = RD.s && RD.s[tid] && RD.s[tid][sx] && RD.s[tid][sx][age]; if (!S) return null;
+  const u = (TM[tid] && TM[tid].u) || "", out = {};
+  for (const k in S) {
+    const [a, b, c] = S[k].map(Number), asc = a < c || (a === c && /grand/.test(RD.sens[tid] || ""));
+    const dec = Math.max(...[a, b, c].map(x => (String(x).split(".")[1] || "").length)), st = 10 ** -dec, p = 0.3 + rnd() * 0.4;
+    const lvOf = x => asc ? (x >= c ? 4 : x >= b ? 3 : x >= a ? 2 : 1) : (x <= c ? 4 : x <= b ? 3 : x <= a ? 2 : 1);
+    let v = asc ? (lv >= 4 ? c + Math.max(st, (c - b) * p * 0.5) : lv === 3 ? b + (c - b) * p : lv === 2 ? a + (b - a) * p : a - Math.max(st, (b - a) * p))
+                : (lv >= 4 ? c - Math.max(st, (b - c) * p * 0.5) : lv === 3 ? b - (b - c) * p : lv === 2 ? a - (a - b) * p : a + Math.max(st, (a - b) * p));
+    const pct = /%/.test(k) || u === "%", rd = x => Math.max(0, pct ? Math.min(100, Number(x.toFixed(dec))) : Number(x.toFixed(dec)));
+    v = rd(v); if (lvOf(v) !== lv) v = rd(lv >= 4 ? c : lv === 3 ? b : lv === 2 ? a : asc ? a - st : a + st);
+    out[k] = /min:s/.test(u) ? Math.floor(v / 60) + ":" + pad(Math.round(v % 60)) : String(v).replace(".", ",");
+  }
+  return out;
+}
+function demoBilan(j, P0, n, date) {
+  const rnd = demoRnd(n * 97 + P0.k.length * 13), V = n === 1 ? P0.v1 : P0.v2, sx = P0.sexe, age = P0.grille;
+  const b = { id: G.uid(), date, age, note: n === 1 ? P0.n1 : P0.n2, v: {}, sel: [], res: {}, auto: {}, demo: true };
+  for (const d of DOMS) {
+    const mk = LN(d).map((_, i) => { const m = RD.gm && RD.gm[sx + pad(age) + "_" + d]; return m ? m[i] === "1" : true; });
+    b.v[d] = LN(d).map((_, i) => mk[i] && V[d][i] != null ? V[d][i] : null);
+    for (const [l, tid] of arr(P0.tests[d])) {
+      const i = l - 1; if (!mk[i]) continue;
+      const cible = Math.max(1, Math.min(4, Math.round(V[d][i] || 2))), r = demoTest(tid, sx, age, cible, rnd); if (!r) continue;
+      const lv = niveauTest(tid, sx, age, r); b.res[tid] = r; b.sel.push(tid); if (lv) { b.v[d][i] = lv; b.auto[d + i] = 1; }
+    }
+  }
+  return b;
+}
+/* journal de 6 semaines : séances de la semaine type du joueur, forme du jour, échauffements */
+function demoJournal(P0, jid, t, faites) {
+  const rnd = demoRnd(P0.k.charCodeAt(0) * 31 + 7), R = [], F = [], H = [], wu = P0.fav[0] && WUN[P0.fav[0]];
+  for (let n = 42; n >= 0; n--) {
+    const d = add(t, -n), wd = dow(d), fs = faites.filter(x => x.date === d);
+    if (n >= 1) for (const [type, titre, duree, rpe, every] of arr(P0.sem[wd])) {
+      if (every && Math.floor(n / 7) % every) continue;
+      if (type === "seance" && fs.length) continue;            // remplacée par la séance faite de Create my session
+      const r = { id: G.uid(), jid, date: d, type, ref: null, titre, duree: Math.max(30, duree + Math.round((rnd() - 0.5) * 3) * 5), rpe: Math.max(2, Math.min(9, rpe + (rnd() < 0.25 ? 1 : rnd() < 0.15 ? -1 : 0))), douleur: null, fait: true, comment: "", demo: true };
+      R.push(r);
+    }
+    for (const s of fs) R.push({ id: s.rid, jid, date: d, type: "seance", ref: s.id, titre: s.nom, duree: s.duree, rpe: s.rpe, douleur: null, fait: true, comment: s.comment, demo: true });
+    if (wu && n >= 1 && n % 7 === 3) { const du = Math.round(wuMinM(wu)) || 12, rp = 3; R.push({ id: G.uid(), jid, date: d, type: "warmup", ref: wu.id, titre: wu.nom, duree: du, rpe: rp, douleur: null, fait: true, comment: "", demo: true }); H.push({ id: G.uid(), who: jid, date: d, duree: du, ref: wu.id, titre: wu.nom, rpe: rp, g: [], demo: true }); }
+    if (n === 0 || (n * 3 + P0.k.length) % 7 < P0.fj) {
+      const f = { id: G.uid(), jid, date: d, douleur: null, comment: "", demo: true };
+      FF.forEach(([k], i) => { f[k] = Math.max(2, Math.min(5, P0.forme[i] + (rnd() < 0.2 ? -1 : rnd() < 0.1 ? 1 : 0))); });
+      F.push(f);
+    }
+  }
+  return { R, F, H };
+}
+const UA = (R, t, a, b) => R.filter(r => { const e = ecart(t, r.date); return e >= a && e < b && r.rpe != null && r.duree; }).reduce((s, r) => s + r.rpe * r.duree, 0);
+
+async function chargerDemo() {
+  if (DEMO.busy) return; if (demoCharge()) { demoMsg("La démonstration est déjà chargée."); return; }
+  DEMO.busy = true; DEMO.ok = true;
+  const t = G.today(), y = new Date(P(t)).getUTCMonth() >= 6 ? new Date(P(t)).getUTCFullYear() : new Date(P(t)).getUTCFullYear() - 1;
+  const handoff0 = localStorage.getItem(G.K.handoff), cadres = [];
+  try {
+    demoMsg("Création des 3 joueurs fictifs et du groupe…");
+    await Promise.all([rdP, wuP]);
+    if (!REG().profil) setReg({ profil: "coach" });
+    /* ---- joueurs ---- */
+    const J = {}, b2 = add(t, -11), b1 = add(b2, -122);
+    const malo = DEMO_J[1], ninon = DEMO_J[0];
+    const vend = prochain(t, 4, 2, 8), sam14 = prochain(t, 5, 14, 20);
+    for (const P0 of DEMO_J) {
+      const j = { id: G.uid(), nom: P0.nom, sexe: P0.sexe, naissance: add(t, -Math.round(P0.ans * 365.25)), groupe: "", notes: P0.notes, objectifs: P0.objectifs,
+        main: P0.main, revers: P0.revers, classement: P0.classement, croissance: P0.croissance, zones: P0.zones.slice(), prio: [], dispo: { ...P0.dispo },
+        mesures: P0.mes.map(([dd, taille, assise, poids, envergure]) => ({ date: add(t, -dd), taille, assise, poids, envergure })),
+        blessures: [], agenda: [], favWarmup: P0.fav.filter(id => !Object.keys(WUN).length || WUN[id]), cree: add(t, -200), maj: t, demo: true };
+      j.bilans = [demoBilan(j, P0, 1, b1), demoBilan(j, P0, 2, b2)]; j.cur = j.bilans[1].id;
+      J[P0.k] = j;
+    }
+    J.malo.blessures.push({ id: G.uid(), zone: "talon", desc: "Entorse de la cheville droite (bénigne)", debut: add(t, -75), fin: add(t, -54), statut: "guerie" });
+    J.malo.agenda.push({ id: G.uid(), date: vend, fin: add(vend, 2), type: "tournoi", titre: "Tournoi jeunes de Mérignac · 15-16 ans" });
+    J.ninon.agenda.push({ id: G.uid(), date: sam14, fin: add(sam14, 1), type: "tournoi", titre: "TMC de Pessac · 12 ans" });
+    J.ysee.agenda.push({ id: G.uid(), date: prochain(t, 5, 20, 26), fin: add(prochain(t, 5, 20, 26), 7), type: "repos", titre: "Vacances en famille" });
+    const gid = G.uid();
+    quiet(() => {
+      const s = G.load(G.K.joueurs, { joueurs: [] }) || {}; s.joueurs = arr(s.joueurs).concat(Object.values(J)); G.save(G.K.joueurs, s);
+      G.groupes.save({ id: gid, nom: "Groupe démo", jids: Object.values(J).map(j => j.id), notes: "Groupe fictif de démonstration (Ninon, Malo, Ysée).", cree: add(t, -200), demo: true });
+      /* assiduité : 6 samedis passés pointés (PP collective du samedi) ; objectifs suivis */
+      const abs = { ninon: [3], malo: [1], ysee: [0, 4] };
+      for (let w = 1; w <= 6; w++) { const d = add(lundi(t), 5 - 7 * w), info = { cle: "demo|" + gid + "|" + d, date: d, gid, titre: "PP collective du samedi" };
+        for (const [k, jj] of Object.entries(J)) G.presences.set(info, jj.id, !(abs[k] || []).includes(w - 1)); }
+      const OBJ = { ninon: [["Réceptions de sauts stables et silencieuses (genoux dans l'axe)", 30, "encours"], ["Championnat de Gironde 12 ans : sortir des poules", 55, "encours"], ["Faire l'échauffement seule avant chaque match", -10, "atteint"]],
+        malo: [["Service : 2e balle liftée à 80 % de réussite", 40, "encours"], ["Répétition de sprints : niveau 3 au prochain bilan", 70, "encours"]],
+        ysee: [["Sauter à la corde 30 fois sans faute", 25, "encours"]] };
+      for (const [k, L] of Object.entries(OBJ)) if (J[k]) L.forEach(([txt, n, st]) => { const o = G.objectifs.add({ jid: J[k].id, txt, ech: add(t, n) }); if (o && st !== "encours") G.objectifs.update(o.id, { statut: st }); });
+    });
+    /* ---- plans (format Create my prog), puis calcul par le vrai moteur ---- */
+    demoMsg("Create my prog calcule les plans…");
+    const plan = (o) => ({ id: G.uid(), jid: null, gid: null, sem: [], compets: [], objs: [], coups: [], bilans: [], over: {}, edits: {}, built: {}, reprise: false, cree: add(t, -45), maj: t, demo: true, ...o });
+    const pN = plan({ jid: J.ninon.id, nom: "Saison " + y + "-" + (y + 1), debut: y + "-09-01", fin: (y + 1) + "-06-30", sem: DEMO_SEM11, reprise: true,
+      compets: [{ nom: "Championnat de Gironde 12 ans", d1: y + "-12-05", d2: y + "-12-13" }, { nom: "Tournoi national jeunes", d1: (y + 1) + "-02-20", d2: (y + 1) + "-02-28" }, { nom: "Championnat régional 12 ans", d1: (y + 1) + "-05-15", d2: (y + 1) + "-05-23" }],
+      objs: [{ nom: "Championnat régional 12 ans", d: (y + 1) + "-05-22" }], coups: [{ nom: "Vacances de Noël", d1: y + "-12-21", d2: (y + 1) + "-01-03" }], bilans: [(y + 1) + "-01-12", (y + 1) + "-06-07"] });
+    const d0 = add(lundi(t), -7);
+    const pM = plan({ jid: J.malo.id, nom: "Bloc 4 semaines · vers Mérignac", debut: d0, fin: add(d0, 27), sem: DEMO_SEM13, objs: [{ nom: "Tournoi jeunes de Mérignac", d: vend }] });
+    quiet(() => { const s = G.load(G.K.prog, {}) || {}; s.profils ||= {}; s.plans = arr(s.plans).concat([pN, pM]); G.save(G.K.prog, s); });
+    G.save(G.K.handoff, null);
+    const fp = cadre("prog.html#p/" + pN.id); cadres.push(fp);
+    const okN = await attendre(() => CACHE()[pN.id], 25000);
+    if (okN) { allerDans(fp, "#p/" + pM.id); await attendre(() => CACHE()[pM.id], 15000); }
+    fp.remove();
+    if (!CACHE()[pN.id] || !CACHE()[pM.id]) DEMO.ok = false;
+    /* ---- séances : construites par le vrai Create my session ---- */
+    const PHS = { G: "G", S: "S", P: "P", C: "C", R: "R", T: "R" };
+    const depuisPlan = (p, j, kinds, a, b, pref) => {
+      const c = CACHE()[p.id]; if (!c) return null; const L = [];
+      for (const w of arr(c.W)) for (const s of arr(w.ses)) { const d = I(+w.d1 + (+s.j || 0) * DAY); if (d >= a && d <= b && kinds.includes(s.k) && s.t && !/^Tournoi/.test(s.t)) L.push({ s, w, d }); }
+      const x = L.sort((u, v) => Math.abs(ecart(u.d, pref)) - Math.abs(ecart(v.d, pref)))[0]; if (!x) return null;
+      return { plan: p.id, planNom: p.nom, cle: x.s.key, key: x.s.key, date: x.d, type: x.s.k, theme: x.s.t, nom: x.s.t.slice(0, 60), lignes: arr(x.s.l), phase: x.w.mi === "Reprise" ? "R0" : (PHS[x.w.ph] || "G"), ph: x.w.ph, micro: x.w.mi, charge: x.w.c, duree: 60 };
+    };
+    const ages = j => ({ age: Math.min(18, ageJ(j.naissance) || 12), sexe: j.sexe, crois: !!j.croissance, zones: arr(j.zones) });
+    const SP = [
+      { j: J.ninon, fait: { rpe: 6, duree: 62, comment: "Bonnes sensations, genou sans douleur." }, h: depuisPlan(pN, J.ninon, ["PPI", "PPC"], add(t, -14), add(t, -3), add(t, -8)) || { date: add(t, -8), type: "PPI", theme: "Vitesse et appuis : démarrages et freinages", lignes: ["PP6", "PP7"], phase: "S", charge: 3, duree: 60 } },
+      { j: J.malo, fait: { rpe: 7, duree: 65, comment: "Dur sur la fin, mais la technique est restée propre." }, h: depuisPlan(pM, J.malo, ["PPI", "PPC"], add(t, -8), add(t, -2), add(t, -4)) || { date: add(t, -4), type: "PPI", theme: "Force du bas du corps", lignes: ["PP1"], phase: "S", charge: 4, duree: 60 } },
+      { j: J.ninon, h: depuisPlan(pN, J.ninon, ["PPI", "PPC"], add(t, 1), add(t, 6), add(t, 2)) || { date: add(t, 2), type: "PPI", theme: "Freinage et changements de direction", lignes: ["PP7", "DE8"], phase: "S", charge: 3, duree: 60 } },
+      { gid, h: { date: prochain(t, 2, 3, 9), type: "PPC", theme: "Coordination, équilibre et réceptions", nom: "Coordination, équilibre et réceptions", lignes: ["PP10", "PP11", "PP4"], phase: "G", charge: 2, duree: 60 } }
+    ];
+    const st0 = G.load(G.K.seances, null), relais0 = st0 ? st0.relais : undefined, avant = new Set(SEANCES().map(s => s.id)), faites = { ninon: [], malo: [] };
+    let fs = null; const crees = [];
+    for (let i = 0; i < SP.length; i++) {
+      const x = SP[i]; demoMsg("Create my session construit les séances (" + (i + 1) + "/" + SP.length + ")…");
+      const who = x.j ? { jid: x.j.id, joueurs: [x.j.id], ...ages(x.j) } : { gid, joueurs: G.groupes.get(gid).jids };
+      G.save(G.K.handoff, null);
+      G.relais.envoyer({ de: "demo", vers: "seances", retour: "index.html", ...who, ...x.h });
+      if (!fs) { fs = cadre("seances.html#/nouvelle"); cadres.push(fs); } else allerDans(fs, "#/nouvelle");
+      const vus = new Set([...avant, ...crees.map(s => s.id)]);
+      let s = await attendre(() => { const S = G.load(G.K.seances, {}) || {}; const n = arr(S.seances).find(z => z && !vus.has(z.id) && z.prerempli); return n && S.relais && S.relais.sid === n.id ? n : null; }, i ? 15000 : 30000);
+      if (!s) { /* repli : séance au bon format, sans contenu calculé */
+        DEMO.ok = false; if (fs) { fs.remove(); fs = null; }
+        s = { id: G.uid(), nom: x.h.nom || x.h.theme, date: x.h.date, type: x.h.type, theme: x.h.theme, lignes: x.h.lignes, phase: x.h.phase, duree: x.h.duree, charge: x.h.charge, joueurs: who.joueurs, gid: who.gid || null,
+          libre: { n: 1, age: 12, niv: 0, zones: [], crois: false, extra: 0, sexe: "G" }, lieu: "court", mat: [], boxes: [], src: { plan: x.h.plan || null, key: x.h.cle || null, de: "demo" }, warmup: null, wmode: "simple", faite: null, cree: t, maj: t };
+        quiet(() => { const S = G.load(G.K.seances, {}) || {}; S.seances = arr(S.seances).concat([s]); G.save(G.K.seances, S); });
+      }
+      crees.push(s); x.s = s;
+    }
+    if (fs) fs.remove();
+    G.relais.vider();
+    /* marque, séances faites, lien avec les plans */
+    quiet(() => {
+      const S = G.load(G.K.seances, {}) || {}; S.seances = arr(S.seances);
+      for (const x of SP) {
+        const s = S.seances.find(z => z.id === x.s.id); if (!s) continue;
+        s.demo = true; s.src = { ...(s.src || {}), de: "demo" };
+        if (x.fait) {
+          const rid = G.uid(), ex = arr(s.boxes).flatMap(b => arr(b && b.ex).filter(Boolean).map(e => e.id)).filter(Boolean);
+          s.faite = { date: s.date, duree: x.fait.duree, rpe: x.fait.rpe, fait: true, ex, retours: [rid], n: 1 }; s.statut = "faite"; s.maj = s.date;
+          faites[x.j === J.ninon ? "ninon" : "malo"].push({ id: s.id, rid, date: s.date, nom: s.nom || s.theme || "Séance", duree: x.fait.duree, rpe: x.fait.rpe, comment: x.fait.comment });
+        }
+      }
+      if (relais0 === undefined) delete S.relais; else S.relais = relais0;
+      G.save(G.K.seances, S);
+      const Pg = G.load(G.K.prog, {}) || {}; for (const x of SP) if (x.h.plan && x.h.cle) { const p = arr(Pg.plans).find(z => z.id === x.h.plan); if (p) { p.built ||= {}; p.built[x.h.cle] = x.s.id; } } G.save(G.K.prog, Pg);
+    });
+    /* ---- journal (6 semaines), forme, historique d'échauffement ---- */
+    demoMsg("Journal de 6 semaines, forme du jour et charge…");
+    const Jr = G.load(G.K.journal, { retours: [], forme: [] }) || {}; Jr.retours = arr(Jr.retours); Jr.forme = arr(Jr.forme);
+    const Rt = G.load(G.K.routines, {}) || {}; Rt.hist = arr(Rt.hist);
+    for (const P0 of DEMO_J) {
+      const j = J[P0.k], o = demoJournal(P0, j.id, t, faites[P0.k] || []);
+      if (P0.k === "ninon") { const r = o.R.filter(z => z.type === "tennis" && ecart(t, z.date) >= 10).sort((a, b) => a.date < b.date ? 1 : -1)[0]; if (r) { r.douleur = { zone: "genou", int: 2 }; r.comment = "Un peu mal sous la rotule en fin de séance, rien le lendemain."; } }
+      if (P0.k === "malo") {   /* stage de la Toussaint : la charge des 7 derniers jours monte (ratio visé ≈ 1,38) */
+        const A = UA(o.R, t, 0, 7), S28 = UA(o.R, t, 0, 28), r = 1.38, X = (r * S28 / 4 - A) / (1 - r / 4);
+        if (X > 0) { const k = Math.max(1, Math.ceil(X / (6 * 110))), du = Math.max(40, Math.min(120, Math.round(X / (k * 6) / 5) * 5));
+          for (let i = 0; i < k; i++) o.R.push({ id: G.uid(), jid: j.id, date: add(t, -(1 + (i % 6))), type: "tennis", ref: null, titre: "Stage de la Toussaint : 2e séance du jour", duree: du, rpe: 6, douleur: null, fait: true, comment: i ? "" : "Deux séances par jour cette semaine, jambes lourdes.", demo: true }); }
+        o.F.filter(f => ecart(t, f.date) <= 4).forEach(f => { f.fatigue = 3; f.courbatures = 2; f.sommeil = 3; });
+      }
+      Jr.retours.push(...o.R); Jr.forme.push(...o.F); Rt.hist.push(...o.H);
+    }
+    quiet(() => { G.save(G.K.journal, Jr); G.save(G.K.routines, Rt); });
+    demoMsg(DEMO.ok ? "La démonstration est prête." : "La démonstration est chargée (un module n'a pas répondu à temps : son contenu est simplifié).");
+  } catch (e) {
+    console.error("démonstration", e); DEMO.ok = false; demoMsg("Le chargement a échoué : « Retirer la démonstration » nettoie ce qui a été ajouté.");
+  } finally {
+    cadres.forEach(f => f.remove());
+    try { if (handoff0 == null) localStorage.removeItem(G.K.handoff); else localStorage.setItem(G.K.handoff, handoff0); } catch (e) {}
+    DEMO.busy = false;
+  }
+  render(true);
+  if (DEMO.ok) { toast("Démonstration chargée"); location.hash = "#/"; }
+}
+function retirerDemo() {
+  DEMO.busy = true; let n = 0;
+  try {
+    quiet(() => {
+      const js = demoJoueurs(), ids = new Set(js.map(j => j.id)); n = js.length;
+      js.forEach(j => G.joueurs.remove(j.id));
+      G.groupes.all().filter(g => g.demo).forEach(g => G.groupes.remove(g.id));
+      const Pg = G.load(G.K.prog, null), pids = new Set();
+      if (Pg && Array.isArray(Pg.plans)) { Pg.plans.forEach(p => { if (p && (p.demo || ids.has(p.jid))) pids.add(p.id); }); Pg.plans = Pg.plans.filter(p => !pids.has(p.id)); G.save(G.K.prog, Pg); }
+      const C = G.load(G.K.progCache, null); if (C && typeof C === "object") { for (const k in C) if (pids.has(k)) delete C[k]; G.save(G.K.progCache, C); }
+      const S = G.load(G.K.seances, null);
+      if (S && Array.isArray(S.seances)) { const sids = new Set(S.seances.filter(s => s && (s.demo || (s.src && s.src.de === "demo"))).map(s => s.id)); S.seances = S.seances.filter(s => !sids.has(s.id));
+        if (S.run && sids.has(S.run.sid)) S.run = null; if (S.relais && sids.has(S.relais.sid)) delete S.relais; if (sids.has(S.wuSid)) S.wuSid = null; G.save(G.K.seances, S); }
+      const Jr = G.load(G.K.journal, null); if (Jr) { Jr.retours = arr(Jr.retours).filter(r => !r.demo && !ids.has(r.jid)); Jr.forme = arr(Jr.forme).filter(r => !r.demo && !ids.has(r.jid)); G.save(G.K.journal, Jr); }
+      const Rt = G.load(G.K.routines, null); if (Rt && Array.isArray(Rt.hist)) { Rt.hist = Rt.hist.filter(h => !h.demo && !ids.has(h.who)); G.save(G.K.routines, Rt); }
+      const H = G.relais.lire(); if (H && (ids.has(H.jid) || H.de === "demo")) G.save(G.K.handoff, null);
+    });
+  } finally { DEMO.busy = false; }
+  return n;
+}
+function demoSection() {
+  const js = demoJoueurs(), g = G.groupes.all().find(x => x.demo);
+  const body = js.length
+    ? `<p style="margin-top:0">La démonstration est chargée : ${js.map(j => `<a href="#/j/${esc(j.id)}">${esc(j.nom)}</a> (${ageTxt(j)})`).join(", ")}${g ? ` et <a href="#/g/${esc(g.id)}">${esc(g.nom)}</a>` : ""}.</p>
+      <div class="tools"><a class="go acc" href="#/">Voir l'accueil</a><button class="ib" data-a="demore">Remettre aux dates d'aujourd'hui</button><button class="ib dang" data-a="demoff">Retirer la démonstration</button></div>
+      <p class="msg">Retirer efface tout ce qui porte la mention « Démo » (joueurs, groupe, bilans, plans, séances, journal, agenda, favoris). Tes vrais joueurs ne sont pas touchés.</p>`
+    : `<p class="msg" style="margin-top:0">Pour une présentation : 3 joueurs fictifs (une fille de 12 ans en plein pic de croissance, un garçon de 15 ans, une fille de 9 ans) et leur groupe, avec mesures et âge biologique, 2 bilans et tests, plans calculés par Create my prog, séances construites par Create my session, 6 semaines de journal, agenda, blessure et échauffements favoris.</p>
+      <div class="card note" style="margin:8px 0"><b>Avant de charger :</b> ces données <b>s'ajoutent</b> aux tiennes, rien n'est effacé. Chaque nom porte la mention « Démo », et « Retirer la démonstration » les supprime toutes proprement, sans toucher à tes vrais joueurs. Compte une quinzaine de secondes : les modules calculent les plans et les séances.</div>
+      <div class="tools"><button class="go acc" data-a="demo"${DEMO.busy ? " disabled" : ""}>Charger la démonstration</button></div>`;
+  return `<section class="sec" id="demo"><h2>Démonstration</h2><div class="card">${body}<p class="msg" id="demom" role="status">${esc(DEMO.msg)}</p></div></section>`;
+}
+Object.assign(ACT, {
+  demo(b) { if (DEMO.busy) return; b.disabled = true; chargerDemo(); },
+  demoff(b) { if (DEMO.busy || !confirmer(b, "Toucher encore pour tout retirer")) return; const n = retirerDemo(); DEMO.msg = "Démonstration retirée (" + n + " joueurs fictifs et leur groupe)."; render(true); toast("Démonstration retirée"); },
+  async demore(b) { if (DEMO.busy || !confirmer(b, "Toucher encore : recharger avec les dates du jour")) return; retirerDemo(); DEMO.msg = ""; render(true); await chargerDemo(); }
+});
+
 /* ---------- démarrage ---------- */
 function splash() {
   const s = $("#splash"); if (!s) return; let vu = false;
@@ -1237,9 +1979,12 @@ function splash() {
 }
 applyReg(); splash();
 G.nav(G.isJoueur() ? "acc" : "acc");
-rdP.then(() => {
+Promise.all([rdP, wuP]).then(() => {
   render(false);
-  const rr = G.relais.resultat("accueil"); if (rr) { const r = rr.res || {}; toast("De retour : " + (r.titre || r.nom || "c'est enregistré")); }
+  const rr = G.relais.resultat("accueil"); if (rr) { const r = rr.res || {};
+    /* séance construite depuis l'accueil : rattachée à son plan (badge ✓ dans Create my prog) */
+    const sid = typeof r === "string" ? r : (r.id || r.seance || r.sid); if (rr.plan && (rr.cle || rr.key) && sid && !r.annule) quiet(() => { const Pg = G.load(G.K.prog, {}) || {}; const pp = arr(Pg.plans).find(x => x.id === rr.plan); if (pp) { pp.built ||= {}; pp.built[rr.cle || rr.key] = sid; G.save(G.K.prog, Pg); } });
+    toast("De retour : " + (r.titre || r.nom || "c'est enregistré")); render(true); }
 });
 })();
 

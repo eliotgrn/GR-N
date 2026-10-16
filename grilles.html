@@ -24,6 +24,44 @@ body.grun-has-nav{padding-bottom:calc(var(--nav-h) + env(safe-area-inset-bottom,
 .grun-relais a,.grun-relais button{color:#fff;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.35);border-radius:8px;
   min-height:36px;padding:0 12px;display:inline-flex;align-items:center;text-decoration:none;font:inherit;white-space:nowrap}
 .grun-mod #back{visibility:visible!important}
+/* mode simple / mode expert (GRUN.expert) : « xp » = réservé au mode expert ; « xs » = seulement en mode simple */
+html.grun-simple .xp{display:none!important}
+html.grun-expert .xs{display:none!important}
+/* « Plus d'options » : réglages fins et actions rares, repliés (même aspect dans tous les modules) */
+details.grun-plus{margin-top:14px;border:1px solid var(--line,#D9DDE3);border-radius:12px;background:var(--panel,#fff)}
+details.grun-plus>summary{list-style:none;cursor:pointer;min-height:46px;display:flex;align-items:center;gap:8px;padding:0 14px;font:600 15px/1.2 var(--ui,system-ui,sans-serif);color:var(--mute,#5D6675)}
+details.grun-plus>summary::-webkit-details-marker{display:none}
+details.grun-plus>summary::before{content:"+";font-weight:700;width:1em;color:var(--mute,#5D6675)}
+details.grun-plus[open]>summary::before{content:"–"}
+details.grun-plus>.grun-plusb{padding:0 14px 14px;display:flex;flex-direction:column;gap:10px}
+/* Grilles : bilan en cours + un gros bouton « Créer un nouveau bilan » */
+.bil1{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;margin-top:14px;padding:12px 14px;border:1px solid var(--line,#D9DDE3);border-left:4px solid var(--acc,#0F766E);border-radius:12px;background:var(--panel,#fff)}
+.bil1 b{display:block;font-size:1.1rem}
+.bil1 small{color:var(--mute,#5D6675)}
+.go.big{min-height:46px;padding:0 18px;font-size:1.02rem}
+/* listes : colonne « code » masquée en mode simple (classe hasx sur la ligne, cx sur le code) */
+html.grun-simple .hasx{grid-template-columns:minmax(0,1fr)!important}
+html.grun-simple .cx{display:none!important}
+/* Grilles : « L'essentiel » en cartes sur téléphone ; toucher une ligne ouvre son détail */
+#doc table.cartes td.lgo{cursor:pointer;color:var(--acc,#0F766E);font-weight:700}
+@media (max-width:640px){
+  #doc table.cartes,#doc table.cartes tbody,#doc table.cartes tr,#doc table.cartes td{display:block;width:auto!important}
+  #doc table.cartes thead{display:none}
+  #doc table.cartes tr{padding:10px 12px;border-bottom:1px solid var(--line,#D9DDE3)}
+  #doc table.cartes td{border:none!important;padding:2px 0!important}
+  #doc table.cartes td.lgo{font-size:1.05em}
+  #doc table.cartes td.lgo::after{content:" ›"}
+  #doc table.cartes td:nth-child(3)::before{content:"Test ★ : ";font-weight:600;color:var(--mute,#5D6675)}
+}
+/* lignes de grille affichées en clair : les noms longs passent à la ligne */
+.lc{white-space:normal!important;overflow-wrap:anywhere;display:inline-block;max-width:100%}
+.boxh>div{min-width:0;flex:1 1 auto}
+/* bouton PDF commun (même aspect et même libellé « … PDF » dans tous les modules) : <button class="grun-pdf"><svg/><span>Rapport PDF</span></button> */
+.grun-pdf{display:inline-flex;align-items:center;gap:7px;min-height:42px;padding:0 14px;border-radius:10px;border:1.5px solid var(--grun,#0F766E);background:var(--panel,#fff);color:var(--grun,#0F766E);font:700 15px/1 var(--ui,system-ui,sans-serif);cursor:pointer;white-space:nowrap;text-decoration:none}
+.grun-pdf svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.grun-pdf:disabled{opacity:.6}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .grun-pdf{color:#2DD4BF;border-color:#2DD4BF}}
+:root[data-theme="dark"] .grun-pdf{color:#2DD4BF;border-color:#2DD4BF}
 </style>
 <script src="grun.js?v=1"></script>
 <meta name="grun-module" content="grilles"></head><body><title>Grilles et tests</title>
@@ -144,6 +182,19 @@ table.jt tr.off td{color:var(--mute)}
 .lvsel.n1,.lvb.n1{background:var(--n1s);color:var(--n1);border-color:var(--n1)} .lvsel.n2,.lvb.n2{background:var(--n2s);color:var(--n2);border-color:var(--n2)}
 .lvsel.n3,.lvb.n3{background:var(--n3s);color:var(--n3);border-color:var(--n3)} .lvsel.n4,.lvb.n4{background:var(--n4s);color:var(--n4);border-color:var(--n4)}
 @media(max-width:600px){.lvsel{max-width:104px;font-size:13px} table.jt th,table.jt td{padding:7px 5px} table.jt{font-size:13.5px} .jgrid{padding:0 8px 10px}}
+.terr .chips{display:flex;gap:6px;overflow-x:auto;padding:10px 0;-webkit-overflow-scrolling:touch}
+.chip{flex:0 0 auto;min-height:40px;padding:0 14px;border-radius:20px;border:1px solid var(--line);background:var(--panel);font-weight:600;color:var(--ink)}
+.chip.ok{border-color:var(--n3);color:var(--n3)} .chip.on{background:var(--pc,var(--ink));border-color:var(--pc,var(--ink));color:var(--bg)}
+.tcard{border:1px solid var(--line);border-left:5px solid var(--pc,var(--line));border-radius:12px;background:var(--panel);padding:16px;margin-top:4px}
+.tname{font-size:26px;font-weight:700;line-height:1.15}
+.tin{display:flex;flex-wrap:wrap;gap:12px;margin:14px 0 6px}.tin .ms{display:flex;flex-direction:column;gap:4px;font-weight:600;flex:1;min-width:140px}
+.inp.tbig{font-size:30px;min-height:64px;text-align:center;font-weight:700;width:100%}
+.mess .ess{display:flex;gap:6px;flex-wrap:wrap}.mess .ess .inp{width:84px}.mess .ess .tbig{width:100px;flex:1}.mres{font-size:15px}
+.tbtn{min-height:56px;font-size:17px;padding:0 14px;flex:1;white-space:nowrap}.ttool{align-items:center;margin:8px 0}.tchr{font-size:28px;font-weight:700;font-variant-numeric:tabular-nums;min-width:120px;text-align:center}
+.tres{font-size:18px;margin:12px 0 8px}.tnav{margin-top:14px;position:sticky;bottom:calc(var(--nav-h,64px) + env(safe-area-inset-bottom) + 6px);background:var(--bg);padding:6px 0}
+.pos4{display:grid;grid-template-columns:repeat(4,1fr);gap:4px}.pos4 .p{border-radius:8px;padding:7px 8px;font-size:12.5px;opacity:.55;display:flex;flex-direction:column;gap:2px}
+.pos4 .p.on{opacity:1;outline:2.5px solid currentColor}.pos4 .n1{background:var(--n1s);color:var(--n1)}.pos4 .n2{background:var(--n2s);color:var(--n2)}.pos4 .n3{background:var(--n3s);color:var(--n3)}.pos4 .n4{background:var(--n4s);color:var(--n4)}
+@media(max-width:560px){.pos4{grid-template-columns:1fr 1fr}}
 .lvb{display:inline-block;min-width:34px;padding:3px 8px;border-radius:7px;border:1px solid;font-weight:700;text-align:center}
 .pk{padding:10px 14px;border-top:1px solid var(--line);display:flex;flex-direction:column;gap:6px;font-size:14.5px}
 .pk:first-child{border-top:none}
@@ -192,7 +243,7 @@ table.jt tr.off td{color:var(--mute)}
 .chartcol{display:flex;flex-direction:column;gap:6px;min-width:0}
 .charthead{display:flex;flex-wrap:wrap;gap:4px 14px;align-items:baseline;justify-content:space-between}
 .rcode{font-family:var(--display);font-size:20px;color:var(--pc)}
-.rbig{width:100%;max-width:660px;height:auto;margin:0 auto;display:block;touch-action:none;user-select:none;-webkit-user-select:none;cursor:crosshair}
+.rbig{width:100%;max-width:660px;height:auto;margin:0 auto;display:block;touch-action:manipulation;user-select:none;-webkit-user-select:none;cursor:crosshair}
 .rmini{width:100%;max-width:360px;height:auto;display:block;margin:0 auto}
 .legend{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:12px;color:var(--mute);justify-content:center}
 .legend span{display:inline-flex;align-items:center;gap:5px}
@@ -260,7 +311,7 @@ table.bed .bi{width:74px;font-size:16px;text-align:center;padding:0 4px}
 .pimg{width:100%;border-radius:8px;border:1px solid var(--line)}
 .att.mine{background:var(--n2s);border-color:var(--n2)} .att.mine b{color:var(--n2)}
 table.fs td.blank{min-width:90px;height:34px}
-@media print{.top,.noprint,#grun-nav,.tools{display:none!important} body{background:#fff} main{padding:0} .fsheet,.ov,.axc{break-inside:avoid}}
+@media print{.top,.noprint,#grun-nav,.tools,.dochead .acts,.pn,.notes,#toc{display:none!important} body{background:#fff} main{padding:0} .fsheet,.ov,.axc{break-inside:avoid}}
 </style>
 
 <header class="top"><div class="topin">
@@ -301,15 +352,41 @@ async function boot(){
   if(window.GRUN) GRUN.nav("tests");
   try{
     const r = await fetch("data-grilles.json"); const d = await r.json();
-    DOCS = d.docs; LIGNES = d.lignes||{}; X = d.x; DOCS.forEach((x,i)=>{ x.i=i; BY[x.c]=x; });
+    DOCS = d.docs; LIGNES = d.lignes||{}; X = d.x; DOCS.forEach((x,i)=>{ x.i=i; BY[x.c]=x; }); PF = d.pf || null; PH = d.ph || {};
   }catch(e){ $("#main").innerHTML = '<div class="empty">Les grilles n\'ont pas pu se charger. Vérifie la connexion pour la première ouverture, puis recharge la page.</div>'; return; }
   route();
-  setTimeout(buildIndex, 50);
+  setTimeout(precharger, 1500);
+  $("#q").addEventListener("focus", ()=>{ tousPaquets().catch(()=>{}); }, {once:true});
 }
-function buildIndex(){
-  if(NORM) return;
-  const tmp = document.createElement("div");
-  NORM = DOCS.map(x => { tmp.innerHTML = x.h.replace(/></g,"> <"); const t = (x.t+" \n "+tmp.textContent).replace(/\s+/g," "); return {raw:t, f:fold(t)}; });
+/* ---------- chargement rapide : index léger au démarrage (titres, lignes, barèmes, données des joueurs), texte des grilles et des tests par paquets (data-grilles-<n>.json) chargés à la demande ---------- */
+let PF = null, PH = {}; const PAQ = {};
+function paquet(k){
+  if(!PF || !k) return Promise.resolve();
+  return PAQ[k] || (PAQ[k] = fetch(PF+k+".json"+(PH[k]?"?v="+PH[k]:"")).then(r=>{ if(!r.ok) throw new Error("paquet "+k); return r.json(); })
+    .then(o=>{ for(const c in o) if(BY[c]) BY[c].h = o[c]; }).catch(e=>{ delete PAQ[k]; throw e; }));
+}
+function tousPaquets(){ return Promise.all([...new Set(DOCS.filter(x=>x.h==null).map(x=>x.k))].map(paquet)); }
+/* en arrière-plan, un paquet à la fois : la recherche tapée ensuite est immédiate */
+function precharger(){ const k = (DOCS.find(x=>x.h==null)||{}).k; if(!k) return; paquet(k).then(()=>setTimeout(precharger, 120), ()=>{}); }
+const ENT = {amp:"&", lt:"<", gt:">", quot:'"', apos:"'", nbsp:" "};
+const texte = h => h.replace(/></g,"> <").replace(/<[^>]*>/g,"").replace(/&(#x[0-9a-f]+|#\d+|[a-z]+);/gi, (m,e)=> e[0]==="#" ? String.fromCodePoint(e[1]==="x"||e[1]==="X" ? parseInt(e.slice(2),16) : +e.slice(1)) : (ENT[e.toLowerCase()] ?? m));
+/* recherche plein texte directement dans le HTML des paquets (sans index à construire) : expression insensible à la casse et aux accents, occurrences hors balises */
+const ACC = {a:"aàáâãäå", e:"eèéêë", i:"iìíîï", o:"oòóôõö", u:"uùúûü", c:"cç", n:"nñ", y:"yýÿ"};
+const motif = t => new RegExp([...t].map(ch => ACC[ch] ? "["+ACC[ch]+"]" : ch.replace(/[.*+?^${}()|[\]\\\/-]/g, "\\$&")).join(""), "gi");
+function compte(s, re, html){ re.lastIndex = 0; let c = 0, first = -1, m;
+  while(c < 60 && (m = re.exec(s))){ const i = m.index;
+    if(html && s.lastIndexOf("<", i) > s.lastIndexOf(">", i)){ const g = s.indexOf(">", i); re.lastIndex = g < 0 ? s.length : g + 1; continue; }
+    if(first < 0) first = i; c++; }
+  return [c, first]; }
+function extrait(x, first, ts){ const h = x.h;
+  if(first < 0) return texte(h.slice(0, 1500).replace(/<[^>]*$/, "")).replace(/\s+/g," ").trim().slice(0, 280) + "…";
+  const a = Math.max(0, first - 700), b = first + 1200; let s = h.slice(a, b);
+  if(a > 0){ const g = s.indexOf(">"), l = s.indexOf("<"); if(g >= 0 && (l < 0 || g < l)) s = s.slice(g + 1); }
+  s = s.replace(/<[^>]*$/, "");
+  const t = texte(s).replace(/\s+/g," "), f = fold(t); let p = -1;
+  for(const w of ts){ const q = f.indexOf(w); if(q >= 0 && (p < 0 || q < p)) p = q; }
+  if(p < 0) p = 0; const u = Math.max(0, p - 90), v = Math.min(t.length, p + 190);
+  return (a > 0 || u > 0 ? "…" : "") + t.slice(u, v) + (v < t.length || b < h.length ? "…" : "");
 }
 
 /* ---------- routage ---------- */
@@ -323,7 +400,7 @@ function route(){
   if(h.startsWith("/joueur/")) return showJoueur(h.split("/")[2]);
   if(h.startsWith("/test/")){ const [,, id, hint] = h.split("/"); return isPerso(id) ? showTestPerso(id, hint) : BY[id] ? showDoc(id, hint) : showMesTests(); }
   if(h.startsWith("/ligne/")){ const [,, L, sx, a] = h.split("/"); const k = /^(PP|GE|DE)(\d+)$/.exec(L||""); const age = clampA(+a||+P.age||10);
-    if(k) return showDoc(`${sx==="F"?"F":"G"}${pad2(age)}_${k[1]}`, "l"+k[2]); return showHome(); }
+    if(k) return showDoc(`${sx==="F"||(!sx&&P.sx==="F")?"F":"G"}${pad2(age)}_${k[1]}`, "l"+k[2]); return showHome(); }
   if(h==="/mestests") return showMesTests();
   if(h==="/tests") return showPorte("3");
   if(h==="/test-nouveau") return showTestEdit(null, q);
@@ -359,14 +436,14 @@ function showHome(){
     <button class="go" id="qgo" type="button">Ouvrir</button></div></div>`;
   const nJ = GR.joueurs.all().length, nT = tc().per.length;
   if(RO()) html += `<div class="sec"><a class="door" href="#/joueur/${GR.mode().jid}" style="--pc:var(--p5)"><b>Mon dossier</b><span>Ton profil radar, tes résultats de tests et ta progression.</span></a></div>`;
-  html += `<div class="sec"><h2>Les portes</h2><div class="doors">${Object.entries(PORTES).map(([p,o])=>`<a class="door" href="#p/${p}" style="--pc:var(${o.c})"><b>${p} · ${o.n}</b><span>${o.s}</span><small>${count(p)} documents${p==="3"&&nT?` · ${nT} test${nT>1?"s":""} perso`:""}</small></a>`).join("")}${RO()?"":`<a class="door" href="#j" style="--pc:var(--p5)"><b>5 · Joueurs</b><span>Dossier de chaque joueur : profil radar, grilles remplies, tests et résultats, progression, croissance. Bilans de groupe.</span><small>${nJ} joueur${nJ>1?"s":""}</small></a>`}</div></div>`;
+  html += `<div class="sec"><h2>Les portes</h2><div class="doors">${Object.entries(PORTES).map(([p,o])=>`<a class="door" href="#p/${p}" style="--pc:var(${o.c})"><b>${o.n}</b><span>${o.s}</span><small>${count(p)} documents${p==="3"&&nT?` · ${nT} test${nT>1?"s":""} perso`:""}</small></a>`).join("")}${RO()?"":`<a class="door" href="#j" style="--pc:var(--p5)"><b>Joueurs</b><span>Dossier de chaque joueur : profil radar, grilles remplies, tests et résultats, progression, croissance. Bilans de groupe.</span><small>${nJ} joueur${nJ>1?"s":""}</small></a>`}</div></div>`;
   const favs = P.fav.filter(c=>BY[c]), recs = P.rec.filter(c=>BY[c]).slice(0,8);
   html += `<div class="sec"><h2>Favoris</h2>${favs.length ? listHTML(favs.map(c=>BY[c]), true) : '<div class="empty">Touche ☆ en haut d\'une grille ou d\'un test pour le retrouver ici.</div>'}</div>`;
   if(recs.length) html += `<div class="sec"><h2>Consultés récemment</h2>${listHTML(recs.map(c=>BY[c]), true)}</div>`;
-  html += `<div class="sec"><h2>Mes données</h2><div class="tools">
+  html += `<details class="grun-plus"><summary>Plus d'options : sauvegarde, taille du texte</summary><div class="grun-plusb"><div class="tools">
      ${RO()?"":`<button class="ib" id="bsave" type="button">Sauvegarder tout GRÜN</button>
      <label class="ib" for="frest">Restaurer</label><input id="frest" type="file" accept=".json,application/json" hidden>`}
-     <button class="ib" id="fsm" type="button" aria-label="Texte plus petit">A−</button><button class="ib" id="fsp" type="button" aria-label="Texte plus grand">A+</button></div><p class="msg" id="dmsg">${RO()?"Tes données sont gardées sur cet appareil.":"Une seule sauvegarde pour toute l'appli (joueurs, groupes, tests, favoris, notes…) ; la restauration accepte aussi les anciens fichiers Grilles et Profil radar."}</p></div>`;
+     <button class="ib" id="fsm" type="button" aria-label="Texte plus petit">A−</button><button class="ib" id="fsp" type="button" aria-label="Texte plus grand">A+</button></div><p class="msg" id="dmsg">${RO()?"Tes données sont gardées sur cet appareil.":"Une seule sauvegarde pour toute l'appli (joueurs, groupes, tests, favoris, notes…) ; la restauration accepte aussi les anciens fichiers Grilles et Profil radar."}</p></div></details>`;
   m.innerHTML = html;
   const qs=$("#qs"), qa=$("#qa"), qd=$("#qd"), ql=$("#ql");
   qs.value=P.sx; qa.value=P.age; qd.value=P.dom;
@@ -378,9 +455,9 @@ function showHome(){
 }
 function setFs(d){ P.fs=Math.max(14,Math.min(24,P.fs+d)); save(); document.documentElement.style.setProperty("--fs",P.fs+"px"); const m=$("#dmsg"); if(m) m.textContent="Taille du texte des documents : "+P.fs+" px."; }
 function listHTML(xs, withPath){
-  return `<div class="list">${xs.map(x=>`<a class="li" href="#d/${x.c}"><span class="code">${x.c}</span><span class="tt">${esc(x.t)}${x.p==="3"&&tov(x.c)?' <span class="bdg mod">modifié</span>':""}${withPath?`<small>${esc(x.ch)}</small>`:""}</span></a>`).join("")}</div>`;
+  return `<div class="list">${xs.map(x=>`<a class="li hasx" href="#d/${x.c}"><span class="code cx">${x.c}</span><span class="tt">${esc(x.t)}${x.p==="3"&&tov(x.c)?' <span class="bdg mod">modifié</span>':""}${withPath?`<small>${esc(x.ch)}</small>`:""}</span></a>`).join("")}</div>`;
 }
-function persoListHTML(ts){ return `<div class="list">${ts.map(t=>`<a class="li" href="#/test/${t.id}"><span class="code">${t.id.replace("T-MOI-","MOI ")}</span><span class="tt">${t.prio?"★ ":""}${esc(t.nom)} <span class="bdg">mon test</span><small>${DOMN[t.dom]||""} · ligne${(t.lignes||[]).length>1?"s":""} ${(t.lignes||[]).join(", ")||"–"}</small></span></a>`).join("")}</div>`; }
+function persoListHTML(ts){ return `<div class="list">${ts.map(t=>`<a class="li hasx" href="#/test/${t.id}"><span class="code cx">${t.id.replace("T-MOI-","MOI ")}</span><span class="tt">${t.prio?"★ ":""}${esc(t.nom)} <span class="bdg">mon test</span><small>${DOMN[t.dom]||""} · ${(t.lignes||[]).map(n=>esc((LIGNES[t.dom]||[])[n-1]||("ligne "+n))).join(", ")||"–"}</small></span></a>`).join("")}</div>`; }
 
 /* ---------- porte ---------- */
 function showPorte(p){
@@ -388,7 +465,7 @@ function showPorte(p){
   document.documentElement.style.setProperty("--acc", pc(p));
   const xs = DOCS.filter(x=>porteOf(x)===p), groups = {};
   xs.forEach(x=>{ (groups[x.d] = groups[x.d] || []).push(x); });
-  let html = `<div class="crumb" style="--pc:${pc(p)}"><a href="#${RO()?"/accueil":""}">Accueil</a></div><h1 style="color:${pc(p)}">${p} · ${PORTES[p].n}</h1><p class="lead">${PORTES[p].s}</p>`;
+  let html = `<div class="crumb" style="--pc:${pc(p)}"><a href="#${RO()?"/accueil":""}">Accueil</a></div><h1 style="color:${pc(p)}">${PORTES[p].n}</h1><p class="lead">${PORTES[p].s}</p>`;
   if(p==="3"){ const per = tc().per;
     html += `<div class="tools" style="margin-top:12px">${RO()?"":`<a class="ib" href="#/test-nouveau">+ Créer un test</a>`}<a class="ib" href="#/mestests">Mes tests et modifications</a></div>`;
     if(per.length){ const byd = {}; per.forEach(t=>(byd[t.dom]=byd[t.dom]||[]).push(t)); html += `<div class="fold" style="--pc:${pc(p)}"><h3>Mes tests</h3>${persoListHTML(DOM3.flatMap(d=>byd[d]||[]))}</div>`; } }
@@ -399,17 +476,20 @@ function showPorte(p){
 /* ---------- document ---------- */
 function showDoc(code, hint){
   const x = BY[code]; if(!x) return showHome();
+  if(x.h==null){ const h0 = location.hash, tm = setTimeout(()=>{ if(location.hash===h0) $("#main").innerHTML = '<div class="load">Ouverture…</div>'; }, 150);
+    const ko = ()=>{ clearTimeout(tm); if(location.hash===h0) $("#main").innerHTML = '<div class="empty">Ce document n\'a pas pu se charger. Vérifie la connexion pour la première ouverture, puis réessaie.</div>'; };
+    paquet(x.k).then(()=>{ if(x.h==null) return ko(); clearTimeout(tm); if(location.hash===h0) showDoc(code, hint); }, ko); return; }
   const p = porteOf(x); document.documentElement.style.setProperty("--acc", colOf(x));
   P.rec = [code, ...P.rec.filter(c=>c!==code)].slice(0,20); save();
   const sib = DOCS.filter(y=>y.d===x.d), k = sib.indexOf(x), prev = sib[k-1], next = sib[k+1];
   const fav = P.fav.includes(code);
   const m = $("#main"); m.style.setProperty("--pc", colOf(x));
-  m.innerHTML = `<div class="crumb"><a href="#">Accueil</a>›<a href="#p/${p}">${p} · ${PORTES[p].n}</a>›<span>${esc(x.d)}</span></div>
+  m.innerHTML = `<div class="crumb"><a href="#">Accueil</a>›<a href="#p/${p}">${PORTES[p].n}</a>›<span>${esc(x.d)}</span></div>
     <div class="dochead"><h1>${esc(x.t)}</h1><div class="acts">
       <button class="ib star" id="fav" type="button" aria-pressed="${fav}">${fav?"★ Favori":"☆ Favori"}</button>
-      <button class="ib" id="fsm" type="button" aria-label="Texte plus petit">A−</button><button class="ib" id="fsp" type="button" aria-label="Texte plus grand">A+</button></div></div>
-    <div class="crumb" style="margin-top:4px">${esc(x.ch||"")} · ${x.c}</div>${jumps(x)}
-    <nav class="toc" id="toc" hidden></nav>
+      <button class="ib" id="fsm" type="button" aria-label="Texte plus petit">A−</button><button class="ib" id="fsp" type="button" aria-label="Texte plus grand">A+</button><button class="grun-pdf" id="dprint" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M12 11v6M9 14l3 3 3-3"/></svg><span>${/^T-/.test(x.c)?"Test PDF":"Grille PDF"}</span></button></div></div>
+    <div class="crumb xp" style="margin-top:4px">${esc(x.ch||"")} · ${x.c}</div>${jumps(x)}
+    <nav class="toc xp" id="toc" hidden></nav>
     <article class="doc" id="doc"></article>
     <div class="pn">${prev?`<a href="#d/${prev.c}"><small>‹ Précédent</small>${esc(prev.t)}</a>`:"<span></span>"}${next?`<a class="nx" href="#d/${next.c}"><small>Suivant ›</small>${esc(next.t)}</a>`:"<span></span>"}</div>
     <div class="notes"><label for="nt" style="font-weight:600">Mes notes sur ce document</label><textarea id="nt" placeholder="Idées, joueurs concernés, à tester…"></textarea><div class="msg" id="ntm"></div></div>`;
@@ -433,7 +513,10 @@ function showDoc(code, hint){
     toc.onclick = e=>{ const a=e.target.closest("a[data-s]"); if(!a) return; e.preventDefault(); const d=document.getElementById(a.dataset.s); d.open=true; d.scrollIntoView({behavior:"smooth",block:"start"}); }; }
   if(sections.length===1){ doc.querySelector("details").open = true; }
   try{ if(/^[FG]\d\d_(PP|GE|DE)$/.test(code)) enhanceGrid(x); else if(p==="3") enhanceTest(x); }catch(e){ console.warn("enrichissement", e); }
+  if(window.GRUN&&GRUN.clair) GRUN.clair(document.getElementById("doc"));   /* lignes de grille en clair (mode simple) */
   // favoris, taille, notes
+  /* PDF d'une grille ou d'un test : tout le document déplié, comme dans l'appli */
+  $("#dprint").onclick = ()=>{ const cl = [...document.querySelectorAll("#doc details:not([open])")]; cl.forEach(d=>d.open = true); addEventListener("afterprint", ()=>cl.forEach(d=>d.open = false), {once:true}); print(); };
   $("#fav").onclick = ()=>{ const on = !P.fav.includes(code); P.fav = on ? [code,...P.fav] : P.fav.filter(c=>c!==code); save(); $("#fav").setAttribute("aria-pressed",on); $("#fav").textContent = on?"★ Favori":"☆ Favori"; };
   $("#fsm").onclick=()=>setFs(-1); $("#fsp").onclick=()=>setFs(1);
   const nt=$("#nt"); nt.value = P.notes[code]||""; let tm;
@@ -481,25 +564,25 @@ let sT;
 $("#q").addEventListener("input", e=>{ clearTimeout(sT); const v=e.target.value.trim(); sT=setTimeout(()=>{ if(v.length>=2) history.replaceState(null,"","#s/"+encodeURIComponent(v)), showSearch(v); else if(!v && location.hash.startsWith("#s/")) location.hash=""; },250); });
 $("#q").addEventListener("keydown", e=>{ if(e.key==="Enter"){ e.target.blur(); } });
 function terms(q){ return fold(q).split(/\s+/).filter(w=>w.length>=2); }
-function showSearch(q){
+function showSearch(q, fini){
   document.documentElement.style.setProperty("--acc", "var(--ink)");
-  buildIndex();
   const ts = terms(q), m = $("#main");
   if(!ts.length){ showHome(); return; }
-  const res = [];
-  NORM.forEach((n,i)=>{
+  if(!fini && DOCS.some(x=>x.h==null)){ const h0 = location.hash; if(!m.querySelector(".res")) m.innerHTML = `<h1>Recherche</h1><p class="lead">Recherche de « ${esc(q)} » dans toutes les grilles et tous les tests…</p>`;
+    tousPaquets().then(()=>{ if(location.hash===h0) showSearch(q, true); }, ()=>{ if(location.hash===h0) m.innerHTML = '<div class="empty">La recherche n\'a pas pu charger tous les documents. Vérifie la connexion pour la première ouverture, puis réessaie.</div>'; }); return; }
+  const res = [], RE = ts.map(motif);
+  DOCS.forEach((x,i)=>{ if(x.h==null) return;
     let score=0, first=-1;
-    for(const t of ts){ let c=0, pos=n.f.indexOf(t); if(pos<0){ score=0; return; } if(first<0||pos<first) first=pos; while(pos>=0 && c<60){ c++; pos=n.f.indexOf(t,pos+t.length); } score+=c; }
-    if(fold(DOCS[i].t).includes(ts[0])) score+=40;
+    for(const re of RE){ const [ct] = compte(x.t, re, false), [cb, p] = compte(x.h, re, true); if(!ct && !cb) return; if(p>=0 && (first<0||p<first)) first=p; score += Math.min(60, ct+cb); }
+    if(fold(x.t).includes(ts[0])) score+=40;
     res.push({i, score, first});
   });
   res.sort((a,b)=>b.score-a.score);
   const top = res.slice(0,60);
   let html = `<h1>Recherche</h1><p class="lead">${res.length ? `${res.length} document${res.length>1?"s":""} pour « ${esc(q)} »${res.length>60?" · les 60 plus pertinents":""}` : `Aucun document ne contient « ${esc(q)} ». Essaie un mot plus court ou un synonyme.`}</p><div class="sec">`;
-  html += top.map(r=>{ const x=DOCS[r.i], n=NORM[r.i]; const a=Math.max(0,r.first-90), b=Math.min(n.raw.length,r.first+190);
-    let snip = (a?"…":"")+n.raw.slice(a,b)+(b<n.raw.length?"…":"");
-    snip = markTerms(esc(snip), ts);
-    return `<a class="res" href="#d/${x.c}/q${encodeURIComponent(q)}" style="--pc:${colOf(x)}"><div class="t">${esc(x.t)}</div><div class="w">${x.c} · ${esc(x.ch)}</div><div class="s">${snip}</div></a>`; }).join("");
+  html += top.map(r=>{ const x=DOCS[r.i];
+    const snip = markTerms(esc(extrait(x, r.first, ts)), ts);
+    return `<a class="res" href="#d/${x.c}/q${encodeURIComponent(q)}" style="--pc:${colOf(x)}"><div class="t">${esc(x.t)}</div><div class="w">${esc(x.ch)}<span class="xp"> · ${x.c}</span></div><div class="s">${snip}</div></a>`; }).join("");
   const pm = tc().per.filter(t=>{ const f = fold([t.nom,t.protocole,t.materiel,t.id].join(" ")); return ts.every(w=>f.includes(w)); });
   if(pm.length) html = html.replace('<div class="sec">', `<div class="sec">${persoListHTML(pm)}<div style="height:8px"></div>`);
   m.innerHTML = html + "</div>";
@@ -588,6 +671,20 @@ function seuils0(t, sx, age){
 }
 function mesuresOf(t, sx, age){ const s = seuilsOf(t, sx, age); return s ? Object.keys(s) : null; }
 function mlabel(t, k){ const p=tc().by[t]; if(!p) return k; const m=pmes(p).find(x=>x.k===k); return m ? m.nom+(m.unite?" ("+m.unite+")":"") : k; }
+/* essais multiples (tests perso) : chaque essai est gardé dans res[t]["k#n"], le résultat retenu (meilleur ou moyenne) dans res[t][k] */
+function messOf(t, k){ const p = tc().by[t]; if(!p) return {n:1}; const m = pmes(p).find(x=>x.k===k)||{}; const n = Math.max(1, Math.min(5, +m.essais||1)); return {n, calc:m.calc==="mean"?"mean":"best", u:m.unite||""}; }
+function recalc(t, k, r){ const E = messOf(t,k); if(E.n<2) return; const v = []; for(let i=1;i<=E.n;i++){ const x = parseN(r[k+"#"+i]); if(x!=null) v.push(x); }
+  if(!v.length){ delete r[k]; return; } const asc = ascOf(t,k,[0,0,1]);
+  const x = E.calc==="mean" ? Math.round(v.reduce((a,y)=>a+y,0)/v.length*100)/100 : (asc ? Math.max(...v) : Math.min(...v)); r[k] = String(x); }
+const resKeys = r => Object.keys(r||{}).filter(k=>!k.includes("#"));
+const resTxt = (t, r) => resKeys(r).map(k=>fmtN(r[k])).join(" / ");
+/* champs de saisie d'un test (une case par mesure, ou une par essai) ; attrs = attributs de données communs ; big = mode terrain */
+function mesHTML(t, sx, age, r, attrs, big){ const ms = mesuresOf(t, sx, age); r = r||{};
+  if(!ms) return `<span class="msg">pas de barème (${agL(age)})</span>`;
+  return ms.map(k=>{ const E = messOf(t,k), cls = "inp"+(big?" tbig":"");
+    if(E.n<2) return `<label class="ms">${esc(mlabel(t,k))}<input class="${cls}" inputmode="decimal" autocomplete="off" ${attrs} data-k="${esc(k)}" value="${esc(r[k]??"")}" ${RO()?"readonly":""}></label>`;
+    return `<div class="ms mess"><span>${esc(mlabel(t,k))} · ${E.n} essais, ${E.calc==="mean"?"moyenne":"meilleur"} retenu${E.calc==="mean"?"e":""}</span><span class="ess">${Array.from({length:E.n},(_,i)=>`<input class="${cls}" inputmode="decimal" autocomplete="off" ${attrs} data-k="${esc(k)}#${i+1}" value="${esc(r[k+"#"+(i+1)]??"")}" aria-label="Essai ${i+1}" placeholder="essai ${i+1}" ${RO()?"readonly":""}>`).join("")}</span><b class="mres" data-mk="${esc(k)}">${r[k]!=null?"= "+fmtN(r[k])+(E.u?" "+esc(E.u):""):""}</b></div>`; }).join(""); }
+function mresUpd(inp, t, r){ const box = inp.closest(".mess"); if(!box) return; const o = box.querySelector(".mres"), k = o.dataset.mk, E = messOf(t,k); o.textContent = r&&r[k]!=null ? "= "+fmtN(r[k])+(E.u?" "+E.u:"") : ""; }
 function ascOf(t, k, th){ const p=tc().by[t]; if(p){ const m=pmes(p).find(x=>x.k===k); return ((m&&m.sens)||p.sens||"grand") !== "petit"; }
   return th[0]<th[2] || (th[0]===th[2] && /grand/.test(X.sens[t]||"")); }
 const lvOne = (v, th, asc) => asc ? (v>=th[2]?4:v>=th[1]?3:v>=th[0]?2:1) : (v<=th[2]?4:v<=th[1]?3:v<=th[0]?2:1);
@@ -690,7 +787,7 @@ function showJoueurs(){
   let L = GR.joueurs.all(); if(gf){ const ids = GR.groupes.get(gf).jids; L = L.filter(j=>ids.includes(j.id)); }
   L.forEach(j=>{ j.bilans = (j.bilans||[]).map(normB); });
   const af = L.filter(j=>bilanAfaire(j)).length, w = semBilan();
-  let h = `<div class="crumb" style="--pc:var(--p5)"><a href="#">Accueil</a></div><h1 style="color:var(--p5)">5 · Joueurs</h1><p class="lead">Un dossier par joueur : profil radar, grilles remplies, tests et résultats, progression, croissance. Le même joueur existe dans tout GRÜN.</p>`;
+  let h = `<div class="crumb" style="--pc:var(--p5)"><a href="#">Accueil</a></div><h1 style="color:var(--p5)">Joueurs</h1><p class="lead">Un dossier par joueur : profil radar, grilles remplies, tests et résultats, progression, croissance. Le même joueur existe dans tout GRÜN.</p>`;
   if(w) h += `<div class="att2"><b>Semaine de bilan</b> · ${esc(w.t)} (S${w.n}, du ${frD(w.du)} au ${frD(w.au)}).</div>`;
   h += `<div class="sec"><h2>Nouveau joueur</h2><div class="quick">
     <div class="f" style="flex:1;min-width:180px"><label for="jn">Prénom et nom</label><input id="jn" class="inp" autocomplete="off"></div>
@@ -718,32 +815,40 @@ function showJoueur(id){
   if(RO()) id = GR.mode().jid;
   const j = getP(id);
   if(!j){ if(RO()){ $("#main").innerHTML = `<div class="empty">Ton dossier n'est pas encore sur cet appareil. Demande à ton coach de te l'envoyer.</div>`; return; } return showJoueurs(); }
+  /* entrée directe depuis GRÜN : grilles.html#/joueur/<jid>/radar | /tests | /bilan | /crois | /progression */
+  const seg = (location.hash.split("?")[0].split("/")[3]||"");
+  const ONG = {radar:"profil", profil:"profil", tests:"grilles", bilan:"grilles", crois:"crois", croissance:"crois", progression:"prog"};
+  if(ONG[seg] && SEG!==location.hash){ UI.tab = ONG[seg]; SEG = location.hash; }
+  const modeBilan = seg==="bilan" && !RO();
   const b = (RO() && VIEWB && j.bilans.find(x=>x.id===VIEWB)) || curB(j); CUR = {j, b};
   const pc = j.sexe==="F"?"var(--p1)":"var(--p2)";
   document.documentElement.style.setProperty("--acc", pc);
   const m = $("#main"); m.style.setProperty("--pc", pc);
   const ac = ageCiv(j.naissance), gs = GR.groupes.de(j.id), allg = GR.groupes.all();
   const infos = [j.sexe==="F"?"Fille":"Garçon", j.naissance?(j.sexe==="F"?"née le ":"né le ")+frD(j.naissance):"", ac!=null?ac+" ans":"", j.main==="G"?"gaucher":"droitier", j.revers==="1"?"revers à 1 main":"revers à 2 mains", j.classement?"classement "+esc(j.classement):""].filter(Boolean);
-  let h = `<div class="crumb">${RO()?`<a href="#/accueil">Grilles</a>›<span>Mon dossier</span>`:`<a href="#">Accueil</a>›<a href="#j">5 · Joueurs</a>›<span>${esc(j.nom)}</span>`}</div>
+  let h = `<div class="crumb">${RO()?`<a href="#/accueil">Grilles</a>›<span>Mon dossier</span>`:`<a href="#">Accueil</a>›<a href="#j">Joueurs</a>›<span>${esc(j.nom)}</span>`}</div>
   <div class="dochead"><h1>${RO()?"Mon profil · ":""}${esc(j.nom)}</h1>${RO()?"":`<div class="acts"><button class="ib" id="jedit" type="button">Modifier la fiche</button><a class="ib" href="${GR.href("joueurs","#/j/"+j.id)}">Dossier complet</a></div>`}</div>
   <div class="crumb" style="margin-top:4px">${infos.join(" · ")}</div>
   ${gs.length||j.groupe?`<div class="jump">${gs.map(g=>`<a href="${GR.href("joueurs","#/g/"+g.id)}">${esc(g.nom)}</a>`).join("")}${!gs.length&&j.groupe?`<span class="msg">${esc(j.groupe)}</span>`:""}</div>`:""}`;
   if(!RO()) h += ficheForm(j, allg, gs);
   if(!b){ h += `<div class="sec"><h2>Premier bilan</h2>${nouveauBilanForm(j, null)}</div>`; m.innerHTML = h; bindFiche(j); bindNouveauBilan(j, null); return; }
   const bs = sortB(j).reverse(), ra = bilanAfaire(j);
-  h += `<div class="sec"><h2>Bilan</h2>${ra && !RO()?`<p class="msg"><span class="bdg warn">${esc(ra)}</span></p>`:""}<div class="quick">
+  /* un seul gros bouton : continuer le bilan affiché ou en créer un nouveau (date du jour, grille conseillée, mêmes tests) */
+  if(!RO()) h += `<div class="bil1${modeBilan?" on":""}"><div><b>${b.date===today()?"Bilan du jour":"Bilan du "+frD(b.date)}</b><small>${esc(gL(b))}${b.note?" · "+esc(b.note.slice(0,40)):""}</small></div>${b.date===today()?"":`<button class="go big" id="bnew1" type="button">Créer un nouveau bilan</button>`}</div>`;
+  h += `<details class="grun-plus" id="bplus"><summary>Plus d'options du bilan</summary><div class="grun-plusb">${ra && !RO()?`<p class="msg"><span class="bdg warn">${esc(ra)}</span></p>`:""}<div class="quick">
     <div class="f" style="flex:1;min-width:190px"><label for="bsel">Bilan affiché</label><select id="bsel">${bs.map(x=>`<option value="${x.id}" ${x.id===b.id?"selected":""}>${frD(x.date)} · ${gL(x)}${x.note?" · "+esc(x.note.slice(0,30)):""}</option>`).join("")}</select></div>
     ${RO()?"":`<div class="f"><label for="bdate">Date</label><input id="bdate" class="inp" type="date" value="${b.date}"></div>
     <div class="f"><label for="bage">Grille (âge biologique)</label><select id="bage">${optsAge(ak(b))}</select></div>`}
     <div class="f"><label for="bcomp">Comparer avec</label><select id="bcomp"><option value="prev">Bilan précédent</option><option value="none">Rien</option>${bs.filter(x=>x.id!==b.id).map(x=>`<option value="${x.id}">Bilan du ${frD(x.date)}</option>`).join("")}</select></div>
-    ${RO()?"":`<button class="ib" id="bnew" type="button">+ Nouveau bilan</button>${j.bilans.length>1?`<button class="ib" id="bdel" type="button">Supprimer ce bilan</button>`:""}`}</div>
-    ${RO()?"":`<p class="msg">Grille conseillée : ${esc(raisonGrille(j))}.</p><div id="nbf" hidden>${nouveauBilanForm(j, b)}</div>`}</div>`;
-  const TABS = [["profil","Profil radar"],["grilles","Grilles et tests"],["prog","Progression"],["crois","Croissance"]];
+    ${RO()?"":`<button class="ib" id="bnew" type="button">Créer un bilan (date, grille, intitulé)</button>${j.bilans.length>1?`<button class="ib" id="bdel" type="button">Supprimer ce bilan</button>`:""}`}</div>
+    ${RO()?"":`<p class="msg">Grille conseillée : ${esc(raisonGrille(j))}.</p><div id="nbf" hidden>${nouveauBilanForm(j, b)}</div>`}</div></details>`;
+  const TABS = [["profil","Profil radar"],["grilles","Tests et grilles"],["prog","Progression"],["crois","Croissance"]];
   if(!TABS.some(t=>t[0]===UI.tab)) UI.tab = "profil";
   h += `<div class="jump tabs" role="tablist">${TABS.map(([k,t])=>`<a href="#" role="tab" data-tab="${k}" class="${UI.tab===k?"on":""}" aria-selected="${UI.tab===k}">${t}</a>`).join("")}<a href="#/fiche/${j.id}/${b.id}">Fiche bilan ›</a></div><div id="tabc"></div>`;
   m.innerHTML = h;
   const sc = $("#bcomp"); sc.value = UI.comp; if(sc.value!==UI.comp){ UI.comp = "prev"; sc.value = "prev"; }
   bindFiche(j); bindBilanBar(j, b);
+  const b1 = $("#bnew1"); if(b1) b1.onclick = ()=>{ const nb = newB(today(), conseil(j) || ak(b)); const w = semBilan(); nb.note = w ? w.t : ""; nb.sel = [...b.sel]; j.bilans.push(nb); j.cur = nb.id; jsave(j); UI.tab = "grilles"; rerender(); };
   document.querySelectorAll("[data-tab]").forEach(a=>a.onclick = e=>{ e.preventDefault(); UI.tab = a.dataset.tab; uisave(); document.querySelectorAll("[data-tab]").forEach(x=>{ x.classList.toggle("on", x===a); x.setAttribute("aria-selected", x===a); }); renderTab(); });
   renderTab();
 }
@@ -796,7 +901,7 @@ function bindBilanBar(j, b){
   bindNouveauBilan(j, b);
   const bd = $("#bdel"); if(bd) bd.onclick = ()=>{ if(!bd.dataset.ok){ bd.dataset.ok = 1; bd.textContent = "Toucher encore pour supprimer"; setTimeout(()=>{ if(bd.isConnected){ delete bd.dataset.ok; bd.textContent = "Supprimer ce bilan"; } },4000); return; } j.bilans = j.bilans.filter(x=>x.id!==b.id); j.cur = lastB(j).id; jsave(j); rerender(); };
 }
-let VIEWB = null; /* mode joueur : bilan affiché (pas enregistré sur la fiche) */
+let VIEWB = null, SEG = null; /* mode joueur : bilan affiché (pas enregistré sur la fiche) */
 
 /* ----- onglet PROFIL : 3 radars touchables + vue d'ensemble + axes de travail ----- */
 function profilHTML(j, b){
@@ -807,7 +912,7 @@ function profilHTML(j, b){
   } else {
     const o = radarOpts(j,b,d, matchMedia("(min-width:700px)").matches?"wide":"narrow", {sel:UI.sel, id:"radar"});
     const [f,a] = nbLines(j,b,d), acq = o.v.filter((x,i)=>x!=null && x>=3 && o.g[i]).length;
-    h += `<div class="prof" style="--pc:var(--${d.toLowerCase()})"><div class="chartcol"><div class="charthead"><b class="rcode">${gcode(j.sexe,ak(b),d)} · ${j.sexe==="F"?"fille":"garçon"} ${ak(b)+" ans"}</b><span class="msg" id="rsum">Moyenne ${fmtN(moy(j,b,d))} · ${acq}/${a} au niveau 3 ou plus · ${f}/${a} évaluées</span></div>
+    h += `<div class="prof" style="--pc:var(--${d.toLowerCase()})"><div class="chartcol"><div class="charthead"><b class="rcode">${DOMN[d]} · ${j.sexe==="F"?"fille":"garçon"} ${ak(b)+" ans"}<span class="xp"> (${gcode(j.sexe,ak(b),d)})</span></b><span class="msg" id="rsum">Moyenne ${fmtN(moy(j,b,d))} · ${acq}/${a} au niveau 3 ou plus · ${f}/${a} évaluées</span></div>
       ${radarSVG(d, o)}
       <div class="legend">${[1,2,3,4].map(k=>`<span><i class="sw" style="background:var(--n${k}s);border:1.5px solid var(--n${k})"></i>${k} ${NVN[k]}</span>`).join("")}${cb?`<span><i class="sw dash"></i>Bilan du ${frD(cb.date)}</span>`:""}</div>
       <p class="hint">${RO()?"Ton profil au bilan du "+frD(b.date)+". L'anneau vert épais = niveau 3, l'attendu du haut niveau de ton âge.":"Touche ou fais glisser le long d'un axe pour placer le niveau (pas de 0,5). Anneau vert épais = niveau 3 ; pointillés = bilan comparé."}</p></div>
@@ -832,7 +937,7 @@ function axesHTML(j, b, cb){ const ax = [], fo = [];
   DOM3.forEach(d=>(X.g[gcode(j.sexe,ak(b),d)]||[]).forEach((L,i)=>{ if(!L) return; const v = b.v[d][i]; if(v==null) return; const pv = cb ? cb.v[d][i] : null;
     const it = {d, i, v, pv}; if(v<3) ax.push(it); else if(v>=3.5) fo.push(it); }));
   ax.sort((a,c)=>a.v-c.v); fo.sort((a,c)=>c.v-a.v);
-  const li = (it, ex) => `<li><span class="lvb ${lvCls(it.v)}">${fmtN(it.v)}</span> <b style="color:var(--${it.d.toLowerCase()})">${lcode(it.d,it.i)}</b> ${esc(LIGNES[it.d][it.i])}${it.pv!=null&&it.pv!==it.v?` <small class="msg">(${it.v>it.pv?"↑":"↓"} ${fmtN(it.pv)})</small>`:""}${ex?` · <a href="${GR.href("banque","#/l/"+lcode(it.d,it.i)+"?a="+b.age)}">exercices ›</a>`:""}</li>`;
+  const li = (it, ex) => `<li><span class="lvb ${lvCls(it.v)}">${fmtN(it.v)}</span> <b style="color:var(--${it.d.toLowerCase()})">${esc(LIGNES[it.d][it.i])}</b>${it.pv!=null&&it.pv!==it.v?` <small class="msg">(${it.v>it.pv?"↑":"↓"} ${fmtN(it.pv)})</small>`:""}${ex?` · <a href="${GR.href("banque","#/l/"+lcode(it.d,it.i)+"?a="+b.age)}">exercices ›</a>`:""}</li>`;
   return `<div class="axes"><div class="axc"><h3>Axes de travail <small>(niveau &lt; 3)</small></h3>${ax.length?`<ul>${ax.map(x=>li(x,1)).join("")}</ul>`:`<p class="msg">Aucune ligne sous le niveau 3${DOM3.some(d=>moy(j,b,d)!=null)?"":" (rien d'évalué pour l'instant)"}.</p>`}</div>
     <div class="axc"><h3>Points forts <small>(niveau ≥ 3,5)</small></h3>${fo.length?`<ul>${fo.map(x=>li(x,0)).join("")}</ul>`:`<p class="msg">Pas encore de ligne à 3,5 ou plus.</p>`}</div></div>`; }
 let DRAG = null, GEO = null;
@@ -854,11 +959,20 @@ function bindProfil(j, b){
     if(best==null) for(let i=0;i<n;i++){ if(!g[i]) continue; const dd = Math.abs(Math.atan2(Math.sin(ang-A(i)), Math.cos(ang-A(i)))); if(dd<bd){ bd = dd; best = i; } }
     if(best==null) return null; const proj = x*Math.cos(A(best)) + y*Math.sin(A(best));
     return {i:best, val:Math.max(1, Math.min(4, Math.round(proj/GEO.R*4*2)/2)), dist:Math.hypot(x,y)}; };
-  svg.addEventListener("pointerdown", e=>{ const p = pv(e, null); if(!p) return; e.preventDefault();
+  /* doigt (iPhone/iPad) : on ne bloque le défilement que si le doigt part d'un point (ou de l'axe choisi) ; ailleurs la page défile, et une touche brève pose la valeur */
+  const nearHandle = p => { if(!p) return false; const A = -Math.PI/2 + p.i*2*Math.PI/LIGNES[d].length, v = b.v[d][p.i];
+    if(v==null) return p.i===UI.sel; const r = GEO.R*v/4, hx = GEO.cx+r*Math.cos(A), hy = GEO.cy+r*Math.sin(A);
+    return Math.hypot(p.px-hx, p.py-hy) < 56 || (p.i===UI.sel && p.dist < GEO.R*1.05); };
+  const pvT = t => { const p = pv(t, null); if(!p) return null; const r = svg.getBoundingClientRect(), s = GEO.W/r.width; p.px = (t.clientX-r.left)*s; p.py = (t.clientY-r.top)*s; return p; };
+  let TAP = null;
+  svg.addEventListener("touchstart", e=>{ if(e.touches.length===1 && nearHandle(pvT(e.touches[0]))) e.preventDefault(); }, {passive:false});
+  svg.addEventListener("pointerdown", e=>{ const p = pvT(e); if(!p) return;
     if(p.dist > GEO.R*1.12){ UI.sel = p.i; renderTab(); return; }
-    DRAG = p.i; UI.sel = p.i; try{ svg.setPointerCapture(e.pointerId); }catch(_){} setV(j,b,d,p.i,p.val); live(j,b,d); });
-  svg.addEventListener("pointermove", e=>{ if(DRAG==null) return; const p = pv(e, DRAG); if(p && p.val!==b.v[d][p.i]){ setV(j,b,d,p.i,p.val); live(j,b,d); } });
-  const end = ()=>{ if(DRAG!=null){ DRAG = null; jsave(j); renderTab(); } };
+    if(e.pointerType==="touch" && !nearHandle(p)){ TAP = {x:e.clientX, y:e.clientY, id:e.pointerId}; return; }
+    e.preventDefault(); DRAG = p.i; UI.sel = p.i; try{ svg.setPointerCapture(e.pointerId); }catch(_){} setV(j,b,d,p.i,p.val); live(j,b,d); });
+  svg.addEventListener("pointermove", e=>{ if(TAP && Math.hypot(e.clientX-TAP.x, e.clientY-TAP.y) > 10) TAP = null; if(DRAG==null) return; const p = pv(e, DRAG); if(p && p.val!==b.v[d][p.i]){ setV(j,b,d,p.i,p.val); live(j,b,d); } });
+  const end = e=>{ if(TAP && e && e.type==="pointerup" && Math.hypot(e.clientX-TAP.x, e.clientY-TAP.y) <= 10){ const p = pv(e, null); TAP = null; if(p){ UI.sel = p.i; setV(j,b,d,p.i,p.val); jsave(j); renderTab(); } return; }
+    TAP = null; if(DRAG!=null){ DRAG = null; jsave(j); renderTab(); } };
   svg.addEventListener("pointerup", end); svg.addEventListener("pointercancel", end);
 }
 function firstActive(j, b, d){ if(d==="ALL") return 0; const g = X.g[gcode(j.sexe,ak(b),d)]||[]; const k = g.findIndex(Boolean); return k<0?0:k; }
@@ -884,7 +998,7 @@ async function profilPNG(j, b){
     x.fillStyle = cssv("--"+d.toLowerCase()); x.font = "700 32px 'Barlow Condensed', sans-serif"; x.fillText(DOMN[d], X0+10, 160);
     x.fillStyle = cssv("--ink"); x.font = "600 26px Barlow, sans-serif"; const m = moy(j,b,d), mc = cb?moy(j,cb,d):null; x.fillText("Moyenne "+fmtN(m)+(mc!=null?"  (avant "+fmtN(mc)+")":""), X0+10, 765); k++; }
   if(nl){ const col = (title, arr, X0) => { x.fillStyle = cssv("--ink"); x.font = "700 30px 'Barlow Condensed', sans-serif"; x.fillText(title, X0, 830);
-      x.font = "500 23px Barlow, sans-serif"; arr.slice(0,12).forEach(([d,i,v],n)=>{ x.fillStyle = cssv("--n"+Math.floor(v)); x.fillText(fmtN(v), X0, 870+n*34); x.fillStyle = cssv("--ink"); const t = lcode(d,i)+" · "+LIGNES[d][i]; x.fillText(t.length>60?t.slice(0,58)+"…":t, X0+56, 870+n*34); }); };
+      x.font = "500 23px Barlow, sans-serif"; arr.slice(0,12).forEach(([d,i,v],n)=>{ x.fillStyle = cssv("--n"+Math.floor(v)); x.fillText(fmtN(v), X0, 870+n*34); x.fillStyle = cssv("--ink"); const t = DCOURT[d]+" · "+LIGNES[d][i]; x.fillText(t.length>60?t.slice(0,58)+"…":t, X0+56, 870+n*34); }); };
     col("Axes de travail (niveau < 3)", ax, 40); col("Points forts (niveau ≥ 3,5)", fo, 940); }
   return await new Promise(r=>cv.toBlob(r, "image/png"));
 }
@@ -902,6 +1016,7 @@ function grillesHTML(j, b){
         <td><select class="lvsel ${lvCls(v)}" data-d="${d}" data-i="${i}" aria-label="Niveau ligne ${i+1}" ${RO()?"disabled":""}><option value="">–</option>${[1,1.5,2,2.5,3,3.5,4].map(x=>`<option value="${x}" ${v===x?"selected":""}>${fmtN(x)}${Number.isInteger(x)?" · "+NVN[x]:""}</option>`).join("")}</select></td>
         <td class="c" id="tl_${d}_${i}">${tl?lvB(tl):"–"}</td></tr>`; }).join("")}</tbody></table></div></div></details>`; });
   h += `</div>`;
+  const hG = h; h = "";   /* les tests d'abord : leurs résultats donnent le niveau des lignes */
   const pri = prioTests(j,b); const sel = b.sel.filter(texists); const done = sel.filter(t=>niveau(t,j.sexe,ak(b),b.res[t])).length;
   h += `<div class="sec"><h2>Tests du bilan</h2>${RO()?"":`<div class="tools"><button class="ib" id="tpri" type="button">★ Ajouter les ${pri.length} tests prioritaires</button><button class="ib" id="tchoose" type="button">Choisir les tests</button>${sel.length?`<button class="ib" id="tclear" type="button">Tout retirer</button>`:""}<a class="ib" href="#/test-nouveau">+ Créer un test</a></div>`}
     <p class="msg" style="margin-top:6px">${sel.length?`${done} fait${done>1?"s":""} sur ${sel.length} au programme. ${RO()?"":`Tape le résultat : le niveau se calcule avec le barème ${j.sexe==="F"?"filles":"garçons"} ${ak(b)+" ans"} (niveau le plus bas des mesures). Une ligne encore vide reçoit le niveau de ses tests.`}`:"Aucun test choisi pour ce bilan."}</p>
@@ -911,12 +1026,12 @@ function grillesHTML(j, b){
     const byD = d => sel.filter(t=>tdom(t)===d).sort((a,c)=>(isPerso(a)-isPerso(c)) || (a<c?-1:1));
     h += DOM3.map(d=>{ const ts = byD(d); if(!ts.length) return ""; return `<div class="fold" style="--pc:var(--${d.toLowerCase()})"><h3>${DOMN[d]}</h3><div class="tw"><table class="jt"><thead><tr><th>Test</th><th>Résultat</th><th>Niveau</th></tr></thead><tbody>${ts.map(t=>testRow(j,b,t,pri)).join("")}</tbody></table></div></div>`; }).join("");
   }
-  h += `</div><div class="notes"><label for="bnote" style="font-weight:600">Notes du bilan</label><textarea id="bnote" placeholder="Observations, priorités de travail, contexte…" ${RO()?"readonly":""}>${esc(b.note||"")}</textarea><div class="msg" id="bnm"></div></div>`;
+  h += `</div>` + hG + `<div class="notes"><label for="bnote" style="font-weight:600">Notes du bilan</label><textarea id="bnote" placeholder="Observations, priorités de travail, contexte…" ${RO()?"readonly":""}>${esc(b.note||"")}</textarea><div class="msg" id="bnm"></div></div>`;
   return h;
 }
 function testRow(j, b, t, pri){ const ms = mesuresOf(t,j.sexe,ak(b)); const r = b.res[t]||{}; const lv = niveau(t,j.sexe,ak(b),r);
-  return `<tr><td>${pri.includes(t)?"★ ":""}<a class="ref" href="${tlink(t,j.sexe,ak(b))}">${esc(tnom(t))}</a>${badgeT(t)}<div class="lvtxt">${t} · ${esc(tunite(t))}</div><div class="lvtxt" id="bt_${t}">${lv?esc(btxt(t,j.sexe,ak(b),lv)):""}</div></td>
-    <td>${ms?ms.map(k=>`<label class="ms">${esc(mlabel(t,k))}<input class="inp" inputmode="decimal" autocomplete="off" data-t="${t}" data-k="${esc(k)}" value="${esc(r[k]??"")}" ${RO()?"readonly":""}></label>`).join(""):`<span class="msg">pas de barème (${agL(ak(b))})</span>`}</td>
+  return `<tr><td>${pri.includes(t)?"★ ":""}<a class="ref" href="${tlink(t,j.sexe,ak(b))}">${esc(tnom(t))}</a>${badgeT(t)}<div class="lvtxt">${esc(tunite(t))}<span class="xp"> · ${t}</span></div><div class="lvtxt" id="bt_${t}">${lv?esc(btxt(t,j.sexe,ak(b),lv)):""}</div></td>
+    <td>${mesHTML(t, j.sexe, ak(b), r, `data-t="${t}"`)}</td>
     <td class="c" id="lv_${t}">${lv?lvB(lv):"–"}</td></tr>`; }
 function bindGrilles(j, b){
   document.querySelectorAll("details.jg").forEach(x=>x.addEventListener("toggle",()=>{ OPEN[x.dataset.d] = x.open; }));
@@ -927,13 +1042,13 @@ function bindGrilles(j, b){
   $("#tchoose").onclick = ()=>{ $("#tpick").hidden = !$("#tpick").hidden; $("#tchoose").textContent = $("#tpick").hidden ? "Choisir les tests" : "Fermer et mettre à jour"; if($("#tpick").hidden) rerender(); };
   document.querySelectorAll("#tpick input[type=checkbox]").forEach(c=>c.onchange = ()=>{ const t = c.dataset.t; b.sel = c.checked ? [...new Set([...b.sel,t])] : b.sel.filter(x=>x!==t); jsave(j); });
   const tcl = $("#tclear"); if(tcl) tcl.onclick = ()=>{ if(!tcl.dataset.ok){ tcl.dataset.ok = 1; tcl.textContent = "Toucher encore pour tout retirer"; return; } b.sel = []; jsave(j); rerender(); };
-  document.querySelectorAll("#tabc input[data-t][data-k]").forEach(inp=>inp.oninput = ()=>{ const t = inp.dataset.t, k = inp.dataset.k; setRes(j,b,t,k,inp.value);
+  document.querySelectorAll("#tabc input[data-t][data-k]").forEach(inp=>inp.oninput = ()=>{ const t = inp.dataset.t, k = inp.dataset.k; setRes(j,b,t,k,inp.value); mresUpd(inp, t, b.res[t]);
     const lv = niveau(t,j.sexe,ak(b),b.res[t]); $("#lv_"+CSS.escape(t)).innerHTML = lv?lvB(lv):"–"; $("#bt_"+CSS.escape(t)).textContent = lv?btxt(t,j.sexe,ak(b),lv):"";
     const d = tdom(t); (X.g[gcode(j.sexe,ak(b),d)]||[]).forEach((L,i)=>{ const T = lineT(j.sexe,ak(b),d,i); if(!T||!T.t.includes(t)) return; const cell = $(`#tl_${d}_${i}`); const tl = lineTestsLevel(j,b,d,i); if(cell) cell.innerHTML = tl?lvB(tl):"–"; const s = document.querySelector(`.lvsel[data-d="${d}"][data-i="${i}"]`); if(s) s.value = b.v[d][i]==null?"":String(b.v[d][i]); });
     jsave(j); refreshDom(j,b,d); });
   let tm; $("#bnote").oninput = e=>{ clearTimeout(tm); tm = setTimeout(()=>{ b.note = e.target.value; jsave(j); $("#bnm").textContent = "Note enregistrée sur cet appareil."; },400); };
 }
-function setRes(j, b, t, k, val){ b.res[t] = b.res[t]||{}; const v = String(val).trim(); if(v==="") delete b.res[t][k]; else b.res[t][k] = v; if(!Object.keys(b.res[t]).length) delete b.res[t]; autoFrom(j,b,t); }
+function setRes(j, b, t, k, val){ b.res[t] = b.res[t]||{}; const v = String(val).trim(); if(v==="") delete b.res[t][k]; else b.res[t][k] = v; if(k.includes("#")) recalc(t, k.split("#")[0], b.res[t]); if(!Object.keys(b.res[t]).length) delete b.res[t]; autoFrom(j,b,t); }
 function refreshDom(j, b, d){ const g = X.g[gcode(j.sexe,ak(b),d)]; const [f,a] = nbLines(j,b,d);
   $("#m_"+d).textContent = `moyenne ${fmtN(moy(j,b,d))} · ${f}/${a} lignes`;
   $("#r_"+d).innerHTML = radar(d, g.map((x,i)=>b.v[d][i]??null), g.map(x=>!x));
@@ -962,7 +1077,7 @@ function progressionHTML(j){
     <tr class="tot"><td><b>Moyenne</b></td>${bs.map(b=>`<td class="c"><b>${fmtN(moy(j,b,d))}</b></td>`).join("")}</tr></tbody></table></div></div></div>`).join("");
   const ts = []; bs.forEach(b=>Object.keys(b.res||{}).forEach(t=>{ if(texists(t) && !ts.includes(t) && Object.keys(b.res[t]).length) ts.push(t); }));
   ts.sort((a,c)=>(DOM3.indexOf(tdom(a))-DOM3.indexOf(tdom(c))) || (a<c?-1:1));
-  h += `<div class="fold"><h3>Résultats des tests dans le temps</h3>${ts.length?`<div class="tw"><table class="jt pg"><thead><tr><th>Test</th>${hd}</tr></thead><tbody>${ts.map(t=>`<tr><td><a class="ref" href="${tlink(t,j.sexe,bs[bs.length-1].age)}">${esc(tnom(t))}</a>${badgeT(t)}<div class="lvtxt">${esc(tunite(t))}</div></td>${bs.map(b=>{ const r = b.res[t]; if(!r) return `<td class="c">–</td>`; const lv = niveau(t,j.sexe,ak(b),r); return `<td class="c"><span class="rv">${esc(Object.values(r).join(" / "))}</span>${lv?"<br>"+lvB(lv):""}</td>`; }).join("")}</tr>`).join("")}</tbody></table></div>`:`<p class="msg">Aucun résultat de test saisi pour l'instant.</p>`}</div>`;
+  h += `<div class="fold"><h3>Résultats des tests dans le temps</h3>${ts.length?`<div class="tw"><table class="jt pg"><thead><tr><th>Test</th>${hd}</tr></thead><tbody>${ts.map(t=>`<tr><td><a class="ref" href="${tlink(t,j.sexe,bs[bs.length-1].age)}">${esc(tnom(t))}</a>${badgeT(t)}<div class="lvtxt">${esc(tunite(t))}</div></td>${bs.map(b=>{ const r = b.res[t]; if(!r) return `<td class="c">–</td>`; const lv = niveau(t,j.sexe,ak(b),r); return `<td class="c"><span class="rv">${esc(resTxt(t, r))}</span>${lv?"<br>"+lvB(lv):""}</td>`; }).join("")}</tr>`).join("")}</tbody></table></div>`:`<p class="msg">Aucun résultat de test saisi pour l'instant.</p>`}</div>`;
   return h;
 }
 
@@ -1002,10 +1117,10 @@ function showFiche(jid, bid){
   const ts = Object.keys(b.res||{}).filter(texists);
   let h = `<div class="crumb noprint"><a href="#/joueur/${j.id}">‹ ${RO()?"Mon dossier":esc(j.nom)}</a></div>
    <div class="fiche"><div class="dochead"><div><h1>Bilan · ${esc(j.nom)}</h1><p class="lead">${frD(b.date)}${b.note?" · "+esc(b.note):""} · ${j.sexe==="F"?"fille":"garçon"}${ac!=null?", "+ac+" ans":""} · ${gL(b)}${mt?` · âge biologique ${f1(mt.bio)} ans (${esc(mt.avance)})`:""}</p></div>
-   <div class="acts noprint"><button class="ib" id="fprint" type="button">Imprimer ou PDF</button><button class="ib" id="fshare" type="button">Partager le texte</button><button class="ib" id="fpng" type="button">Image PNG</button></div></div>
+   <div class="acts noprint"><button class="grun-pdf" id="fprint" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M12 11v6M9 14l3 3 3-3"/></svg><span>Bilan PDF</span></button><button class="ib" id="fshare" type="button">Partager le texte</button><button class="ib" id="fpng" type="button">Image PNG</button></div></div>
    <div class="ovw">${DOM3.map(d=>`<div class="ov"><h3 style="color:var(--${d.toLowerCase()})">${DOMN[d]}</h3>${radarSVG(d, radarOpts(j,b,d,"mini"))}<div class="msg">Moyenne <b>${fmtN(moy(j,b,d))}</b>${cb&&moy(j,cb,d)!=null?` (bilan du ${frD(cb.date)} : ${fmtN(moy(j,cb,d))})`:""}</div></div>`).join("")}</div>
    ${axesHTML(j,b,cb)}
-   ${ts.length?`<div class="fold"><h3>Résultats des tests</h3><div class="tw"><table class="jt"><thead><tr><th>Test</th><th>Résultat</th><th>Niveau</th></tr></thead><tbody>${ts.map(t=>{ const lv = niveau(t,j.sexe,ak(b),b.res[t]); return `<tr><td>${esc(tnom(t))}<div class="lvtxt">${esc(tunite(t))}</div></td><td>${Object.entries(b.res[t]).map(([k,v])=>(Object.keys(b.res[t]).length>1?esc(mlabel(t,k))+" : ":"")+esc(v)).join("<br>")}</td><td class="c">${lv?lvB(lv):"–"}</td></tr>`; }).join("")}</tbody></table></div></div>`:""}
+   ${ts.length?`<div class="fold"><h3>Résultats des tests</h3><div class="tw"><table class="jt"><thead><tr><th>Test</th><th>Résultat</th><th>Niveau</th></tr></thead><tbody>${ts.map(t=>{ const lv = niveau(t,j.sexe,ak(b),b.res[t]); return `<tr><td>${esc(tnom(t))}<div class="lvtxt">${esc(tunite(t))}</div></td><td>${resKeys(b.res[t]).map(k=>(resKeys(b.res[t]).length>1?esc(mlabel(t,k))+" : ":"")+esc(fmtN(b.res[t][k]))+(messOf(t,k).n>1?` <small class="msg">(essais ${Array.from({length:messOf(t,k).n},(_,i)=>b.res[t][k+"#"+(i+1)]).filter(x=>x!=null).map(fmtN).join(" · ")})</small>`:"")).join("<br>")}</td><td class="c">${lv?lvB(lv):"–"}</td></tr>`; }).join("")}</tbody></table></div></div>`:""}
    ${b.note?`<div class="fold"><h3>Notes</h3><p>${esc(b.note)}</p></div>`:""}
    <p class="msg">Niveaux : 1 non acquis · 2 en cours d'acquisition · 3 acquis = attendu du haut niveau de l'âge · 4 maîtrisé.</p></div>`;
   $("#main").innerHTML = h;
@@ -1018,7 +1133,7 @@ function ficheTexte(j, b){ const ax = [], fo = [];
   DOM3.forEach(d=>(X.g[gcode(j.sexe,ak(b),d)]||[]).forEach((L,i)=>{ const v = b.v[d][i]; if(!L||v==null) return; if(v<3) ax.push(LIGNES[d][i]+" ("+fmtN(v)+")"); else if(v>=3.5) fo.push(LIGNES[d][i]+" ("+fmtN(v)+")"); }));
   let t = `Bilan de ${j.nom} · ${frD(b.date)} (${gL(b)})\n` + DOM3.map(d=>DOMN[d]+" : "+fmtN(moy(j,b,d))).join("\n");
   if(fo.length) t += "\n\nPoints forts : "+fo.join(", "); if(ax.length) t += "\n\nAxes de travail : "+ax.join(", ");
-  const ts = Object.keys(b.res||{}).filter(texists); if(ts.length) t += "\n\nTests :\n"+ts.map(x=>"· "+tnom(x)+" : "+Object.values(b.res[x]).join(" / ")+(niveau(x,j.sexe,ak(b),b.res[x])?" → niveau "+niveau(x,j.sexe,ak(b),b.res[x]):"")).join("\n");
+  const ts = Object.keys(b.res||{}).filter(texists); if(ts.length) t += "\n\nTests :\n"+ts.map(x=>"· "+tnom(x)+" : "+resTxt(x, b.res[x])+(niveau(x,j.sexe,ak(b),b.res[x])?" → niveau "+niveau(x,j.sexe,ak(b),b.res[x]):"")).join("\n");
   if(b.note) t += "\n\nNotes : "+b.note; return t+"\n\nNiveau 3 = attendu du haut niveau de l'âge."; }
 
 /* ---------- BILAN DE GROUPE ---------- */
@@ -1027,10 +1142,10 @@ function showGBilan(arg){
   if(RO()) return showJoueur();
   document.documentElement.style.setProperty("--acc","var(--p5)"); const m = $("#main"); m.style.setProperty("--pc","var(--p5)");
   const [sid, sub] = (arg||"").split("/");
-  if(sid){ const s = gbs().find(x=>x.id===sid); if(!s){ location.hash = "/gbilan"; return; } return sub==="feuille" ? showFeuille(s) : showSession(s); }
+  if(sid){ const s = gbs().find(x=>x.id===sid); if(!s){ location.hash = "/gbilan"; return; } return sub==="feuille" ? showFeuille(s) : sub==="terrain" ? showTerrain(s) : showSession(s); }
   const grs = GR.groupes.all(), J = GR.joueurs.all(), w = semBilan();
   const pre = GB.jids || [];
-  let h = `<div class="crumb"><a href="#">Accueil</a>›<a href="#j">5 · Joueurs</a>›<span>Bilan de groupe</span></div><h1 style="color:var(--p5)">Bilan de groupe</h1><p class="lead">Choisis un groupe ou des joueurs, la date et les tests : un nouveau bilan daté est créé dans le dossier de chacun, puis tu saisis test par test pour tout le groupe.</p>`;
+  let h = `<div class="crumb"><a href="#">Accueil</a>›<a href="#j">Joueurs</a>›<span>Bilan de groupe</span></div><h1 style="color:var(--p5)">Bilan de groupe</h1><p class="lead">Choisis un groupe ou des joueurs, la date et les tests : un nouveau bilan daté est créé dans le dossier de chacun, puis tu saisis test par test pour tout le groupe.</p>`;
   if(gbs().length) h += `<div class="sec"><h2>Bilans de groupe en cours</h2><div class="list">${[...gbs()].reverse().map(s=>`<a class="li" href="#/gbilan/${s.id}"><span class="code">${frD(s.date)}</span><span class="tt">${esc(s.nom||"Bilan de groupe")}<small>${s.jids.length} joueurs · ${s.tests.length} tests</small></span></a>`).join("")}</div></div>`;
   h += `<div class="sec"><h2>Nouveau bilan de groupe</h2>${J.length?`<div class="quick">
     ${grs.length?`<div class="f"><label for="gbg">Groupe</label><select id="gbg"><option value="">— choisir —</option>${grs.map(g=>`<option value="${g.id}" ${GB.gid===g.id?"selected":""}>${esc(g.nom)} (${g.jids.length})</option>`).join("")}</select></div>`:""}
@@ -1064,23 +1179,65 @@ function gbTests(){ const box = $("#gbt"); if(!box) return; const js = GB.jids.m
 function sessRows(s){ return s.jids.map(id=>{ const j = getP(id); if(!j) return null; const b = j.bilans.find(x=>x.id===s.bids[id]); return b ? {j, b} : null; }).filter(Boolean); }
 function showSession(s){
   const R = sessRows(s); const k = Math.max(0, Math.min(s.tests.length-1, +(s.k||0))); const t = s.tests[k];
-  let h = `<div class="crumb"><a href="#">Accueil</a>›<a href="#j">5 · Joueurs</a>›<a href="#/gbilan">Bilan de groupe</a>›<span>${frD(s.date)}</span></div>
-   <div class="dochead"><h1 style="color:var(--p5)">${esc(s.nom||"Bilan de groupe")} · ${frD(s.date)}</h1><div class="acts"><a class="ib" href="#/gbilan/${s.id}/feuille">Feuille de terrain</a><button class="ib" id="gsdel" type="button">Retirer de la liste</button></div></div>
+  let h = `<div class="crumb"><a href="#">Accueil</a>›<a href="#j">Joueurs</a>›<a href="#/gbilan">Bilan de groupe</a>›<span>${frD(s.date)}</span></div>
+   <div class="dochead"><h1 style="color:var(--p5)">${esc(s.nom||"Bilan de groupe")} · ${frD(s.date)}</h1><div class="acts"><a class="go" href="#/gbilan/${s.id}/terrain">▶ Mode terrain</a><a class="ib" href="#/gbilan/${s.id}/feuille">Feuille à imprimer</a><button class="ib" id="gsdel" type="button">Retirer de la liste</button></div></div>
    <p class="lead">${R.length} joueurs · test ${k+1} sur ${s.tests.length}. Le niveau se calcule avec le barème de chaque joueur (sexe, grille) et remplit ses lignes vides.</p>
    <div class="quick" style="margin-top:10px"><button class="ib" id="gsp" type="button" ${k<=0?"disabled":""}>‹ Précédent</button><div class="f" style="flex:1;min-width:200px"><label for="gst">Test</label><select id="gst">${s.tests.map((x,n)=>`<option value="${n}" ${n===k?"selected":""}>${n+1} · ${esc(tnom(x))}</option>`).join("")}</select></div><button class="ib" id="gsn" type="button" ${k>=s.tests.length-1?"disabled":""}>Suivant ›</button></div>`;
   if(t){ h += `<div class="fold" style="--pc:var(--${tdom(t).toLowerCase()})"><h3><a class="ref" href="${isPerso(t)?"#/test/"+t:"#d/"+t}">${esc(tnom(t))}</a>${badgeT(t)} <small class="msg">${esc(tunite(t))}</small></h3><div class="tw"><table class="jt"><thead><tr><th>Joueur</th><th>Résultat</th><th>Niveau</th></tr></thead><tbody>${R.map(({j,b})=>{ const ms = mesuresOf(t,j.sexe,ak(b)), r = b.res[t]||{}, lv = niveau(t,j.sexe,ak(b),r);
       return `<tr><td><a class="ref" href="#/joueur/${j.id}">${esc(j.nom)}</a><div class="lvtxt">${j.sexe==="F"?"F":"G"} · ${gL(b)}</div><div class="lvtxt" id="gbt_${j.id}">${lv?esc(btxt(t,j.sexe,ak(b),lv)):""}</div></td>
-      <td>${ms?ms.map(mk=>`<label class="ms">${esc(mlabel(t,mk))}<input class="inp" inputmode="decimal" autocomplete="off" data-gjid="${j.id}" data-k="${esc(mk)}" value="${esc(r[mk]??"")}"></label>`).join(""):`<span class="msg">pas de barème (${agL(ak(b))})</span>`}</td><td class="c" id="glv_${j.id}">${lv?lvB(lv):"–"}</td></tr>`; }).join("")}</tbody></table></div></div>`; }
+      <td>${mesHTML(t, j.sexe, ak(b), r, `data-gjid="${j.id}"`)}</td><td class="c" id="glv_${j.id}">${lv?lvB(lv):"–"}</td></tr>`; }).join("")}</tbody></table></div></div>`; }
   h += `<div class="fold"><h3>Avancement</h3><div class="tw"><table class="jt pg"><thead><tr><th>Joueur</th>${s.tests.map((x,n)=>`<th class="c" title="${esc(tnom(x))}">${n+1}</th>`).join("")}</tr></thead><tbody>${R.map(({j,b})=>`<tr><td>${esc(j.nom)}</td>${s.tests.map(x=>{ const lv = niveau(x,j.sexe,ak(b),b.res[x]); return `<td class="c">${lv?lvB(lv):(b.res[x]?"…":"·")}</td>`; }).join("")}</tr>`).join("")}</tbody></table></div></div>`;
   $("#main").innerHTML = h;
   const go = n => { s.k = n; save(); showSession(s); scrollTo(0,0); };
   $("#gsp").onclick = ()=>go(k-1); $("#gsn").onclick = ()=>go(k+1); $("#gst").onchange = e=>go(+e.target.value);
   const del = $("#gsdel"); del.onclick = ()=>{ if(!del.dataset.ok){ del.dataset.ok = 1; del.textContent = "Toucher encore (les bilans restent dans les dossiers)"; return; } P.gbs = gbs().filter(x=>x.id!==s.id); save(); location.hash = "/gbilan"; };
   document.querySelectorAll("input[data-gjid]").forEach(inp=>inp.oninput = ()=>{ const j = getP(inp.dataset.gjid); if(!j) return; const b = j.bilans.find(x=>x.id===s.bids[j.id]); if(!b) return;
-    setRes(j,b,t,inp.dataset.k,inp.value); if(!b.sel.includes(t)) b.sel.push(t); jsave(j); const lv = niveau(t,j.sexe,ak(b),b.res[t]); $("#glv_"+CSS.escape(j.id)).innerHTML = lv?lvB(lv):"–"; $("#gbt_"+CSS.escape(j.id)).textContent = lv?btxt(t,j.sexe,ak(b),lv):""; });
+    setRes(j,b,t,inp.dataset.k,inp.value); mresUpd(inp, t, b.res[t]); if(!b.sel.includes(t)) b.sel.push(t); jsave(j); const lv = niveau(t,j.sexe,ak(b),b.res[t]); $("#glv_"+CSS.escape(j.id)).innerHTML = lv?lvB(lv):"–"; $("#gbt_"+CSS.escape(j.id)).textContent = lv?btxt(t,j.sexe,ak(b),lv):""; });
+}
+/* MODE TERRAIN : un test, les joueurs l'un après l'autre ; gros champs, chrono ou compteur, enregistrement immédiat, niveau et place dans le barème */
+const isTime = u => /^\s*(s|sec|secondes?|min:s|mn:s|ms)\s*$/i.test(u||"");
+const isCount = u => /r[ée]p|nb|nombre|touch|coups?|balles?|pts|points?|sauts?|cibles?|tours?/i.test(u||"");
+let CHR = null;
+function terrUnit(t, k){ return isPerso(t) ? messOf(t,k).u : (X.u[t]||""); }
+function posBar(t, sx, age, lv){ return `<div class="pos4">${[1,2,3,4].map(n=>`<div class="p n${n}${lv===n?" on":""}"><b>${n} · ${NVN[n]}</b><span>${esc(btxt(t,sx,age,n))}</span></div>`).join("")}</div>`; }
+function showTerrain(s){
+  const R = sessRows(s); if(!R.length || !s.tests.length){ location.hash = "/gbilan/"+s.id; return; }
+  const k = Math.max(0, Math.min(s.tests.length-1, +(s.k||0))), t = s.tests[k];
+  let pi = Math.max(0, Math.min(R.length-1, +(s.p||0))); const {j, b} = R[pi], age = ak(b), r = b.res[t]||{}, lv = niveau(t,j.sexe,age,r);
+  const done = x => niveau(t, x.j.sexe, ak(x.b), x.b.res[t]) != null || resKeys(x.b.res[t]).length>0;
+  const ms = mesuresOf(t, j.sexe, age)||[], u = ms.length ? terrUnit(t, ms[0]) : tunite(t), last = pi===R.length-1, lastT = k===s.tests.length-1;
+  const tool = isTime(u) ? "chrono" : isCount(u) ? "compteur" : "";
+  let h = `<div class="crumb"><a href="#/gbilan/${s.id}">‹ ${esc(s.nom||"Bilan de groupe")} · ${frD(s.date)}</a></div>
+   <div class="terr" style="--pc:var(--${tdom(t).toLowerCase()})">
+   <div class="quick"><div class="f" style="flex:1;min-width:200px"><label for="trt">Test ${k+1} sur ${s.tests.length}</label><select id="trt">${s.tests.map((x,n)=>`<option value="${n}" ${n===k?"selected":""}>${n+1} · ${esc(tnom(x))}</option>`).join("")}</select></div><a class="ib" href="${isPerso(t)?"#/test/"+t:"#d/"+t}">Protocole</a></div>
+   <div class="chips">${R.map((x,n)=>`<button type="button" class="chip${n===pi?" on":""}${done(x)?" ok":""}" data-p="${n}">${done(x)?"✓ ":""}${esc(x.j.nom.split(" ")[0])}</button>`).join("")}</div>
+   <div class="tcard"><div class="tname">${esc(j.nom)}</div><div class="msg">${j.sexe==="F"?"fille":"garçon"} · ${gL(b)} · joueur ${pi+1} sur ${R.length}</div>
+   <div class="tin">${mesHTML(t, j.sexe, age, r, `data-tj="${j.id}"`, true)}</div>
+   ${tool==="chrono"?`<div class="tools ttool"><button type="button" class="go tbtn" id="trc">${CHR?"■ Arrêter":"▶ Chrono"}</button><span class="tchr" id="trcv">${CHR?"…":"0,00 s"}</span></div>`:""}
+   ${tool==="compteur"?`<div class="tools ttool"><button type="button" class="ib tbtn" id="trm">−1</button><button type="button" class="go tbtn" id="trp">+1</button><span class="msg">ajoute au champ choisi</span></div>`:""}
+   <div class="tres" id="trres">${lv?`Niveau ${lvB(lv)} · ${esc(NVN[lv])}`:`<span class="msg">Saisis le résultat : le niveau s'affiche aussitôt (enregistré sur l'appareil).</span>`}</div>
+   <div id="trpos">${ms.length?posBar(t,j.sexe,age,lv):""}</div></div>
+   <div class="tools tnav"><button type="button" class="ib tbtn" id="trprev" ${pi===0&&k===0?"disabled":""}>‹ Précédent</button><button type="button" class="go tbtn" id="trnext">${!last?"Joueur suivant ›":!lastT?"Test suivant ›":"Terminé ✓"}</button></div></div>`;
+  $("#main").innerHTML = h;
+  const go = (nk, np) => { if(CHR){ clearInterval(CHR.iv); CHR = null; } s.k = nk; s.p = np; save(); showTerrain(s); scrollTo(0,0); const f = document.querySelector(".tin input"); if(f && matchMedia("(pointer:fine)").matches) f.focus(); };
+  $("#trt").onchange = e=>go(+e.target.value, 0);
+  document.querySelectorAll("[data-p]").forEach(c=>c.onclick = ()=>go(k, +c.dataset.p));
+  $("#trprev").onclick = ()=> pi>0 ? go(k, pi-1) : go(k-1, R.length-1);
+  $("#trnext").onclick = ()=> !last ? go(k, pi+1) : !lastT ? go(k+1, 0) : (location.hash = "/gbilan/"+s.id);
+  const ins = [...document.querySelectorAll(".tin input")]; let cur = ins.find(x=>!x.value) || ins[0];
+  const upd = ()=>{ const lv2 = niveau(t,j.sexe,age,b.res[t]); $("#trres").innerHTML = lv2?`Niveau ${lvB(lv2)} · ${esc(NVN[lv2])}`:`<span class="msg">Résultat incomplet.</span>`; if(ms.length) $("#trpos").innerHTML = posBar(t,j.sexe,age,lv2);
+    const ch = document.querySelectorAll(".chip")[pi], ok = !!lv2 || resKeys(b.res[t]).length>0; ch.classList.toggle("ok", ok); ch.textContent = (ok?"✓ ":"")+j.nom.split(" ")[0]; };
+  ins.forEach((inp,n)=>{ inp.onfocus = ()=>{ cur = inp; };
+    inp.oninput = ()=>{ setRes(j,b,t,inp.dataset.k,inp.value); mresUpd(inp, t, b.res[t]); if(!b.sel.includes(t)) b.sel.push(t); jsave(j); upd(); };
+    inp.onkeydown = e=>{ if(e.key==="Enter"){ e.preventDefault(); if(ins[n+1]) ins[n+1].focus(); else $("#trnext").click(); } }; });
+  const put = v => { if(!cur) return; cur.value = String(v).replace(".",","); cur.oninput(); };
+  const c = $("#trc"); if(c) c.onclick = ()=>{ if(!CHR){ const t0 = performance.now(); CHR = {t0, iv:setInterval(()=>{ const e = $("#trcv"); if(e) e.textContent = ((performance.now()-t0)/1000).toFixed(2).replace(".",",")+" s"; },50)}; c.textContent = "■ Arrêter"; return; }
+    clearInterval(CHR.iv); const v = Math.round((performance.now()-CHR.t0)/10)/100; CHR = null; c.textContent = "▶ Chrono"; $("#trcv").textContent = String(v).replace(".",",")+" s"; put(v); const nx = ins[ins.indexOf(cur)+1]; if(nx && !nx.value) cur = nx; };
+  const cnt = d => { const v = (parseN(cur&&cur.value)||0)+d; put(Math.max(0,v)); };
+  const pB = $("#trp"); if(pB){ pB.onclick = ()=>cnt(1); $("#trm").onclick = ()=>cnt(-1); }
 }
 function showFeuille(s){ const R = sessRows(s);
-  let h = `<div class="crumb noprint"><a href="#/gbilan/${s.id}">‹ Saisie du bilan de groupe</a></div><div class="dochead"><h1>Feuille de terrain · ${esc(s.nom||"Bilan de groupe")} · ${frD(s.date)}</h1><div class="acts noprint"><button class="ib" id="fprint" type="button">Imprimer ou PDF</button></div></div>
+  let h = `<div class="crumb noprint"><a href="#/gbilan/${s.id}">‹ Saisie du bilan de groupe</a></div><div class="dochead"><h1>Feuille à imprimer · ${esc(s.nom||"Bilan de groupe")} · ${frD(s.date)}</h1><div class="acts noprint"><button class="grun-pdf" id="fprint" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M12 11v6M9 14l3 3 3-3"/></svg><span>Feuille PDF</span></button></div></div>
    <p class="msg">Note les résultats à la main, puis saisis-les test par test dans l'appli. Repère du niveau 3 = barème de la grille du joueur.</p>`;
   h += s.tests.map((t,n)=>{ const ms = [...new Set(R.flatMap(({j,b})=>mesuresOf(t,j.sexe,ak(b))||[]))];
     return `<div class="fold fsheet"><h3>${n+1} · ${esc(tnom(t))} <small class="msg">${esc(tunite(t))}</small></h3><div class="tw"><table class="jt fs"><thead><tr><th>Joueur</th><th>Grille</th>${(ms.length?ms:["Résultat"]).map(k=>`<th>${esc(mlabel(t,k))}</th>`).join("")}<th>Niveau 3</th></tr></thead><tbody>${R.map(({j,b})=>`<tr><td>${esc(j.nom)}</td><td>${j.sexe} ${ak(b)}</td>${(ms.length?ms:["x"]).map(()=>`<td class="blank"></td>`).join("")}<td><small>${esc(btxt(t,j.sexe,ak(b),3)||"–")}</small></td></tr>`).join("")}</tbody></table></div></div>`; }).join("");
@@ -1105,12 +1262,13 @@ function showTestPerso(id, hint){
   const col = `var(--${(t.dom||"pp").toLowerCase()})`; document.documentElement.style.setProperty("--acc", col); const m = $("#main"); m.style.setProperty("--pc", col);
   const uses = {F:[],G:[]}; for(const sx of ["F","G"]) for(const a of AGES) if(seuilsOf(id,sx,a)) (t.lignes||[]).forEach(n=>{ if((X.g[gcode(sx,a,t.dom)]||[])[n-1]) uses[sx].push([a,n]); });
   m.innerHTML = `<div class="crumb"><a href="#">Accueil</a>›<a href="#p/3">3 · Tests</a>›<a href="#/mestests">Mes tests</a></div>
-   <div class="dochead"><h1>${t.prio?"★ ":""}${esc(t.nom)} <span class="bdg">mon test</span></h1><div class="acts">${RO()?"":`<a class="ib" href="#/test-edit/${id}">Modifier</a>`}${t.vid?`<a class="ib" href="${esc(t.vid)}" target="_blank" rel="noopener">▶ Vidéo</a>`:""}</div></div>
+   <div class="dochead"><h1>${t.prio?"★ ":""}${esc(t.nom)} <span class="bdg">mon test</span></h1><div class="acts">${RO()?"":`<a class="ib" href="#/test-edit/${id}">Modifier</a>`}${t.vid?`<a class="ib" href="${esc(t.vid)}" target="_blank" rel="noopener">▶ Vidéo</a>`:""}<button class="grun-pdf" id="tpdf" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M12 11v6M9 14l3 3 3-3"/></svg><span>Test PDF</span></button></div></div>
    <div class="crumb" style="margin-top:4px">${id} · ${DOMN[t.dom]||""} · ligne${(t.lignes||[]).length>1?"s":""} ${(t.lignes||[]).map(n=>n+" · "+esc(LIGNES[t.dom][n-1]||"")).join(" ; ")}</div>
    <article class="doc"><section class="ess"><h2>L'essentiel</h2>${t.protocole?`<p><b>Protocole.</b> ${esc(t.protocole).replace(/\n/g,"<br>")}</p>`:""}${t.materiel?`<p><b>Matériel.</b> ${esc(t.materiel)}</p>`:""}
-   <p><b>Mesure${pmes(t).length>1?"s":""}.</b> ${pmes(t).map(x=>esc(x.nom)+(x.unite?" ("+esc(x.unite)+")":"")).join(" ; ")} · ${t.sens==="petit"?"plus petit = meilleur":"plus grand = meilleur"}</p></section>
+   <p><b>Mesure${pmes(t).length>1?"s":""}.</b> ${pmes(t).map(x=>esc(x.nom)+(x.unite?" ("+esc(x.unite)+")":"")+(x.essais>1?" · "+x.essais+" essais, "+(x.calc==="mean"?"moyenne retenue":"meilleur retenu"):"")).join(" ; ")} · ${t.sens==="petit"?"plus petit = meilleur":"plus grand = meilleur"}</p></section>
    ${baremeTable(id,"F")}${baremeTable(id,"G")}
    ${uses.F.length||uses.G.length?`<h3>Dans les grilles</h3>${["F","G"].map(sx=>uses[sx].length?`<p><b>${sx==="F"?"Filles":"Garçons"} :</b> ${uses[sx].map(([a,n])=>`<a class="ref" href="#/ligne/${t.dom}${n}/${sx}/${a}">${a} ans</a>`).join(" · ")}</p>`:"").join("")}`:`<p class="msg">Pas encore de barème : ajoute des seuils pour qu'il apparaisse dans les grilles.</p>`}</article>`;
+  $("#tpdf").onclick = ()=>print();
   if(hint && hint.startsWith("b")) goBareme(hint.slice(1));
 }
 /* éditeur (test perso ou modification d'un test d'origine) */
@@ -1147,7 +1305,7 @@ function renderTE(){
     <div class="f"><label>Lignes de grille</label><div class="lchk">${LIGNES[t.dom].map((n,i)=>`<label><input type="checkbox" data-tl="${i+1}" ${t.lignes.includes(i+1)?"checked":""}> ${t.dom}${i+1} · ${esc(n)}</label>`).join("")}</div></div>`}
     <div class="f"><label for="tepr">${orig?"Ta version du protocole (s'ajoute à la fiche d'origine)":"Protocole"}</label><textarea id="tepr" class="inp ta" placeholder="Installation, déroulement, consignes, essais…">${esc(t.protocole)}</textarea></div>
     <div class="row2"><div class="f" style="flex:1"><label for="tem">Matériel</label><input id="tem" class="inp" value="${esc(t.materiel)}"></div><div class="f" style="flex:1"><label for="tev">Vidéo (lien)</label><input id="tev" class="inp" type="url" value="${esc(t.vid)}" placeholder="https://…"></div></div>
-    ${orig?"":`<div class="f"><label>Mesures</label><div id="tems">${t.mesures.map((x,n)=>`<div class="mrow"><input class="inp" data-mn="${n}" value="${esc(x.nom)}" placeholder="Nom de la mesure" aria-label="Nom de la mesure ${n+1}"><input class="inp" data-mu="${n}" value="${esc(x.unite||"")}" placeholder="unité" style="width:80px" aria-label="Unité"><select data-msens="${n}" aria-label="Sens"><option value="">sens du test</option><option value="grand" ${x.sens==="grand"?"selected":""}>+ grand = mieux</option><option value="petit" ${x.sens==="petit"?"selected":""}>+ petit = mieux</option></select>${t.mesures.length>1?`<button class="ib sm" type="button" data-mdelx="${n}">Retirer</button>`:""}</div>`).join("")}</div><button class="ib sm" type="button" id="temadd">+ Mesure</button><p class="msg">Avec plusieurs mesures, le niveau du test = le plus bas des niveaux des mesures.</p></div>`}
+    ${orig?"":`<div class="f"><label>Mesures</label><div id="tems">${t.mesures.map((x,n)=>`<div class="mrow"><input class="inp" data-mn="${n}" value="${esc(x.nom)}" placeholder="Nom de la mesure" aria-label="Nom de la mesure ${n+1}"><input class="inp" data-mu="${n}" value="${esc(x.unite||"")}" placeholder="unité" style="width:80px" aria-label="Unité"><select data-msens="${n}" aria-label="Sens"><option value="">sens du test</option><option value="grand" ${x.sens==="grand"?"selected":""}>+ grand = mieux</option><option value="petit" ${x.sens==="petit"?"selected":""}>+ petit = mieux</option></select><select data-mess="${n}" aria-label="Nombre d'essais">${[1,2,3,4,5].map(e=>`<option value="${e}" ${(+x.essais||1)===e?"selected":""}>${e} essai${e>1?"s":""}</option>`).join("")}</select>${(+x.essais||1)>1?`<select data-mcalc="${n}" aria-label="Résultat retenu"><option value="best" ${x.calc!=="mean"?"selected":""}>on garde le meilleur</option><option value="mean" ${x.calc==="mean"?"selected":""}>on fait la moyenne</option></select>`:""}${t.mesures.length>1?`<button class="ib sm" type="button" data-mdelx="${n}">Retirer</button>`:""}</div>`).join("")}</div><button class="ib sm" type="button" id="temadd">+ Mesure</button><p class="msg">Plusieurs essais : on saisit chaque essai, l'appli garde le meilleur (ou la moyenne) et le compare au barème. Avec plusieurs mesures, le niveau du test = le plus bas des niveaux des mesures.</p></div>`}
    </div>
    <div class="sec"><h2>Barèmes</h2><p class="msg">Pour chaque âge : 3 seuils = passage au niveau 2, au niveau 3 (attendu de l'âge), au niveau 4. Laisse vide un âge où le test ne se fait pas.</p>
     <div class="quick">${t.mesures.length>1?`<div class="f"><label for="temk">Mesure</label><select id="temk">${t.mesures.map(x=>`<option value="${esc(x.k)}" ${x.k===t.mk?"selected":""}>${esc(x.nom||x.k)}</option>`).join("")}</select></div>`:""}
@@ -1168,7 +1326,9 @@ function teRead(){ const t = TE; if(t.mode==="orig"){ t.protocole = $("#tepr").v
   t.nom = $("#ten").value; t.dom = $("#ted").value; t.sens = $("#tes").value; t.prio = $("#tep").checked; t.protocole = $("#tepr").value; t.materiel = $("#tem").value; t.vid = $("#tev").value.trim();
   t.lignes = [...document.querySelectorAll("[data-tl]:checked")].map(x=>+x.dataset.tl);
   document.querySelectorAll("[data-mn]").forEach(e=>{ t.mesures[+e.dataset.mn].nom = e.value; }); document.querySelectorAll("[data-mu]").forEach(e=>{ t.mesures[+e.dataset.mu].unite = e.value; });
-  document.querySelectorAll("[data-msens]").forEach(e=>{ const x = t.mesures[+e.dataset.msens]; if(e.value) x.sens = e.value; else delete x.sens; }); }
+  document.querySelectorAll("[data-msens]").forEach(e=>{ const x = t.mesures[+e.dataset.msens]; if(e.value) x.sens = e.value; else delete x.sens; });
+  document.querySelectorAll("[data-mess]").forEach(e=>{ const x = t.mesures[+e.dataset.mess]; if(+e.value>1) x.essais = +e.value; else { delete x.essais; delete x.calc; } });
+  document.querySelectorAll("[data-mcalc]").forEach(e=>{ const x = t.mesures[+e.dataset.mcalc]; if(x.essais>1) x.calc = e.value; }); }
 function setTh(sx, a, k, s, v){ const t = TE; t.S[sx][a] = t.S[sx][a]||{}; const r = t.S[sx][a][k] = t.S[sx][a][k]||[null,null,null]; r[s] = v; if(r.every(x=>x==null)){ delete t.S[sx][a][k]; if(!Object.keys(t.S[sx][a]).length) delete t.S[sx][a]; } }
 function decs(x){ const s = String(x); return s.includes(".") ? s.split(".")[1].length : 0; }
 function bindTE(){ const t = TE, re = ()=>{ teRead(); const y = scrollY; renderTE(); scrollTo(0,y); };
@@ -1177,6 +1337,7 @@ function bindTE(){ const t = TE, re = ()=>{ teRead(); const y = scrollY; renderT
   const ad = $("#temadd"); if(ad) ad.onclick = ()=>{ teRead(); let n = t.mesures.length+1; while(t.mesures.some(x=>x.k==="m"+n)) n++; t.mesures.push({k:"m"+n, nom:"", unite:""}); re(); };
   document.querySelectorAll("[data-mdelx]").forEach(b=>b.onclick = ()=>{ teRead(); const x = t.mesures.splice(+b.dataset.mdelx,1)[0]; for(const sx of ["F","G"]) for(const a in t.S[sx]){ delete t.S[sx][a][x.k]; if(!Object.keys(t.S[sx][a]).length) delete t.S[sx][a]; } if(t.mk===x.k) t.mk = t.mesures[0].k; re(); });
   document.querySelectorAll("[data-msens]").forEach(e=>e.onchange = ()=>{ teRead(); apercu(); });
+  document.querySelectorAll("[data-mess]").forEach(e=>e.onchange = ()=>{ teRead(); re(); });
   const mk = $("#temk"); if(mk) mk.onchange = ()=>{ teRead(); t.mk = mk.value; re(); };
   document.querySelectorAll("[data-tsx]").forEach(a=>a.onclick = e=>{ e.preventDefault(); teRead(); t.sx = a.dataset.tsx; re(); });
   document.querySelectorAll("input.bi").forEach(inp=>inp.oninput = ()=>{ setTh(t.sx, inp.dataset.a, t.mk, +inp.dataset.s, parseN(inp.value)); if(inp.dataset.a===String(t.pa)) apercu(); });
@@ -1210,6 +1371,7 @@ function bindTE(){ const t = TE, re = ()=>{ teRead(); const y = scrollY; renderT
 
 /* ---------- enrichissement des documents (grilles et fiches de tests) ---------- */
 function enhanceGrid(x){ const mm = /^([FG])(\d\d)_(PP|GE|DE)$/.exec(x.c); if(!mm) return; const sx = mm[1], age = +mm[2], d = mm[3];
+  const et = document.querySelector("#doc .ess table"); if(et){ et.classList.add("cartes"); et.querySelectorAll("tbody tr").forEach(tr=>{ const c = tr.querySelector("td"); const k = c && /^(\d+)\s*·/.exec(c.textContent.trim()); if(k){ c.classList.add("lgo"); c.setAttribute("role","button"); c.tabIndex = 0; c.onclick = ()=>goLine(+k[1]); } }); }
   document.querySelectorAll("#doc details").forEach(det=>{ const s = det.querySelector("summary").textContent; const k = /^Ligne (\d+) ·/.exec(s); if(!k || /non évaluée/.test(s)) return; const n = +k[1];
     const h4 = [...det.querySelectorAll("h4")].find(e=>/^Tests de la ligne/.test(e.textContent)); const tb = h4 && h4.nextElementSibling && h4.nextElementSibling.querySelector("tbody");
     if(tb){ tb.querySelectorAll("tr").forEach(tr=>{ const a = tr.querySelector('a.ref[href^="#d/T-"]'); if(!a) return; const t = a.getAttribute("href").split("/")[1]; const o = tov(t); if(!o) return;

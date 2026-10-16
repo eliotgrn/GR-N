@@ -24,6 +24,44 @@ body.grun-has-nav{padding-bottom:calc(var(--nav-h) + env(safe-area-inset-bottom,
 .grun-relais a,.grun-relais button{color:#fff;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.35);border-radius:8px;
   min-height:36px;padding:0 12px;display:inline-flex;align-items:center;text-decoration:none;font:inherit;white-space:nowrap}
 .grun-mod #back{visibility:visible!important}
+/* mode simple / mode expert (GRUN.expert) : « xp » = réservé au mode expert ; « xs » = seulement en mode simple */
+html.grun-simple .xp{display:none!important}
+html.grun-expert .xs{display:none!important}
+/* « Plus d'options » : réglages fins et actions rares, repliés (même aspect dans tous les modules) */
+details.grun-plus{margin-top:14px;border:1px solid var(--line,#D9DDE3);border-radius:12px;background:var(--panel,#fff)}
+details.grun-plus>summary{list-style:none;cursor:pointer;min-height:46px;display:flex;align-items:center;gap:8px;padding:0 14px;font:600 15px/1.2 var(--ui,system-ui,sans-serif);color:var(--mute,#5D6675)}
+details.grun-plus>summary::-webkit-details-marker{display:none}
+details.grun-plus>summary::before{content:"+";font-weight:700;width:1em;color:var(--mute,#5D6675)}
+details.grun-plus[open]>summary::before{content:"–"}
+details.grun-plus>.grun-plusb{padding:0 14px 14px;display:flex;flex-direction:column;gap:10px}
+/* Grilles : bilan en cours + un gros bouton « Créer un nouveau bilan » */
+.bil1{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;margin-top:14px;padding:12px 14px;border:1px solid var(--line,#D9DDE3);border-left:4px solid var(--acc,#0F766E);border-radius:12px;background:var(--panel,#fff)}
+.bil1 b{display:block;font-size:1.1rem}
+.bil1 small{color:var(--mute,#5D6675)}
+.go.big{min-height:46px;padding:0 18px;font-size:1.02rem}
+/* listes : colonne « code » masquée en mode simple (classe hasx sur la ligne, cx sur le code) */
+html.grun-simple .hasx{grid-template-columns:minmax(0,1fr)!important}
+html.grun-simple .cx{display:none!important}
+/* Grilles : « L'essentiel » en cartes sur téléphone ; toucher une ligne ouvre son détail */
+#doc table.cartes td.lgo{cursor:pointer;color:var(--acc,#0F766E);font-weight:700}
+@media (max-width:640px){
+  #doc table.cartes,#doc table.cartes tbody,#doc table.cartes tr,#doc table.cartes td{display:block;width:auto!important}
+  #doc table.cartes thead{display:none}
+  #doc table.cartes tr{padding:10px 12px;border-bottom:1px solid var(--line,#D9DDE3)}
+  #doc table.cartes td{border:none!important;padding:2px 0!important}
+  #doc table.cartes td.lgo{font-size:1.05em}
+  #doc table.cartes td.lgo::after{content:" ›"}
+  #doc table.cartes td:nth-child(3)::before{content:"Test ★ : ";font-weight:600;color:var(--mute,#5D6675)}
+}
+/* lignes de grille affichées en clair : les noms longs passent à la ligne */
+.lc{white-space:normal!important;overflow-wrap:anywhere;display:inline-block;max-width:100%}
+.boxh>div{min-width:0;flex:1 1 auto}
+/* bouton PDF commun (même aspect et même libellé « … PDF » dans tous les modules) : <button class="grun-pdf"><svg/><span>Rapport PDF</span></button> */
+.grun-pdf{display:inline-flex;align-items:center;gap:7px;min-height:42px;padding:0 14px;border-radius:10px;border:1.5px solid var(--grun,#0F766E);background:var(--panel,#fff);color:var(--grun,#0F766E);font:700 15px/1 var(--ui,system-ui,sans-serif);cursor:pointer;white-space:nowrap;text-decoration:none}
+.grun-pdf svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.grun-pdf:disabled{opacity:.6}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .grun-pdf{color:#2DD4BF;border-color:#2DD4BF}}
+:root[data-theme="dark"] .grun-pdf{color:#2DD4BF;border-color:#2DD4BF}
 </style>
 <script src="grun.js?v=1"></script>
 <meta name="grun-module" content="warmup"></head><body><title>Choose your warm-up · GRÜN</title>
@@ -186,7 +224,7 @@ body.terrain .top,body.terrain #grun-nav{display:none!important}
 body.terrain.grun-has-nav{padding-bottom:0}
 body.terrain main{padding-block:10px 30px;max-width:1000px}
 .ter{--c:#C2410C;display:flex;flex-direction:column;gap:10px;min-height:calc(100vh - 40px)}
-.terh{display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:16px;color:var(--mute);font-weight:600}
+.terh{display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:16px;color:var(--mute);font-weight:600}.terh .ib.on{background:var(--c,#0F766E);border-color:var(--c,#0F766E);color:#fff}.launch.top1{margin-top:10px}
 .gbar{display:flex;gap:3px}.gbar i{flex:1;height:7px;border-radius:4px;background:var(--line)}
 .ph{align-self:flex-start;background:var(--c);color:#fff;border-radius:999px;padding:4px 14px;font-weight:700;font-size:clamp(14px,2.4vw,20px)}
 .ter h1{font-size:clamp(34px,6.5vw,62px);line-height:1.02}
@@ -409,7 +447,7 @@ function closeSheet(){ sheet.hidden=true; sheet.innerHTML=""; document.body.clas
 sheet.addEventListener("click",e=>{ if(e.target===sheet) closeSheet(); });
 let TT=null; function toast(t){ let el=$("#toast"); if(!el){ el=document.createElement("div"); el.id="toast"; el.setAttribute("role","status"); document.body.appendChild(el); } el.textContent=t; el.hidden=false; clearTimeout(TT); TT=setTimeout(()=>el.hidden=true,2400); }
 
-/* ---------- RELAIS (poupée russe) : arrivée depuis Create my séance (ou l'accueil) ---------- */
+/* ---------- RELAIS (poupée russe) : arrivée depuis Create my session (ou l'accueil) ---------- */
 const RLK="wu_relais_v3";
 let RL=null; try{ RL=JSON.parse(sessionStorage.getItem(RLK)||"null"); }catch(e){}
 function setRL(x){ RL=x; try{ x?sessionStorage.setItem(RLK,JSON.stringify(x)):sessionStorage.removeItem(RLK); }catch(e){} }
@@ -429,7 +467,8 @@ function initRL(){
       const fam=h.famille==="cooldown"||h.type==="cooldown"?"cooldown":"warmup";
       setRL({t:h.t,fam,kw:h.kw||"",retour:h.retour||"",de:h.de||"seances",jid:h.jid||null,gid:h.gid||null,jids:h.jids||[],duree:+h.duree||null,quand:quandDe(h.apres||h.type,h.sous||h.theme),lieu:lieuDe(h.lieu),mat,rid:h.rid||null,titre:h.titre||""});
       /* le matériel de la séance (liste de la banque) sert au classement, pas au filtre : le kit GRÜN n'y figure pas objet par objet */
-      LF={type:fam,tr:RL.duree?trancheOf(RL.duree):null,lieu:RL.lieu,mat:null};
+      const aj=h.jid&&jget(h.jid)?ageOf(jget(h.jid)):(+h.age||null);
+      LF={type:fam,tr:RL.duree?trancheOf(RL.duree):null,lieu:RL.lieu,mat:null,age:ageBand(aj)};
     }
   }
 }
@@ -469,11 +508,16 @@ function scoreRL(E){ let s=0; const m=minOf(E);
   return s; }
 
 /* ---------- BIBLIOTHÈQUE ---------- */
-let LF=(()=>{ const f=ST.filt||{}; return {type:f.type==="cooldown"?"cooldown":"warmup",tr:TRN[f.tr]?f.tr:null,lieu:LIEU[f.lieu]?f.lieu:null,mat:f.mat||null}; })();
+let LF=(()=>{ const f=ST.filt||{}; return {type:f.type==="cooldown"?"cooldown":"warmup",tr:TRN[f.tr]?f.tr:null,lieu:LIEU[f.lieu]?f.lieu:null,mat:f.mat||null,age:f.age==="p"||f.age==="g"?f.age:null}; })();
+/* tranche d'âge : « p » = 4-10 ans, « g » = 11-18 ans ; un échauffement sans âges conseillés passe partout */
+const AGEB=[["p","4-10 ans"],["g","11-18 ans"]];
+function ageOk(E,b){ const c=E&&E.ages&&E.ages.conseille; if(!b||!Array.isArray(c)) return true; return b==="p"?+c[0]<=10:+c[1]>=11; }
+const ageBand=a=>a==null?null:(+a<=10?"p":"g");
 function keepLF(){ if(!rlValide()){ ST.filt=LF; save(); } }
 function passe(E){
   if(typeOf(E)!==(LF.type||"warmup")) return false;
   if(LF.tr&&trancheOf(minOf(E))!==LF.tr) return false;
+  if(LF.age&&!ageOk(E,LF.age)) return false;
   if(LF.lieu&&!lieuOf(E).includes(LF.lieu)) return false;
   const M=matOf(E);
   if(LF.mat==="none") return !M.length;
@@ -496,13 +540,15 @@ function filtresHtml(){
   const sel=Array.isArray(LF.mat)?LF.mat:[];
   return `<div class="filt" role="group" aria-label="Filtres">
    <div class="frow tabs" role="tablist">${["warmup","cooldown"].map(t=>`<button type="button" role="tab" class="tab" data-ty="${t}" aria-selected="${(LF.type||"warmup")===t}">${FAM[t].tab}</button>`).join("")}</div>
+   <div class="frow"><span class="fl">Âge</span>${t("ag","",'Tous',!LF.age)}${AGEB.map(([v,l])=>t("ag",v,l,LF.age===v)).join("")}</div>
    <div class="frow"><span class="fl">Durée</span>${t("tr","",'Toutes',!LF.tr)}${TR.map(([v,l])=>t("tr",v,l,LF.tr===v)).join("")}</div>
    <div class="frow"><span class="fl">Lieu</span>${t("li","","Partout",!LF.lieu)}${Object.entries(LIEU).map(([v,l])=>t("li",v,l,LF.lieu===v)).join("")}</div>
-   <div class="frow"><span class="fl">Matériel</span>${t("ma","","Tout",!LF.mat)}${t("ma","kit","Avec le kit complet",LF.mat==="kit")}${t("ma","none","Sans matériel",LF.mat==="none")}${KIT.map(([k,n,ic])=>t("mo",k,ic+" "+n,sel.includes(k))).join("")}</div></div>`;
+   <details class="grun-plus" ${LF.mat?"open":""}><summary>Matériel${LF.mat?" · filtré":""}</summary><div class="grun-plusb"><div class="frow">${t("ma","","Tout",!LF.mat)}${t("ma","kit","Avec le kit complet",LF.mat==="kit")}${t("ma","none","Sans matériel",LF.mat==="none")}${KIT.map(([k,n,ic])=>t("mo",k,ic+" "+n,sel.includes(k))).join("")}</div><a class="ib" href="#/kit">🎒 Le kit GRÜN</a></div></details></div>`;
 }
 function bindFiltres(){
   $$("[data-ty]").forEach(b=>b.onclick=()=>{ LF.type=b.dataset.ty; LF.tr=null; keepLF(); showLib(); });
   $$("[data-tr]").forEach(b=>b.onclick=()=>{ LF.tr=b.dataset.tr||null; keepLF(); showLib(true); });
+  $$("[data-ag]").forEach(b=>b.onclick=()=>{ LF.age=b.dataset.ag||null; keepLF(); showLib(true); });
   $$("[data-li]").forEach(b=>b.onclick=()=>{ LF.lieu=b.dataset.li||null; keepLF(); showLib(true); });
   $$("[data-ma]").forEach(b=>b.onclick=()=>{ LF.mat=b.dataset.ma||null; keepLF(); showLib(true); });
   $$("[data-mo]").forEach(b=>b.onclick=()=>{ const k=b.dataset.mo; let a=Array.isArray(LF.mat)?LF.mat.slice():[]; a=a.includes(k)?a.filter(x=>x!==k):[...a,k]; LF.mat=a.length?a:null; keepLF(); showLib(true); });
@@ -513,7 +559,7 @@ function showLib(keepScroll){
   const FM=MODL.filter(passe), FMine=MS.filter(passe), favL=[...MODL,...mine()].filter(E=>fv.has(E.id)).filter(passe);
   let h=`<h1>Choose your warm-up</h1>
    <p class="lead">${MT.length?(T==="cooldown"?`${MT.length} retour${MT.length>1?"s":""} au calme de référence, prêt${MT.length>1?"s":""} à lancer.`:`${MT.length} échauffement${MT.length>1?"s":""} performance prêt${MT.length>1?"s":""} à lancer.`)+" Choisis, lance : tout s'enchaîne seul.":(T==="cooldown"?"Les retours au calme de référence arrivent ici, rangés par durée.":"Les échauffements performance arrivent ici, rangés par durée.")}</p>
-   <div class="tools" style="margin-top:12px">${coach?`<a class="go acc" href="#/creer">+ ${F.nv}</a>`:""}<a class="ib" href="#/kit">🎒 Le kit GRÜN</a></div>
+   ${coach?`<div class="tools" style="margin-top:12px"><a class="ib" href="#/creer">+ ${F.nv}</a></div>`:""}
    ${filtresHtml()}`;
   const nb=FM.length+FMine.length;
   if(rl){
@@ -532,7 +578,7 @@ function showLib(keepScroll){
   }
   if(coach&&!rl){ const J=joueurs(); if(J.length) h+=`<section class="sec"><h2>Par joueur</h2><div class="chips">${J.map(j=>`<a class="tg" href="#/joueur/${encodeURIComponent(j.id)}">${esc(j.nom)}${(j.favWarmup||[]).length?" ♥ "+j.favWarmup.length:""}</a>`).join("")}</div></section>`; }
   main.innerHTML=h; bindFiltres();
-  $("#clr")&&($("#clr").onclick=()=>{ LF={tr:null,lieu:null,mat:null}; keepLF(); showLib(); });
+  $("#clr")&&($("#clr").onclick=()=>{ LF={type:LF.type,tr:null,lieu:null,mat:null,age:null}; keepLF(); showLib(); });
   if(keepScroll) scrollTo(0,y);
 }
 
@@ -576,16 +622,15 @@ function showFiche(id){
   info.push(box("Notes",E.notes?`<p>${esc(E.notes).replace(/\n/g,"<br>")}</p>`:""));
   main.innerHTML=`<div class="crumb"><a href="#/">Bibliothèque</a> › ${orig?FA.perf:FA.mes}</div>
    <h1>${fv.has(E.id)?'<span class="fav">♥</span> ':""}${esc(E.nom)}</h1>
+   <div class="launch top1 noprint">${rl?`<button class="go big acc" id="take" type="button">✓ Prendre pour ${esc(DE_N[RL.de]||"la séance")}</button><a class="go big" href="#/go/${encodeURIComponent(E.id)}">▶ Lancer</a>`:`<a class="go big acc" id="lan" href="#/go/${encodeURIComponent(E.id)}"${S.length?"":" aria-disabled=\"true\""}>▶ Lancer</a>`}</div>
    <div class="meta"><span><b>${esc(durLab(E))}</b></span><span>${S.length} situation${S.length>1?"s":""}</span><span>${lieuOf(E).map(l=>esc(LIEU[l]||l)).join(", ")}</span>${E.recu?`<span>Reçu${E.recu!==true?" de "+esc(E.recu):""}</span>`:""}${!orig&&E.src&&MOD[E.src]?`<span>D'après « ${esc(MOD[E.src].nom)} »</span>`:""}</div>
    <div class="pills" style="margin-top:8px">${(E.quand||[]).map(q=>`<span class="pill">${esc(quandN(q))}</span>`).join("")}${M.length?M.map(k=>`<span class="pill k">${KITICO[k]||""} ${esc(matN(k))}</span>`).join(""):`<span class="pill k">Sans matériel</span>`}</div>
    <div class="phl" aria-hidden="true">${S.map(s=>`<i style="background:${phOf(s.phase).c};width:${(s.duree/tot*100).toFixed(2)}%"></i>`).join("")}</div>
    ${E.resume?`<p class="resume">${esc(E.resume)}</p>`:""}
    ${E.ancienne?`<p class="note">Routine faite avec l'ancien générateur : elle reste jouable et modifiable ici.</p>`:""}
-   <div class="launch noprint">${rl?`<button class="go big acc" id="take" type="button">✓ Prendre pour ${esc(DE_N[RL.de]||"la séance")}</button><a class="go big" href="#/go/${encodeURIComponent(E.id)}">▶ Lancer</a>`:`<a class="go big acc" id="lan" href="#/go/${encodeURIComponent(E.id)}"${S.length?"":" aria-disabled=\"true\""}>▶ Lancer</a>`}</div>
-   <div class="acts noprint">${coach?`<button class="ib" id="mod" type="button">✎ Modifier</button><button class="ib" id="dup" type="button">⧉ Dupliquer</button>`:""}
-    <button class="ib${fv.has(E.id)?" on":""}" id="fav" type="button" aria-pressed="${fv.has(E.id)}">♥ ${fv.has(E.id)?"Favori":"Favori"}</button>
-    ${coach?`<button class="ib" id="pj" type="button">Pour un joueur…</button>`:""}<button class="ib" id="pdf" type="button">PDF</button>${coach?`<button class="ib" id="snd" type="button">📲 Envoyer au joueur</button>`:""}
-    ${coach&&!orig?`<button class="ib" id="del" type="button">Supprimer</button>`:""}</div>
+   <div class="acts noprint"><button class="ib${fv.has(E.id)?" on":""}" id="fav" type="button" aria-pressed="${fv.has(E.id)}">♥ Favori</button>${coach?`<button class="ib" id="pj" type="button">Pour un joueur…</button><button class="ib" id="mod" type="button">✎ Modifier</button>`:""}</div>
+   <details class="grun-plus noprint"><summary>Plus d'options</summary><div class="grun-plusb"><div class="acts" style="margin:0">${coach?`<button class="ib" id="dup" type="button">⧉ Dupliquer</button>`:""}${pdfBtn("pdf",FA.un==="retour au calme"?"Retour au calme PDF":"Échauffement PDF")}${coach?`<button class="ib" id="snd" type="button">📲 Envoyer au joueur</button>`:""}
+    ${coach&&!orig?`<button class="ib" id="del" type="button">Supprimer</button>`:""}</div></div></details>
    <section class="sec"><h2>Les situations <small>${S.length} · ${esc(durLab(E))}</small></h2>
     ${S.length?`<div class="sits">${S.map((s,i)=>`<details class="sit" style="--c:${phOf(s.phase).c}"><summary><span class="sn">${i+1}</span><span class="st"><b>${esc(s.n)}</b><small>${esc(phOf(s.phase).n)}</small></span><span class="sd">${fmtS(s.duree)}</span></summary><div class="sb">${sitBody(s)}</div></details>`).join("")}</div>`:`<div class="empty">Aucune situation pour l'instant${coach?" : touche « Modifier » pour en ajouter.":"."}</div>`}</section>
    <section class="sec"><h2>En détail</h2><div class="info">${info.join("")}</div></section>`;
@@ -631,7 +676,7 @@ function showEdit(id){
    ${S.map((s,i)=>`<div class="es" style="--c:${phOf(s.phase).c}" data-i="${i}">
      <div class="esh"><span class="sn">${i+1}</span><input data-n="${i}" value="${esc(s.n)}" aria-label="Nom de la situation"></div>
      <div class="esr">${phSel(i,s.phase)}<span class="secs"><button type="button" data-dm="${i}" aria-label="Moins 10 secondes">−</button><input type="number" inputmode="numeric" min="5" max="1800" step="5" data-d="${i}" value="${Math.round(s.duree)}" aria-label="Durée en secondes"><button type="button" data-dp="${i}" aria-label="Plus 10 secondes">+</button><span data-dl="${i}">${esc(fmtS(s.duree))}</span></span>
-      <span class="esb"><button type="button" class="ib sm" data-up="${i}" aria-label="Monter"${i?"":" disabled"}>↑</button><button type="button" class="ib sm" data-dn="${i}" aria-label="Descendre"${i<S.length-1?"":" disabled"}>↓</button><button type="button" class="ib sm" data-cp="${i}" aria-label="Dupliquer">⧉</button><button type="button" class="ib sm" data-rm="${i}" aria-label="Supprimer">🗑</button></span></div>
+      <span class="esb"><button type="button" class="ib sm" data-up="${i}" aria-label="Monter"${i?"":" disabled"}>↑</button><button type="button" class="ib sm" data-dn="${i}" aria-label="Descendre"${i<S.length-1?"":" disabled"}>↓</button><button type="button" class="ib sm" data-rp="${i}" aria-label="Remplacer par un exo de la banque" title="Remplacer">⇄</button><button type="button" class="ib sm" data-cp="${i}" aria-label="Dupliquer">⧉</button><button type="button" class="ib sm" data-rm="${i}" aria-label="Supprimer">🗑</button></span></div>
      <details><summary>Déroulé et consignes</summary><div class="f"><label>Déroulé</label><textarea rows="2" data-de="${i}">${esc(s.de)}</textarea></div><div class="f"><label>Consignes (une par ligne)</label><textarea rows="3" data-co="${i}">${esc((s.consignes||[]).join("\n"))}</textarea></div><div class="f"><label>Séries (facultatif)</label><input data-se="${i}" value="${esc(s.series||"")}" placeholder="ex. 2 × 10 m aller-retour"></div></details></div>`).join("")||`<div class="empty">Aucune situation : ajoute la première.</div>`}</div>
    <div class="tools" style="margin-top:10px"><button class="go" id="addb" type="button">+ Ajouter depuis la banque</button><button class="ib" id="addc" type="button">+ Créer mon exo</button></div></section>
    <section class="sec"><h2>La fiche</h2><div class="eg">
@@ -664,6 +709,7 @@ function showEdit(id){
   $$("[data-dn]").forEach(b=>b.onclick=()=>{ const i=+b.dataset.dn; if(i>=S.length-1) return; [S[i+1],S[i]]=[S[i],S[i+1]]; re(); });
   $$("[data-cp]").forEach(b=>b.onclick=()=>{ const i=+b.dataset.cp; S.splice(i+1,0,{...clone(S[i]),id:"S-"+uid()}); re(); toast("Situation dupliquée"); });
   $$("[data-rm]").forEach(b=>b.onclick=()=>{ if(!b.dataset.ok){ b.dataset.ok=1; b.textContent="Sûr ?"; return; } S.splice(+b.dataset.rm,1); re(); });
+  $$("[data-rp]").forEach(b=>b.onclick=()=>pickBanque(E,re,+b.dataset.rp));
   $("#addb").onclick=()=>pickBanque(E,re);
   $("#addc").onclick=()=>creerExo(E,re);
   $("#reset")&&($("#reset").onclick=()=>{ const b=$("#reset"); if(!b.dataset.ok){ b.dataset.ok=1; b.textContent="Toucher encore : tes changements seront remplacés"; return; } const m=MOD[E.src]; const keep={id:E.id,nom:E.nom,src:E.src,jids:E.jids,cree:E.cree}; Object.keys(E).forEach(k=>delete E[k]); Object.assign(E,clone(m),keep,{v:3}); delete E.tranche; re(); toast("Modèle d'origine remis"); });
@@ -680,22 +726,26 @@ function phaseExo(e){ const w=e.w||{};
   if(TY==="cooldown"){ const t=norm(e.n+" "+(e.s||"")), f=String(e.f||""); if(/respir|relach|calme/.test(t)) return "RE"; if(/massage|rouleau|balle sous|auto-mass/.test(t)) return "AM"; if(f.startsWith("5.1.24")||/etire|etirement|pnf/.test(t)) return "ET"; if(/^5\.2\.[2-4]/.test(f)||/excentr|coiffe|preven/.test(t)) return "PR"; if(/^5\.1\.2[1-3]/.test(f)||/mobil/.test(t)) return "MO"; return "RA"; }
   if(PH[w.et]) return w.et; const t=norm(e.n+" "+(e.f||"")); if(/5\.1\.2[1-3]|mobil|souplesse|etire/.test(t)) return "MO"; if(/5\.2\.[2-4]|gainage|activ|preven/.test(t)) return "AC"; if(/sprint|depart|saut|plio/.test(t)) return "PO"; if(/coord|rythme|echelle|reaction|appuis/.test(t)) return "CV"; return "MR"; }
 function sitDeExo(e){ const w=e.w||{}; const sec=Math.max(20,Math.min(300,Math.round((+w.dur||1)*60))); return {id:"S-"+uid(),n:e.n,duree:Math.min(sec,120),phase:phaseExo(e),de:e.de||"",consignes:coArr(e.co),series:null,mat:(Array.isArray(w.mat)?w.mat:e.m||[]).filter(Boolean),exo:e.id}; }
-function pickBanque(E,after){
+function pickBanque(E,after,ri){
   if(!BQ){ toast("Banque indisponible hors connexion pour l'instant."); return; }
   let q="", scope="w", ph="", shown=40;
   const hide=new Set(BQ.hide||[]);
   const base=BQ.ex.filter(e=>e&&e.n&&!hide.has(e.id));
-  openSheet(`<div class="shh"><b>Ajouter depuis la banque</b><button class="ib" data-close type="button" aria-label="Fermer">×</button></div>
-   <input class="srch" id="bq" type="search" placeholder="Chercher : fentes, corde, réaction…" autocomplete="off">
+  const R0=ri!=null&&E.situations[ri]?E.situations[ri]:null;
+  openSheet(`<div class="shh"><b>${R0?"Remplacer « "+esc(R0.n)+" »":"Ajouter depuis la banque"}</b><button class="ib" data-close type="button" aria-label="Fermer">×</button></div>
+   <input class="srch" id="bq" type="search" placeholder="Chercher un exo : tes exos, puis toute la banque" autocomplete="off">
    <div class="chips"><button type="button" class="tg sm" data-sc="w" aria-pressed="true">${TY==="cooldown"?"Récupération, étirements, prévention":"Jeux d'échauffement"}</button><button type="button" class="tg sm" data-sc="all" aria-pressed="false">Tous les exos</button></div>
    <div class="chips" id="bph"><button type="button" class="tg sm" data-bp="" aria-pressed="true">Toutes les phases</button>${phasesDe(TY).map(k=>`<button type="button" class="tg sm" data-bp="${k}" aria-pressed="false">${phOf(k).n}</button>`).join("")}</div>
    <div id="bl"></div>`);
   const draw=()=>{ const qq=norm(q).split(/\s+/).filter(Boolean);
-    let L=base.filter(e=>(scope==="all"||(TY==="cooldown"?CDF.test(String(e.f||"")):e.w))&&(!ph||phaseExo(e)===ph));
+    const inSc=e=>scope==="all"||(TY==="cooldown"?CDF.test(String(e.f||"")):!!e.w);
+    let L=base.filter(e=>(qq.length||inSc(e))&&(!ph||phaseExo(e)===ph));   /* une recherche tapée couvre toute la banque */
     if(qq.length) L=L.filter(e=>{ const t=e._wt||(e._wt=norm(e.n+" "+(e.s||"")+" "+(e.w&&e.w.but||"")+" "+(e.ob||""))); return qq.every(w=>t.includes(w)); });
-    L.sort((a,b)=>(!!b.perso-!!a.perso)||(TY==="cooldown"?0:(!!b.w-!!a.w))||a.n.localeCompare(b.n,"fr"));
-    $("#bl").innerHTML=`<p class="msg">${L.length} résultat${L.length>1?"s":""}</p>`+L.slice(0,shown).map(e=>{ const m=(e.w&&e.w.mat)||e.m||[]; return `<div class="res"><div><b>${esc(e.n)}</b><small>${esc(phOf(phaseExo(e)).n)} · ${m.length?m.map(x=>esc(matN(x))).join(", "):"sans matériel"}${e.perso?" · mon exo":""}</small></div><button type="button" class="ib sm" data-add="${esc(e.id)}">+ Ajouter</button></div>`; }).join("")+(L.length>shown?`<button type="button" class="ib" id="bmore">Voir plus</button>`:"");
-    $$("[data-add]",sheet).forEach(b=>b.onclick=()=>{ const e=BQ.byId[b.dataset.add]; if(!e) return; E.situations.push(sitDeExo(e)); b.textContent="✓ Ajouté"; b.disabled=true; fixMine(E); saveNow(); toast("« "+e.n+" » ajouté à la fin"); });
+    L.sort((a,b)=>(!!b.perso-!!a.perso)||(inSc(b)-inSc(a))||(TY==="cooldown"?0:(!!b.w-!!a.w))||a.n.localeCompare(b.n,"fr"));
+    $("#bl").innerHTML=`<p class="msg">${L.length} résultat${L.length>1?"s":""}</p>`+L.slice(0,shown).map(e=>{ const m=(e.w&&e.w.mat)||e.m||[]; return `<div class="res"><div><b>${esc(e.n)}</b><small>${esc(phOf(phaseExo(e)).n)} · ${m.length?m.map(x=>esc(matN(x))).join(", "):"sans matériel"}${e.perso?" · mon exo":""}${qq.length&&!inSc(e)&&!e.perso?" · autre exo de la banque":""}</small></div><button type="button" class="ib sm" data-add="${esc(e.id)}">${R0?"⇄ Prendre":"+ Ajouter"}</button></div>`; }).join("")+(L.length>shown?`<button type="button" class="ib" id="bmore">Voir plus</button>`:"");
+    $$("[data-add]",sheet).forEach(b=>b.onclick=()=>{ const e=BQ.byId[b.dataset.add]; if(!e) return;
+      if(R0){ const x=sitDeExo(e); x.duree=R0.duree; x.phase=R0.phase||x.phase; E.situations[ri]=x; fixMine(E); saveNow(); toast("« "+R0.n+" » remplacé par « "+e.n+" »"); closeSheet(); return; }
+      E.situations.push(sitDeExo(e)); b.textContent="✓ Ajouté"; b.disabled=true; fixMine(E); saveNow(); toast("« "+e.n+" » ajouté à la fin"); });
     $("#bmore")&&($("#bmore").onclick=()=>{ shown+=40; draw(); }); };
   $("#bq").oninput=e=>{ q=e.target.value; shown=40; draw(); };
   $$("[data-sc]",sheet).forEach(b=>b.onclick=()=>{ scope=b.dataset.sc; $$("[data-sc]",sheet).forEach(x=>x.setAttribute("aria-pressed",x===b)); draw(); });
@@ -729,7 +779,18 @@ function creerExo(E,after){
 }
 
 /* ---------- MODE TERRAIN : tout s'enchaîne seul ---------- */
+const PDFICO='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M12 11v6M9 14l3 3 3-3"/></svg>';
+const pdfBtn=(id,lab)=>`<button type="button" class="grun-pdf" id="${id}">${PDFICO}<span>${lab}</span></button>`;   /* bouton PDF commun (grun.css .grun-pdf) */
+const pdfLab=(id,t)=>{ const b=document.getElementById(id); const sp=b&&b.querySelector("span"); if(sp) sp.textContent=t; };
 let RUN=null, ACX=null, WL=null;
+/* VOIX (mode terrain) : annonce la situation, ses séries et les décomptes ; réglage gardé dans la clé de Choose your warm-up (voix) */
+const VOIX={ ok:()=>"speechSynthesis" in window, v:null,
+  pick(){ if(this.v||!this.ok()) return this.v; const L=speechSynthesis.getVoices(); this.v=L.find(x=>/^fr[-_]FR/i.test(x.lang))||L.find(x=>/^fr/i.test(x.lang))||null; return this.v; },
+  dire(t,coupe=true){ if(!ST.voix||!this.ok()||!t) return; try{ if(coupe) speechSynthesis.cancel(); const u=new SpeechSynthesisUtterance(parler(t)); u.lang="fr-FR"; const v=this.pick(); if(v) u.voice=v; u.rate=1.02; speechSynthesis.speak(u); }catch(e){} },
+  stop(){ try{ this.ok()&&speechSynthesis.cancel(); }catch(e){} } };
+const dParle=t=>{ t=Math.round(t); const m=Math.floor(t/60), r=t%60; return (m?m+(m>1?" minutes":" minute"):"")+(m&&r?" ":"")+(r?r+" secondes":""); };
+function parler(t){ return String(t||"").replace(/(\d)\s*[×x]\s*(\d)/g,"$1 fois $2").replace(/×/g," fois ").replace(/·/g,", ").replace(/(\d+)\s*s\b/g,"$1 secondes").replace(/(\d+)\s*min\b/g,"$1 minutes").replace(/(\d+)\s*m\b/g,"$1 mètres").replace(/\brécup\b/gi,"récupération").replace(/[«»"()]/g,""); }
+document.addEventListener("visibilitychange",()=>{ if(document.visibilityState==="visible"&&RUN&&!WL) try{ navigator.wakeLock&&navigator.wakeLock.request("screen").then(w=>WL=w).catch(()=>{}); }catch(e){} });
 function tone(f,t0,d,v=0.28){ try{ ACX ||= new (window.AudioContext||window.webkitAudioContext)(); const o=ACX.createOscillator(), g=ACX.createGain(); o.frequency.value=f; o.connect(g); g.connect(ACX.destination); const t=ACX.currentTime+t0; g.gain.setValueAtTime(v,t); g.gain.exponentialRampToValueAtTime(0.001,t+d); o.start(t); o.stop(t+d+0.02); }catch(e){} }
 const bipTick=()=>tone(660,0,0.12,0.18);
 const bipDebut=()=>{ tone(1320,0,0.3); try{ navigator.vibrate&&navigator.vibrate(150); }catch(e){} };
@@ -742,14 +803,14 @@ function showGo(id,q){
   try{ if(navigator.wakeLock) navigator.wakeLock.request("screen").then(w=>WL=w).catch(()=>{}); }catch(e){}
   drawGo();
 }
-function stopRun(){ if(RUN){ clearInterval(RUN.T); RUN=null; } try{ WL&&WL.release(); }catch(e){} WL=null; }
+function stopRun(){ VOIX.stop(); if(RUN){ clearInterval(RUN.T); RUN=null; } try{ WL&&WL.release(); }catch(e){} WL=null; }
 function drawGo(){
   const R=RUN, S=R.E.situations, s=S[R.i], nx=S[R.i+1]; TY=typeOf(R.E); const c=phOf(s.phase).c;
   const e=s.exo&&BQ?BQ.byId[s.exo]:null, co=s.consignes&&s.consignes.length?s.consignes:e?coArr(e.co):[], de=s.de||(e&&e.de)||"";
   const rest=S.slice(R.i).reduce((a,x)=>a+x.duree,0)-(s.duree-R.left);
   const j=jget(R.jid), a=ageOf(j), va=R.i===0&&a!=null&&a<=13&&a>=11&&R.E.ages&&R.E.ages.variante_11_13;
   main.innerHTML=`<div class="ter" style="--c:${c}">
-   <div class="terh"><button class="ib" id="quit" type="button">✕ Quitter</button><span>${R.i+1} / ${S.length}</span><span id="rest">reste ${mmss(rest)}</span></div>
+   <div class="terh"><button class="ib" id="quit" type="button">✕ Quitter</button><span>${R.i+1} / ${S.length}</span><span id="rest">reste ${mmss(rest)}</span>${VOIX.ok()?`<button type="button" class="ib${ST.voix?" on":""}" id="tvx" aria-pressed="${!!ST.voix}" title="Annonces vocales">${ST.voix?"🔊 Voix":"🔇 Voix"}</button>`:""}</div>
    <div class="gbar" aria-hidden="true">${S.map((x,k)=>`<i style="${k<=R.i?"background:"+phOf(x.phase).c:""}"></i>`).join("")}</div>
    <span class="ph">${esc(phOf(s.phase).n)}</span>
    <h1>${esc(s.n)}</h1>
@@ -762,6 +823,9 @@ function drawGo(){
    <div id="tv" class="tvid"></div>
    <div class="nxt" id="nxt">${nx?`<small>Ensuite</small>${esc(nx.n)} · ${fmtS(nx.duree)}`:`<small>Ensuite</small>Fin de l'échauffement`}</div></div>`;
   $("#quit").onclick=()=>{ stopRun(); go("#/m/"+encodeURIComponent(R.id)); };
+  const annonce=()=>VOIX.dire(`${s.n}. ${dParle(s.duree)}.${s.series?" "+s.series+".":""}`);
+  annonce();
+  $("#tvx")&&($("#tvx").onclick=()=>{ ST.voix=!ST.voix; saveNow(); const b=$("#tvx"); b.classList.toggle("on",ST.voix); b.setAttribute("aria-pressed",ST.voix); b.textContent=ST.voix?"🔊 Voix":"🔇 Voix"; if(ST.voix) annonce(); else VOIX.stop(); });
   $("#pp").onclick=()=>{ if(R.on) pause(); else start(); };
   $("#prv").onclick=()=>step(-1,true);
   $("#nxb").onclick=()=>step(1,true);
@@ -772,10 +836,10 @@ function start(){ const R=RUN; if(!R) return; try{ ACX ||= new (window.AudioCont
   R.on=true; R.endAt=Date.now()+R.left*1000; clearInterval(R.T); R.T=setInterval(tick,200); const b=$("#pp"); if(b) b.textContent="⏸ Pause"; }
 function pause(){ const R=RUN; if(!R) return; R.on=false; clearInterval(R.T); R.left=Math.max(0,Math.ceil((R.endAt-Date.now())/1000)); const b=$("#pp"); if(b) b.textContent="▶ Reprendre"; }
 function tick(){ const R=RUN; if(!R||!R.on) return; const l=Math.max(0,Math.ceil((R.endAt-Date.now())/1000));
-  if(l!==R.left){ R.left=l; if(l<=3&&l>0) bipTick(); const c=$("#clk"); if(c){ c.textContent=mmss(l); c.classList.toggle("last",l<=5); }
+  if(l!==R.left){ R.left=l; if(l<=3&&l>0){ bipTick(); VOIX.dire(String(l)); } else if(l===10&&R.E.situations[R.i].duree>20) VOIX.dire("10 secondes"); const c=$("#clk"); if(c){ c.textContent=mmss(l); c.classList.toggle("last",l<=5); }
     const S=R.E.situations, rest=S.slice(R.i).reduce((a,x)=>a+x.duree,0)-(S[R.i].duree-l); const r=$("#rest"); if(r) r.textContent="reste "+mmss(rest);
     const nx=$("#nxt"); if(nx&&S[R.i+1]){ nx.classList.toggle("soon",l<=5); if(l<=5) nx.innerHTML=`<small>Dans ${l} s</small>${esc(S[R.i+1].n)}`; } }
-  if(l<=0){ bipFin(); step(1,false); } }
+  if(l<=0){ bipFin(); const fin=!R.E.situations[R.i+1]; step(1,false); if(fin) VOIX.dire("Terminé. Bravo."); } }
 function step(d,manual){ const R=RUN; if(!R) return; const S=R.E.situations, j=R.i+d;
   if(j<0) return;
   if(j>=S.length){ const t0=R.t0; clearInterval(R.T); finGo(R.E,R.id,t0,R.jid); return; }
@@ -813,16 +877,24 @@ function showJoueur(jid){
   if(isJ()&&jid!==meJid()){ go("#/"); return; }
   const fv=new Set(j.favWarmup||[]), F=[...MODL,...mine()].filter(E=>fv.has(E.id)), M=mine().filter(r=>(r.jids||[]).includes(jid));
   const ret=HAS?GRUN.journal.retours(jid).filter(x=>x.type==="warmup"):[];
-  main.innerHTML=`<div class="crumb"><a href="#/">Bibliothèque</a> › Joueur</div><h1>${esc(j.nom)}</h1>
-   <p class="lead">${ageOf(j)!=null?ageOf(j)+" ans · ":""}${j.sexe==="F"?"fille":"garçon"}${HAS&&!isJ()?` · <a href="${GRUN.href("joueurs","#/j/"+jid)}">dossier complet</a>`:""}</p>
-   <section class="sec"><h2>♥ Ses favoris <small>${F.length}</small></h2>${F.length?grid(F,fv):`<div class="empty">Aucun favori : sur une fiche, touche « Pour un joueur… ».</div>`}</section>
+  /* « Pour lui, maintenant » : ses favoris, sinon les échauffements conseillés à son âge (8 à 15 min d'abord) — un toucher pour lancer */
+  const a=ageOf(j), vu=new Set(F.map(E=>E.id));
+  const sug=MODL.filter(E=>typeOf(E)==="warmup"&&!vu.has(E.id)&&(a==null||!E.ages||!Array.isArray(E.ages.conseille)||(a>=+E.ages.conseille[0]&&a<=+E.ages.conseille[1])))
+    .sort((x,y)=>Math.abs(minOf(x)-12)-Math.abs(minOf(y)-12)).slice(0,Math.max(0,4-F.length));
+  const L=[...F.filter(E=>typeOf(E)==="warmup"),...sug].slice(0,6);
+  const row=E=>`<div class="jrow"><a href="#/m/${encodeURIComponent(E.id)}" style="text-decoration:none;min-width:0"><b>${fv.has(E.id)?"♥ ":""}${esc(E.nom)}</b> <span class="msg">${esc(durLab(E))}</span></a><a class="go acc" href="#/go/${encodeURIComponent(E.id)}?j=${encodeURIComponent(jid)}">▶ Lancer</a></div>`;
+  main.innerHTML=`<div class="crumb"><a href="#/">Bibliothèque</a> › Joueur</div><h1>Échauffement · ${esc(j.nom.split(" ")[0])}</h1>
+   <p class="lead">${a!=null?a+" ans · ":""}${j.sexe==="F"?"fille":"garçon"}${HAS&&!isJ()?` · <a href="${GRUN.href("joueurs","#/j/"+jid)}">son dossier</a>`:""}</p>
+   <section class="sec"><h2>Pour ${esc(j.nom.split(" ")[0])}, maintenant</h2>${L.length?`<div class="card">${L.map(row).join("")}</div>`:`<div class="empty">Aucun échauffement chargé pour l'instant.</div>`}
+    <div class="tools" style="margin-top:10px"><a class="ib" href="#/">Voir toute la bibliothèque</a></div></section>
+   ${F.length?`<section class="sec"><h2>♥ Ses favoris <small>${F.length}</small></h2>${grid(F,fv)}</section>`:""}
    ${M.length?`<section class="sec"><h2>Ses échauffements</h2>${grid(M,fv)}</section>`:""}
    <section class="sec"><h2>Ses derniers échauffements</h2>${ret.length?`<div class="card">${ret.slice(0,15).map(r=>`<div class="jrow"><span><b>${esc(r.titre||"Échauffement")}</b> <span class="msg">${frD(r.date)}</span></span><span class="msg">${r.duree||"?"} min · dureté ${r.rpe!=null?r.rpe+"/10":"–"}</span></div>`).join("")}</div>`:`<div class="empty">Aucun retour pour l'instant.</div>`}</section>`;
 }
 
 /* ---------- PDF ---------- */
 async function pdfE(E){
-  const btn=$("#pdf"); if(btn) btn.textContent="Préparation…";
+  const btn=$("#pdf"), lab0=btn?btn.textContent:"PDF"; pdfLab("pdf","Préparation…");
   TY=typeOf(E);
   try{ const d=new MiniPDF.Doc(), M=d.M, W=d.W-2*M;
     d.para(E.nom,{size:20,bold:true,after:3});
@@ -835,9 +907,9 @@ async function pdfE(E){
     blk("Objectifs",E.objectifs); blk("Avantages",E.avantages); blk("Inconvénients",E.inconvenients);
     if(E.ages&&E.ages.conseille) blk("Âges",["Conseillé de "+E.ages.conseille[0]+" à "+E.ages.conseille[1]+" ans"].concat(E.ages.variante_11_13?["Variante 11-13 ans : "+E.ages.variante_11_13]:[]));
     if(E.intensite_fin) blk("Intensité de fin",[E.intensite_fin]); if(E.principes) blk("Principes",[E.principes]); if(E.notes) blk("Notes",lines(E.notes));
-    const res=await MiniPDF.deliver(d.out(),`${TY==="cooldown"?"Retour au calme":"Echauffement"} ${E.nom.replace(/[^\w\- ]+/g,"")} ${todayIso()}.pdf`); if(btn) btn.textContent=res==="download"?"PDF téléchargé":"PDF";
-  }catch(e){ console.warn(e); if(btn) btn.textContent="Erreur PDF"; }
-  setTimeout(()=>{ const x=$("#pdf"); if(x) x.textContent="PDF"; },2500);
+    const res=await MiniPDF.deliver(d.out(),`${TY==="cooldown"?"Retour au calme":"Echauffement"} ${E.nom.replace(/[^\w\- ]+/g,"")} ${todayIso()}.pdf`); pdfLab("pdf",res==="download"?"PDF téléchargé":lab0);
+  }catch(e){ console.warn(e); pdfLab("pdf","Erreur PDF"); }
+  setTimeout(()=>pdfLab("pdf",lab0),2500);
 }
 
 /* ---------- ENVOYER AU JOUEUR : l'échauffement voyage dans un lien ---------- */
