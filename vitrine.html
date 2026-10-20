@@ -42,6 +42,8 @@ a{color:inherit}
 @keyframes appear{to{opacity:1}}
 .top{position:relative;z-index:2;display:flex;justify-content:space-between;align-items:center;padding-top:max(14px,env(safe-area-inset-top));padding-block-end:14px}
 .top .brand{font-size:30px;text-decoration:none;padding-top:6px}
+.top .icu{display:inline-flex;padding:0;width:48px;height:48px;border-radius:12px;border:1px solid var(--line);overflow:hidden}
+.top .icu svg{width:100%;height:100%;display:block}
 .top a.login{font:600 15px/1 var(--ui);text-decoration:none;border:1px solid var(--line);background:var(--panel);border-radius:999px;padding:0 18px;min-height:44px;display:inline-flex;align-items:center}
 .hero .body{position:relative;z-index:2;flex:1;display:flex;flex-direction:column;justify-content:center;padding-block:40px 64px}
 /* wordmark GRÜN : les deux points du Ü sont deux balles jaunes */
@@ -146,7 +148,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
     <path class="l net" d="M3 50 H97"/>
   </svg>
   <div class="wrap top">
-    <a class="brand wm" href="#" aria-label="GRÜN">GR<span class="u">U<i></i><i></i></span>N</a>
+    <a class="brand icu" href="#" aria-label="GRÜN"><svg viewBox="0 0 512 512" aria-hidden="true"><rect width="512" height="512" rx="116" fill="#07090A"/><g transform="translate(0 16)"><path d="M180 158 V292 A76 76 0 0 0 332 292 V158" stroke="#F2F5F0" stroke-width="78" fill="none"/><circle cx="180" cy="96" r="34" fill="#E4FF3A"/><path d="M158.9 69.5 Q178.3 96 158.9 122.5" stroke="#07090A" stroke-opacity=".35" stroke-width="4.4" fill="none" stroke-linecap="round"/><path d="M201.1 69.5 Q181.7 96 201.1 122.5" stroke="#07090A" stroke-opacity=".35" stroke-width="4.4" fill="none" stroke-linecap="round"/><circle cx="332" cy="96" r="34" fill="#E4FF3A"/><path d="M310.9 69.5 Q330.3 96 310.9 122.5" stroke="#07090A" stroke-opacity=".35" stroke-width="4.4" fill="none" stroke-linecap="round"/><path d="M353.1 69.5 Q333.7 96 353.1 122.5" stroke="#07090A" stroke-opacity=".35" stroke-width="4.4" fill="none" stroke-linecap="round"/></g></svg></a>
     <a class="login" href="index.html">Se connecter</a>
   </div>
   <div class="wrap body">

@@ -5,7 +5,7 @@
 (function () {
   "use strict";
   const G = (window.GRUN = {});
-  G.version = "1.4"; G.versionDate = "16 oct.";
+  G.version = "2.1"; G.versionDate = "design intérieur";
 
   /* ---------- stockage ---------- */
   G.load = (k, d) => { try { const v = JSON.parse(localStorage.getItem(k)); return v == null ? d : v; } catch (e) { return d; } };
@@ -24,7 +24,7 @@
     tests: "grun_tests_v1",            // {perso:[Test], over:{id:patch}}
     handoff: "grun_handoff_v1",        // passage de relais entre modules (poupée russe)
     mode: "grun_mode_v1",              // {m:"coach"|"joueur", jid}
-    reglages: "grun_reglages_v1",      // {theme, fs, nomCoach}
+    reglages: "grun_reglages_v1",      // {fs, nomCoach, expert, profil, coach…} (theme : ancien réglage, ignoré depuis 2.0)
     objectifs: "grun_objectifs_v1",    // {obj:[Objectif]}  objectifs suivis par joueur
     presences: "grun_presences_v1",    // {s:{cle:Seance de groupe pointée}}  assiduité
     // données propres aux modules (inchangées) :
@@ -59,6 +59,14 @@
     { id: "res", t: "Ressources et savoirs", s: "Veille, banque d'exercices, référentiel de programmation", c: "#1D4ED8" },
     { id: "tests", t: "Tests et profilage", s: "Grilles de compétences, tests, profil radar", c: "#6D3FC0" }
   ];
+  /* GRÜN 2.0 : la page de garde (index.html#/) ouvre 4 portes ; les anciens pôles des modules y sont rattachés (G.PORTE_DE) */
+  G.PORTES = [
+    { id: "biblio", t: "Bibliothèque", s: "Banque scientifique, exercices, référentiel", h: "#/biblio" },
+    { id: "outils", t: "Outils", s: "Create my session, Choose your warm-up, tests et profilage, Create my prog", h: "#/outils" },
+    { id: "club", t: "Club", s: "Le mode Club (en construction)", h: "#/club" },
+    { id: "perf", t: "Performance", s: "Tes joueurs, tes groupes, leurs dossiers, l'agenda", h: "#/perf" }
+  ];
+  G.PORTE_DE = { res: "biblio", create: "outils", tests: "outils", ind: "perf", acc: "perf", biblio: "biblio", outils: "outils", club: "club", perf: "perf", garde: "garde" };
   G.MODS = {
     accueil: { f: "index.html", t: "Accueil", pole: null },
     joueurs: { f: "index.html", h: "#/joueurs", t: "Individualisation", pole: "ind" },
@@ -90,12 +98,19 @@
      Réglage grun_reglages_v1.expert ; chaque module le lit par GRUN.expert(). En mode simple, tout élément de classe « xp » est masqué (grun.css). */
   G.expert = () => !!G.reglages().expert;
   G.setExpert = on => { const r = G.reglages(); r.expert = !!on; G.save(G.K.reglages, r); };
-  /* thème, taille du texte et mode expert, appliqués à chaque module */
+  /* GRÜN 2.0 : UN SEUL THÈME, SOMBRE, partout (plus de clair ni d'automatique). L'ancien réglage « theme » est ramené à "dark"
+     (sans rien d'autre : les modules qui le liraient encore appliquent donc aussi le sombre). */
+  (function themeUnique() { try { const r = G.load(G.K.reglages, null); if (r && typeof r === "object" && r.theme && r.theme !== "dark") { r.theme = "dark"; localStorage.setItem(G.K.reglages, JSON.stringify(r)); } } catch (e) {} })();
+  /* thème sombre forcé, taille du texte et mode expert, appliqués à chaque module */
   function appliquerReglages() { const r = G.reglages(); const h = document.documentElement;
-    if (r.theme === "light" || r.theme === "dark") h.setAttribute("data-theme", r.theme); else if (r.theme === "auto") h.removeAttribute("data-theme");
+    h.setAttribute("data-theme", "dark");
     if (r.fs && +r.fs !== 100) { h.style.setProperty("--grun-fs", r.fs / 100); h.style.fontSize = r.fs + "%"; }
     h.classList.toggle("grun-expert", !!r.expert); h.classList.toggle("grun-simple", !r.expert); }
   appliquerReglages();
+
+  /* ---------- WORDMARK « GRÜN » : les deux points du Ü sont deux balles jaunes (classe commune .grun-wm, grun.css) ----------
+     G.marque() → HTML ; la taille suit font-size du parent. */
+  G.marque = () => '<span class="grun-wm" role="img" aria-label="GRÜN"><span aria-hidden="true">GR</span><span class="u" aria-hidden="true">U<i></i><i></i></span><span aria-hidden="true">N</span></span>';
 
   /* ---------- NOMS EN CLAIR (aucun code interne affiché) ---------- */
   G.LIGNES = {
@@ -385,25 +400,73 @@
   /* ---------- NAVIGATION COMMUNE (barre du bas) ---------- */
   const ICO = {
     acc: '<path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"/>',
-    ind: '<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/>',
     create: '<path d="M12 5v14M5 12h14"/><rect x="3" y="3" width="18" height="18" rx="4"/>',
-    res: '<path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2z"/><path d="M4 19V5"/>',
-    tests: '<path d="M12 3l8.5 6.2-3.2 10H6.7L3.5 9.2z"/><path d="M12 8l4 3-1.5 4.5h-5L8 11z"/>'
+    tests: '<path d="M12 3l8 5v8l-8 5-8-5V8z"/><path d="M12 8l4 2.5v4L12 17l-4-2.5v-4z"/>',
+    garde: '<rect x="5.5" y="2.5" width="13" height="19" rx="1"/><path d="M5.5 12h13M8.5 7h7M8.5 17h7M12 7v3M12 14v3"/>',
+    biblio: '<path d="M4 4h4v16H4z"/><path d="M10 4h4v16h-4z"/><path d="M16.5 4.5l3.8 1-3.6 14.5-3.8-1z"/>',
+    outils: '<path d="M13 2L4 14h7l-1 8 9-12h-7z"/>',
+    club: '<circle cx="8" cy="8" r="3"/><circle cx="16.5" cy="9" r="2.5"/><path d="M2.5 20c.8-3.5 3-5.5 5.5-5.5s4.7 2 5.5 5.5"/><path d="M14 15c.8-.6 1.6-.9 2.5-.9 2.2 0 4 1.7 4.8 4.9"/>',
+    perf: '<path d="M3 17l5-5 4 4 8-9"/><path d="M15 7h5v5"/>'
+  };
+  /* GRÜN 2.1 · BARRE DU BAS CONTEXTUELLE (décision d'Eliot, 20 oct. 18 h 52) : une fois un mode choisi sur la page de garde, la barre ne montre
+     que ce mode ; on ne passe d'un mode à l'autre qu'en repassant par la page de garde (bouton « GRÜN · Accueil », toujours à gauche).
+       biblio : GRÜN · Savoirs · Exercices · Référentiel          (modules veille, banque, saisons ; index.html#/biblio)
+       outils : GRÜN · Séance · Warm-up · Tests · Programmation   (modules seances, warmup, grilles, prog ; index.html#/outils)
+       club   : GRÜN                                              (index.html#/club)
+       perf   : GRÜN · Aujourd'hui · Joueurs · « + » · Ma semaine (index.html#/perf, dossiers, groupes, Ma semaine, Réglages atteints depuis là)
+     Aucune barre sur la page de garde. Le « + » global n'existe qu'en Performance. Mode joueur : sa barre propre (Mon dossier · Ma séance · « + » · Mes tests).
+     G.nav(pole) (appel historique des modules, "res" | "create" | "tests" | "ind" | "acc") : le mode vient de la page (meta grun-module), l'onglet actif du module.
+     G.navMode(mode, onglet) : (re)dessine la barre (utilisé par l'accueil à chaque écran) ; mode null ou "garde" → pas de barre.
+     G.navCtx() : dernier mode visité (sessionStorage), pour les pages neutres (Réglages, Comment ça marche, recherche). */
+  Object.assign(ICO, {
+    veille: '<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.5"/>',
+    banque: '<circle cx="6" cy="6" r="2"/><circle cx="12" cy="6" r="2"/><circle cx="18" cy="6" r="2"/><circle cx="6" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="18" cy="12" r="2"/><circle cx="6" cy="18" r="2"/><circle cx="12" cy="18" r="2"/><circle cx="18" cy="18" r="2"/>',
+    saisons: '<path d="M5 20V15M10 20V11M15 20V7M20 20V3"/>',
+    seances: '<rect x="3" y="7" width="4" height="10" rx="1"/><rect x="9" y="7" width="8" height="10" rx="1"/><rect x="19" y="7" width="2" height="10" rx="1"/>',
+    warmup: '<path d="M2 14h4l2-3 3 7 3-12 2 8h6"/>',
+    grilles: '<polygon points="12,3 20,8 20,16 12,21 4,16 4,8"/>',
+    prog: '<rect x="4" y="5" width="16" height="15" rx="3"/><path d="M4 10h16M9 3v4M15 3v4"/>',
+    auj: '<path d="M3 17l5-5 4 4 8-9"/><path d="M15 7h5v5"/>',
+    joueurs: '<circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/>',
+    semaine: '<rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4M7.5 14h2M11 14h2M14.5 14h2M7.5 17.5h2M11 17.5h2"/>'
+  });
+  G.NAVS = {
+    biblio: [["veille", "Savoirs", "veille.html"], ["banque", "Exercices", "banque.html"], ["saisons", "Référentiel", "saisons.html"]],
+    outils: [["seances", "Séance", "seances.html"], ["warmup", "Warm-up", "warmup.html"], ["grilles", "Tests", "grilles.html"], ["prog", "Programmation", "prog.html"]],
+    club: [],
+    perf: [["auj", "Aujourd'hui", "index.html#/perf"], ["joueurs", "Joueurs", "index.html#/joueurs"], ["plus"], ["semaine", "Ma semaine", "index.html#/semaine"]]
+  };
+  G.MODE_DE = { veille: "biblio", banque: "biblio", saisons: "biblio", seances: "outils", warmup: "outils", grilles: "outils", prog: "outils", res: "biblio", create: "outils", tests: "outils", ind: "perf", acc: "perf", joueurs: "perf" };
+  G.navCtx = () => { try { return sessionStorage.getItem("grun_mode_ctx") || null; } catch (e) { return null; } };
+  const PLUSB = `<button type="button" id="grun-plus" aria-label="Créer : joueur, groupe, séance, test, exercice, note, échauffement"><span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></span></button>`;
+  G.navMode = (mode, onglet) => {
+    if (SEUL) return;
+    const old = document.getElementById("grun-nav"), J = G.isJoueur();
+    if (J) { if (old) { old.querySelectorAll("a").forEach(a => { const on = a.dataset.k === onglet; a.classList.toggle("on", on); if (on) a.setAttribute("aria-current", "page"); else a.removeAttribute("aria-current"); }); return; }
+      mode = "joueur"; }
+    if (!mode || mode === "garde" || (!G.NAVS[mode] && mode !== "joueur")) { if (old) old.remove(); document.body.classList.remove("grun-has-nav"); return; }
+    if (mode !== "joueur") try { sessionStorage.setItem("grun_mode_ctx", mode); } catch (e) {}
+    const items = mode === "joueur" ? [["acc", "Mon dossier", "index.html"], ["create", "Ma séance", "index.html#/pole/create"], ["plus"], ["tests", "Mes tests", "index.html#/pole/tests"]] : G.NAVS[mode];
+    const sig = mode + "|" + onglet;
+    if (old && old.dataset.sig === sig) return;
+    const n = old || document.createElement("nav"); n.id = "grun-nav"; n.dataset.sig = sig; n.dataset.mode = mode;
+    n.setAttribute("aria-label", { biblio: "Navigation de la bibliothèque", outils: "Navigation des outils", club: "Navigation du club", perf: "Navigation de Performance", joueur: "Navigation du joueur" }[mode]);
+    const accueil = mode === "joueur" ? "" : `<a href="index.html#/" class="nv-g" data-k="garde" aria-label="GRÜN : retour à la page de garde">${G.marque().replace('role="img" aria-label="GRÜN"', 'aria-hidden="true"')}<span>Accueil</span></a>`;
+    n.innerHTML = accueil + items.map(([k, t, h]) => k === "plus" ? PLUSB
+      : `<a href="${h}" data-k="${k}" class="${k === onglet ? "on" : ""}"${k === onglet ? ' aria-current="page"' : ""}><svg viewBox="0 0 24 24" aria-hidden="true">${ICO[k]}</svg><span>${t}</span></a>`).join("");
+    n.classList.toggle("seul", mode === "club");
+    if (!old) document.body.appendChild(n);
+    document.body.classList.add("grun-has-nav");
+    const pb = n.querySelector("#grun-plus"); if (pb) pb.onclick = () => G.plus.ouvrir();
   };
   G.nav = (actif) => {
     if (document.getElementById("grun-nav") || document.querySelector(".grun-topx")) return;
     const j = G.isJoueur(), auto = G.isAutonome();
+    const mod0 = (document.querySelector('meta[name="grun-module"]') || {}).content;
     if (!SEUL) {
-    const items = auto && !j
-      ? [["acc", "Mon dossier", "index.html"], ["create", "Create", "index.html#/pole/create"], ["plus"], ["tests", "Tests", "index.html#/pole/tests"]]
-      : j
-      ? [["acc", "Mon dossier", "index.html"], ["create", "Ma séance", "index.html#/pole/create"], ["plus"], ["tests", "Mes tests", "index.html#/pole/tests"]]
-      : [["acc", "Accueil", "index.html"], ["ind", "Joueurs", "index.html#/joueurs"], ["plus"], ["create", "Create", "index.html#/pole/create"], ["res", "Ressources", "index.html#/pole/res"], ["tests", "Tests", "index.html#/pole/tests"]];
-    const n = document.createElement("nav"); n.id = "grun-nav"; n.setAttribute("aria-label", "Pôles de GRÜN");
-    n.innerHTML = items.map(([k, t, h]) => k === "plus" ? `<button type="button" id="grun-plus" aria-label="Créer : joueur, groupe, séance, test, exercice, note, échauffement"><span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></span></button>`
-      : `<a href="${h}" class="${k === actif ? "on" : ""}" aria-label="${esc((G.POLES.find(p => p.id === k) || {}).t || t)}"><svg viewBox="0 0 24 24" aria-hidden="true">${ICO[k]}</svg><span>${t}</span></a>`).join("");
-    document.body.appendChild(n); document.body.classList.add("grun-has-nav");
-    n.querySelector("#grun-plus").onclick = () => G.plus.ouvrir();
+      if (j) G.navMode("joueur", actif);
+      else if (mod0 && mod0 !== "accueil") G.navMode(G.MODE_DE[mod0] || G.MODE_DE[actif] || "perf", mod0);
+      /* l'accueil (index.html) dessine sa barre à chaque écran : G.navMode(mode, onglet) */
     }
     /* barre du haut : « joueur en cours » + « ? » (insérés à droite de la barre de chaque page) */
     const back = document.getElementById("back"), bar = back && back.parentElement;
@@ -411,15 +474,16 @@
       x.innerHTML = `${j || auto || SEUL ? "" : `<button type="button" class="grun-chip"></button>`}<button type="button" class="grun-q" aria-label="Aide : à quoi sert cet écran ?">?</button>`;
       const cfg = bar.querySelector("#cfg"); if (cfg) bar.insertBefore(x, cfg); else bar.appendChild(x);
       x.addEventListener("click", e => { if (e.target.closest(".grun-chip")) UI.choisirCourant(); if (e.target.closest(".grun-q")) G.aide.ouvrir(); }); majChip(); }
-    /* bouton « ‹ » commun : toujours visible dans les modules ; sur l'accueil d'un module, il remonte à la page du pôle (ou à l'accueil) */
+    /* bouton « ‹ » commun : toujours visible dans les modules ; sur l'accueil d'un module, il remonte à sa porte (Bibliothèque, Outils, Performance) */
     const mod = (document.querySelector('meta[name="grun-module"]') || {}).content;
     if (mod && mod !== "accueil" && !SEUL) {
       document.documentElement.classList.add("grun-mod");
       document.addEventListener("click", e => { const b = e.target.closest && e.target.closest("#back"); if (!b) return;
         if (/^#?\/?$/.test(location.hash)) { e.stopImmediatePropagation(); e.preventDefault();
-          location.href = (actif && actif !== "acc" && !(auto && actif === "res")) ? "index.html#/pole/" + actif : "index.html"; } }, true);
+          const p = j ? (actif === "create" || actif === "tests" ? "pole/" + actif : null) : (G.MODE_DE[mod] || G.PORTE_DE[actif]);
+          location.href = p && p !== "garde" ? "index.html#/" + p : "index.html"; } }, true);
       /* « Reprendre » : le dernier contenu ouvert dans un module (titre de la page + adresse) */
-      const note = () => setTimeout(() => { if (location.hash && !/^#\/?$/.test(location.hash)) G.courant.vu(document.title.replace(/\s*·\s*GRÜN.*$/, ""), G.ici()); }, 900);
+      const note = () => setTimeout(() => { if (location.hash && !/^#\/?$/.test(location.hash)) G.courant.vu(document.title.replace(/\s*·\s*GR(?:Ü|U)N(?:ER)?.*$/, ""), G.ici()); }, 900);
       addEventListener("hashchange", note); note();
     }
   };
@@ -449,6 +513,17 @@
   G.reglages.coach = () => { const c = G.reglages().coach || {}; return { materiel: Array.isArray(c.materiel) ? c.materiel : [], lieu: c.lieu || "", creneaux: Array.isArray(c.creneaux) ? c.creneaux : [], duree: +c.duree || 60, demo: !!c.demo }; };
   G.reglages.setCoach = patch => { const r = G.reglages(); r.coach = { ...G.reglages.coach(), ...patch }; G.save(G.K.reglages, r); return r.coach; };
   G.reglages.set = patch => { const r = { ...G.reglages(), ...patch }; G.save(G.K.reglages, r); return r; };
+  /* ---------- âge et sexe de la Bibliothèque (GRÜN 2.1) : grun_reglages_v1.ageBib = {sexe:"F"|"G", age:4-18} ----------
+     G.ageBib() → {sexe, age, auto} | null : le choix mémorisé, sinon l'âge et le sexe du joueur en cours (auto:true), sinon null.
+     G.setAgeBib({sexe, age}) mémorise (null efface). G.ageBibTxt() → « Fille · 13 ans » ou « Choisir un âge ».
+     La Banque scientifique s'en servira à l'étape 2 (documents de l'âge choisi). */
+  G.ageBib = () => {
+    const a = G.reglages().ageBib; if (a && (a.sexe === "F" || a.sexe === "G") && +a.age >= 4 && +a.age <= 18) return { sexe: a.sexe, age: +a.age, auto: false };
+    const jid = G.isJoueur() ? G.mode().jid : G.isAutonome() ? G.moi() : (G.courant.get() && G.courant.get().t === "j" ? G.courant.get().id : null);
+    const j = jid && G.joueurs.get(jid), n = j && G.ageCiv(j.naissance);
+    return j && n != null ? { sexe: j.sexe === "F" ? "F" : "G", age: Math.max(4, Math.min(18, n)), auto: true } : null; };
+  G.setAgeBib = o => { const r = G.reglages(); if (o && (o.sexe === "F" || o.sexe === "G") && +o.age >= 4 && +o.age <= 18) r.ageBib = { sexe: o.sexe, age: +o.age }; else delete r.ageBib; G.save(G.K.reglages, r); return G.ageBib(); };
+  G.ageBibTxt = () => { const a = G.ageBib(); return a ? (a.sexe === "F" ? "Fille" : "Garçon") + " · " + a.age + " ans" : "Choisir un âge"; };
   /* prochain créneau habituel à partir d'aujourd'hui : {date, h, duree} | null */
   G.reglages.prochainCreneau = () => { const C = G.reglages.coach().creneaux; if (!C.length) return null; const t = new Date(G.today());
     for (let i = 0; i < 8; i++) { const d = new Date(t.getTime() + i * 864e5), dw = (d.getUTCDay() + 6) % 7; const c = C.filter(x => +x.j === dw).sort((a, b) => String(a.h).localeCompare(String(b.h)))[0]; if (c) return { date: d.toISOString().slice(0, 10), h: c.h || "", duree: +c.duree || G.reglages.coach().duree, gid: c.gid || null }; } return null; };
@@ -802,7 +877,7 @@
     const jid = o.jid || G.courant.jid(); if (jid) go(jid); else UI.choisirJoueur("Note pour qui ?", (a) => a ? go(a) : res(null), { toujours: true, groupes: false }); });
 
   /* ---------- CHIP « joueur en cours » (barre du haut) ---------- */
-  function chipHTML() { const c = G.courant.get(); return c ? `<span class="gc-av${c.t === "g" ? " g" : ""}">${esc((c.nom || "?").slice(0, 1).toUpperCase())}</span><span class="gc-nm">${esc(c.t === "j" ? prenomDe(c.joueur) : c.nom)}</span>` : `<span class="gc-av vide">+</span><span class="gc-nm">Joueur</span>`; }
+  function chipHTML() { const c = G.courant.get(); return c ? `<span class="gc-av${c.t === "g" ? " g" : ""}">${esc((c.nom || "?").slice(0, 1).toUpperCase())}</span><span class="gc-nm">${esc(c.t === "j" ? prenomDe(c.joueur) : c.nom)}</span>` : `<span class="gc-av vide"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="8" r="4"></circle><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"></path></svg></span><span class="gc-nm">Joueur</span>`; }
   UI.choisirCourant = () => { const c = G.courant.get(), R = G.courant.recents().filter(x => !c || x.id !== c.id), js = G.joueurs.all(), gs = G.groupes.all();
     const sh = UI.sheet({ titre: "Joueur ou groupe en cours", html: `<p class="gs-m">Choisi une fois, il est repris partout : séance, échauffement, bilan, programmation, note.</p>
       ${c ? `<div class="gs-cur"><b>${esc(c.nom)}</b><span>${c.t === "g" ? "groupe" : "joueur"} en cours</span><a class="gs-btn sec sm" href="${G.href("joueurs", (c.t === "g" ? "#/g/" : "#/j/") + c.id)}">Ouvrir le dossier</a><button type="button" class="gs-btn sec sm" data-cc="">Aucun</button></div>` : ""}
@@ -813,6 +888,14 @@
     sh.el.addEventListener("click", e => { const b = e.target.closest("[data-cc]"); if (!b) return; const [t, id] = b.dataset.cc.split(":"); G.courant.set(t || null, id || null); sh.fermer(true); UI.toast(id ? "En cours : " + b.textContent : "Aucun joueur en cours"); }); };
   function majChip() { $qq(".grun-chip").forEach(b => { b.innerHTML = chipHTML(); b.setAttribute("aria-label", "Joueur en cours : " + (G.courant.get() ? G.courant.get().nom : "aucun") + ". Changer"); }); }
   G.courant.onChange(majChip); G.on(G.K.joueurs, majChip); G.on(G.K.groupes, majChip);
+  /* ---------- sélecteur ÂGE + SEXE de la Bibliothèque (pastille « Fille · 13 ans ») ---------- G.ui.choisirAgeBib() → Promise<ageBib|null> */
+  UI.choisirAgeBib = () => new Promise(res => { const a = G.ageBib(); let sx = a ? a.sexe : "F", fait = false;
+    const sh = UI.sheet({ titre: "Âge et sexe", html: `<p class="gs-m">La Bibliothèque s'ouvre à cet âge. ${a && a.auto ? "Pour l'instant : l'âge du joueur en cours." : ""}</p>
+      <div class="gs-l">Sexe${seg("sxb", [["F", "Fille"], ["G", "Garçon"]], sx)}</div>
+      <div class="gs-l">Âge<div class="gs-ages">${Array.from({ length: 15 }, (_, i) => i + 4).map(n => `<button type="button" class="gs-chip" data-age="${n}" aria-pressed="${!!a && !a.auto && a.age === n}">${n} ans</button>`).join("")}</div></div>`,
+      secondaire: a && !a.auto ? [{ t: "Effacer le choix", fn: () => { G.setAgeBib(null); fait = true; return true; } }] : [], fermer: () => res(fait ? G.ageBib() : null) });
+    bindSeg(sh, (k, v) => { sx = v; const cur = G.reglages().ageBib; if (cur && cur.age) { G.setAgeBib({ sexe: sx, age: cur.age }); fait = true; } });
+    sh.el.addEventListener("click", e => { const b = e.target.closest("[data-age]"); if (!b) return; G.setAgeBib({ sexe: sx, age: +b.dataset.age }); fait = true; sh.fermer(true); UI.toast("Bibliothèque : " + G.ageBibTxt()); }); });
 
   /* ---------- AIDE « ? » : une ou deux phrases par écran ----------
      G.aide("seances", "texte") enregistre ; G.aide.ecran("seances/terrain") dit quel écran est affiché ; G.aide.montrer() ouvre la bulle.
@@ -822,10 +905,10 @@
   G.aide = (cle, texte) => { if (cle && texte) AIDE[cle] = texte; return AIDE[cle] || null; };
   G.aide.ecran = cle => { ECRAN = cle; };
   G.aide.texte = () => { const mod = modCourant(), seg0 = (location.hash.replace(/^#\/?/, "").split(/[\/?]/)[0] || "").replace(/^[a-z]$/, x => x);
-    return (ECRAN && AIDE[ECRAN]) || AIDE[mod + "/" + seg0] || AIDE[mod] || "GRÜN : tout part du joueur. Choisis un joueur en haut, touche « + » pour créer, et « ? » pour savoir à quoi sert chaque écran."; };
+    return (ECRAN && AIDE[ECRAN]) || AIDE[mod + "/" + seg0] || AIDE[mod] || "GRÜN : la page de garde ouvre 4 portes. Dans chaque porte, la barre du bas ne montre que ce mode ; « GRÜN » à gauche ramène à la page de garde. « ? » dit à quoi sert chaque écran."; };
   G.aide.montrer = () => UI.sheet({ titre: "À quoi sert cet écran ?", html: `<p class="gs-p">${esc(G.aide.texte())}</p>
-    <div class="gs-menu"><button type="button" class="gs-it" data-k="visite"><b>Visite guidée (2 min)</b><span>Les 4 pôles et la poupée russe, en 7 étapes.</span></button>
-    <a class="gs-it" href="${G.href("accueil", "#/comment")}"><b>Comment ça marche</b><span>Le schéma de GRÜN sur une page.</span></a>
+    <div class="gs-menu"><button type="button" class="gs-it" data-k="visite"><b>Visite guidée (2 min)</b><span>Les 4 portes et la poupée russe, en 6 étapes.</span></button>
+    <a class="gs-it" href="${G.href("accueil", "#/comment")}"><b>Comment ça marche</b><span>GRÜN sur une page.</span></a>
     <div class="gs-it st"><b>Mode ${G.expert() ? "Expert" : "Simple"}</b><span>${G.expert() ? "Tu vois tout : codes, barèmes détaillés, réglages fins." : "L'essentiel. Rien n'est perdu : le mode Expert montre tout."}</span>${seg("xp", [["0", "Simple"], ["1", "Expert"]], G.expert() ? "1" : "0")}</div></div>` })
     .el.addEventListener("click", function (e) { if (e.target.closest('[data-k="visite"]')) { $qq(".grun-ov").forEach(x => x.remove()); SHEETS = 0; document.documentElement.classList.remove("grun-sheet-on"); G.visite(); }
       const s = e.target.closest('[data-seg="xp"]'); if (s) { G.setExpert(s.dataset.v === "1"); this.querySelectorAll('[data-seg="xp"]').forEach(x => x.setAttribute("aria-checked", x === s)); UI.toast(s.dataset.v === "1" ? "Mode Expert : tout est visible" : "Mode Simple : l'essentiel"); } });
@@ -835,15 +918,19 @@
     return G.aide.montrer(); };
   /* textes d'aide par défaut des modules (chaque module peut les remplacer par G.aide(cle, texte)) */
   Object.entries({
-    accueil: "L'accueil : en haut, l'agenda des prochains jours (touche une séance pour la lancer ou la construire, touche « Agenda » pour la semaine complète). Puis ton joueur en cours, les 4 pôles et l'assistant.",
+    accueil: "La page de garde : 4 portes. Bibliothèque (le savoir), Outils (créer et lancer), Club (bientôt), Performance (tes joueurs et tes groupes). Le bouton rond en haut : les réglages (profil coach ou joueur, mode Simple ou Expert, sauvegarde).",
+    "accueil/biblio": "La Bibliothèque : la banque scientifique (les documents de la méthode), les exercices et le référentiel des saisons. La pastille jaune choisit l'âge et le sexe. « Plus d'options » : créer un exercice, familles, recherche, tous les modules.",
+    "accueil/outils": "Les Outils : Create my session, Choose your warm-up, Tests et profilage, Create my prog. « Plus d'options » : lancer pour un joueur ou un groupe précis, bilans, profil radar.",
+    "accueil/club": "Le mode Club arrive bientôt : pour l'instant, cette porte est en construction. « GRÜN » en bas ramène à la page de garde.",
+    "accueil/perf": "Performance : l'agenda des prochains jours (touche une séance pour la lancer ou la construire), ton joueur en cours, tes joueurs et groupes, l'assistant. En bas : Aujourd'hui, Joueurs, « + » pour créer, Ma semaine ; « GRÜN » ramène à la page de garde.",
     "accueil/semaine": "Ma semaine : l'agenda complet jour par jour, les actions conseillées (bilans à refaire, charge, profils à compléter), « Reprendre » et les alertes.",
-    "accueil/joueurs": "Tous tes joueurs et tes groupes. Touche un joueur pour ouvrir son dossier ; « + » en bas pour en créer un ou plusieurs d'un coup.",
+    "accueil/joueurs": "Tous tes joueurs et tes groupes. Touche un joueur pour ouvrir son dossier ; « + Nouveau joueur » ou le « + » en bas pour en créer un ou plusieurs d'un coup.",
     "accueil/j": "Le dossier du joueur : tout ce qui le concerne. En haut, la prochaine action conseillée ; la Frise montre tests, séances, blessures, notes et objectifs dans l'ordre.",
     "accueil/g": "Le dossier du groupe : séance, échauffement, bilan et programmation pour tous, présences, âges et maturation. Chaque joueur garde son propre dossier.",
-    "accueil/pole": "La page d'un pôle : les gros boutons mènent aux outils ; « Plus d'options » garde tous les modules et raccourcis.",
+    "accueil/pole": "Les anciennes pages des pôles mènent maintenant aux portes : Bibliothèque, Outils, Performance.",
     "accueil/recherche": "La recherche trouve tout : un prénom ouvre son dossier, « F12 » la grille filles 12 ans, « tester Tom » ou « créer séance » lance l'action.",
-    "accueil/reglages": "Tes réglages : affichage, mode Simple ou Expert, tes habitudes de coach (matériel, lieu, créneaux, durée) qui préremplissent les créations, sauvegarde et démonstration.",
-    "accueil/comment": "GRÜN en une page : les 4 pôles et la poupée russe (la programmation contient les séances, la séance contient l'échauffement).",
+    "accueil/reglages": "Tes réglages : taille du texte, mode Simple ou Expert, tes habitudes de coach (matériel, lieu, créneaux, durée) qui préremplissent les créations, sauvegarde et démonstration. GRÜN n'a qu'un thème, sombre.",
+    "accueil/comment": "GRÜN en une page : la page de garde, ses 4 portes et la poupée russe (la programmation contient les séances, la séance contient l'échauffement).",
     prog: "Create my prog : la programmation d'un joueur ou d'un groupe, d'une semaine à une saison. Chaque séance prévue se construit ensuite dans Create my session.",
     seances: "Create my session : la séance se construit seule (structure, exercices de la banque, échauffement) ; tu touches un exercice pour le changer, puis tu lances le mode terrain.",
     warmup: "Choose your warm-up : choisis la durée, ce qui suit et le lieu, et lance. L'échauffement s'enchaîne seul, chrono et vidéos compris.",
@@ -853,24 +940,23 @@
     grilles: "Grilles et tests : la grille de compétences de chaque âge, les tests (une mesure) et les bilans (une batterie de tests) qui donnent le profil radar."
   }).forEach(([k, t]) => G.aide(k, t));
 
-  /* ---------- VISITE GUIDÉE (≈ 2 min, 7 étapes) ---------- G.visite() */
-  G.SCHEMA = `<svg class="grun-schema" viewBox="0 0 320 210" role="img" aria-label="Les 4 pôles de GRÜN et la poupée russe">
-    <rect x="4" y="4" width="152" height="96" rx="12" class="s-ind"/><text x="80" y="34" class="s-t">Individualisation</text><text x="80" y="54" class="s-s">dossier du joueur</text><text x="80" y="70" class="s-s">et du groupe</text>
-    <rect x="164" y="4" width="152" height="96" rx="12" class="s-tests"/><text x="240" y="34" class="s-t">Tests et profilage</text><text x="240" y="54" class="s-s">grilles, tests, bilans,</text><text x="240" y="70" class="s-s">profil radar</text>
-    <rect x="4" y="108" width="152" height="98" rx="12" class="s-res"/><text x="80" y="138" class="s-t">Ressources</text><text x="80" y="158" class="s-s">veille, banque d'exercices,</text><text x="80" y="174" class="s-s">référentiel</text>
-    <rect x="164" y="108" width="152" height="98" rx="12" class="s-create"/><text x="240" y="126" class="s-t">Create</text>
-    <rect x="172" y="132" width="136" height="68" rx="9" class="s-d1"/><text x="180" y="146" class="s-k">programmation</text>
-    <rect x="182" y="150" width="118" height="44" rx="7" class="s-d2"/><text x="190" y="164" class="s-k">séance</text>
-    <rect x="192" y="168" width="98" height="20" rx="5" class="s-d3"/><text x="241" y="182" class="s-k c">échauffement</text></svg>`;
+  /* ---------- VISITE GUIDÉE (≈ 2 min, 6 étapes) ---------- G.visite()
+     Schéma : la page de garde en miniature (4 portes autour de GRÜN posé sur le filet). */
+  G.SCHEMA = `<svg class="grun-schema" viewBox="0 0 320 214" role="img" aria-label="La page de garde de GRÜN : 4 portes autour du filet">
+    <g class="s-court"><rect x="2" y="2" width="316" height="210" rx="2"/><path d="M2 107H96M224 107H318" class="s-net"/></g>
+    <rect x="12" y="10" width="140" height="80" rx="14" class="s-p"/><text x="82" y="46" class="s-t">Bibliothèque</text><text x="82" y="66" class="s-s">savoir, exercices</text>
+    <rect x="168" y="10" width="140" height="80" rx="14" class="s-p"/><text x="238" y="46" class="s-t">Outils</text><text x="238" y="66" class="s-s">séance, échauffement…</text>
+    <rect x="12" y="124" width="140" height="80" rx="14" class="s-p"/><text x="82" y="160" class="s-t">Club</text><text x="82" y="180" class="s-s">en construction</text>
+    <rect x="168" y="124" width="140" height="80" rx="14" class="s-p"/><text x="238" y="160" class="s-t">Performance</text><text x="238" y="180" class="s-s">joueurs, groupes</text>
+    <rect x="104" y="93" width="112" height="28" rx="10" class="s-n"/><text x="160" y="113" class="s-w">GRÜN</text></svg>`;
   G.visite = () => {
     const E = [
-      ["Bienvenue dans GRÜN", "La méthode du joueur de tennis de 4 à 18 ans, dans une seule appli : préparation physique, geste, déplacement, jusqu'à la séance. Tout reste sur ton appareil.", G.SCHEMA],
-      ["1 · Individualisation", "Tout part du joueur. Son dossier rassemble tout : fiche, croissance, tests, programmations, séances, journal, blessures, objectifs. La Frise les met dans l'ordre et une prochaine action est conseillée en haut.", ""],
-      ["2 · Create : la poupée russe", "Create my prog contient des séances ; Create my session contient un échauffement ; Choose your warm-up le construit. Chacun s'utilise seul, ou s'emboîte : tu pars de la programmation et tu reviens à la programmation.", `<div class="grun-doll"><div>Programmation<div>Séance<div>Échauffement</div></div></div></div>`],
-      ["3 · Ressources et savoirs", "La veille (les documents de la méthode), la banque d'exercices et le référentiel des saisons types. Tout ce que Create propose vient de là.", ""],
-      ["4 · Tests et profilage", "Un test, c'est une mesure ; un bilan, c'est une batterie de tests. Les résultats placent le joueur sur sa grille et dessinent son profil radar.", ""],
-      ["Le joueur en cours et le « + »", "Choisis ton joueur une fois, en haut : chaque outil le reprend. Le « + » en bas, toujours au même endroit, crée un joueur, un groupe, une séance, un bilan, un exercice, une note ou un échauffement.", `<div class="grun-demo-bar"><span class="grun-chip demo"><span class="gc-av">L</span><span class="gc-nm">Léa</span></span><span class="grun-plus-demo">+</span></div>`],
-      ["Simple ou Expert, et « ? »", "Le mode Simple montre l'essentiel ; le mode Expert montre tout (codes, barèmes, réglages fins). Rien n'est jamais retiré. Le « ? » en haut dit à quoi sert chaque écran.", ""]
+      ["Bienvenue dans GRÜN", "La méthode du joueur de tennis de 4 à 18 ans, dans une seule appli. La page de garde ouvre 4 portes ; tout reste sur ton appareil.", G.SCHEMA],
+      ["Bibliothèque", "Le savoir de la méthode : la banque scientifique (les documents), les exercices et le référentiel des saisons. Tout ce que les outils proposent vient de là.", ""],
+      ["Outils : la poupée russe", "Create my session, Choose your warm-up, Tests et profilage, Create my prog. Chacun s'utilise seul, ou s'emboîte : la programmation contient les séances, la séance contient l'échauffement.", `<div class="grun-doll"><div>Programmation<div>Séance<div>Échauffement</div></div></div></div>`],
+      ["Club et Performance", "Performance : tes joueurs et tes groupes, leur dossier complet (fiche, croissance, tests, programmations, séances, journal) et l'agenda. Le mode Club arrive bientôt.", ""],
+      ["La barre du bas et le « + »", "Une fois une porte choisie, la barre du bas ne montre que ce mode ; « GRÜN » à gauche te ramène à la page de garde. Dans Performance, le « + » crée un joueur, un groupe, une séance, un bilan, un exercice, une note ou un échauffement. Choisis ton joueur une fois : chaque outil le reprend.", `<div class="grun-demo-bar"><span class="grun-chip demo"><span class="gc-av">L</span><span class="gc-nm">Léa</span></span><span class="grun-plus-demo">+</span></div>`],
+      ["Réglages et « ? »", "Le bouton rond de la page de garde ouvre les Réglages : profil coach ou joueur, mode Simple (l'essentiel) ou Expert (tout : codes, barèmes, réglages fins), sauvegarde. Rien n'est jamais retiré. Le « ? » dit à quoi sert chaque écran.", ""]
     ];
     let i = 0; const sh = UI.sheet({ titre: "Visite guidée", large: true, html: `<div class="gv"></div>`, secondaire: [{ t: "Passer", fn: () => true }], principal: { t: "Suivant", fn: () => { if (i < E.length - 1) { i++; draw(); return false; } G.reglages.set({ visite: G.today() }); return true; } } });
     const draw = () => { const [t, x, v] = E[i]; sh.$(".gv").innerHTML = `<div class="gv-dots">${E.map((_, k) => `<i class="${k === i ? "on" : k < i ? "vu" : ""}"></i>`).join("")}</div><h3>${esc(t)}</h3><p class="gs-p">${esc(x)}</p>${v || ""}`; sh.$('[data-gs="p"]').textContent = i < E.length - 1 ? "Suivant" : "C'est parti"; };
@@ -904,7 +990,7 @@
     }[k] || (() => {}))(); }
   };
 
-  /* ---------- PREMIER LANCEMENT dans un module (sans passer par l'accueil) : rien ; l'accueil gère l'accueil en 3 étapes ---------- */
+  /* ---------- PREMIER LANCEMENT : plus de parcours de démarrage (supprimé en 2.1, demande d'Eliot) ; une appli vide s'ouvre sur la page de garde ---------- */
 
   /* ---------- typographie française (1.4) : espace insécable avant « : ; ? ! » et à l'intérieur des guillemets « », sur les textes affichés
      (nœuds de texte seulement : jamais les champs, scripts, styles ni le code). ---------- */
@@ -916,6 +1002,32 @@
     const go = () => { tout(document.body); try { new MutationObserver(M => { for (const m of M) { if (m.type === "characterData") nd(m.target); else m.addedNodes.forEach(tout); } }).observe(document.body, { childList: true, subtree: true, characterData: true }); } catch (e) {} };
     if (typeof document !== "undefined") { if (document.body) go(); else addEventListener("DOMContentLoaded", go); }
     return { texte: fixT };
+  })();
+
+  /* ---------- HÉROS : le texte reste toujours propre (vérification E1B) ----------
+     Sur chaque héros (accueil : header.hx ; modules : .vx-hero), le visuel est effacé en fondu là où se trouve le texte :
+     il reste visible AU-DESSUS du bloc de texte, ou À DROITE de la ligne de texte la plus longue (masque CSS = union des deux zones).
+     Le visuel n'est ni déplacé ni retiré ; il s'estompe seulement derrière l'étiquette, le titre, le chiffre et le sous-titre. */
+  G.heroDegager = (() => {
+    const F = 26; /* largeur du fondu, en px */
+    const un = h => {
+      const v = h.querySelector(":scope > .vx-vis, :scope > .hx-v"), t = h.querySelector(".vx-txt, .hx-t");
+      if (!v || !t || !v.offsetWidth) return;
+      if (h.matches(".sq")) { v.style.webkitMaskImage = v.style.maskImage = ""; return; } /* vignette carrée : jamais sous le texte */
+      const rg = document.createRange(), L = [];
+      t.querySelectorAll(".vx-lab, h1, .vx-num, .vx-sous, .hx-k").forEach(e => { rg.selectNodeContents(e); for (const r of rg.getClientRects()) if (r.width > 1 && r.height > 1) L.push(r); });
+      if (!L.length) return;
+      const V = v.getBoundingClientRect(), haut = Math.min(...L.map(r => r.top)) - 8 - V.top, droite = Math.max(...L.map(r => r.right)) + 14 - V.left;
+      if (haut >= V.height || droite <= 0 && haut <= 0) { v.style.webkitMaskImage = v.style.maskImage = ""; return; }
+      const m = `linear-gradient(to bottom, #000 ${Math.max(0, haut - F)}px, transparent ${Math.max(0, haut)}px), linear-gradient(to right, transparent ${Math.max(0, droite)}px, #000 ${Math.max(0, droite) + F}px)`;
+      v.style.webkitMaskImage = v.style.maskImage = m;
+    };
+    const tous = () => document.querySelectorAll(".vx-hero:not([hidden]), header.hx").forEach(un);
+    let rf = 0; const plan = () => { if (!rf) rf = requestAnimationFrame(() => { tous(); requestAnimationFrame(() => { rf = 0; tous(); }); }); };
+    const go = () => { plan(); try { new MutationObserver(plan).observe(document.body, { childList: true, subtree: true }); } catch (e) {}
+      addEventListener("resize", plan); if (document.fonts && document.fonts.ready) document.fonts.ready.then(plan); setTimeout(plan, 400); };
+    if (typeof document !== "undefined") { if (document.body) go(); else addEventListener("DOMContentLoaded", go); }
+    return tous;
   })();
 
   /* service worker commun */

@@ -24,24 +24,32 @@ body.grun-has-nav{padding-bottom:calc(var(--nav-h) + env(safe-area-inset-bottom,
 .grun-wm .u i:first-child{left:.067em}
 .grun-wm .u i+i{right:.067em}
 
-/* ---------- BARRE DU BAS : GRÜN · Bibliothèque · Outils · « + » · Club · Performance (actif en jaune) ---------- */
-#grun-nav{position:fixed;left:0;right:0;bottom:0;z-index:50;display:flex;justify-content:space-around;align-items:stretch;
-  background:#0C0F0D;border-top:1px solid var(--gx-sep);padding:0 2px env(safe-area-inset-bottom,0px)}
-#grun-nav a{flex:1 1 0;min-width:0;max-width:130px;min-height:var(--nav-h);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;
-  text-decoration:none;color:var(--gx-mute);font:600 12px/1.1 var(--gx-cond);letter-spacing:0;-webkit-tap-highlight-color:transparent}
+/* ---------- BARRE DU BAS CONTEXTUELLE (GRÜN 2.1, maquettes F2-F6) : « GRÜN · Accueil » + les onglets du mode (actif en jaune) ---------- */
+#grun-nav{position:fixed;left:0;right:0;bottom:0;z-index:50;display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);align-items:stretch;
+  background:#0C0F0D;border-top:1px solid var(--gx-sep);padding:0 max(6px,calc((100vw - 700px) / 2)) env(safe-area-inset-bottom,0px)}
+#grun-nav.seul{grid-auto-columns:minmax(0,120px);justify-content:center}
+#grun-nav a{min-width:0;min-height:var(--nav-h);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;
+  text-decoration:none;color:var(--gx-mute);font:400 11px/1.1 var(--gx-ui);letter-spacing:0;-webkit-tap-highlight-color:transparent}
 #grun-nav a span{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-#grun-nav svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
-#grun-nav a.on{color:var(--gx-y)}
-#grun-nav a.on svg{stroke-width:2}
+#grun-nav a span{letter-spacing:-.01em}#grun-nav a{padding-left:1px;padding-right:1px}
+#grun-nav svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+#grun-nav a.on{color:var(--gx-y);font-weight:600}
 #grun-nav a:active{opacity:.7}
+/* « GRÜN » (deux balles du Ü) + « Accueil » : retour à la page de garde, toujours à gauche */
+#grun-nav a.nv-g{font:800 13px/1 var(--gx-cond);letter-spacing:.06em;gap:5px}
+#grun-nav a.nv-g .grun-wm{font-size:18px;padding-top:3px;overflow:visible}
+#grun-nav a.nv-g>span:last-child,#grun-nav a.nv-g .grun-wm,#grun-nav a.nv-g .grun-wm span{overflow:visible;max-width:none}
 @media print{#grun-nav{display:none}body.grun-has-nav{padding-bottom:0}}
-/* « + » au centre de la barre du bas */
-#grun-nav #grun-plus{flex:0 0 56px;border:0;background:none;padding:0;display:flex;align-items:center;justify-content:center;min-height:var(--nav-h);cursor:pointer;-webkit-tap-highlight-color:transparent}
+/* « + » (Performance et mode joueur seulement) */
+#grun-nav #grun-plus{min-width:0;border:0;background:none;padding:0;display:flex;align-items:center;justify-content:center;min-height:var(--nav-h);cursor:pointer;-webkit-tap-highlight-color:transparent}
 #grun-nav #grun-plus span{width:46px;height:46px;border-radius:50%;background:var(--gx-y);color:var(--gx-on);display:flex;align-items:center;justify-content:center;transition:transform .1s ease}
 #grun-nav #grun-plus svg{width:24px;height:24px;stroke-width:2.4;stroke:currentColor}
 #grun-nav #grun-plus:active span{transform:scale(.92)}
-@media (max-width:400px){#grun-nav a{font-size:11.5px}}
-@media (max-width:370px){#grun-nav a{font-size:10.5px}#grun-nav #grun-plus{flex-basis:52px}#grun-nav #grun-plus span{width:42px;height:42px}}
+@media (max-width:370px){#grun-nav a{font-size:10.5px}#grun-nav #grun-plus span{width:42px;height:42px}}
+/* feuille « Âge et sexe » de la Bibliothèque */
+.gs-ages{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}
+.gs-ages .gs-chip{padding:0 4px;text-align:center;font-family:var(--gx-cond);font-weight:700;font-size:16px;letter-spacing:.02em}
+@media (max-width:360px){.gs-ages{grid-template-columns:repeat(4,minmax(0,1fr))}}
 
 /* fil « poupée russe » : bandeau de retour vers le module appelant */
 .grun-relais{position:sticky;top:0;z-index:40;display:flex;gap:10px;align-items:center;justify-content:space-between;
@@ -243,9 +251,11 @@ html.grun-mod #back::before{content:"";width:20px;height:20px;background:current
 }
 /* action principale du bas : un libellé long se coupe proprement (…) au lieu de déborder des deux côtés */
 .grun-actbar .gs-btn:only-child{display:block;line-height:50px;text-align:center;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#grun-nav[data-mode="outils"]{grid-template-columns:minmax(0,.82fr) repeat(3,minmax(0,.9fr)) minmax(0,1.38fr)}
 </style>
-<script src="grun.js?v=2.0"></script>
-<script src="assistant.js?v=2.0"></script>
+<script src="visuels.js?v=2.1"></script>
+<script src="grun.js?v=2.1"></script>
+<script src="assistant.js?v=2.1"></script>
 <meta name="grun-module" content="veille"></head><body><title>Veille de connaissances</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=Barlow:wght@400;500;600;700&display=swap">
 <style>
@@ -447,6 +457,156 @@ table{color:var(--ink)}
 .res .s{font-family:var(--ui)}
 .notes textarea{background:#1A211D;border-color:#263029;border-radius:12px}
 @media print{:root{--bg:#FFFFFF;--panel:#FFFFFF;--ink:#16202E;--mute:#5D6675;--line:#D9DDE3;--soft:#F1F3F5;--mark:#FFE58A;color-scheme:light} html,body{background:#fff!important;color:#16202E} .top{display:none}}
+/*VX-CSS-DEBUT*/
+/* ===== GRÜN · E1B « design intérieur imagé » (maquettes F1-F6 validées le 20 oct. 2026) — bloc commun, IDENTIQUE dans les 7 modules
+   (veille, banque, saisons, grilles, programmation, seances, routines) : héros, cartes illustrées, cartes d'exercice, pastilles, onglets segmentés,
+   « L'essentiel » numéroté. Visuels : window.GRUN_VIS (apps/grun/visuels.js). Source unique : RAPPORT_E1B_MODULES.md. ===== */
+:root{--vx-hd:61px}
+#vxh[hidden]{display:none!important}
+.vx-hero{position:relative;margin-top:calc(-1 * var(--vx-hd));padding-top:var(--vx-hd);min-height:calc(var(--vx-hd) + 180px);display:flex;align-items:flex-end;overflow:hidden;background:#07090A}
+.vx-hero.bas{min-height:calc(var(--vx-hd) + 128px)}
+.vx-vis{position:absolute;top:calc(var(--vx-hd) - 12px);right:0;bottom:6px;width:min(60%,520px);pointer-events:none}
+.vx-hero.large .vx-vis{top:calc(var(--vx-hd) - 24px);bottom:0;width:100%;max-width:none}
+.vx-hero.large:not(.bas){min-height:calc(var(--vx-hd) + 236px)} /* vérif E1B : place pour le visuel au-dessus du texte (le visuel s'efface derrière le texte, cf. G.heroDegager) */
+.vx-hero.bas .vx-vis{width:min(48%,400px)}
+.vx-vis svg{display:block;width:100%;height:100%}
+/* petits visuels (cartes, outils) : posés en haut à droite, au-dessus du titre (jamais sous le texte) */
+.vx-hero:not(.large):not(.sq){padding-top:calc(var(--vx-hd) + 98px);min-height:0}
+.vx-hero:not(.large):not(.sq) .vx-vis{top:calc(var(--vx-hd) - 8px);bottom:auto;height:108px;width:min(60%,380px)}
+.vx-hero.bas:not(.large):not(.sq){padding-top:calc(var(--vx-hd) + 70px)}
+.vx-hero.bas:not(.large):not(.sq) .vx-vis{height:78px}
+.vx-hero.sq{padding-top:calc(var(--vx-hd) + 128px)}
+.vx-hero.sq .vx-vis{left:max(16px,calc(50% - 534px));right:auto;top:calc(var(--vx-hd) + 2px);bottom:auto;width:112px;height:112px;border-radius:24px;background:#0B1A14;border:1px solid #1A2E24;overflow:hidden}
+.vx-in{position:relative;width:100%;max-width:1100px;margin:0 auto;padding:0 16px 18px;box-sizing:border-box}
+.vx-txt{display:flex;flex-direction:column;gap:8px;max-width:820px;text-shadow:0 0 3px #07090A,0 0 16px #07090A}
+.vx-lab{font:600 13px/1.25 var(--display,"Barlow Condensed",sans-serif);letter-spacing:.22em;text-transform:uppercase;color:#3BE08A}
+.vx-hero h1.vx-h{font-family:var(--display,"Barlow Condensed",sans-serif);font-weight:800;font-size:46px;line-height:.92;letter-spacing:.01em;text-transform:uppercase;color:#F2F5F0;margin:0;text-wrap:balance;overflow-wrap:normal}
+.vx-hero h1.vx-h.l2{font-size:34px;line-height:.95}
+.vx-hero h1.vx-h.l3{font-size:27px;line-height:1}
+.vx-hrow{display:flex;align-items:flex-end;justify-content:space-between;gap:12px}
+.vx-hrow .vx-h{min-width:0}
+.vx-num{flex:0 0 auto;font:700 22px/1 var(--display,"Barlow Condensed",sans-serif);color:#E4FF3A;letter-spacing:.02em;padding-bottom:3px;white-space:nowrap}
+.vx-sous{margin:0;font:400 14px/1.4 var(--ui,"Barlow",sans-serif);color:#9AA59E;max-width:60ch}
+.vx-sous b{font:700 18px/1 var(--display,"Barlow Condensed",sans-serif);color:#E4FF3A;letter-spacing:.02em}
+@media (min-width:700px){.vx-hero{min-height:calc(var(--vx-hd) + 200px)}.vx-hero.bas{min-height:calc(var(--vx-hd) + 140px)}.vx-hero h1.vx-h{font-size:52px}.vx-hero h1.vx-h.l2{font-size:40px}.vx-hero h1.vx-h.l3{font-size:32px}.vx-in{padding-bottom:22px}}
+/* barre du haut posée sur le héros : transparente en haut de page, pleine dès qu'on fait défiler ; le titre du module revient alors */
+body.vx-on .top{background:transparent;border-bottom-color:transparent;transition:background-color .18s,border-color .18s}
+body.vx-on.vx-sc .top{background:#07090A;border-bottom-color:#1A211D}
+body.vx-on:not(.vx-sc) .top .brand{visibility:hidden}
+body.vx-on #main{padding-top:14px}
+/* cartes illustrées (F2, F3, F6) */
+.vx-cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.vx-c{position:relative;display:block;overflow:hidden;box-sizing:border-box;min-height:172px;border-radius:22px;background:#111614;border:1px solid #263029;color:#F2F5F0;text-decoration:none;text-align:left;font:inherit;padding:0;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:transform .12s,background-color .12s}
+.vx-c:hover{background:#141A17}
+.vx-c:active{transform:scale(.985)}
+.vx-c.big,.vx-c.row,.vx-c.full{grid-column:1/-1}
+.vx-c.big{min-height:150px}
+.vx-cv{position:absolute;left:0;top:0;width:100%;height:104px;display:block}
+.vx-cv svg{display:block;width:100%;height:100%}
+.vx-c.big .vx-cv{height:100%}
+.vx-ct{position:absolute;left:16px;right:12px;bottom:14px;display:flex;flex-direction:column;gap:4px}
+.vx-c.big .vx-ct{left:18px;bottom:16px;max-width:62%}
+.vx-n{font:600 12px/1 var(--display,"Barlow Condensed",sans-serif);letter-spacing:.22em;color:#3BE08A}
+.vx-t{font-family:var(--display,"Barlow Condensed",sans-serif);font-weight:800;font-size:24px;line-height:.98;text-transform:uppercase;letter-spacing:.01em;overflow-wrap:normal;word-break:normal}
+.vx-c.big .vx-t,.vx-c.row .vx-t{font-size:26px}
+.vx-s{font:400 13px/1.35 var(--ui,"Barlow",sans-serif);color:#9AA59E;text-transform:none;letter-spacing:0}
+.vx-s b{font:700 17px/1 var(--display,"Barlow Condensed",sans-serif);color:#F2F5F0}
+.vx-c.row{min-height:124px;display:flex;align-items:center}
+.vx-c.row .vx-ct{position:static;flex:1 1 auto;min-width:0;padding:16px 8px 16px 18px}
+.vx-c.row .vx-cv{position:relative;flex:0 0 120px;width:120px;height:124px;align-self:stretch}
+.vx-c.mini{min-height:132px}.vx-c.mini .vx-cv{height:84px}.vx-c.mini .vx-t{font-size:21px}
+.vx-cards.c3m{grid-template-columns:repeat(3,minmax(0,1fr))}
+.vx-cards.c3m .vx-c{min-height:132px}.vx-cards.c3m .vx-cv{height:76px}.vx-cards.c3m .vx-ct{left:12px;right:8px;bottom:12px}.vx-cards.c3m .vx-t{font-size:19px}.vx-cards.c3m .vx-s{font-size:12px}
+.vx-c.on{border-color:#E4FF3A;box-shadow:inset 0 0 0 1px #E4FF3A}
+@media (min-width:700px){.vx-cards{grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}.vx-cards.c2{grid-template-columns:repeat(2,minmax(0,1fr))}.vx-cards.c3{grid-template-columns:repeat(3,minmax(0,1fr))}.vx-c{min-height:190px}.vx-cv{height:128px}.vx-c.big{min-height:170px}.vx-c.row{min-height:128px}.vx-c.mini{min-height:150px}.vx-c.mini .vx-cv{height:96px}}
+/* carte d'exercice (F5) : mini-schéma 84×84 à gauche, nom, « durée · joueurs · matériel » */
+.vx-exs{display:flex;flex-direction:column;gap:10px}
+@media (min-width:900px){.vx-exs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}}
+.vx-ex{position:relative;display:flex;align-items:center;gap:14px;min-height:104px;box-sizing:border-box;padding:10px 12px 10px 10px;border-radius:20px;background:#111614;border:1px solid #263029;color:#F2F5F0;text-decoration:none;-webkit-tap-highlight-color:transparent}
+.vx-ex:hover{background:#141A17}
+.vx-ex:active{transform:scale(.99)}
+.vx-ex .vx-mini{flex:0 0 84px;width:84px;height:84px;border-radius:14px;background:#0B1A14;display:block}
+.vx-ex .vx-et{display:flex;flex-direction:column;gap:4px;min-width:0;flex:1 1 auto}
+.vx-ex .vx-et b{font:600 17px/1.2 var(--ui,"Barlow",sans-serif);overflow-wrap:break-word}
+.vx-ex .vx-et small{font-size:13px;line-height:1.35;color:#9AA59E}
+.vx-ex.cmp{min-height:72px;padding:6px 10px 6px 6px;gap:12px}.vx-ex.cmp .vx-mini{flex-basis:58px;width:58px;height:58px;border-radius:12px}.vx-ex.cmp .vx-et b{font-size:15.5px}
+/* pastilles (actif jaune) et sous-filtres soulignés (F5) */
+.vx-pills,.vx-subs{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;padding:2px 0}
+.vx-pills::-webkit-scrollbar,.vx-subs::-webkit-scrollbar{display:none}
+.vx-pill{flex:0 0 auto;min-height:36px;padding:0 14px;border-radius:18px;border:1px solid #263029;background:transparent;display:inline-flex;align-items:center;gap:6px;font-family:var(--display,"Barlow Condensed",sans-serif);font-weight:700;font-size:15px;letter-spacing:.06em;text-transform:uppercase;color:#9AA59E;white-space:nowrap;text-decoration:none;cursor:pointer}
+.vx-pill:hover{color:#F2F5F0}
+.vx-pill[aria-pressed=true],.vx-pill[aria-selected=true],.vx-pill[aria-current=page],.vx-pill.on{background:#E4FF3A;border-color:#E4FF3A;color:#07090A}
+.vx-subs{gap:18px}
+.vx-sub{flex:0 0 auto;min-height:36px;padding:6px 0 4px;border:0;border-bottom:2px solid transparent;border-radius:0;background:none;font:400 15px/1.2 var(--ui,"Barlow",sans-serif);color:#9AA59E;white-space:nowrap;text-decoration:none;cursor:pointer}
+.vx-sub:hover{color:#F2F5F0}
+.vx-sub[aria-pressed=true],.vx-sub[aria-current=page],.vx-sub.on{color:#F2F5F0;font-weight:600;border-bottom-color:#E4FF3A}
+/* onglets en segment arrondi, actif jaune (F4) */
+.vx-seg{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);gap:2px;background:#111614;border:1px solid #263029;border-radius:22px;padding:4px;margin:0 0 14px}
+.vx-seg>a,.vx-seg>button{min-height:38px;border:0;border-radius:18px;background:transparent;color:#9AA59E;display:flex;align-items:center;justify-content:center;padding:0 8px;font-family:var(--display,"Barlow Condensed",sans-serif);font-weight:700;font-size:15px;letter-spacing:.04em;text-transform:uppercase;text-decoration:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer}
+.vx-seg.scroll{grid-auto-columns:max-content;overflow-x:auto;scrollbar-width:none;justify-content:start}
+.vx-seg.scroll::-webkit-scrollbar{display:none}
+.vx-seg.scroll>a,.vx-seg.scroll>button{padding:0 14px}
+.vx-seg>[aria-current=page],.vx-seg>[aria-selected=true],.vx-seg>[aria-pressed=true]{background:#E4FF3A;color:#07090A}
+/* « L'essentiel » en carte, points numérotés 01, 02… en vert (F4) */
+.vx-ess{background:#111614;border:1px solid #263029;border-radius:22px;padding:16px 18px;display:flex;flex-direction:column;gap:12px}
+.vx-lt{font-family:var(--display,"Barlow Condensed",sans-serif);font-weight:700;font-size:13px;letter-spacing:.22em;text-transform:uppercase;color:#E4FF3A}
+.vx-pt{display:flex;gap:12px;align-items:baseline}
+.vx-pt>i{flex:0 0 auto;min-width:28px;font:normal 800 22px/1 var(--display,"Barlow Condensed",sans-serif);color:#3BE08A}
+.vx-pt>span{font-size:15px;line-height:1.45}
+ol.vx-nl,ul.vx-nl{list-style:none;margin:4px 0 6px;padding:0;counter-reset:vxn;display:flex;flex-direction:column;gap:12px}
+ol.vx-nl>li,ul.vx-nl>li{counter-increment:vxn;position:relative;padding-left:42px;margin:0;max-width:72ch}
+ol.vx-nl>li::before,ul.vx-nl>li::before{content:counter(vxn,decimal-leading-zero);position:absolute;left:0;top:0;font:800 22px/1.15 var(--display,"Barlow Condensed",sans-serif);color:#3BE08A}
+/* intertitres en capitales condensées (F4) */
+.vx-sh,.sec>h2{font-family:var(--display,"Barlow Condensed",sans-serif);font-weight:800;font-size:20px;letter-spacing:.04em;text-transform:uppercase;color:#F2F5F0;margin:0 0 10px}
+.sec>h2 small{font-family:var(--ui,"Barlow",sans-serif);font-weight:500;font-size:13px;letter-spacing:0;text-transform:none;color:#9AA59E;margin-left:6px}
+.vx-row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.vx-sec{margin-top:22px}
+@media print{#vxh{display:none!important}}
+/*VX-CSS-FIN*/
+/* Veille · E1B (maquettes F3 + F4) : listes de documents en cartes, document lisible (Barlow 17 px, interligne 1,6, ligne ≤ 72 caractères) */
+.list{background:none;border:0;border-radius:0;overflow:visible;display:flex;flex-direction:column;gap:8px}
+.li{background:#111614;border:1px solid #263029;border-radius:18px;padding:14px 16px;align-items:center;min-height:56px}
+.li:hover{background:#141A17}
+.li .tt{font-weight:600;font-size:15.5px;line-height:1.3}
+.li .tt small{font-weight:400;margin-top:3px}
+.li .code{font-family:var(--display);font-weight:700;font-size:14px;color:#3BE08A}
+.fold>h3{font-weight:800;font-size:18px;letter-spacing:.06em;color:#F2F5F0;margin:22px 0 10px}
+.vx-doors{margin-top:2px}
+.vx-doors+.msg{margin-top:10px}
+.pcx{border-radius:20px;padding:14px 16px 12px;gap:6px}
+.plus-h{margin:2px 0 10px}
+.pcx b{font-size:21px;color:var(--ink)}
+.pcx .n2{font:600 12px/1 var(--display);letter-spacing:.22em;color:#3BE08A}
+.pbar i{background:#3BE08A}
+.pcx small.ok{color:#3BE08A}
+.resume{border-radius:20px;padding:14px 18px}
+.resume small{color:#3BE08A}
+.resume span{color:#E4FF3A}
+.lgrid a{border-radius:14px;padding:10px 12px;font-weight:600;background:#111614}
+details.fold>summary{font-family:var(--display);font-weight:800!important;font-size:18px;text-transform:uppercase;letter-spacing:.05em;min-height:40px;display:flex;align-items:center}
+.vdoc{max-width:780px}
+.vacts{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:0 0 14px}
+.vacts .pcbar{margin:0;flex:1 1 220px}
+.vacts .star{min-height:40px;border-radius:20px;font-family:var(--display);font-weight:700;letter-spacing:.06em;text-transform:uppercase;font-size:14px}
+.doc{margin-top:0}
+.doc .ess{background:#111614;border:1px solid #263029;border-radius:22px;padding:16px 18px 10px;margin-bottom:16px}
+.doc .ess>h2:first-child{font-size:13px;font-weight:700;letter-spacing:.22em;color:#E4FF3A;margin:0 0 12px}
+.doc .ess ul.vx-nl>li{font-size:16px;line-height:1.5}
+.doc .ess p>strong:only-child{font-family:var(--display);font-weight:800;text-transform:uppercase;letter-spacing:.06em;font-size:15px;color:#9AA59E}
+.doc h2{font-weight:800;font-size:20px;letter-spacing:.04em;color:#F2F5F0;margin:28px 0 8px}
+.doc summary{font-family:var(--display);font-weight:700!important;font-size:19px;line-height:1.15;text-transform:uppercase;letter-spacing:.03em;padding:14px 0;min-height:44px;align-items:center}
+.doc summary>i{font-style:normal;font-weight:800;color:#3BE08A;min-width:30px}
+.doc summary::before{color:#9AA59E}
+.doc h4{font-family:var(--display);font-weight:800;text-transform:uppercase;letter-spacing:.05em;font-size:16px;color:#3BE08A}
+.doc table{font-size:15px}
+.doc th{font-family:var(--display);font-weight:700;letter-spacing:.06em;text-transform:uppercase;font-size:13px;color:#9AA59E}
+.doc td,.doc th{padding:9px 12px}
+.doc blockquote{background:#111614;border:1px solid #263029;border-left:3px solid #3BE08A;border-radius:14px;padding:10px 16px;color:#C9D2CC}
+.doc .tw+.tw{margin-top:12px}
+.lines{border-radius:20px;padding:14px 16px;margin:0 0 16px}
+.lines>b{color:#E4FF3A}
+.toc{margin:0 0 6px}
+.pn a{border-radius:18px;padding:12px 14px}
 </style>
 
 <header class="top"><div class="topin">
@@ -455,8 +615,56 @@ table{color:var(--ink)}
   <div class="sbox"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
     <input id="q" type="search" placeholder="Rechercher dans toute la veille" autocomplete="off" enterkeyhint="search"></div>
 </div></header>
+<div id="vxh" hidden></div>
 <main id="main"><div class="load">Chargement de la veille…</div></main>
 
+<!--VX-DEBUT--><script>
+/* GRÜN · E1B — héros et cartes illustrées : bloc commun, IDENTIQUE dans les 7 modules (window.VX). Visuels : window.GRUN_VIS (visuels.js, chargé avant). */
+(function(){
+  "use strict";
+  const esc = s => String(s == null ? "" : s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+  const V = () => window.GRUN_VIS || null;
+  const svg = (nom, o) => { const v = V(); return v && nom ? v.svg(nom, o || {}) : ""; };
+  const top = () => document.querySelector("header.top");
+  const box = () => document.getElementById("vxh");
+  let raf = 0;
+  function maj(){ const t = top(); if(t && t.offsetHeight) document.documentElement.style.setProperty("--vx-hd", t.offsetHeight + "px"); }
+  function sc(){ const h = box(), t = top(); const on = !h || h.hidden || scrollY > Math.max(8, h.offsetHeight - (t ? t.offsetHeight : 0) - 56); document.body.classList.toggle("vx-sc", on); }
+  addEventListener("scroll", () => { if(!raf) raf = requestAnimationFrame(() => { raf = 0; sc(); }); }, {passive:true});
+  addEventListener("resize", () => { maj(); sc(); });
+  /* titres des cartes et du héros : jamais coupés au milieu d'un mot ; si la police (de secours) est trop large, la taille baisse jusqu'à tenir */
+  function fit(){ document.querySelectorAll(".vx-t,.vx-h").forEach(el => { el.style.fontSize = ""; let fs = parseFloat(getComputedStyle(el).fontSize), n = 0;
+    while(el.scrollWidth > el.clientWidth + 1 && fs > 14 && n++ < 16){ fs -= 1.5; el.style.fontSize = fs + "px"; } }); }
+  let rf = 0; const plan = () => { if(!rf) rf = requestAnimationFrame(() => { rf = 0; fit(); }); };
+  function obs(){ const mo = new MutationObserver(plan); ["main", "vxh"].forEach(id => { const e = document.getElementById(id); if(e) mo.observe(e, {childList: true, subtree: true}); }); plan();
+    if(document.fonts && document.fonts.ready) document.fonts.ready.then(plan); }
+  addEventListener("resize", plan);
+  const taille = t => { const n = String(t || "").length; return n > 64 ? " l3" : n > 22 ? " l2" : ""; };
+  const VX = {
+    esc, svg,
+    pour: k => { const v = V(); return v ? v.pour(k) : "balles"; },
+    n2: i => String(i).padStart(2, "0"),
+    /* héros (bandeau imagé) : {vis, lab, titre, num (chiffre jaune à droite du titre), sous (html), bas (écran profond), large (visuel pleine largeur), sq (mini-schéma agrandi en vignette), par} ; VX.hero(null) le retire */
+    hero(o){ const h = box(); if(!h) return;
+      if(!o){ if(!h.hidden){ h.hidden = true; h.innerHTML = ""; } document.body.classList.remove("vx-on"); sc(); return; }
+      maj();
+      h.className = "vx-hero" + (o.bas ? " bas" : "") + (o.large ? " large" : "") + (o.sq ? " sq" : "");
+      h.innerHTML = `${o.vis ? `<div class="vx-vis">${svg(o.vis, {par: o.par || (o.large ? "xMaxYMax slice" : "xMaxYMid meet")})}</div>` : ""}<div class="vx-in"><div class="vx-txt">${o.lab ? `<span class="vx-lab">${esc(o.lab)}</span>` : ""}${o.num != null ? `<div class="vx-hrow"><h1 class="vx-h${taille(o.titre)}">${esc(o.titre)}</h1><span class="vx-num">${esc(o.num)}</span></div>` : `<h1 class="vx-h${taille(o.titre)}">${esc(o.titre)}</h1>`}${o.sous ? `<p class="vx-sous">${o.sous}</p>` : ""}</div></div>`;
+      h.hidden = false; document.body.classList.add("vx-on"); sc();
+      requestAnimationFrame(() => { maj(); sc(); }); },
+    /* carte illustrée : {href | (attrs + bouton), vis, n (numéro), t (titre), s (sous-titre html), k : "big" | "row" | "mini" | "", cls, attrs, par} */
+    carte(o){ const k = o.k || "", par = o.par || (k === "big" ? "xMaxYMid meet" : k === "row" ? "xMinYMid slice" : "xMidYMid meet"), tag = o.href ? "a" : "button";
+      return `<${tag} class="vx-c${k ? " " + k : ""}${o.cls ? " " + o.cls : ""}" ${o.href ? `href="${esc(o.href)}"` : `type="button"`}${o.attrs ? " " + o.attrs : ""}><span class="vx-cv">${svg(o.vis, {par})}</span><span class="vx-ct">${o.n != null ? `<span class="vx-n">${esc(o.n)}</span>` : ""}<span class="vx-t">${esc(o.t)}</span>${o.s ? `<span class="vx-s">${o.s}</span>` : ""}</span></${tag}>`; },
+    /* carte d'exercice (F5) : {href, id (préfixe → mini-schéma), nom, meta (html), extra (html), cls, attrs} */
+    ex(o){ return `<a class="vx-ex${o.cls ? " " + o.cls : ""}" href="${esc(o.href)}"${o.attrs ? " " + o.attrs : ""}>${svg(VX.pour(o.id), {w: 84, h: 84, cls: "vx-mini"})}<span class="vx-et"><b>${o.nomHtml != null ? o.nomHtml : esc(o.nom)}</b>${o.meta ? `<small>${o.meta}</small>` : ""}</span>${o.extra || ""}</a>`; },
+    /* « L'essentiel » numéroté : [texte html, …] */
+    fit,
+    ess(titre, pts){ return `<section class="vx-ess"><span class="vx-lt">${esc(titre)}</span>${pts.map((p, i) => `<div class="vx-pt"><i>${VX.n2(i + 1)}</i><span>${p}</span></div>`).join("")}</section>`; }
+  };
+  window.VX = VX;
+  if(document.readyState === "loading") document.addEventListener("DOMContentLoaded", () => { maj(); obs(); }); else { maj(); obs(); }
+})();
+</script><!--VX-FIN-->
 <script>
 "use strict";
 const PORTES = {
@@ -465,6 +673,12 @@ const PORTES = {
   "3": {n:"Biomécanique", c:"--p3", s:"Les 13 coups du geste et les 11 lignes du déplacement, principes et âge par âge."},
   "4": {n:"Entraîner", c:"--p4", s:"Développement de l'enfant, analyse du jeu, sciences, planification, récupération, pédagogie, mental."}
 };
+/* E1B : ordre des portes à l'accueil (01 grande carte, 02-03 en grille, 04 carte large) et visuel de chaque domaine (visuels.js) */
+const PORTE_ORD = ["2","3","4","1"];
+const PORTE_VIS = {"1":"anneaux", "2":"physique", "3":"technique", "4":"entrainement"};
+/* onglets segmentés d'un thème (lignes PP : comprendre / âge par âge / séances ; coups du geste : technique / âge par âge) */
+const ONG = t => /^Comprendre/.test(t) ? "Comprendre" : /^Âge par âge/.test(t) ? "Âge par âge" : /^Séances/.test(t) ? "Séances types" : /^Technique/.test(t) ? "Technique" : null;
+const DOC_VIS = {"1":["anneaux",false], "2":["physique",false], "3":["technique",false], "4":["entrainement",false]};
 const PP = ["Force du bas du corps","Force du haut du corps","Gainage et stabilité du tronc","Puissance des jambes : sauts et pliométrie","Puissance du haut du corps et rotation","Vitesse et accélération","Freinage, changements de direction et agilité","Endurance aérobie","Répétition d'efforts intenses","Coordination, motricité fondamentale et rythme","Équilibre et proprioception","Mobilité et souplesse"];
 const GE = [["Service à plat","3.3.2"],["Service slicé","3.4.2"],["Service lifté","3.5.2"],["Coup droit lifté","3.7.2"],["Coup droit à plat","3.8.2"],["Coup droit slicé","3.9.2"],["Revers lifté","3.11.2"],["Revers à plat","3.12.2"],["Revers slicé","3.13.2"],["Volée de coup droit","3.15.2"],["Volée de revers","3.16.2"],["Smash","3.17.2"],["Amortie et touché de balle","3.18.3"]];
 const DE = ["Position d'attention","Allègement et reprise d'appuis","Démarrage et premiers pas","Déplacements latéraux","Déplacements vers l'avant et vers l'arrière","Pas d'ajustement et mise à distance","Appuis de frappe","Freinage et décélération","Changement de direction et réaccélération","Replacement","Enchaînements et liaison des actions"];
@@ -520,7 +734,7 @@ document.documentElement.style.setProperty("--fs", P.fs+"px");
 async function boot(){
   if(window.GRUN){ GRUN.nav("res");
     /* « ? » : une aide par écran */
-    [["veille","La veille : les 230 documents de la méthode. Commence par un parcours de lecture, ou choisis un âge et une ligne dans « Accès direct ». « Reprendre » rouvre le dernier document lu."],
+    [["veille","La Banque scientifique : les 230 documents de la méthode. Touche une porte, ou choisis un âge et une ligne dans « Accès direct ». Les parcours de lecture sont dans « Plus d'options ». « Reprendre » rouvre le dernier document lu."],
      ["veille/d","Un document : « L'essentiel en 30 secondes » en haut, puis « Mettre en pratique » (exercices, séance, grilles), puis le détail en sections dépliables. ☆ le garde en favori ; tes notes s'enregistrent seules."],
      ["veille/parcours","Un parcours de lecture : quelques documents dans le bon ordre. Les étapes lues se cochent seules ; le bouton du bas ouvre la suivante."],
      ["veille/p","Une porte de la veille : tous ses documents, rangés par dossier. Touche un titre pour l'ouvrir."],
@@ -574,7 +788,7 @@ window.addEventListener("hashchange", route);
 $("#back").onclick = () => { if(history.length > 1) history.back(); else location.hash = ""; };
 function route(){
   const h = decodeURIComponent(location.hash.slice(1));
-  const m = $("#main"); window.scrollTo(0,0);
+  const m = $("#main"); window.scrollTo(0,0); VX.hero(null);
   if(h.startsWith("/l/")) return showLigne(h.slice(3).split("?")[0], (h.split("?")[1]||"").match(/a=(\d+)/));
   if(h.startsWith("d/")) return showDoc(h.slice(2).split("/")[0], h.split("/")[2]);
   if(h.startsWith("/parcours/")) return showParcours(h.slice(10));
@@ -592,30 +806,28 @@ function showHome(){
   const m = $("#main");
   const count = p => DOCS.filter(x=>porteOf(x)===p).length;
   const c = courant(), ac = ageCourant();
-  let html = `<h1>Veille de connaissances</h1><p class="lead">Préparation physique et biomécanique du tennis · ${DOCS.length} documents</p>`;
+  /* E1B (maquette F3) : héros + BANQUE SCIENTIFIQUE, puis les portes en cartes illustrées numérotées 01-04 */
+  VX.hero({vis:"heros_savoirs", lab:"Bibliothèque · savoirs", titre:"Banque scientifique", sous:`<b>${DOCS.length}</b> documents`, large:true});
+  let html = `<div class="vx-cards vx-doors c2">${PORTE_ORD.map((p,i)=>VX.carte({href:"#p/"+p, vis:PORTE_VIS[p], n:VX.n2(i+1), t:PORTES[p].n, s:`${count(p)} documents`, k:i===0?"big":i===3?"row":""})).join("")}</div>
+    <p class="msg">Les exercices de chaque ligne sont dans la <a class="ref" href="banque.html">banque d'exercices</a> ; les tests et les bilans dans <a class="ref" href="grilles.html">Grilles et tests</a>.</p>`;
   const L = P.last && BY[P.last.c] ? P.last : null;
   if(L) html += `<div class="sec"><a class="resume" href="#d/${L.c}${L.s?"/"+L.s:""}" style="--pc:${pc(porteOf(BY[L.c]))}"><small>Reprendre où j'en étais</small><b>${esc(nomClair(BY[L.c]))}</b>${L.st?`<span>${esc(L.st)}</span>`:""}</a></div>`;
-  html += `<div class="sec"><h2>Parcours de lecture</h2><p class="msg" style="margin:-4px 0 8px">Quelques documents dans le bon ordre, à lire d'une traite. Les étapes lues se cochent seules.</p><div class="pcs">${PARCOURS.map(x=>{ const n=pcLus(x), t=x.d.length;
-      return `<a class="pcx" href="#/parcours/${x.id}" style="--pc:var(${x.c})"><b>${esc(x.n)}</b><span>${esc(x.s)}</span><small class="${n===t?"ok":""}">${n===t?"✓ Lu en entier":n?`${n} sur ${t} lus`:`${t} documents`}</small><div class="pbar"><i style="width:${Math.round(n/t*100)}%"></i></div></a>`; }).join("")}</div></div>`;
   html += `<div class="sec"><h2>Accès direct</h2><div class="quick">
     <div class="f"><label for="qa">Âge${c&&ac?` · ${esc(prenom(c))}`:""}</label><select id="qa">${["0-3","3",...Array.from({length:15},(_,i)=>String(i+4))].map(a=>`<option value="${a}">${a==="0-3"?"0 à 3 ans":a+" ans"}</option>`).join("")}</select></div>
     <div class="f"><label for="qd">Domaine</label><select id="qd"><option value="AGE">Tout l'âge (document de l'âge)</option><option value="PP">Préparation physique</option><option value="GE">Biomécanique du geste</option><option value="DE">Biomécanique du déplacement</option></select></div>
     <div class="f" id="qlw" style="flex:1;min-width:200px"><label for="ql">Ligne</label><select id="ql"></select></div>
     <button class="go" id="qgo" type="button">Ouvrir</button><button class="ib" id="qline" type="button">Tout sur cette ligne</button></div></div>`;
-  html += `<div class="sec"><h2>Les portes</h2><div class="doors">${Object.entries(PORTES).map(([p,o])=>`<a class="door" href="#p/${p}" style="--pc:var(${o.c})"><b>${o.n}</b><span>${o.s}</span><small>${count(p)} documents</small></a>`).join("")}</div>
-    <p class="msg" style="margin-top:8px">Les exercices de chaque ligne sont dans la <a class="ref" href="banque.html">banque d'exercices</a> ; les tests et les bilans dans <a class="ref" href="grilles.html">Grilles et tests</a>.</p></div>`;
   html += `<div class="sec"><h2>Par ligne de grille</h2><p class="msg" style="margin:-4px 0 8px">Tous les documents d'une ligne : comprendre, âge par âge, séances, biomécanique, tests.</p>${["PP","GE","DE"].map(d=>`<details class="fold" style="--pc:${LCOL[d]}" ${d==="PP"?"open":""}><summary style="cursor:pointer;font-weight:600;padding:6px 0">${DOMN[d]}</summary><div class="lgrid">${LIGNES[d].map((n,i)=>`<a href="#/l/${d}${i+1}${ac?`?a=${ac}`:""}">${esc(n)}</a>`).join("")}</div></details>`).join("")}</div>`;
   const favs = P.fav.filter(c=>BY[c]), recs = P.rec.filter(c=>BY[c]).slice(0,8);
   html += `<div class="sec"><h2>Favoris</h2>${favs.length ? listHTML(favs.map(c=>BY[c]), true) : '<div class="empty">Touche ☆ en haut d\'un document pour le retrouver ici.</div>'}</div>`;
   if(recs.length) html += `<div class="sec"><h2>Consultés récemment</h2>${listHTML(recs.map(c=>BY[c]), true)}</div>`;
-  html += `<details class="grun-plus"><summary>Plus d'options</summary><div class="grun-plusb"><div class="tools">
+  /* E1B-vérif : plus de parcours proposé à l'ouverture (demande d'Eliot) ; les parcours de lecture restent dans « Plus d'options » */
+  html += `<details class="grun-plus"><summary>Plus d'options</summary><div class="grun-plusb"><h2 class="plus-h">Parcours de lecture</h2><div class="pcs">${PARCOURS.map((x,i)=>{ const n=pcLus(x), t=x.d.length;
+      return `<a class="pcx" href="#/parcours/${x.id}" style="--pc:var(${x.c})"><span class="n2">${VX.n2(i+1)}</span><b>${esc(x.n)}</b><span>${esc(x.s)}</span><small class="${n===t?"ok":""}">${n===t?"✓ Lu en entier":n?`${n} sur ${t} lus`:`${t} documents`}</small><div class="pbar"><i style="width:${Math.round(n/t*100)}%"></i></div></a>`; }).join("")}</div><div class="tools" style="margin-top:14px">
      <button class="ib" id="bsave" type="button">${GR&&GR.TXT?GR.TXT.sauver:"Tout sauvegarder"}</button>
      <label class="ib" for="frest">${GR&&GR.TXT?GR.TXT.restaurer:"Restaurer une sauvegarde"}</label><input id="frest" type="file" accept=".json,application/json" hidden>
      <button class="ib" id="fsm" type="button" aria-label="Texte plus petit">A−</button><button class="ib" id="fsp" type="button" aria-label="Texte plus grand">A+</button>
      <a class="ib" href="${RADAR}">Profil radar</a></div><p class="msg" id="dmsg">Une seule sauvegarde pour tout GRÜN (favoris, notes et parcours de la veille compris). Les anciennes sauvegardes Veille_favoris_notes_….json sont acceptées.</p></div></details>`;
-  const p0 = PARCOURS.find(x=>pcLus(x)<x.d.length) || PARCOURS[0];
-  /* « Reprendre » est déjà la carte du haut : pas de doublon en bas */
-  if(!L) html += actbar(`Commencer le parcours « ${p0.n} »`, `#/parcours/${p0.id}`);
   m.innerHTML = html;
   const qa=$("#qa"), qd=$("#qd"), ql=$("#ql");
   if(![...qa.options].some(o=>o.value===P.age)) P.age="10"; qa.value = ac ? String(ac) : P.age; qd.value=P.dom;
@@ -635,8 +847,8 @@ function showParcours(id){
   P.pc = id; save();
   const ds = x.d.filter(c=>BY[c]), n = pcLus(x), suiv = ds.find(c=>!P.lu.includes(c));
   const m = $("#main"); m.style.setProperty("--pc", `var(${x.c})`);
-  m.innerHTML = `<div class="crumb"><a href="#">Veille</a>›<span>Parcours de lecture</span></div><h1 style="color:var(${x.c});margin-top:4px">${esc(x.n)}</h1><p class="lead">${esc(x.s)}</p>
-    <p class="msg" style="margin-top:6px">${n===ds.length?"✓ Parcours lu en entier.":n?`${n} sur ${ds.length} documents lus.`:`${ds.length} documents · l'essentiel de chacun se lit en 30 secondes.`}</p>
+  VX.hero({vis:"marches", lab:"Parcours de lecture", titre:x.n, sous:esc(x.s), bas:true});
+  m.innerHTML = `<p class="msg" style="margin-top:0">${n===ds.length?"✓ Parcours lu en entier.":n?`${n} sur ${ds.length} documents lus.`:`${ds.length} documents · l'essentiel de chacun se lit en 30 secondes.`}</p>
     <ol class="steps">${ds.map((c,i)=>{ const d=BY[c], lu=P.lu.includes(c), e=(d.e||[])[0];
       return `<li class="${lu?"lu":""}"><a href="#d/${c}"><span class="n">${lu?"✓":i+1}</span><span class="tt"><b>${esc(nomClair(d))}</b>${e?`<span>${esc((e[0]?e[0]+" ":"")+e[1])}</span>`:""}${c===suiv?`<em>À lire maintenant</em>`:""}</span></a></li>`; }).join("")}</ol>
     ${x.plus?`<p class="msg" style="margin-top:12px">Et ensuite : <a class="ref" href="${x.plus[0]}">${esc(x.plus[1])}</a></p>`:""}
@@ -665,7 +877,8 @@ function showPorte(p){
   const xs = DOCS.filter(x=>porteOf(x)===p), groups = {};
   xs.forEach(x=>{ (groups[x.d] = groups[x.d] || []).push(x); });
   titre(PORTES[p].n);
-  let html = `<div class="crumb" style="--pc:${pc(p)}"><a href="#">Veille</a></div><h1 style="color:${pc(p)}">${PORTES[p].n}</h1><p class="lead">${PORTES[p].s}</p>`;
+  VX.hero({vis:DOC_VIS[p][0], large:DOC_VIS[p][1], lab:`Banque scientifique · ${xs.length} documents`, titre:PORTES[p].n, sous:esc(PORTES[p].s), bas:true});
+  let html = "";
   html += Object.entries(groups).map(([d,arr])=>`<div class="fold" style="--pc:${pc(p)}"><h3>${esc(d)}</h3>${listHTML(arr,false)}</div>`).join("");
   $("#main").innerHTML = html;
 }
@@ -683,20 +896,23 @@ function showDoc(code, hint){
   const pcx = P.pc && PCB[P.pc] && PCB[P.pc].d.includes(code) ? PCB[P.pc] : null, pk = pcx ? pcx.d.indexOf(code) : -1, pnext = pcx ? BY[pcx.d[pk+1]] : null;
   const lsx = [...new Set((REV[code]||[]).map(y=>y[0]))], ageDoc = hint && hint.startsWith("a") ? +hint.slice(1) : (ageCourant() || (/^\d+$/.test(P.age) ? +P.age : 10));
   const m = $("#main"); m.style.setProperty("--pc", pc(p));
-  m.innerHTML = `<div class="crumb"><a href="#">Veille</a>›<a href="#p/${p}">${PORTES[p].n}</a>›<span>${esc(x.d.replace(/^\d+(\.\d+)*\s/,""))}</span></div>
-    <div class="dochead"><h1>${esc(x.t)}</h1><div class="acts">
-      <button class="ib star" id="fav" type="button" aria-pressed="${fav}">${fav?"★ Favori":"☆ Favori"}</button></div></div>
-    <div class="crumb xp" style="margin-top:4px">${esc(x.ch||"")} · document ${x.c}</div>
-    ${pcx?`<div class="pcbar">Parcours <a href="#/parcours/${pcx.id}">${esc(pcx.n)}</a><span>étape ${pk+1} sur ${pcx.d.length}</span></div>`:""}
-    ${e30HTML(x)}
-    ${linesBox(code, ageDoc)}
+  /* E1B (maquette F4) : héros avec le visuel du domaine, « DOMAINE · THÈME », titre ; onglets segmentés quand le thème a plusieurs documents ;
+     « L'essentiel » du document en carte numérotée 01, 02… (le résumé « en 30 secondes » qui le répétait n'est plus affiché ici) */
+  const theme = x.d.replace(/^\d+(\.\d+)*\s/,"").replace(/^Ligne \d+ · /,"");
+  VX.hero({vis:DOC_VIS[p][0], large:DOC_VIS[p][1], lab:`${PORTES[p].n} · ${theme}`, titre:x.t, bas:true});
+  const ong = sib.length>=2 && sib.length<=4 && sib.every(y=>ONG(y.t)) ? sib : null;
+  m.innerHTML = `<div class="vdoc">
+    ${ong?`<nav class="vx-seg" aria-label="Documents du thème">${ong.map(y=>`<a href="#d/${y.c}"${y===x?' aria-current="page"':""}>${esc(ONG(y.t))}</a>`).join("")}</nav>`:""}
+    <div class="vacts"><button class="ib star" id="fav" type="button" aria-pressed="${fav}">${fav?"★ Favori":"☆ Favori"}</button>
+    ${pcx?`<div class="pcbar">Parcours <a href="#/parcours/${pcx.id}">${esc(pcx.n)}</a><span>étape ${pk+1} sur ${pcx.d.length}</span></div>`:""}<span class="crumb xp">${esc(x.ch||"")} · document ${x.c}</span></div>
+    <div id="vlines">${linesBox(code, ageDoc)}</div>
     <details class="toc" id="toc" hidden></details>
     <article class="doc" id="doc"></article>
     <div class="pn">${prev?`<a href="#d/${prev.c}"><small>‹ Précédent</small>${esc(prev.t)}</a>`:"<span></span>"}${next?`<a class="nx" href="#d/${next.c}"><small>Suivant ›</small>${esc(next.t)}</a>`:"<span></span>"}</div>
     <div class="notes"><label for="nt" style="font-weight:600">Mes notes sur ce document</label><textarea id="nt" placeholder="Idées, joueurs concernés, à tester…"></textarea><div class="msg" id="ntm"></div></div>
     <details class="grun-plus"><summary>Plus d'options</summary><div class="grun-plusb"><div class="tools">
       <button class="ib" id="fsm" type="button" aria-label="Texte plus petit">A−</button><button class="ib" id="fsp" type="button" aria-label="Texte plus grand">A+</button>
-      <a class="ib" href="#p/${p}">Tous les documents · ${esc(PORTES[p].n)}</a></div><p class="msg" id="dmsg"></p></div></details>
+      <a class="ib" href="#p/${p}">Tous les documents · ${esc(PORTES[p].n)}</a></div><p class="msg" id="dmsg"></p></div></details></div>
     ${pcx ? (pnext ? actbar("Étape suivante : "+nomClair(pnext), "#d/"+pnext.c) : actbar("Parcours terminé · revoir les étapes", "#/parcours/"+pcx.id))
       : lsx.length && lsx.length<=4 ? actbar("Créer une séance · "+ligNom(lsx[0]), ()=>0) : next ? actbar("Suivant : "+nomClair(next), "#d/"+next.c) : ""}`;
   const am = $("#actmain"); if(am){ am.dataset.sess = lsx[0]; am.dataset.age = ageDoc; }
@@ -711,11 +927,16 @@ function showDoc(code, hint){
       mode = "det"; doc.appendChild(node); cur = doc; continue;
     }
     if(node.nodeName==="H3" && mode!=="ess"){
-      const d = document.createElement("details"); const s = document.createElement("summary"); s.textContent = node.textContent; d.appendChild(s);
+      const d = document.createElement("details"); const s = document.createElement("summary"); const nm = /^(\d+)\.\s*(.*)$/.exec(node.textContent);
+      s.dataset.t = nm ? nm[2] : node.textContent; s.innerHTML = nm ? `<i>${VX.n2(nm[1])}</i><span>${esc(nm[2])}</span>` : esc(node.textContent); d.appendChild(s);
       d.id = "s"+sections.length; sections.push([d.id, node.textContent]); doc.appendChild(d); cur = d; continue;
     }
     (cur || doc).appendChild(node);
   }
+  /* « L'essentiel » : la première liste devient des points numérotés 01, 02… ; « Mettre en pratique » et le sommaire viennent juste après */
+  const essS = doc.querySelector("section.ess");
+  if(essS){ const ul = essS.querySelector(":scope > ul"); if(ul) ul.classList.add("vx-nl"); const h2 = essS.querySelector("h2"); if(h2) h2.textContent = "L'essentiel";
+    essS.after($("#vlines")); $("#vlines").after($("#toc")); }
   if(sections.length>2){ const toc=$("#toc"); toc.hidden=false; toc.open = matchMedia("(min-width:900px)").matches;
     toc.innerHTML = `<summary>Sommaire · ${sections.length} sections</summary><ol>${sections.map(([id,t])=>`<li><a href="#d/${code}/${id}" data-s="${id}">${esc(t.replace(/^\d+\.\s*/,""))}</a></li>`).join("")}</ol>`;
     toc.onclick = e=>{ const a=e.target.closest("a[data-s]"); if(!a) return; e.preventDefault(); history.replaceState(null,"","#d/"+code+"/"+a.dataset.s); ouvrirSection(a.dataset.s); }; }
@@ -729,7 +950,7 @@ function showDoc(code, hint){
   nt.oninput = ()=>{ clearTimeout(tm); tm=setTimeout(()=>{ if(nt.value.trim()) P.notes[code]=nt.value; else delete P.notes[code]; save(); $("#ntm").textContent="Note enregistrée sur cet appareil."; },500); };
   // reprendre : dernière section ouverte de ce document
   P.last = {c:code, s:null, st:""}; save();
-  doc.addEventListener("toggle", e=>{ const d=e.target; if(d.tagName!=="DETAILS"||!d.open||!/^s\d+$/.test(d.id)) return; P.last={c:code, s:d.id, st:d.querySelector("summary").textContent.replace(/^\d+\.\s*/,"")}; save(); }, true);
+  doc.addEventListener("toggle", e=>{ const d=e.target; if(d.tagName!=="DETAILS"||!d.open||!/^s\d+$/.test(d.id)) return; P.last={c:code, s:d.id, st:d.querySelector("summary").dataset.t||d.querySelector("summary").textContent.replace(/^\d+\.\s*/,"")}; save(); }, true);
   // aller à un âge, à une section ou surligner une recherche
   if(hint && /^s\d+$/.test(hint)) ouvrirSection(hint);
   else if(hint && hint.startsWith("a")) goAge(+hint.slice(1));
@@ -767,9 +988,8 @@ function showLigne(l, am){
   const lst = cs => `<div class="list">${cs.filter(c=>BY[c]).map(c=>{ const x=BY[c]; return `<a class="li hasx" href="#d/${c}${(g.a||[]).includes(c)&&age?`/a${age}`:""}"><span class="code cx">${c}</span><span class="tt">${esc(x.t)}<small>${esc(x.d.replace(/^\d+(\.\d+)?\s/,""))}</small></span></a>`; }).join("")}</div>`;
   const order = [["c","Comprendre"],["a","Âge par âge"],["s","Séances et routines"],["b","Biomécanique et liens"],["t","Tests et évaluation"]];
   const m = $("#main"); m.style.setProperty("--pc", col);
-  m.innerHTML = `<div class="crumb"><a href="#">Veille</a>›<span>${DOMN[d]}</span></div><h1 style="color:${col};margin-top:4px">${esc(ligNom(l))}<span class="xp"> · ${l}</span></h1>
-   <p class="lead">Les documents de la veille pour cette ligne de grille, regroupés pour comprendre, situer l'âge, construire les séances et évaluer.</p>
-   <div class="lines"><div class="lrow"><a class="lk pri" href="banque.html#/l/${l}${age?`?a=${age}`:""}">Exercices de cette ligne${age?` · ${age} ans`:""}</a><a class="lk" href="#" data-sess="${l}" data-age="${age||""}">Créer une séance</a><a class="lk" href="grilles.html#/ligne/${l}/G/${age||10}">Grille garçons ${age||10} ans</a><a class="lk" href="grilles.html#/ligne/${l}/F/${age||10}">Grille filles ${age||10} ans</a></div></div>
+  VX.hero({vis:d==="PP"?"physique":"technique", lab:`${DOMN[d]} · ligne ${+l.slice(2)}`, titre:ligNom(l), sous:"Comprendre, situer l'âge, entraîner, évaluer", bas:true});
+  m.innerHTML = `<div class="lines"><div class="lrow"><a class="lk pri" href="banque.html#/l/${l}${age?`?a=${age}`:""}">Exercices de cette ligne${age?` · ${age} ans`:""}</a><a class="lk" href="#" data-sess="${l}" data-age="${age||""}">Créer une séance</a><a class="lk" href="grilles.html#/ligne/${l}/G/${age||10}">Grille garçons ${age||10} ans</a><a class="lk" href="grilles.html#/ligne/${l}/F/${age||10}">Grille filles ${age||10} ans</a></div></div>
    ${order.filter(([k])=>(g[k]||[]).some(c=>BY[c])).map(([k,t])=>`<div class="fold" style="--pc:${col}"><h3>${esc(G[k]||t)}</h3>${lst(g[k])}</div>`).join("") || '<div class="empty" style="margin-top:12px">Aucun document lié à cette ligne.</div>'}
    ${actbar("Créer une séance · "+ligNom(l), ()=>0)}`;
   const am2=$("#actmain"); if(am2){ am2.dataset.sess=l; am2.dataset.age=age||""; }

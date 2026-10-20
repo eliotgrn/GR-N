@@ -24,24 +24,32 @@ body.grun-has-nav{padding-bottom:calc(var(--nav-h) + env(safe-area-inset-bottom,
 .grun-wm .u i:first-child{left:.067em}
 .grun-wm .u i+i{right:.067em}
 
-/* ---------- BARRE DU BAS : GRÜN · Bibliothèque · Outils · « + » · Club · Performance (actif en jaune) ---------- */
-#grun-nav{position:fixed;left:0;right:0;bottom:0;z-index:50;display:flex;justify-content:space-around;align-items:stretch;
-  background:#0C0F0D;border-top:1px solid var(--gx-sep);padding:0 2px env(safe-area-inset-bottom,0px)}
-#grun-nav a{flex:1 1 0;min-width:0;max-width:130px;min-height:var(--nav-h);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;
-  text-decoration:none;color:var(--gx-mute);font:600 12px/1.1 var(--gx-cond);letter-spacing:0;-webkit-tap-highlight-color:transparent}
+/* ---------- BARRE DU BAS CONTEXTUELLE (GRÜN 2.1, maquettes F2-F6) : « GRÜN · Accueil » + les onglets du mode (actif en jaune) ---------- */
+#grun-nav{position:fixed;left:0;right:0;bottom:0;z-index:50;display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);align-items:stretch;
+  background:#0C0F0D;border-top:1px solid var(--gx-sep);padding:0 max(6px,calc((100vw - 700px) / 2)) env(safe-area-inset-bottom,0px)}
+#grun-nav.seul{grid-auto-columns:minmax(0,120px);justify-content:center}
+#grun-nav a{min-width:0;min-height:var(--nav-h);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;
+  text-decoration:none;color:var(--gx-mute);font:400 11px/1.1 var(--gx-ui);letter-spacing:0;-webkit-tap-highlight-color:transparent}
 #grun-nav a span{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-#grun-nav svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
-#grun-nav a.on{color:var(--gx-y)}
-#grun-nav a.on svg{stroke-width:2}
+#grun-nav a span{letter-spacing:-.01em}#grun-nav a{padding-left:1px;padding-right:1px}
+#grun-nav svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+#grun-nav a.on{color:var(--gx-y);font-weight:600}
 #grun-nav a:active{opacity:.7}
+/* « GRÜN » (deux balles du Ü) + « Accueil » : retour à la page de garde, toujours à gauche */
+#grun-nav a.nv-g{font:800 13px/1 var(--gx-cond);letter-spacing:.06em;gap:5px}
+#grun-nav a.nv-g .grun-wm{font-size:18px;padding-top:3px;overflow:visible}
+#grun-nav a.nv-g>span:last-child,#grun-nav a.nv-g .grun-wm,#grun-nav a.nv-g .grun-wm span{overflow:visible;max-width:none}
 @media print{#grun-nav{display:none}body.grun-has-nav{padding-bottom:0}}
-/* « + » au centre de la barre du bas */
-#grun-nav #grun-plus{flex:0 0 56px;border:0;background:none;padding:0;display:flex;align-items:center;justify-content:center;min-height:var(--nav-h);cursor:pointer;-webkit-tap-highlight-color:transparent}
+/* « + » (Performance et mode joueur seulement) */
+#grun-nav #grun-plus{min-width:0;border:0;background:none;padding:0;display:flex;align-items:center;justify-content:center;min-height:var(--nav-h);cursor:pointer;-webkit-tap-highlight-color:transparent}
 #grun-nav #grun-plus span{width:46px;height:46px;border-radius:50%;background:var(--gx-y);color:var(--gx-on);display:flex;align-items:center;justify-content:center;transition:transform .1s ease}
 #grun-nav #grun-plus svg{width:24px;height:24px;stroke-width:2.4;stroke:currentColor}
 #grun-nav #grun-plus:active span{transform:scale(.92)}
-@media (max-width:400px){#grun-nav a{font-size:11.5px}}
-@media (max-width:370px){#grun-nav a{font-size:10.5px}#grun-nav #grun-plus{flex-basis:52px}#grun-nav #grun-plus span{width:42px;height:42px}}
+@media (max-width:370px){#grun-nav a{font-size:10.5px}#grun-nav #grun-plus span{width:42px;height:42px}}
+/* feuille « Âge et sexe » de la Bibliothèque */
+.gs-ages{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}
+.gs-ages .gs-chip{padding:0 4px;text-align:center;font-family:var(--gx-cond);font-weight:700;font-size:16px;letter-spacing:.02em}
+@media (max-width:360px){.gs-ages{grid-template-columns:repeat(4,minmax(0,1fr))}}
 
 /* fil « poupée russe » : bandeau de retour vers le module appelant */
 .grun-relais{position:sticky;top:0;z-index:40;display:flex;gap:10px;align-items:center;justify-content:space-between;
@@ -243,9 +251,11 @@ html.grun-mod #back::before{content:"";width:20px;height:20px;background:current
 }
 /* action principale du bas : un libellé long se coupe proprement (…) au lieu de déborder des deux côtés */
 .grun-actbar .gs-btn:only-child{display:block;line-height:50px;text-align:center;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#grun-nav[data-mode="outils"]{grid-template-columns:minmax(0,.82fr) repeat(3,minmax(0,.9fr)) minmax(0,1.38fr)}
 </style>
-<script src="grun.js?v=2.0"></script>
-<script src="assistant.js?v=2.0"></script>
+<script src="visuels.js?v=2.1"></script>
+<script src="grun.js?v=2.1"></script>
+<script src="assistant.js?v=2.1"></script>
 <meta name="grun-module" content="banque"></head><body><title>Banque d'exercices</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=Barlow:wght@400;500;600;700&display=swap">
 <style>
@@ -540,6 +550,162 @@ select.sel{min-height:36px;background:#1A211D;border-color:#263029}
 .row{border-top-color:#1A211D}
 .row .bar{border-radius:0 3px 3px 0}
 @media print{:root{--bg:#FFFFFF;--panel:#FFFFFF;--ink:#16202E;--mute:#5D6675;--line:#D9DDE3;--soft:#F1F3F5;--mark:#FFE58A;color-scheme:light} html,body{background:#fff!important;color:#16202E} .top{display:none}}
+/*VX-CSS-DEBUT*/
+/* ===== GRÜN · E1B « design intérieur imagé » (maquettes F1-F6 validées le 20 oct. 2026) — bloc commun, IDENTIQUE dans les 7 modules
+   (veille, banque, saisons, grilles, programmation, seances, routines) : héros, cartes illustrées, cartes d'exercice, pastilles, onglets segmentés,
+   « L'essentiel » numéroté. Visuels : window.GRUN_VIS (apps/grun/visuels.js). Source unique : RAPPORT_E1B_MODULES.md. ===== */
+:root{--vx-hd:61px}
+#vxh[hidden]{display:none!important}
+.vx-hero{position:relative;margin-top:calc(-1 * var(--vx-hd));padding-top:var(--vx-hd);min-height:calc(var(--vx-hd) + 180px);display:flex;align-items:flex-end;overflow:hidden;background:#07090A}
+.vx-hero.bas{min-height:calc(var(--vx-hd) + 128px)}
+.vx-vis{position:absolute;top:calc(var(--vx-hd) - 12px);right:0;bottom:6px;width:min(60%,520px);pointer-events:none}
+.vx-hero.large .vx-vis{top:calc(var(--vx-hd) - 24px);bottom:0;width:100%;max-width:none}
+.vx-hero.large:not(.bas){min-height:calc(var(--vx-hd) + 236px)} /* vérif E1B : place pour le visuel au-dessus du texte (le visuel s'efface derrière le texte, cf. G.heroDegager) */
+.vx-hero.bas .vx-vis{width:min(48%,400px)}
+.vx-vis svg{display:block;width:100%;height:100%}
+/* petits visuels (cartes, outils) : posés en haut à droite, au-dessus du titre (jamais sous le texte) */
+.vx-hero:not(.large):not(.sq){padding-top:calc(var(--vx-hd) + 98px);min-height:0}
+.vx-hero:not(.large):not(.sq) .vx-vis{top:calc(var(--vx-hd) - 8px);bottom:auto;height:108px;width:min(60%,380px)}
+.vx-hero.bas:not(.large):not(.sq){padding-top:calc(var(--vx-hd) + 70px)}
+.vx-hero.bas:not(.large):not(.sq) .vx-vis{height:78px}
+.vx-hero.sq{padding-top:calc(var(--vx-hd) + 128px)}
+.vx-hero.sq .vx-vis{left:max(16px,calc(50% - 534px));right:auto;top:calc(var(--vx-hd) + 2px);bottom:auto;width:112px;height:112px;border-radius:24px;background:#0B1A14;border:1px solid #1A2E24;overflow:hidden}
+.vx-in{position:relative;width:100%;max-width:1100px;margin:0 auto;padding:0 16px 18px;box-sizing:border-box}
+.vx-txt{display:flex;flex-direction:column;gap:8px;max-width:820px;text-shadow:0 0 3px #07090A,0 0 16px #07090A}
+.vx-lab{font:600 13px/1.25 var(--display,"Barlow Condensed",sans-serif);letter-spacing:.22em;text-transform:uppercase;color:#3BE08A}
+.vx-hero h1.vx-h{font-family:var(--display,"Barlow Condensed",sans-serif);font-weight:800;font-size:46px;line-height:.92;letter-spacing:.01em;text-transform:uppercase;color:#F2F5F0;margin:0;text-wrap:balance;overflow-wrap:normal}
+.vx-hero h1.vx-h.l2{font-size:34px;line-height:.95}
+.vx-hero h1.vx-h.l3{font-size:27px;line-height:1}
+.vx-hrow{display:flex;align-items:flex-end;justify-content:space-between;gap:12px}
+.vx-hrow .vx-h{min-width:0}
+.vx-num{flex:0 0 auto;font:700 22px/1 var(--display,"Barlow Condensed",sans-serif);color:#E4FF3A;letter-spacing:.02em;padding-bottom:3px;white-space:nowrap}
+.vx-sous{margin:0;font:400 14px/1.4 var(--ui,"Barlow",sans-serif);color:#9AA59E;max-width:60ch}
+.vx-sous b{font:700 18px/1 var(--display,"Barlow Condensed",sans-serif);color:#E4FF3A;letter-spacing:.02em}
+@media (min-width:700px){.vx-hero{min-height:calc(var(--vx-hd) + 200px)}.vx-hero.bas{min-height:calc(var(--vx-hd) + 140px)}.vx-hero h1.vx-h{font-size:52px}.vx-hero h1.vx-h.l2{font-size:40px}.vx-hero h1.vx-h.l3{font-size:32px}.vx-in{padding-bottom:22px}}
+/* barre du haut posée sur le héros : transparente en haut de page, pleine dès qu'on fait défiler ; le titre du module revient alors */
+body.vx-on .top{background:transparent;border-bottom-color:transparent;transition:background-color .18s,border-color .18s}
+body.vx-on.vx-sc .top{background:#07090A;border-bottom-color:#1A211D}
+body.vx-on:not(.vx-sc) .top .brand{visibility:hidden}
+body.vx-on #main{padding-top:14px}
+/* cartes illustrées (F2, F3, F6) */
+.vx-cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.vx-c{position:relative;display:block;overflow:hidden;box-sizing:border-box;min-height:172px;border-radius:22px;background:#111614;border:1px solid #263029;color:#F2F5F0;text-decoration:none;text-align:left;font:inherit;padding:0;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:transform .12s,background-color .12s}
+.vx-c:hover{background:#141A17}
+.vx-c:active{transform:scale(.985)}
+.vx-c.big,.vx-c.row,.vx-c.full{grid-column:1/-1}
+.vx-c.big{min-height:150px}
+.vx-cv{position:absolute;left:0;top:0;width:100%;height:104px;display:block}
+.vx-cv svg{display:block;width:100%;height:100%}
+.vx-c.big .vx-cv{height:100%}
+.vx-ct{position:absolute;left:16px;right:12px;bottom:14px;display:flex;flex-direction:column;gap:4px}
+.vx-c.big .vx-ct{left:18px;bottom:16px;max-width:62%}
+.vx-n{font:600 12px/1 var(--display,"Barlow Condensed",sans-serif);letter-spacing:.22em;color:#3BE08A}
+.vx-t{font-family:var(--display,"Barlow Condensed",sans-serif);font-weight:800;font-size:24px;line-height:.98;text-transform:uppercase;letter-spacing:.01em;overflow-wrap:normal;word-break:normal}
+.vx-c.big .vx-t,.vx-c.row .vx-t{font-size:26px}
+.vx-s{font:400 13px/1.35 var(--ui,"Barlow",sans-serif);color:#9AA59E;text-transform:none;letter-spacing:0}
+.vx-s b{font:700 17px/1 var(--display,"Barlow Condensed",sans-serif);color:#F2F5F0}
+.vx-c.row{min-height:124px;display:flex;align-items:center}
+.vx-c.row .vx-ct{position:static;flex:1 1 auto;min-width:0;padding:16px 8px 16px 18px}
+.vx-c.row .vx-cv{position:relative;flex:0 0 120px;width:120px;height:124px;align-self:stretch}
+.vx-c.mini{min-height:132px}.vx-c.mini .vx-cv{height:84px}.vx-c.mini .vx-t{font-size:21px}
+.vx-cards.c3m{grid-template-columns:repeat(3,minmax(0,1fr))}
+.vx-cards.c3m .vx-c{min-height:132px}.vx-cards.c3m .vx-cv{height:76px}.vx-cards.c3m .vx-ct{left:12px;right:8px;bottom:12px}.vx-cards.c3m .vx-t{font-size:19px}.vx-cards.c3m .vx-s{font-size:12px}
+.vx-c.on{border-color:#E4FF3A;box-shadow:inset 0 0 0 1px #E4FF3A}
+@media (min-width:700px){.vx-cards{grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}.vx-cards.c2{grid-template-columns:repeat(2,minmax(0,1fr))}.vx-cards.c3{grid-template-columns:repeat(3,minmax(0,1fr))}.vx-c{min-height:190px}.vx-cv{height:128px}.vx-c.big{min-height:170px}.vx-c.row{min-height:128px}.vx-c.mini{min-height:150px}.vx-c.mini .vx-cv{height:96px}}
+/* carte d'exercice (F5) : mini-schéma 84×84 à gauche, nom, « durée · joueurs · matériel » */
+.vx-exs{display:flex;flex-direction:column;gap:10px}
+@media (min-width:900px){.vx-exs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}}
+.vx-ex{position:relative;display:flex;align-items:center;gap:14px;min-height:104px;box-sizing:border-box;padding:10px 12px 10px 10px;border-radius:20px;background:#111614;border:1px solid #263029;color:#F2F5F0;text-decoration:none;-webkit-tap-highlight-color:transparent}
+.vx-ex:hover{background:#141A17}
+.vx-ex:active{transform:scale(.99)}
+.vx-ex .vx-mini{flex:0 0 84px;width:84px;height:84px;border-radius:14px;background:#0B1A14;display:block}
+.vx-ex .vx-et{display:flex;flex-direction:column;gap:4px;min-width:0;flex:1 1 auto}
+.vx-ex .vx-et b{font:600 17px/1.2 var(--ui,"Barlow",sans-serif);overflow-wrap:break-word}
+.vx-ex .vx-et small{font-size:13px;line-height:1.35;color:#9AA59E}
+.vx-ex.cmp{min-height:72px;padding:6px 10px 6px 6px;gap:12px}.vx-ex.cmp .vx-mini{flex-basis:58px;width:58px;height:58px;border-radius:12px}.vx-ex.cmp .vx-et b{font-size:15.5px}
+/* pastilles (actif jaune) et sous-filtres soulignés (F5) */
+.vx-pills,.vx-subs{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;padding:2px 0}
+.vx-pills::-webkit-scrollbar,.vx-subs::-webkit-scrollbar{display:none}
+.vx-pill{flex:0 0 auto;min-height:36px;padding:0 14px;border-radius:18px;border:1px solid #263029;background:transparent;display:inline-flex;align-items:center;gap:6px;font-family:var(--display,"Barlow Condensed",sans-serif);font-weight:700;font-size:15px;letter-spacing:.06em;text-transform:uppercase;color:#9AA59E;white-space:nowrap;text-decoration:none;cursor:pointer}
+.vx-pill:hover{color:#F2F5F0}
+.vx-pill[aria-pressed=true],.vx-pill[aria-selected=true],.vx-pill[aria-current=page],.vx-pill.on{background:#E4FF3A;border-color:#E4FF3A;color:#07090A}
+.vx-subs{gap:18px}
+.vx-sub{flex:0 0 auto;min-height:36px;padding:6px 0 4px;border:0;border-bottom:2px solid transparent;border-radius:0;background:none;font:400 15px/1.2 var(--ui,"Barlow",sans-serif);color:#9AA59E;white-space:nowrap;text-decoration:none;cursor:pointer}
+.vx-sub:hover{color:#F2F5F0}
+.vx-sub[aria-pressed=true],.vx-sub[aria-current=page],.vx-sub.on{color:#F2F5F0;font-weight:600;border-bottom-color:#E4FF3A}
+/* onglets en segment arrondi, actif jaune (F4) */
+.vx-seg{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);gap:2px;background:#111614;border:1px solid #263029;border-radius:22px;padding:4px;margin:0 0 14px}
+.vx-seg>a,.vx-seg>button{min-height:38px;border:0;border-radius:18px;background:transparent;color:#9AA59E;display:flex;align-items:center;justify-content:center;padding:0 8px;font-family:var(--display,"Barlow Condensed",sans-serif);font-weight:700;font-size:15px;letter-spacing:.04em;text-transform:uppercase;text-decoration:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer}
+.vx-seg.scroll{grid-auto-columns:max-content;overflow-x:auto;scrollbar-width:none;justify-content:start}
+.vx-seg.scroll::-webkit-scrollbar{display:none}
+.vx-seg.scroll>a,.vx-seg.scroll>button{padding:0 14px}
+.vx-seg>[aria-current=page],.vx-seg>[aria-selected=true],.vx-seg>[aria-pressed=true]{background:#E4FF3A;color:#07090A}
+/* « L'essentiel » en carte, points numérotés 01, 02… en vert (F4) */
+.vx-ess{background:#111614;border:1px solid #263029;border-radius:22px;padding:16px 18px;display:flex;flex-direction:column;gap:12px}
+.vx-lt{font-family:var(--display,"Barlow Condensed",sans-serif);font-weight:700;font-size:13px;letter-spacing:.22em;text-transform:uppercase;color:#E4FF3A}
+.vx-pt{display:flex;gap:12px;align-items:baseline}
+.vx-pt>i{flex:0 0 auto;min-width:28px;font:normal 800 22px/1 var(--display,"Barlow Condensed",sans-serif);color:#3BE08A}
+.vx-pt>span{font-size:15px;line-height:1.45}
+ol.vx-nl,ul.vx-nl{list-style:none;margin:4px 0 6px;padding:0;counter-reset:vxn;display:flex;flex-direction:column;gap:12px}
+ol.vx-nl>li,ul.vx-nl>li{counter-increment:vxn;position:relative;padding-left:42px;margin:0;max-width:72ch}
+ol.vx-nl>li::before,ul.vx-nl>li::before{content:counter(vxn,decimal-leading-zero);position:absolute;left:0;top:0;font:800 22px/1.15 var(--display,"Barlow Condensed",sans-serif);color:#3BE08A}
+/* intertitres en capitales condensées (F4) */
+.vx-sh,.sec>h2{font-family:var(--display,"Barlow Condensed",sans-serif);font-weight:800;font-size:20px;letter-spacing:.04em;text-transform:uppercase;color:#F2F5F0;margin:0 0 10px}
+.sec>h2 small{font-family:var(--ui,"Barlow",sans-serif);font-weight:500;font-size:13px;letter-spacing:0;text-transform:none;color:#9AA59E;margin-left:6px}
+.vx-row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.vx-sec{margin-top:22px}
+@media print{#vxh{display:none!important}}
+/*VX-CSS-FIN*/
+/* Banque · E1B (maquette F5) : filtres en pastilles, sous-filtres soulignés, cartes d'exercice avec mini-schéma, fiche en sections claires */
+.vtabs{margin:0 0 12px}
+/* « Créer un exercice » : le « + » n'est plus dans la barre du bas en Bibliothèque */
+.vnew{display:flex;align-items:center;justify-content:center;gap:8px;min-height:44px;margin:0 0 14px;border:1px dashed #3BE08A;border-radius:22px;color:#3BE08A;text-decoration:none;font-family:var(--display);font-weight:700;font-size:15px;letter-spacing:.08em;text-transform:uppercase}
+.vnew span{font-size:22px;line-height:1}
+.vnew:hover{background:#0F2A1C}
+.filters.vfil{background:none;border:0;border-radius:0;padding:0;margin:0;gap:12px}
+.vfil .vx-pills,.vfil .vx-subs{margin:0 -16px;padding-inline:16px}
+.vfil .vx-subs{border-bottom:1px solid #1A211D}
+.vfil .vx-subs .msg{align-self:center;padding:6px 0}
+.vfil .frow{gap:6px}
+.vfil .frow>b{min-width:44px;font-family:var(--display);letter-spacing:.14em}
+.vfil .frow.scroll{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;margin-right:-16px;padding-right:16px}
+.vfil .frow.scroll::-webkit-scrollbar{display:none}
+.vfil .frow.scroll .chip{flex:0 0 auto}
+.vfil details.fplus>summary{font-family:var(--display);font-weight:700;letter-spacing:.1em;text-transform:uppercase;font-size:14px;min-height:40px;display:flex;align-items:center}
+.vfil details[open]{background:#111614;border:1px solid #263029;border-radius:18px;padding:4px 14px 12px}
+.count{margin:16px 0 10px}
+.count>span:first-child{font-family:var(--display);font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#9AA59E}
+.count>span:first-child b{color:#F2F5F0;font-size:18px}
+.vx-ex .rfav{flex:0 0 44px;width:44px;height:44px;display:inline-flex;align-items:center;justify-content:center;border-radius:22px;font-size:21px;color:#9AA59E;cursor:pointer;margin-right:-4px}
+.vx-ex .rfav[aria-pressed="true"]{color:#E4FF3A}
+.vx-ex .bdgs .pill{font-size:11px;vertical-align:2px}
+.vx-ex .vok{color:#3BE08A;font-weight:600}
+.vx-sous .pill{font-size:11.5px;vertical-align:2px}
+.fiche{background:none;border:0;border-radius:0;overflow:visible;margin-top:0}
+.fhead{border-top:0;padding:0 0 14px;align-items:center}
+.fid{font-size:15px;letter-spacing:.1em;text-transform:uppercase}
+.fid a{color:var(--dc);text-decoration:none;border-bottom:1px dotted currentColor}
+.fline{font-weight:500;font-size:14px;color:#9AA59E;margin-top:4px}
+.video{border-radius:20px;overflow:hidden}
+.video:not(.has){min-height:0;flex-direction:row;flex-wrap:wrap;justify-content:flex-start;text-align:left;gap:4px 12px;padding:12px 16px;background:#111614;border:1px solid #263029}
+.video:not(.has) .ph{font-size:16px;font-weight:700;text-transform:uppercase;letter-spacing:.08em}
+.vtools{justify-content:flex-start}
+.keys{border:1px solid #263029;border-radius:20px;background:#111614;margin-top:12px;overflow:hidden}
+.key small{font-family:var(--display);letter-spacing:.16em;color:#3BE08A}
+.key b{font-family:var(--display);font-weight:700;font-size:19px}
+.grid{border-top:0;gap:10px;margin-top:10px}
+.grid .col{display:flex;flex-direction:column;gap:10px}
+.cell{background:#111614;border:1px solid #263029;border-radius:20px;padding:14px 16px}
+.grid>.col+.col .cell{border-left:1px solid #263029}
+.fiche>.cell{margin-top:10px}
+.lab{font-family:var(--display);font-size:13px;letter-spacing:.18em;color:#3BE08A;margin-bottom:8px}
+.lab::before{display:none}
+.cell .txt,.cell li{font-size:15.5px;line-height:1.55}
+@media (max-width:760px){.grid{grid-template-columns:minmax(0,1fr)}}
+.fam{border-radius:20px;padding:14px 16px;box-shadow:none;border-left-width:1px}
+.fam b{font-family:var(--display);font-weight:800;text-transform:uppercase;letter-spacing:.03em;font-size:18px}
+.subh{font-family:var(--display);font-weight:800;text-transform:uppercase;letter-spacing:.05em;font-size:18px;color:#F2F5F0;margin:22px 0 10px}
+.intro{border-radius:20px}
 </style>
 
 <header class="top"><div class="topin">
@@ -548,9 +714,57 @@ select.sel{min-height:36px;background:#1A211D;border-color:#263029}
   <div class="sbox"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
     <input id="q" type="search" placeholder="Chercher un exercice : nom, matériel, mot…" autocomplete="off" enterkeyhint="search"></div>
 </div></header>
+<div id="vxh" hidden></div>
 <main id="main"><div class="load">Chargement des exercices…</div></main>
 <div class="modal" id="modal" hidden><div class="box" id="mbox"></div></div>
 
+<!--VX-DEBUT--><script>
+/* GRÜN · E1B — héros et cartes illustrées : bloc commun, IDENTIQUE dans les 7 modules (window.VX). Visuels : window.GRUN_VIS (visuels.js, chargé avant). */
+(function(){
+  "use strict";
+  const esc = s => String(s == null ? "" : s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+  const V = () => window.GRUN_VIS || null;
+  const svg = (nom, o) => { const v = V(); return v && nom ? v.svg(nom, o || {}) : ""; };
+  const top = () => document.querySelector("header.top");
+  const box = () => document.getElementById("vxh");
+  let raf = 0;
+  function maj(){ const t = top(); if(t && t.offsetHeight) document.documentElement.style.setProperty("--vx-hd", t.offsetHeight + "px"); }
+  function sc(){ const h = box(), t = top(); const on = !h || h.hidden || scrollY > Math.max(8, h.offsetHeight - (t ? t.offsetHeight : 0) - 56); document.body.classList.toggle("vx-sc", on); }
+  addEventListener("scroll", () => { if(!raf) raf = requestAnimationFrame(() => { raf = 0; sc(); }); }, {passive:true});
+  addEventListener("resize", () => { maj(); sc(); });
+  /* titres des cartes et du héros : jamais coupés au milieu d'un mot ; si la police (de secours) est trop large, la taille baisse jusqu'à tenir */
+  function fit(){ document.querySelectorAll(".vx-t,.vx-h").forEach(el => { el.style.fontSize = ""; let fs = parseFloat(getComputedStyle(el).fontSize), n = 0;
+    while(el.scrollWidth > el.clientWidth + 1 && fs > 14 && n++ < 16){ fs -= 1.5; el.style.fontSize = fs + "px"; } }); }
+  let rf = 0; const plan = () => { if(!rf) rf = requestAnimationFrame(() => { rf = 0; fit(); }); };
+  function obs(){ const mo = new MutationObserver(plan); ["main", "vxh"].forEach(id => { const e = document.getElementById(id); if(e) mo.observe(e, {childList: true, subtree: true}); }); plan();
+    if(document.fonts && document.fonts.ready) document.fonts.ready.then(plan); }
+  addEventListener("resize", plan);
+  const taille = t => { const n = String(t || "").length; return n > 64 ? " l3" : n > 22 ? " l2" : ""; };
+  const VX = {
+    esc, svg,
+    pour: k => { const v = V(); return v ? v.pour(k) : "balles"; },
+    n2: i => String(i).padStart(2, "0"),
+    /* héros (bandeau imagé) : {vis, lab, titre, num (chiffre jaune à droite du titre), sous (html), bas (écran profond), large (visuel pleine largeur), sq (mini-schéma agrandi en vignette), par} ; VX.hero(null) le retire */
+    hero(o){ const h = box(); if(!h) return;
+      if(!o){ if(!h.hidden){ h.hidden = true; h.innerHTML = ""; } document.body.classList.remove("vx-on"); sc(); return; }
+      maj();
+      h.className = "vx-hero" + (o.bas ? " bas" : "") + (o.large ? " large" : "") + (o.sq ? " sq" : "");
+      h.innerHTML = `${o.vis ? `<div class="vx-vis">${svg(o.vis, {par: o.par || (o.large ? "xMaxYMax slice" : "xMaxYMid meet")})}</div>` : ""}<div class="vx-in"><div class="vx-txt">${o.lab ? `<span class="vx-lab">${esc(o.lab)}</span>` : ""}${o.num != null ? `<div class="vx-hrow"><h1 class="vx-h${taille(o.titre)}">${esc(o.titre)}</h1><span class="vx-num">${esc(o.num)}</span></div>` : `<h1 class="vx-h${taille(o.titre)}">${esc(o.titre)}</h1>`}${o.sous ? `<p class="vx-sous">${o.sous}</p>` : ""}</div></div>`;
+      h.hidden = false; document.body.classList.add("vx-on"); sc();
+      requestAnimationFrame(() => { maj(); sc(); }); },
+    /* carte illustrée : {href | (attrs + bouton), vis, n (numéro), t (titre), s (sous-titre html), k : "big" | "row" | "mini" | "", cls, attrs, par} */
+    carte(o){ const k = o.k || "", par = o.par || (k === "big" ? "xMaxYMid meet" : k === "row" ? "xMinYMid slice" : "xMidYMid meet"), tag = o.href ? "a" : "button";
+      return `<${tag} class="vx-c${k ? " " + k : ""}${o.cls ? " " + o.cls : ""}" ${o.href ? `href="${esc(o.href)}"` : `type="button"`}${o.attrs ? " " + o.attrs : ""}><span class="vx-cv">${svg(o.vis, {par})}</span><span class="vx-ct">${o.n != null ? `<span class="vx-n">${esc(o.n)}</span>` : ""}<span class="vx-t">${esc(o.t)}</span>${o.s ? `<span class="vx-s">${o.s}</span>` : ""}</span></${tag}>`; },
+    /* carte d'exercice (F5) : {href, id (préfixe → mini-schéma), nom, meta (html), extra (html), cls, attrs} */
+    ex(o){ return `<a class="vx-ex${o.cls ? " " + o.cls : ""}" href="${esc(o.href)}"${o.attrs ? " " + o.attrs : ""}>${svg(VX.pour(o.id), {w: 84, h: 84, cls: "vx-mini"})}<span class="vx-et"><b>${o.nomHtml != null ? o.nomHtml : esc(o.nom)}</b>${o.meta ? `<small>${o.meta}</small>` : ""}</span>${o.extra || ""}</a>`; },
+    /* « L'essentiel » numéroté : [texte html, …] */
+    fit,
+    ess(titre, pts){ return `<section class="vx-ess"><span class="vx-lt">${esc(titre)}</span>${pts.map((p, i) => `<div class="vx-pt"><i>${VX.n2(i + 1)}</i><span>${p}</span></div>`).join("")}</section>`; }
+  };
+  window.VX = VX;
+  if(document.readyState === "loading") document.addEventListener("DOMContentLoaded", () => { maj(); obs(); }); else { maj(); obs(); }
+})();
+</script><!--VX-FIN-->
 <script>
 "use strict";
 /* Correspondance ligne de grille → documents de la veille (écrite par build_data.py à partir de plan/liste_documents.tsv) */
@@ -649,7 +863,7 @@ addEventListener("hashchange", ()=>route());
 $("#back").onclick=()=>{ if(history.length>1) history.back(); else location.hash=""; };
 function parseHash(){ const raw=location.hash.slice(1), i=raw.indexOf("?"); let path=i<0?raw:raw.slice(0,i); try{ path=decodeURIComponent(path); }catch(e){} return {path, q:new URLSearchParams(i<0?"":raw.slice(i+1))}; }
 function route(keep){
-  const {path:h,q} = parseHash(); if(!keep){ scrollTo(0,0); FLASH=""; } EDITING=false;
+  const {path:h,q} = parseHash(); if(!keep){ scrollTo(0,0); FLASH=""; } EDITING=false; VX.hero(null);
   if(h.startsWith("/ex/")) return showEx(h.slice(4));
   if(h.startsWith("/l/")) return showLigne(h.slice(3), q.get("a"));
   if(h==="/nouveau") return showForm(null,q);
@@ -665,7 +879,22 @@ function route(keep){
   showExplore();
 }
 function tabs(cur){ const T=[["","Explorer"],["familles","Familles"],["favoris","♥ Favoris"],["listes","Collections"],["tournage","Vidéos"]]; if(!J()) T.push(["/propositions","Propositions"]);
-  return `<nav class="tabs">${T.map(([h,t])=>`<a class="tab" href="#${h}" ${cur===h?'aria-current="page"':""}>${t}</a>`).join("")}</nav>`; }
+  return `<nav class="vx-seg scroll vtabs" aria-label="Rubriques de la banque">${T.map(([h,t])=>`<a href="#${h}" ${cur===h?'aria-current="page"':""}>${t}</a>`).join("")}</nav>`; }
+/* E1B (maquette F5) : héros court, titre EXERCICES et nombre d'exercices en jaune (calculé, perso inclus) */
+function heroBq(titre, sous, vis){ VX.hero({vis:vis||"heros_court", large:!vis, bas:true, lab:"Bibliothèque · exercices", titre, num:titre==="Exercices"?EX.length.toLocaleString("fr-FR"):null, sous}); }
+const DOMC = {PP:"Physique", PH:"Physique hors grille", GE:"Geste", DE:"Déplacement", JEU:"Situations de jeu"};
+/* ligne « durée · joueurs · matériel » d'une carte d'exercice (plus aucune étiquette de niveau sur les cartes) */
+const FMTJ = {seul:"seul", deux:"2 joueurs", groupe:"en groupe"};
+function metaEx(e){ const p=[], w=e.w||{};
+  const du = w.dur || (String(e.ut||"").match(/Durée conseillée\s*:\s*(\d+)\s*min/)||[])[1]; if(du) p.push(du+" min");
+  const f = Array.isArray(w.fmt) ? w.fmt : [];
+  if(f.length) p.push(f.length>1 ? (f.includes("seul") ? "seul ou à plusieurs" : "à plusieurs") : (FMTJ[f[0]]||f[0]));
+  else if(/partenaire|binôme|relanceur|à deux/i.test((e.de||"")+" "+(e.ma||""))) p.push("2 joueurs");
+  const m = (e.m||[]).map(c=>(MATC.find(x=>x[0]===c)||[c,c])[1]);
+  if(m.length) p.push(m[0].toLowerCase()+(m.length>1?" +"+(m.length-1):""));
+  else if(/^\s*(aucun|sans)/i.test(e.ma||"aucun")) p.push("sans matériel");
+  else p.push(String(e.ma).split(/[,;.]/)[0].trim().slice(0,30));
+  return p.filter(Boolean).join(" · "); }
 function reserve(){ $("#main").innerHTML=`<h1>Réservé au coach</h1><p class="lead">En mode joueur, la banque se consulte seulement : pas de création ni de modification d'exercice.</p><div class="sec actbar"><a class="btn pri" href="#">Retour à la banque</a></div>`; }
 
 /* ---------- explorer : filtres et vues ---------- */
@@ -704,18 +933,20 @@ function filtered(){
 function showExplore(){
   document.documentElement.style.setProperty("--acc","var(--ink)");
   const f=P.f;
-  const domChips = Object.entries(DOM).map(([k,[n,c]])=>`<button class="chip" type="button" data-dom="${k}" aria-pressed="${f.dom===k}" style="--cc:var(${c})"><i></i>${n}</button>`).join("");
+  const domChips = Object.keys(DOM).map(k=>`<button class="vx-pill" type="button" data-dom="${k}" aria-pressed="${f.dom===k}" title="${esc(DOM[k][0])}">${DOMC[k]}</button>`).join("");
   const tog = (k,t) => `<button class="chip" type="button" data-tog="${k}" aria-pressed="${!!f[k]}">${t}</button>`;
   const ck = (k, v, t, extra) => `<button class="chip${extra||""}" type="button" data-fk="${k}" data-fv="${esc(v)}" aria-pressed="${String(f[k])===String(v)}">${t}</button>`;
   const ldoms = f.dom==="PP"||f.dom==="PH" ? ["PP"] : f.dom==="GE" ? ["GE"] : f.dom==="DE" ? ["DE"] : (f.lig ? [f.lig.slice(0,2)] : []);
   const cj = cur();
   ecran("explorer");
   const nMine = EX.filter(e=>e.perso).length;
-  $("#main").innerHTML = `<div class="headrow"><div><h1>Banque d'exercices</h1><p class="lead">${EX.length.toLocaleString("fr-FR")} exercices${nMine?` dont ${nMine} à toi`:""} · une fiche par exercice · rangés selon les lignes des grilles</p></div></div>${tabs("")}
-  <div class="filters">
-    <div class="frow"><b>Domaine</b>${domChips}</div>
+  heroBq("Exercices", nMine?`dont ${nMine} à toi`:"");
+  $("#main").innerHTML = `${tabs("")}
+  ${J()?"":`<a class="vnew" href="#/nouveau"><span aria-hidden="true">+</span>Créer un exercice</a>`}
+  <div class="filters vfil">
+    <div class="vx-pills" role="group" aria-label="Domaine">${domChips}</div>
+    <div class="vx-subs" role="group" aria-label="Ligne">${ldoms.length ? ldoms.flatMap(d=>LIG[d].map((n,i)=>`<button class="vx-sub" type="button" data-fk="lig" data-fv="${d+(i+1)}" aria-pressed="${f.lig===d+(i+1)}">${XP()?d+(i+1)+" · ":""}${esc(n)}</button>`)).join("") : `<span class="msg">Touche un domaine pour voir ses lignes${f.lig?` · choisie : ${esc(ligNom(f.lig))}`:""}.</span>`}</div>
     <div class="frow scroll"><b>Âge</b>${cj?ck("age", cj.a, `Âge de ${esc(cj.nom)} · ${cj.a} ans`, " cur"):""}${Array.from({length:15},(_,i)=>ck("age", i+4, (i+4)+" ans")).join("")}</div>
-    <div class="frow${ldoms.length?" scroll":""}"><b>Ligne</b>${ldoms.length ? ldoms.flatMap(d=>LIG[d].map((n,i)=>ck("lig", d+(i+1), (XP()?d+(i+1)+" · ":"")+esc(n)))).join("") : `<span class="msg">Touche un domaine pour voir ses lignes${f.lig?` · choisie : ${esc(ligNom(f.lig))}`:""}.</span>`}</div>
     <details id="fplus" class="fplus" ${f.niv||f.lieu||f.wu||f.vid||f.fav||f.mine||f.mod||f.hid||f.dispo.length||f.mat?"open":""}><summary>Plus de filtres</summary>
     <div class="frow"><b>Niveau</b>${[1,2,3,4].map(n=>ck("niv", n, n+" · "+NIV[n])).join("")}</div>
     <div class="frow"><b>Lieu</b>${ck("lieu","court","Sur le court")}${ck("lieu","hors","Hors court")}${ck("lieu","grand","Grand espace")}</div>
@@ -743,13 +974,15 @@ function showExplore(){
 function renderRes(){
   const r = filtered();
   const c=$("#cnt"); if(!c) return;
-  c.innerHTML = `<b>${r.length.toLocaleString("fr-FR")}</b> exercice${r.length>1?"s":""}`;
+  c.innerHTML = r.length===EX.length ? "" : `<b>${r.length.toLocaleString("fr-FR")}</b> exercice${r.length>1?"s":""}`;   /* le total est déjà dans le héros */
   $("#res").innerHTML = r.length ? rowsHTML(r.slice(0,shown), P.f.vue==="compacte") + (r.length>shown?`<div class="more"><button class="btn" id="more" type="button">Afficher ${Math.min(PAGE,r.length-shown)} de plus</button></div>`:"") : '<div class="empty">Aucun exercice ne correspond. Retire un filtre ou raccourcis la recherche.</div>';
   const m=$("#more"); if(m) m.onclick=()=>{ shown+=PAGE; renderRes(); };
 }
 function badges(e){ return `${e.perso?`<span class="pill mine">${e.st==="valide"?"méthode":e.st==="propose"?"proposé":"perso"}</span>`:""}${e.modifie?'<span class="pill mod">modifié</span>':""}${HIDE.has(e.id)?'<span class="pill">masqué</span>':""}`; }
 function rowsHTML(arr, compact){
-  return `<div class="list${compact?" compact":""}">${arr.map(e=>`<a class="row" href="#/ex/${e.id}" style="--dc:${dc(e.dom)}"><span class="bar"></span><span class="id">${e.id}</span><span class="nm"><b>${FAV.has(e.id)?'<span class="pill fav" style="background:none;padding:0 4px 0 0">♥</span>':""}${esc(e.n)}</b><small>${esc(liTxt(e))}</small></span><span class="meta">${J()?"":`<span class="rfav" role="button" tabindex="0" data-rfav="${e.id}" aria-pressed="${FAV.has(e.id)}" aria-label="${FAV.has(e.id)?"Retirer des favoris":"Mettre en favori"}">${FAV.has(e.id)?"♥":"♡"}</span>`}${badges(e)}<span class="pill">${e.a}${(e.ax||18)<18?`-${e.ax}`:"+"} ans</span><span class="pill">niveau ${e.v}</span>${e.w?'<span class="pill x">échauff.</span>':""}${hasVid(e.id)?'<span class="pill vid x">▶ vidéo</span>':""}</span></a>`).join("")}</div>`;
+  return `<div class="vx-exs${compact?" cmp":""}">${arr.map(e=>VX.ex({href:"#/ex/"+e.id, id:e.id, cls:compact?"cmp":"", nomHtml:esc(e.n)+(badges(e)?` <span class="bdgs">${badges(e)}</span>`:""),
+    meta:`<span class="xp">${e.id} · </span>${esc(metaEx(e))}${hasVid(e.id)?' · <span class="vok">▶ vidéo</span>':""}`,
+    extra: J()?"":`<span class="rfav" role="button" tabindex="0" data-rfav="${e.id}" aria-pressed="${FAV.has(e.id)}" aria-label="${FAV.has(e.id)?"Retirer des favoris":"Mettre en favori"}">${FAV.has(e.id)?"♥":"♡"}</span>`})).join("")}</div>`;
 }
 /* favori en un geste, sur chaque ligne de la liste */
 document.addEventListener("click", ev=>{ const b = ev.target.closest && ev.target.closest("[data-rfav]"); if(!b) return; ev.preventDefault(); ev.stopPropagation();
@@ -767,11 +1000,11 @@ function showLigne(L, a){
   const xs = EX.filter(e=>e.L.includes(L) && !HIDE.has(e.id) && (!age || (e.a<=age && (e.ax||18)>=age))).sort((x,y)=>x.v-y.v||x.a-y.a||x.n.localeCompare(y.n,"fr"));
   const m=$("#main"); m.style.setProperty("--dc",ligCol(L));
   const lv={}; xs.forEach(e=>{ (lv[e.v]=lv[e.v]||[]).push(e); });
-  m.innerHTML = `<div class="crumb"><a href="#">Banque</a>›<span>${esc(ligNom(L))}</span></div>
-   <div class="headrow" style="margin-top:4px"><div><h1 style="color:${ligCol(L)}">${esc(ligNom(L))}<span class="xp"> · ${L}</span></h1><p class="lead">${xs.length} exercice${xs.length>1?"s":""}${age?` accessibles à ${age} ans`:""} · du plus simple au plus dur</p></div>${J()?"":`<a class="btn new" href="#/nouveau?ligne=${L}${age?`&a=${age}`:""}">+ Créer un exercice pour cette ligne</a>`}</div>
+  VX.hero({vis:ligDom(L)==="PP"?"physique":"technique", bas:true, lab:`${DOM[ligDom(L)][0]} · ligne ${ligN(L)}`, titre:ligNom(L), num:String(xs.length), sous:`exercice${xs.length>1?"s":""}${age?` · ${age} ans`:""} · du plus simple au plus dur`});
+  m.innerHTML = `${J()?"":`<div class="vx-row" style="margin-bottom:12px"><a class="btn new" href="#/nouveau?ligne=${L}${age?`&a=${age}`:""}">+ Créer un exercice pour cette ligne</a></div>`}
    <div class="filters"><div class="frow"><b>Âge</b><select class="sel" id="lage" aria-label="Âge du joueur"><option value="">Tous âges</option>${Array.from({length:15},(_,i)=>`<option value="${i+4}" ${age===i+4?"selected":""}>Joueur de ${i+4} ans</option>`).join("")}</select></div>
    <div class="frow"><b>Liens</b>${J()?"":`<a class="chip" href="veille.html#/l/${L}">Comprendre (veille)</a>`}<a class="chip" href="grilles.html#/ligne/${L}/G/${age||10}">Tests · garçons</a><a class="chip" href="grilles.html#/ligne/${L}/F/${age||10}">Tests · filles</a></div></div>
-   ${xs.length ? Object.entries(lv).map(([v,arr])=>`<h3 class="subh">Niveau ${v} · ${NIV[v]||""} <small style="color:var(--mute);font-family:var(--ui);font-size:13px">${arr.length}</small></h3>${rowsHTML(arr)}`).join("") : '<div class="empty" style="margin-top:12px">Aucun exercice pour cette ligne à cet âge. Change l\'âge ou crée un exercice.</div>'}`;
+   ${xs.length ? `<div class="sec">${rowsHTML(xs)}</div>` : '<div class="empty" style="margin-top:12px">Aucun exercice pour cette ligne à cet âge. Change l\'âge ou crée un exercice.</div>'}`;
   $("#lage").onchange=ev=>{ location.hash = `#/l/${L}${ev.target.value?`?a=${ev.target.value}`:""}`; };
 }
 
@@ -824,9 +1057,10 @@ function showEx(id){
   const fav=FAV.has(id), co=!J();
   const rel=[...new Set((e.ut||"").match(/\b[A-Z]{3}-\d{4}\b/g)||[])].filter(x=>BY[x]&&x!==id);
   const m=$("#main"); m.style.setProperty("--dc",dc(d));
-  m.innerHTML = `<div class="crumb"><a href="#">Banque</a>›<a href="#f/${f.c}">${esc(f.t)}</a>›<span>${esc(e.s||"")}</span></div>
-  <article class="fiche">
-    <div class="fhead"><div style="min-width:0"><div class="fid"><span class="xp">${e.id} · </span>${DOM[d][0]} ${badges(e)}</div><h1>${esc(e.n)}</h1><div class="fline">${esc(liTxt(e))}</div></div>
+  /* E1B : héros = mini-schéma agrandi (la vidéo, s'il y en a une, s'affiche juste dessous, en grand) */
+  VX.hero({vis:VX.pour(e.id), sq:true, lab:`${DOMC[d]||DOM[d][0]} · ${String(f.t).split(" : ")[0]}`, titre:e.n, sous:`${esc(metaEx(e))}${badges(e)?" "+badges(e):""}`});
+  m.innerHTML = `<article class="fiche">
+    <div class="fhead"><div style="min-width:0"><div class="fid"><span class="xp">${e.id} · </span><a href="#f/${f.c}">${esc(e.s||f.t)}</a></div><div class="fline">${esc(liTxt(e))}</div></div>
       <div class="actbar"><a class="btn" href="#proches">Exercices proches</a><button class="btn star" id="fav" type="button" aria-pressed="${fav}">${fav?"♥ Favori":"♡ Favori"}</button><button class="btn" id="addl" type="button">${inCols(id)?"✓ Collection ("+inCols(id)+")":"+ Collection"}</button>${co?`<a class="btn" id="edit" href="#/modifier/${e.id}">Modifier</a>`:""}</div></div>
     <details class="grun-plus" style="margin:0 0 12px"><summary>Plus d'options</summary><div class="grun-plusb"><div class="actbar">${co?`${e.modifie?'<button class="btn" id="reset" type="button">Remettre l\'original</button>':""}${e.perso?'<button class="btn dan" id="del" type="button">Supprimer</button>':""}<button class="btn" id="hide" type="button">${HIDE.has(id)?"Réafficher":"Masquer"}</button>`:""}${co?`<button class="btn" id="vidch" type="button">Changer la vidéo</button><button class="btn" id="vidrm" type="button">Retirer la vidéo</button>`:""}</div></div></details>
     ${e.img?`<div class="photo"><img src="${esc(e.img)}" alt="Photo : ${esc(e.n)}"></div>`:""}
@@ -883,17 +1117,19 @@ function showEx(id){
   if(co) addVidTools($("#vid"),e,hasVid(id));
   renderVideo(e);
 }
+/* E1B : s'il y a une vidéo, c'est elle l'image de la fiche (le mini-schéma du héros s'efface) */
+const vidHero = () => { const v=document.querySelector("#vxh .vx-vis"); if(v) v.hidden=true; };
 function ytId(u){ const m=String(u).match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|shorts\/|embed\/))([\w-]{6,})/); return m?m[1]:null; }
 async function renderVideo(e){
   const box=$("#vid"); if(!box) return; const id=e.id;
   let url = vidOf(e);
   let blob = LOCALV.has(id) ? await IDB.get(id).catch(()=>null) : null;
   if(!$("#vid") || $("#vid")!==box) return;
-  if(blob){ box.className="video has"; const v=document.createElement("video"); v.controls=true; v.playsInline=true; v.preload="metadata"; v.src=URL.createObjectURL(blob); box.innerHTML=""; box.appendChild(v); addVidTools(box,e,true); return; }
+  if(blob){ box.className="video has"; vidHero(); const v=document.createElement("video"); v.controls=true; v.playsInline=true; v.preload="metadata"; v.src=URL.createObjectURL(blob); box.innerHTML=""; box.appendChild(v); addVidTools(box,e,true); return; }
   if(url){
     const yt=ytId(url);
-    if(yt){ box.className="video has"; box.innerHTML=`<iframe src="https://www.youtube-nocookie.com/embed/${yt}?playsinline=1&rel=0" title="Vidéo ${id}" allow="fullscreen; picture-in-picture" allowfullscreen></iframe>`; addVidTools(box,e,true); return; }
-    if(/\.(mp4|mov|m4v|webm)(\?|$)/i.test(url)){ box.className="video has"; box.innerHTML=`<video controls playsinline preload="metadata" src="${esc(url)}"></video>`; addVidTools(box,e,true); return; }
+    if(yt){ box.className="video has"; vidHero(); box.innerHTML=`<iframe src="https://www.youtube-nocookie.com/embed/${yt}?playsinline=1&rel=0" title="Vidéo ${id}" allow="fullscreen; picture-in-picture" allowfullscreen></iframe>`; addVidTools(box,e,true); return; }
+    if(/\.(mp4|mov|m4v|webm)(\?|$)/i.test(url)){ box.className="video has"; vidHero(); box.innerHTML=`<video controls playsinline preload="metadata" src="${esc(url)}"></video>`; addVidTools(box,e,true); return; }
     box.className="video"; box.innerHTML=`<div class="ph">Vidéo de démonstration</div><a class="btn pri" href="${esc(url)}" target="_blank" rel="noopener">▶ Ouvrir la vidéo</a>`; addVidTools(box,e,true); return;
   }
   box.className="video"; box.innerHTML=`<div class="ph">Vidéo de démonstration à venir</div><div class="msg">Nom du fichier à tourner : <code>${id}.mp4</code></div>`; addVidTools(box,e,false);
@@ -945,8 +1181,8 @@ function showForm(id, q){
   const famOpts = `<option value="MOI" ${v.f==="MOI"?"selected":""}>Mes exercices</option>` + Object.entries(groups).map(([g,fs])=>`<optgroup label="${esc(g)}">${fs.map(f=>`<option value="${f.c}" ${v.f===f.c?"selected":""}>${esc(f.t)}</option>`).join("")}</optgroup>`).join("");
   const m=$("#main"); m.style.setProperty("--dc","var(--ink)");
   const stRadios = `${[["perso","Perso","Visible seulement par toi."],["propose","Proposé à la méthode","À exporter depuis « Propositions » pour que le créateur de GRÜN le relise."],["valide","Exercice de la méthode","Validé par le créateur de GRÜN : visible par tous les abonnés dès que les comptes en ligne seront ouverts."]].map(([k,t,s])=>`<label class="radio"><input type="radio" name="st" value="${k}" ${(v.st||"perso")===k?"checked":""}><span><b>${t}</b><small>${s}</small></span></label>`).join("")}`;
-  m.innerHTML = `<div class="crumb"><a href="#">Banque</a>›<span>${e?"Modifier":prop?"Proposer un exercice":"Créer un exercice"}</span></div>
-  <h1 style="margin-top:4px">${e?"Modifier · "+esc(e.n):prop?"Proposer un exercice":"Créer un exercice"}</h1>${prop&&!e?`<div class="propst"><b>Proposé à la méthode</b><p class="msg" style="margin:4px 0 0">Remplis l'essentiel et la fiche ci-dessous, puis « Proposer ». Il reste à toi tant que le créateur de GRÜN ne l'a pas validé ; l'export se fait depuis l'onglet Propositions.</p></div>`:""}
+  VX.hero({vis:e?VX.pour(e.id):"ex_geste", sq:!!e, bas:true, lab:e?"Modifier un exercice":"Bibliothèque · exercices", titre:e?e.n:prop?"Proposer un exercice":"Créer un exercice"});
+  m.innerHTML = `${prop&&!e?`<div class="propst"><b>Proposé à la méthode</b><p class="msg" style="margin:4px 0 0">Remplis l'essentiel et la fiche ci-dessous, puis « Proposer ». Il reste à toi tant que le créateur de GRÜN ne l'a pas validé ; l'export se fait depuis l'onglet Propositions.</p></div>`:""}
   <p class="lead">${e ? (e.perso ? "Ton exercice : la modification est directe." : "Exercice d'origine : tes changements s'ajoutent par-dessus (badge « modifié ») ; « Remettre l'original » les efface.") : "Mêmes champs que la banque, plus vidéo, photo, dosage et usage en échauffement."}</p>
   <form class="form" id="fx" novalidate autocomplete="off">
    <div class="fs"><h2>L'essentiel</h2><div class="fg">
@@ -1066,7 +1302,9 @@ function showProps(){
   document.documentElement.style.setProperty("--acc","var(--ink)");
   const mine = EX.filter(e=>e.perso && e.st==="propose"), val = EX.filter(e=>e.perso && e.st==="valide"), rec = P.recues||[];
   const pv = x => `<details><summary>Voir la fiche</summary><dl>${[["Famille",(FBY[x.f]||MOIFAM).t+(x.s?" · "+x.s:"")],["Lignes",(x.L||[]).join(", ")],["Âge et niveau",`${x.a||"?"} à ${x.ax||18} ans · niveau ${x.v||1}`],["Objectif",x.ob],["Description",x.de],["Consignes",x.co],["Erreurs",x.er],["Matériel",x.ma],["Dosage",x.dos],["Échauffement",x.w?[ETN[x.w.et],...(x.w.ets||[]).filter(y=>y!==x.w.et).map(y=>ETN[y])].join(" + "):""],["Vidéo",x.vid]].filter(([,y])=>y).map(([k,y])=>`<dt>${k}</dt><dd>${esc(y)}</dd>`).join("")}${x.img?`<dd><img class="imgprev" src="${esc(x.img)}" alt=""></dd>`:""}</dl></details>`;
-  $("#main").innerHTML = `<h1>Propositions</h1><p class="lead">Un coach propose un exercice → le créateur de GRÜN le relit et le valide → il devient un exercice de la méthode, visible par tous les abonnés (par fichier pour l'instant).</p>${tabs("/propositions")}
+  heroBq("Propositions", "Proposé par un coach, validé pour la méthode", "balles");
+  $("#main").innerHTML = `${tabs("/propositions")}
+   <p class="msg">Un coach propose un exercice → le créateur de GRÜN le relit et le valide → il devient un exercice de la méthode, visible par tous les abonnés (par fichier pour l'instant).</p>
    <div class="sec"><h2>Mes exercices proposés · ${mine.length}</h2><p class="msg">Mets le statut « Proposé à la méthode » sur un de tes exercices (bouton Modifier), puis exporte le fichier et envoie-le au créateur de GRÜN. Les vidéos de l'appareil ne partent pas dans le fichier : mets plutôt un lien.</p>
     ${mine.length?rowsHTML(mine):'<div class="empty">Aucun exercice proposé pour l\'instant.</div>'}
     <div class="actbar" style="margin-top:10px"><a class="btn pri" href="#/nouveau?st=propose">+ Proposer un exercice</a><button class="btn" id="pexp" type="button" ${mine.length?"":"disabled"}>Exporter mes propositions (fichier)</button></div></div>
@@ -1101,14 +1339,16 @@ function importProps(d){
 function showFams(){ ecran("familles");
   document.documentElement.style.setProperty("--acc","var(--ink)");
   const groups={}; FAMS.forEach(f=>{ if(f.c==="MOI" && !EX.some(e=>e.f==="MOI")) return; (groups[f.dossier]=groups[f.dossier]||[]).push(f); });
-  $("#main").innerHTML=`<h1>Familles d'exercices</h1><p class="lead">${FAMS.length-1} familles · chacune avec son mode d'emploi, sa progression et ses repères d'âge</p>${tabs("familles")}`+
+  heroBq("Familles", `<b>${FAMS.length-1}</b> familles · mode d'emploi et repères d'âge`, "balles");
+  $("#main").innerHTML=`${tabs("familles")}`+
     Object.entries(groups).map(([g,fs])=>`<div class="sec"><h2>${esc(g.replace(/^\d+\.\d+\s/,""))}</h2><div class="fams" style="margin-top:8px">${fs.map(f=>`<a class="fam" href="#f/${f.c}" style="--dc:${dc(f.dom)}"><b>${esc(f.t)}</b><small>${EX.filter(e=>e.f===f.c).length} exercices · ${f.subs.length} sous-familles</small></a>`).join("")}</div></div>`).join("");
 }
 function showFam(c){
   const f=FBY[c]; if(!f) return showFams(); document.documentElement.style.setProperty("--acc",dc(f.dom));
   const xs=EX.filter(e=>e.f===c && !HIDE.has(e.id)), subs={}; xs.forEach(e=>{ (subs[e.s]=subs[e.s]||[]).push(e); });
   const m=$("#main"); m.style.setProperty("--dc",dc(f.dom));
-  m.innerHTML=`<div class="crumb"><a href="#familles">Familles</a>›<span>${esc(String(f.dossier||"").replace(/^\d+(\.\d+)*\s/,""))}</span></div><h1 style="margin-top:4px">${esc(f.t)}</h1><p class="lead">${xs.length} exercices</p>
+  const ex0 = xs[0]; VX.hero({vis:ex0?VX.pour(ex0.id):"balles", sq:true, lab:`Familles · ${DOMC[f.dom]||""}`, titre:f.t, num:String(xs.length), sous:"exercices"});
+  m.innerHTML=`
    <div class="intro"><details><summary>Mode d'emploi de la famille : à quoi elle sert, comment choisir, progression, repères d'âge</summary><div class="tw">${f.intro}</div></details></div>`+
    Object.entries(subs).map(([s,arr])=>`<h3 class="subh">${esc(s)}</h3>${rowsHTML(arr)}`).join("");
 }
@@ -1117,13 +1357,15 @@ function showFam(c){
 function showFav(){ ecran("favoris");
   document.documentElement.style.setProperty("--acc","var(--ink)");
   const xs=[...FAV].map(i=>BY[i]).filter(Boolean);
-  $("#main").innerHTML=`<h1>Favoris</h1><p class="lead">Touche ♡ sur une fiche pour l'ajouter ici. Tes favoris reviennent en priorité dans Create.</p>${tabs("favoris")}<div class="sec">${xs.length?rowsHTML(xs):'<div class="empty">Aucun favori pour l\'instant.</div>'}</div>`+dataBox();
+  heroBq("Favoris", "Prioritaires dans Create", "balles");
+  $("#main").innerHTML=`${tabs("favoris")}<div class="sec">${xs.length?rowsHTML(xs):'<div class="empty">Aucun favori pour l\'instant. Touche ♡ sur une fiche pour l\'ajouter ici.</div>'}</div>`+dataBox();
   bindData();
 }
 const inCols = id => P.lists.filter(l=>l.ex.includes(id)).length;
 function showLists(){ ecran("listes");
   document.documentElement.style.setProperty("--acc","var(--ink)");
-  $("#main").innerHTML=`<h1>Mes collections</h1><p class="lead">Range des exercices dans tes collections (un thème, un joueur, un groupe, une période). Elles sont personnelles : toi seul les vois. Pour une séance complète et structurée : <a class="ref" href="seances.html">Create my session</a>.</p>${tabs("listes")}
+  heroBq("Collections", "Personnelles : toi seul les vois", "balles");
+  $("#main").innerHTML=`${tabs("listes")}<p class="msg" style="margin:0 0 10px">Pour une séance complète et structurée : <a class="ref" href="seances.html">Create my session</a>.</p>
    <div class="sec"><div class="actbar"><input id="ln" type="text" placeholder="Nom de la collection (ex. Vitesse U12, Gainage…)" aria-label="Nom de la nouvelle collection" style="flex:1;min-width:200px;min-height:40px;border:1px solid var(--line);border-radius:9px;padding:0 10px;background:var(--panel)"><button class="btn pri" id="lnew" type="button">Créer</button></div></div>
    <div class="sec">${P.lists.length?`<div class="list">${P.lists.map(l=>`<a class="row" href="#l/${l.id}" style="--dc:var(--ink)"><span class="bar"></span><span class="id">${l.ex.length} ex.</span><span class="nm"><b>${esc(l.n)}</b><small>${l.ex.slice(0,4).map(i=>BY[i]?BY[i].n:i).map(esc).join(" · ")}</small></span><span class="meta"></span></a>`).join("")}</div>`:'<div class="empty">Aucune collection. Crée-en une ci-dessus, ou touche « + Collection » sur la fiche d\'un exercice.</div>'}</div>`;
   $("#lnew").onclick=()=>{ const n=$("#ln").value.trim(); if(!n){ $("#ln").focus(); return; } P.lists.unshift({id:Date.now().toString(36), n, ex:[]}); save(); showLists(); };
@@ -1132,7 +1374,8 @@ function showLists(){ ecran("listes");
 function showList(lid){
   const l=P.lists.find(x=>x.id===lid); if(!l) return showLists(); document.documentElement.style.setProperty("--acc","var(--ink)");
   const xs=l.ex.map(i=>BY[i]).filter(Boolean);
-  $("#main").innerHTML=`<div class="crumb" style="--dc:var(--ink)"><a href="#">Banque</a>›<a href="#listes">Mes collections</a></div><h1 style="margin-top:4px">${esc(l.n)}</h1><p class="lead">${xs.length} exercice${xs.length>1?"s":""} · collection personnelle</p>
+  VX.hero({vis:"balles", bas:true, lab:"Mes collections", titre:l.n, num:String(xs.length), sous:`exercice${xs.length>1?"s":""} · collection personnelle`});
+  $("#main").innerHTML=`
    <div class="sec actbar"><a class="btn pri" href="#" id="ladd">+ Ajouter des exercices</a><button class="btn" id="lcopy" type="button">Copier en texte</button><button class="btn" id="lren" type="button">Renommer</button><button class="btn" id="ldel" type="button">Supprimer la collection</button></div><div class="msg" id="lmsg"></div>
    <div class="sec">${xs.length?`<div class="list">${xs.map((e,k)=>`<div class="row" style="--dc:${dc(e.dom)}"><span class="bar"></span><span class="id">${k+1}. ${e.id}</span><a class="nm" href="#/ex/${e.id}" style="text-decoration:none"><b>${esc(e.n)}</b><small>${esc(e.ma||"")}</small></a><span class="meta"><button class="chip" data-up="${k}" type="button" aria-label="Monter">↑</button><button class="chip" data-dn="${k}" type="button" aria-label="Descendre">↓</button><button class="chip" data-rm="${k}" type="button" aria-label="Retirer">✕</button></span></div>`).join("")}</div>`:'<div class="empty">Collection vide : ouvre un exercice et touche « + Collection ».</div>'}</div>`;
   $("#ladd").onclick=ev=>{ ev.preventDefault(); location.hash=""; };
@@ -1165,7 +1408,8 @@ function showShoot(){ ecran("tournage");
   document.documentElement.style.setProperty("--acc","var(--ink)");
   const f = P.ft || "a", n = {a:0,t:0,m:0}; EX.forEach(e=>n[tourOf(e.id)]++);
   const xs = EX.filter(e=>tourOf(e.id)===f).sort((a,b)=>((b.perso?1:0)-(a.perso?1:0)));
-  $("#main").innerHTML=`<h1>Vidéos de démonstration</h1><p class="lead"><b>${n.m}</b> montées · <b>${n.t}</b> tournées à monter · <b>${n.a.toLocaleString("fr-FR")}</b> à tourner, sur ${EX.length.toLocaleString("fr-FR")} exercices</p>${tabs("tournage")}
+  heroBq("Vidéos", `<b>${n.m}</b> montées · <b>${n.t}</b> à monter · <b>${n.a.toLocaleString("fr-FR")}</b> à tourner`, "ex_geste");
+  $("#main").innerHTML=`${tabs("tournage")}
    <div class="sec"><div class="tbar" style="height:10px;border-radius:5px;overflow:hidden;display:flex;background:var(--line)"><i style="width:${n.m/EX.length*100}%;background:var(--de)"></i><i style="width:${n.t/EX.length*100}%;background:var(--pp)"></i></div>
    <div class="actbar" style="margin-top:10px"><span class="seg" role="group" aria-label="Filtrer par statut">${Object.entries(TOURN).map(([k,t])=>`<button type="button" data-ft="${k}" aria-pressed="${f===k}">${t} (${n[k].toLocaleString("fr-FR")})</button>`).join("")}</span><button class="btn" id="copyshoot" type="button">Copier cette liste</button></div><div class="msg" id="smsg">Change le statut sur la fiche de l'exercice (sous la vidéo) ou ici, d'une touche.</div></div>
    <div class="sec">${xs.length?`<div class="list">${xs.slice(0,SHOW_T).map(e=>`<div class="row" style="--dc:${dc(e.dom)}"><span class="bar"></span><span class="id">${e.id}</span><a class="nm" href="#/ex/${e.id}" style="text-decoration:none"><b>${esc(e.n)}</b><small>${esc(e.ma||"")}</small></a><span class="meta">${f!=="t"?`<button class="chip" type="button" data-mv="${e.id}" data-to="t">Tourné</button>`:""}${f!=="m"?`<button class="chip" type="button" data-mv="${e.id}" data-to="m">Monté</button>`:""}${f!=="a"?`<button class="chip" type="button" data-mv="${e.id}" data-to="a">À tourner</button>`:""}</span></div>`).join("")}</div>${xs.length>SHOW_T?`<div class="actbar" style="margin-top:10px"><button class="btn" id="tmore" type="button">Voir plus (${xs.length-SHOW_T} restants)</button></div>`:""}`:'<div class="empty">Aucun exercice dans ce statut.</div>'}</div>

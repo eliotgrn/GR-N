@@ -24,24 +24,32 @@ body.grun-has-nav{padding-bottom:calc(var(--nav-h) + env(safe-area-inset-bottom,
 .grun-wm .u i:first-child{left:.067em}
 .grun-wm .u i+i{right:.067em}
 
-/* ---------- BARRE DU BAS : GRÜN · Bibliothèque · Outils · « + » · Club · Performance (actif en jaune) ---------- */
-#grun-nav{position:fixed;left:0;right:0;bottom:0;z-index:50;display:flex;justify-content:space-around;align-items:stretch;
-  background:#0C0F0D;border-top:1px solid var(--gx-sep);padding:0 2px env(safe-area-inset-bottom,0px)}
-#grun-nav a{flex:1 1 0;min-width:0;max-width:130px;min-height:var(--nav-h);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;
-  text-decoration:none;color:var(--gx-mute);font:600 12px/1.1 var(--gx-cond);letter-spacing:0;-webkit-tap-highlight-color:transparent}
+/* ---------- BARRE DU BAS CONTEXTUELLE (GRÜN 2.1, maquettes F2-F6) : « GRÜN · Accueil » + les onglets du mode (actif en jaune) ---------- */
+#grun-nav{position:fixed;left:0;right:0;bottom:0;z-index:50;display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);align-items:stretch;
+  background:#0C0F0D;border-top:1px solid var(--gx-sep);padding:0 max(6px,calc((100vw - 700px) / 2)) env(safe-area-inset-bottom,0px)}
+#grun-nav.seul{grid-auto-columns:minmax(0,120px);justify-content:center}
+#grun-nav a{min-width:0;min-height:var(--nav-h);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;
+  text-decoration:none;color:var(--gx-mute);font:400 11px/1.1 var(--gx-ui);letter-spacing:0;-webkit-tap-highlight-color:transparent}
 #grun-nav a span{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-#grun-nav svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
-#grun-nav a.on{color:var(--gx-y)}
-#grun-nav a.on svg{stroke-width:2}
+#grun-nav a span{letter-spacing:-.01em}#grun-nav a{padding-left:1px;padding-right:1px}
+#grun-nav svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+#grun-nav a.on{color:var(--gx-y);font-weight:600}
 #grun-nav a:active{opacity:.7}
+/* « GRÜN » (deux balles du Ü) + « Accueil » : retour à la page de garde, toujours à gauche */
+#grun-nav a.nv-g{font:800 13px/1 var(--gx-cond);letter-spacing:.06em;gap:5px}
+#grun-nav a.nv-g .grun-wm{font-size:18px;padding-top:3px;overflow:visible}
+#grun-nav a.nv-g>span:last-child,#grun-nav a.nv-g .grun-wm,#grun-nav a.nv-g .grun-wm span{overflow:visible;max-width:none}
 @media print{#grun-nav{display:none}body.grun-has-nav{padding-bottom:0}}
-/* « + » au centre de la barre du bas */
-#grun-nav #grun-plus{flex:0 0 56px;border:0;background:none;padding:0;display:flex;align-items:center;justify-content:center;min-height:var(--nav-h);cursor:pointer;-webkit-tap-highlight-color:transparent}
+/* « + » (Performance et mode joueur seulement) */
+#grun-nav #grun-plus{min-width:0;border:0;background:none;padding:0;display:flex;align-items:center;justify-content:center;min-height:var(--nav-h);cursor:pointer;-webkit-tap-highlight-color:transparent}
 #grun-nav #grun-plus span{width:46px;height:46px;border-radius:50%;background:var(--gx-y);color:var(--gx-on);display:flex;align-items:center;justify-content:center;transition:transform .1s ease}
 #grun-nav #grun-plus svg{width:24px;height:24px;stroke-width:2.4;stroke:currentColor}
 #grun-nav #grun-plus:active span{transform:scale(.92)}
-@media (max-width:400px){#grun-nav a{font-size:11.5px}}
-@media (max-width:370px){#grun-nav a{font-size:10.5px}#grun-nav #grun-plus{flex-basis:52px}#grun-nav #grun-plus span{width:42px;height:42px}}
+@media (max-width:370px){#grun-nav a{font-size:10.5px}#grun-nav #grun-plus span{width:42px;height:42px}}
+/* feuille « Âge et sexe » de la Bibliothèque */
+.gs-ages{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}
+.gs-ages .gs-chip{padding:0 4px;text-align:center;font-family:var(--gx-cond);font-weight:700;font-size:16px;letter-spacing:.02em}
+@media (max-width:360px){.gs-ages{grid-template-columns:repeat(4,minmax(0,1fr))}}
 
 /* fil « poupée russe » : bandeau de retour vers le module appelant */
 .grun-relais{position:sticky;top:0;z-index:40;display:flex;gap:10px;align-items:center;justify-content:space-between;
@@ -243,9 +251,11 @@ html.grun-mod #back::before{content:"";width:20px;height:20px;background:current
 }
 /* action principale du bas : un libellé long se coupe proprement (…) au lieu de déborder des deux côtés */
 .grun-actbar .gs-btn:only-child{display:block;line-height:50px;text-align:center;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#grun-nav[data-mode="outils"]{grid-template-columns:minmax(0,.82fr) repeat(3,minmax(0,.9fr)) minmax(0,1.38fr)}
 </style>
-<script src="grun.js?v=2.0"></script>
-<script src="assistant.js?v=2.0"></script>
+<script src="visuels.js?v=2.1"></script>
+<script src="grun.js?v=2.1"></script>
+<script src="assistant.js?v=2.1"></script>
 <meta name="grun-module" content="seances"></head><body><title>Create my session · GRÜN</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=Barlow:wght@400;500;600;700&display=swap">
 <style>
@@ -612,13 +622,197 @@ table{color:var(--ink)}
 .ib .ico,.tg .ico,.go .ico{margin-right:6px}
 h1 .ico{width:.9em;height:.9em;vertical-align:-.08em}
 @media print{:root{--bg:#FFFFFF;--panel:#FFFFFF;--ink:#16202E;--mute:#5D6675;--line:#D9DDE3;--soft:#F1F3F5;--mark:#FFE58A;color-scheme:light} html,body{background:#fff!important;color:#16202E} .top{display:none}}
+/*VX-CSS-DEBUT*/
+/* ===== GRÜN · E1B « design intérieur imagé » (maquettes F1-F6 validées le 20 oct. 2026) — bloc commun, IDENTIQUE dans les 7 modules
+   (veille, banque, saisons, grilles, programmation, seances, routines) : héros, cartes illustrées, cartes d'exercice, pastilles, onglets segmentés,
+   « L'essentiel » numéroté. Visuels : window.GRUN_VIS (apps/grun/visuels.js). Source unique : RAPPORT_E1B_MODULES.md. ===== */
+:root{--vx-hd:61px}
+#vxh[hidden]{display:none!important}
+.vx-hero{position:relative;margin-top:calc(-1 * var(--vx-hd));padding-top:var(--vx-hd);min-height:calc(var(--vx-hd) + 180px);display:flex;align-items:flex-end;overflow:hidden;background:#07090A}
+.vx-hero.bas{min-height:calc(var(--vx-hd) + 128px)}
+.vx-vis{position:absolute;top:calc(var(--vx-hd) - 12px);right:0;bottom:6px;width:min(60%,520px);pointer-events:none}
+.vx-hero.large .vx-vis{top:calc(var(--vx-hd) - 24px);bottom:0;width:100%;max-width:none}
+.vx-hero.large:not(.bas){min-height:calc(var(--vx-hd) + 236px)} /* vérif E1B : place pour le visuel au-dessus du texte (le visuel s'efface derrière le texte, cf. G.heroDegager) */
+.vx-hero.bas .vx-vis{width:min(48%,400px)}
+.vx-vis svg{display:block;width:100%;height:100%}
+/* petits visuels (cartes, outils) : posés en haut à droite, au-dessus du titre (jamais sous le texte) */
+.vx-hero:not(.large):not(.sq){padding-top:calc(var(--vx-hd) + 98px);min-height:0}
+.vx-hero:not(.large):not(.sq) .vx-vis{top:calc(var(--vx-hd) - 8px);bottom:auto;height:108px;width:min(60%,380px)}
+.vx-hero.bas:not(.large):not(.sq){padding-top:calc(var(--vx-hd) + 70px)}
+.vx-hero.bas:not(.large):not(.sq) .vx-vis{height:78px}
+.vx-hero.sq{padding-top:calc(var(--vx-hd) + 128px)}
+.vx-hero.sq .vx-vis{left:max(16px,calc(50% - 534px));right:auto;top:calc(var(--vx-hd) + 2px);bottom:auto;width:112px;height:112px;border-radius:24px;background:#0B1A14;border:1px solid #1A2E24;overflow:hidden}
+.vx-in{position:relative;width:100%;max-width:1100px;margin:0 auto;padding:0 16px 18px;box-sizing:border-box}
+.vx-txt{display:flex;flex-direction:column;gap:8px;max-width:820px;text-shadow:0 0 3px #07090A,0 0 16px #07090A}
+.vx-lab{font:600 13px/1.25 var(--display,"Barlow Condensed",sans-serif);letter-spacing:.22em;text-transform:uppercase;color:#3BE08A}
+.vx-hero h1.vx-h{font-family:var(--display,"Barlow Condensed",sans-serif);font-weight:800;font-size:46px;line-height:.92;letter-spacing:.01em;text-transform:uppercase;color:#F2F5F0;margin:0;text-wrap:balance;overflow-wrap:normal}
+.vx-hero h1.vx-h.l2{font-size:34px;line-height:.95}
+.vx-hero h1.vx-h.l3{font-size:27px;line-height:1}
+.vx-hrow{display:flex;align-items:flex-end;justify-content:space-between;gap:12px}
+.vx-hrow .vx-h{min-width:0}
+.vx-num{flex:0 0 auto;font:700 22px/1 var(--display,"Barlow Condensed",sans-serif);color:#E4FF3A;letter-spacing:.02em;padding-bottom:3px;white-space:nowrap}
+.vx-sous{margin:0;font:400 14px/1.4 var(--ui,"Barlow",sans-serif);color:#9AA59E;max-width:60ch}
+.vx-sous b{font:700 18px/1 var(--display,"Barlow Condensed",sans-serif);color:#E4FF3A;letter-spacing:.02em}
+@media (min-width:700px){.vx-hero{min-height:calc(var(--vx-hd) + 200px)}.vx-hero.bas{min-height:calc(var(--vx-hd) + 140px)}.vx-hero h1.vx-h{font-size:52px}.vx-hero h1.vx-h.l2{font-size:40px}.vx-hero h1.vx-h.l3{font-size:32px}.vx-in{padding-bottom:22px}}
+/* barre du haut posée sur le héros : transparente en haut de page, pleine dès qu'on fait défiler ; le titre du module revient alors */
+body.vx-on .top{background:transparent;border-bottom-color:transparent;transition:background-color .18s,border-color .18s}
+body.vx-on.vx-sc .top{background:#07090A;border-bottom-color:#1A211D}
+body.vx-on:not(.vx-sc) .top .brand{visibility:hidden}
+body.vx-on #main{padding-top:14px}
+/* cartes illustrées (F2, F3, F6) */
+.vx-cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.vx-c{position:relative;display:block;overflow:hidden;box-sizing:border-box;min-height:172px;border-radius:22px;background:#111614;border:1px solid #263029;color:#F2F5F0;text-decoration:none;text-align:left;font:inherit;padding:0;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:transform .12s,background-color .12s}
+.vx-c:hover{background:#141A17}
+.vx-c:active{transform:scale(.985)}
+.vx-c.big,.vx-c.row,.vx-c.full{grid-column:1/-1}
+.vx-c.big{min-height:150px}
+.vx-cv{position:absolute;left:0;top:0;width:100%;height:104px;display:block}
+.vx-cv svg{display:block;width:100%;height:100%}
+.vx-c.big .vx-cv{height:100%}
+.vx-ct{position:absolute;left:16px;right:12px;bottom:14px;display:flex;flex-direction:column;gap:4px}
+.vx-c.big .vx-ct{left:18px;bottom:16px;max-width:62%}
+.vx-n{font:600 12px/1 var(--display,"Barlow Condensed",sans-serif);letter-spacing:.22em;color:#3BE08A}
+.vx-t{font-family:var(--display,"Barlow Condensed",sans-serif);font-weight:800;font-size:24px;line-height:.98;text-transform:uppercase;letter-spacing:.01em;overflow-wrap:normal;word-break:normal}
+.vx-c.big .vx-t,.vx-c.row .vx-t{font-size:26px}
+.vx-s{font:400 13px/1.35 var(--ui,"Barlow",sans-serif);color:#9AA59E;text-transform:none;letter-spacing:0}
+.vx-s b{font:700 17px/1 var(--display,"Barlow Condensed",sans-serif);color:#F2F5F0}
+.vx-c.row{min-height:124px;display:flex;align-items:center}
+.vx-c.row .vx-ct{position:static;flex:1 1 auto;min-width:0;padding:16px 8px 16px 18px}
+.vx-c.row .vx-cv{position:relative;flex:0 0 120px;width:120px;height:124px;align-self:stretch}
+.vx-c.mini{min-height:132px}.vx-c.mini .vx-cv{height:84px}.vx-c.mini .vx-t{font-size:21px}
+.vx-cards.c3m{grid-template-columns:repeat(3,minmax(0,1fr))}
+.vx-cards.c3m .vx-c{min-height:132px}.vx-cards.c3m .vx-cv{height:76px}.vx-cards.c3m .vx-ct{left:12px;right:8px;bottom:12px}.vx-cards.c3m .vx-t{font-size:19px}.vx-cards.c3m .vx-s{font-size:12px}
+.vx-c.on{border-color:#E4FF3A;box-shadow:inset 0 0 0 1px #E4FF3A}
+@media (min-width:700px){.vx-cards{grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}.vx-cards.c2{grid-template-columns:repeat(2,minmax(0,1fr))}.vx-cards.c3{grid-template-columns:repeat(3,minmax(0,1fr))}.vx-c{min-height:190px}.vx-cv{height:128px}.vx-c.big{min-height:170px}.vx-c.row{min-height:128px}.vx-c.mini{min-height:150px}.vx-c.mini .vx-cv{height:96px}}
+/* carte d'exercice (F5) : mini-schéma 84×84 à gauche, nom, « durée · joueurs · matériel » */
+.vx-exs{display:flex;flex-direction:column;gap:10px}
+@media (min-width:900px){.vx-exs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}}
+.vx-ex{position:relative;display:flex;align-items:center;gap:14px;min-height:104px;box-sizing:border-box;padding:10px 12px 10px 10px;border-radius:20px;background:#111614;border:1px solid #263029;color:#F2F5F0;text-decoration:none;-webkit-tap-highlight-color:transparent}
+.vx-ex:hover{background:#141A17}
+.vx-ex:active{transform:scale(.99)}
+.vx-ex .vx-mini{flex:0 0 84px;width:84px;height:84px;border-radius:14px;background:#0B1A14;display:block}
+.vx-ex .vx-et{display:flex;flex-direction:column;gap:4px;min-width:0;flex:1 1 auto}
+.vx-ex .vx-et b{font:600 17px/1.2 var(--ui,"Barlow",sans-serif);overflow-wrap:break-word}
+.vx-ex .vx-et small{font-size:13px;line-height:1.35;color:#9AA59E}
+.vx-ex.cmp{min-height:72px;padding:6px 10px 6px 6px;gap:12px}.vx-ex.cmp .vx-mini{flex-basis:58px;width:58px;height:58px;border-radius:12px}.vx-ex.cmp .vx-et b{font-size:15.5px}
+/* pastilles (actif jaune) et sous-filtres soulignés (F5) */
+.vx-pills,.vx-subs{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;padding:2px 0}
+.vx-pills::-webkit-scrollbar,.vx-subs::-webkit-scrollbar{display:none}
+.vx-pill{flex:0 0 auto;min-height:36px;padding:0 14px;border-radius:18px;border:1px solid #263029;background:transparent;display:inline-flex;align-items:center;gap:6px;font-family:var(--display,"Barlow Condensed",sans-serif);font-weight:700;font-size:15px;letter-spacing:.06em;text-transform:uppercase;color:#9AA59E;white-space:nowrap;text-decoration:none;cursor:pointer}
+.vx-pill:hover{color:#F2F5F0}
+.vx-pill[aria-pressed=true],.vx-pill[aria-selected=true],.vx-pill[aria-current=page],.vx-pill.on{background:#E4FF3A;border-color:#E4FF3A;color:#07090A}
+.vx-subs{gap:18px}
+.vx-sub{flex:0 0 auto;min-height:36px;padding:6px 0 4px;border:0;border-bottom:2px solid transparent;border-radius:0;background:none;font:400 15px/1.2 var(--ui,"Barlow",sans-serif);color:#9AA59E;white-space:nowrap;text-decoration:none;cursor:pointer}
+.vx-sub:hover{color:#F2F5F0}
+.vx-sub[aria-pressed=true],.vx-sub[aria-current=page],.vx-sub.on{color:#F2F5F0;font-weight:600;border-bottom-color:#E4FF3A}
+/* onglets en segment arrondi, actif jaune (F4) */
+.vx-seg{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);gap:2px;background:#111614;border:1px solid #263029;border-radius:22px;padding:4px;margin:0 0 14px}
+.vx-seg>a,.vx-seg>button{min-height:38px;border:0;border-radius:18px;background:transparent;color:#9AA59E;display:flex;align-items:center;justify-content:center;padding:0 8px;font-family:var(--display,"Barlow Condensed",sans-serif);font-weight:700;font-size:15px;letter-spacing:.04em;text-transform:uppercase;text-decoration:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer}
+.vx-seg.scroll{grid-auto-columns:max-content;overflow-x:auto;scrollbar-width:none;justify-content:start}
+.vx-seg.scroll::-webkit-scrollbar{display:none}
+.vx-seg.scroll>a,.vx-seg.scroll>button{padding:0 14px}
+.vx-seg>[aria-current=page],.vx-seg>[aria-selected=true],.vx-seg>[aria-pressed=true]{background:#E4FF3A;color:#07090A}
+/* « L'essentiel » en carte, points numérotés 01, 02… en vert (F4) */
+.vx-ess{background:#111614;border:1px solid #263029;border-radius:22px;padding:16px 18px;display:flex;flex-direction:column;gap:12px}
+.vx-lt{font-family:var(--display,"Barlow Condensed",sans-serif);font-weight:700;font-size:13px;letter-spacing:.22em;text-transform:uppercase;color:#E4FF3A}
+.vx-pt{display:flex;gap:12px;align-items:baseline}
+.vx-pt>i{flex:0 0 auto;min-width:28px;font:normal 800 22px/1 var(--display,"Barlow Condensed",sans-serif);color:#3BE08A}
+.vx-pt>span{font-size:15px;line-height:1.45}
+ol.vx-nl,ul.vx-nl{list-style:none;margin:4px 0 6px;padding:0;counter-reset:vxn;display:flex;flex-direction:column;gap:12px}
+ol.vx-nl>li,ul.vx-nl>li{counter-increment:vxn;position:relative;padding-left:42px;margin:0;max-width:72ch}
+ol.vx-nl>li::before,ul.vx-nl>li::before{content:counter(vxn,decimal-leading-zero);position:absolute;left:0;top:0;font:800 22px/1.15 var(--display,"Barlow Condensed",sans-serif);color:#3BE08A}
+/* intertitres en capitales condensées (F4) */
+.vx-sh,.sec>h2{font-family:var(--display,"Barlow Condensed",sans-serif);font-weight:800;font-size:20px;letter-spacing:.04em;text-transform:uppercase;color:#F2F5F0;margin:0 0 10px}
+.sec>h2 small{font-family:var(--ui,"Barlow",sans-serif);font-weight:500;font-size:13px;letter-spacing:0;text-transform:none;color:#9AA59E;margin-left:6px}
+.vx-row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.vx-sec{margin-top:22px}
+@media print{#vxh{display:none!important}}
+/*VX-CSS-FIN*/
+/* Create my session · E1B : cartes, séance en blocs façon frise, mode terrain lisible de loin */
+.list{background:none;border:0;border-radius:0;overflow:visible;display:flex;flex-direction:column;gap:8px}
+.li,.li.solo{background:#111614;border:1px solid #263029;border-radius:18px;padding:14px 16px;align-items:center}
+a.li:hover{background:#141A17}
+.li .code{font-family:var(--display);font-weight:700;font-size:14px;letter-spacing:.06em;text-transform:uppercase;color:#3BE08A}
+.li .tt{font-weight:600;font-size:15.5px}
+.dochead .lead{margin-top:0}
+.sfr{display:flex;gap:6px;margin:4px 0 14px}
+.sfb{flex:1 1 0;min-width:0;min-height:76px;border:0;border-radius:14px;padding:10px 10px 9px;display:flex;flex-direction:column;justify-content:space-between;align-items:flex-start;text-align:left;cursor:pointer;font:inherit}
+.sfb b{font-family:var(--display);font-weight:800;font-size:12px;line-height:1.05;letter-spacing:.03em;text-transform:uppercase;max-width:100%;overflow-wrap:normal}
+.sfb span{font-family:var(--display);font-weight:700;font-size:22px;line-height:1}
+.sfb.e,.sfb.f{background:rgba(59,224,138,.22);color:#F2F5F0}
+.sfb.c{background:#E4FF3A;color:#07090A}
+.sfb:active{transform:scale(.98)}
+.part>h2{display:flex;align-items:baseline;gap:8px}
+.box{border-radius:18px}
+/* mode terrain : gros chrono, gros nom d'exercice, lisible à plusieurs mètres */
+.ter{max-width:900px;margin:0 auto}
+.terh{font-family:var(--display);font-weight:700;letter-spacing:.08em;text-transform:uppercase;font-size:15px}
+.ter .etq{font-size:14px;color:#3BE08A;margin-top:12px}
+.ter h1{font-size:clamp(34px,9vw,64px);line-height:.98;margin-top:8px;text-wrap:balance}
+.ter .dz.big{font-family:var(--display);font-size:clamp(22px,5.4vw,34px);font-weight:800;letter-spacing:.02em;color:#E4FF3A;margin:8px 0}
+.ter .clock{font-size:clamp(96px,30vw,190px);line-height:.95;letter-spacing:-.01em;margin:10px 0 14px}
+.ter .clock.sm{font-size:clamp(40px,11vw,64px)}
+.ter .go.big{min-height:60px;font-size:20px;padding:0 30px;border-radius:30px}
+.ter .tools{gap:10px}
+.gbar{gap:3px;margin:12px 0 4px}.gbar i{height:9px;border-radius:5px}
+.ter .terx{border-radius:18px;font-size:17px}
+.ter .terx p{font-size:17px;line-height:1.5}
+@media (min-width:700px){.ter .terx p{font-size:19px}}
 </style>
 <header class="top"><div id="relais"></div><div class="topin">
   <button class="ib" id="back" type="button" aria-label="Retour">‹</button>
   <a class="brand" href="#/">Create my session</a><span style="flex:1"></span>
 </div></header>
+<div id="vxh" hidden></div>
 <main id="main"><div class="load">Chargement…</div></main>
 <div id="sheet" hidden></div>
+<!--VX-DEBUT--><script>
+/* GRÜN · E1B — héros et cartes illustrées : bloc commun, IDENTIQUE dans les 7 modules (window.VX). Visuels : window.GRUN_VIS (visuels.js, chargé avant). */
+(function(){
+  "use strict";
+  const esc = s => String(s == null ? "" : s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+  const V = () => window.GRUN_VIS || null;
+  const svg = (nom, o) => { const v = V(); return v && nom ? v.svg(nom, o || {}) : ""; };
+  const top = () => document.querySelector("header.top");
+  const box = () => document.getElementById("vxh");
+  let raf = 0;
+  function maj(){ const t = top(); if(t && t.offsetHeight) document.documentElement.style.setProperty("--vx-hd", t.offsetHeight + "px"); }
+  function sc(){ const h = box(), t = top(); const on = !h || h.hidden || scrollY > Math.max(8, h.offsetHeight - (t ? t.offsetHeight : 0) - 56); document.body.classList.toggle("vx-sc", on); }
+  addEventListener("scroll", () => { if(!raf) raf = requestAnimationFrame(() => { raf = 0; sc(); }); }, {passive:true});
+  addEventListener("resize", () => { maj(); sc(); });
+  /* titres des cartes et du héros : jamais coupés au milieu d'un mot ; si la police (de secours) est trop large, la taille baisse jusqu'à tenir */
+  function fit(){ document.querySelectorAll(".vx-t,.vx-h").forEach(el => { el.style.fontSize = ""; let fs = parseFloat(getComputedStyle(el).fontSize), n = 0;
+    while(el.scrollWidth > el.clientWidth + 1 && fs > 14 && n++ < 16){ fs -= 1.5; el.style.fontSize = fs + "px"; } }); }
+  let rf = 0; const plan = () => { if(!rf) rf = requestAnimationFrame(() => { rf = 0; fit(); }); };
+  function obs(){ const mo = new MutationObserver(plan); ["main", "vxh"].forEach(id => { const e = document.getElementById(id); if(e) mo.observe(e, {childList: true, subtree: true}); }); plan();
+    if(document.fonts && document.fonts.ready) document.fonts.ready.then(plan); }
+  addEventListener("resize", plan);
+  const taille = t => { const n = String(t || "").length; return n > 64 ? " l3" : n > 22 ? " l2" : ""; };
+  const VX = {
+    esc, svg,
+    pour: k => { const v = V(); return v ? v.pour(k) : "balles"; },
+    n2: i => String(i).padStart(2, "0"),
+    /* héros (bandeau imagé) : {vis, lab, titre, num (chiffre jaune à droite du titre), sous (html), bas (écran profond), large (visuel pleine largeur), sq (mini-schéma agrandi en vignette), par} ; VX.hero(null) le retire */
+    hero(o){ const h = box(); if(!h) return;
+      if(!o){ if(!h.hidden){ h.hidden = true; h.innerHTML = ""; } document.body.classList.remove("vx-on"); sc(); return; }
+      maj();
+      h.className = "vx-hero" + (o.bas ? " bas" : "") + (o.large ? " large" : "") + (o.sq ? " sq" : "");
+      h.innerHTML = `${o.vis ? `<div class="vx-vis">${svg(o.vis, {par: o.par || (o.large ? "xMaxYMax slice" : "xMaxYMid meet")})}</div>` : ""}<div class="vx-in"><div class="vx-txt">${o.lab ? `<span class="vx-lab">${esc(o.lab)}</span>` : ""}${o.num != null ? `<div class="vx-hrow"><h1 class="vx-h${taille(o.titre)}">${esc(o.titre)}</h1><span class="vx-num">${esc(o.num)}</span></div>` : `<h1 class="vx-h${taille(o.titre)}">${esc(o.titre)}</h1>`}${o.sous ? `<p class="vx-sous">${o.sous}</p>` : ""}</div></div>`;
+      h.hidden = false; document.body.classList.add("vx-on"); sc();
+      requestAnimationFrame(() => { maj(); sc(); }); },
+    /* carte illustrée : {href | (attrs + bouton), vis, n (numéro), t (titre), s (sous-titre html), k : "big" | "row" | "mini" | "", cls, attrs, par} */
+    carte(o){ const k = o.k || "", par = o.par || (k === "big" ? "xMaxYMid meet" : k === "row" ? "xMinYMid slice" : "xMidYMid meet"), tag = o.href ? "a" : "button";
+      return `<${tag} class="vx-c${k ? " " + k : ""}${o.cls ? " " + o.cls : ""}" ${o.href ? `href="${esc(o.href)}"` : `type="button"`}${o.attrs ? " " + o.attrs : ""}><span class="vx-cv">${svg(o.vis, {par})}</span><span class="vx-ct">${o.n != null ? `<span class="vx-n">${esc(o.n)}</span>` : ""}<span class="vx-t">${esc(o.t)}</span>${o.s ? `<span class="vx-s">${o.s}</span>` : ""}</span></${tag}>`; },
+    /* carte d'exercice (F5) : {href, id (préfixe → mini-schéma), nom, meta (html), extra (html), cls, attrs} */
+    ex(o){ return `<a class="vx-ex${o.cls ? " " + o.cls : ""}" href="${esc(o.href)}"${o.attrs ? " " + o.attrs : ""}>${svg(VX.pour(o.id), {w: 84, h: 84, cls: "vx-mini"})}<span class="vx-et"><b>${o.nomHtml != null ? o.nomHtml : esc(o.nom)}</b>${o.meta ? `<small>${o.meta}</small>` : ""}</span>${o.extra || ""}</a>`; },
+    /* « L'essentiel » numéroté : [texte html, …] */
+    fit,
+    ess(titre, pts){ return `<section class="vx-ess"><span class="vx-lt">${esc(titre)}</span>${pts.map((p, i) => `<div class="vx-pt"><i>${VX.n2(i + 1)}</i><span>${p}</span></div>`).join("")}</section>`; }
+  };
+  window.VX = VX;
+  if(document.readyState === "loading") document.addEventListener("DOMContentLoaded", () => { maj(); obs(); }); else { maj(); obs(); }
+})();
+</script><!--VX-FIN-->
 <script>
 "use strict";
 /* ===== MiniPDF : vrai fichier PDF fabriqué sur l'appareil, sans bibliothèque (Helvetica, A4) ===== */
@@ -1120,6 +1314,8 @@ function harder(e,c,box){
 
 /* ---------- navigation ---------- */
 function go(h){ if(location.hash===h) route(); else location.hash=h; }
+/* E1B : héros d'un écran profond (visuel « séance », plus bas) ; renvoie "" pour s'écrire dans un gabarit */
+const hx = o => { VX.hero(Object.assign({vis:"seance", bas:true, lab:"Outils · Create my session"}, o)); return ""; };
 $("#back").onclick=()=>{ if(history.length>1) history.back(); else go("#/"); };
 const sheet=$("#sheet");
 function openSheet(html){ sheet.innerHTML=`<div class="shin" role="dialog" aria-modal="true">${html}</div>`; sheet.hidden=false; document.body.classList.add("noscroll"); $$("[data-close]",sheet).forEach(b=>b.onclick=closeSheet); }
@@ -1277,8 +1473,8 @@ function showHome(){
   aide("accueil");
   const cache=GRUN.load(CK,{})||{}, plans=(GRUN.load(PK,{plans:[]})||{}).plans||[], J=GRUN.joueurs.all(), Gs=GRUN.groupes.all();
   const cj=curJ()&&GRUN.joueurs.get(curJ()), cg=!cj&&curG()&&GRUN.groupes.get(curG()), D=defauts();
-  main.innerHTML=`<h1>Create my session</h1>
-  <p class="lead">GRÜN construit la séance${cj?" de "+esc(cj.nom.split(" ")[0]):cg?" du groupe "+esc(cg.nom):" pour ton joueur"} en une touche${D.duree?" ("+D.duree+" min"+(D.lieu?", "+esc((LIEUX[D.lieu]||"").toLowerCase()):"")+")":""}. Tu touches un exercice pour le changer, tu lances.</p>
+  VX.hero({vis:"seance", lab:"Outils · une séance prête", titre:"Create my session", sous:`${cj?"Pour "+esc(cj.nom.split(" ")[0]):cg?"Pour le groupe "+esc(cg.nom):"En une touche"}${D.duree?" · "+D.duree+" min"+(D.lieu?" · "+esc((LIEUX[D.lieu]||"").toLowerCase()):""):""}`});
+  main.innerHTML=`
   <div class="tools" style="margin-top:14px"><a class="ib" href="#/nouvelle?choisir=1">${cj||cg?"Pour un autre joueur ou sans profil":"Choisir pour qui, quoi, où"}</a><a class="ib" href="#/modeles">Modèles (${ST.modeles.length})</a></div>
   <section class="sec"><h2>Pour qui</h2>${J.length||Gs.length?`<div class="chips">${Gs.map(g=>`<a class="tg grp" href="#/groupe/${g.id}"${cg&&cg.id===g.id?' aria-pressed="true"':""}>${IC.groupe} ${esc(g.nom)}</a>`).join("")}${J.map(j=>`<a class="tg" href="#/joueur/${j.id}"${cj&&cj.id===j.id?' aria-pressed="true"':""}>${esc(j.nom)}${ageTxt(j)}</a>`).join("")}</div>`:`<div class="empty">Crée tes joueurs et tes groupes : leur âge, leur croissance, leurs zones fragiles et leurs lignes faibles seront pris en compte.</div>`}
    <div class="tools" style="margin-top:8px"><button class="ib sm" type="button" id="nj">+ Nouveau joueur</button><button class="ib sm" type="button" id="ng">+ Nouveau groupe</button></div></section>
@@ -1301,7 +1497,7 @@ function importer(d){
 }
 function showHomeJoueur(){
   const jid=MOI(), j=GRUN.joueurs.get(jid), L=ST.seances.filter(s=>concerne(s,jid));
-  main.innerHTML=`<h1>Mes séances</h1><p class="lead">${j?esc(j.nom.split(" ")[0])+", t":"T"}es séances sont prêtes : ouvre-en une, lance le mode terrain, et dis-moi à la fin comment ça s'est passé.</p>
+  main.innerHTML=`${hx({titre:"Mes séances", lab:"Ma séance", bas:false})}<p class="lead" style="margin-top:0">${j?esc(j.nom.split(" ")[0])+", t":"T"}es séances sont prêtes : ouvre-en une, lance le mode terrain, et dis-moi à la fin comment ça s'est passé.</p>
    <section class="sec">${listes(L,"mj")}</section>`;
   bindTabs();
 }
@@ -1317,7 +1513,7 @@ function showJoueur(jid){
   if(!COACH()&&jid!==MOI()){ go("#/"); return; }
   const L=ST.seances.filter(s=>concerne(s,jid)), a=ageOf(j), F=faiblesDe(j), ch=GRUN.journal.charge(jid), gs=GRUN.groupes.de(jid);
   aide("joueur"); if(COACH()) try{ GRUN.courant.set("j",jid); }catch(e){}
-  main.innerHTML=`<div class="crumb"><a href="#/">Create my session</a> › Joueur</div><h1>${esc(j.nom)}</h1>
+  main.innerHTML=`${hx({titre:j.nom, lab:"Create my session · joueur"})}
    <p class="lead">${a!=null?a+" ans · ":""}${j.sexe==="F"?"Fille":"Garçon"}${j.classement&&j.classement!=="NC"?" · "+esc(j.classement):""}${croisDe(j)?" · pic de croissance":""}${(j.zones||[]).length?" · zones : "+j.zones.map(z=>esc(ZN[z]||z)).join(", "):""}${gs.length?" · "+gs.map(g=>`<a href="#/groupe/${g.id}">${esc(g.nom)}</a>`).join(", "):""}</p>
    ${F.length?`<p>Lignes à travailler : ${F.map(chip).join(" ")}</p>`:""}
    ${ch&&(ch.aigu||ch.chronique)?`<p class="msg">Charge des 7 derniers jours : ${Math.round(ch.aigu)} UA${ch.alerte&&ch.alerte!=="ok"?" · charge "+({haute:"très haute",attention:"en hausse",basse:"basse"}[ch.alerte]||ch.alerte):""}${ch.ratio?`<span class="xp"> · rapport aigu/chronique ${ch.ratio.toFixed(2).replace(".",",")}</span>`:""}</p>`:""}
@@ -1331,7 +1527,7 @@ function showGroupe(gid){
   if(!COACH()){ go("#/"); return; }
   const J=GRUN.groupes.joueurs(gid), L=ST.seances.filter(s=>s.gid===gid);
   aide("groupe"); try{ GRUN.courant.set("g",gid); }catch(e){}
-  main.innerHTML=`<div class="crumb"><a href="#/">Create my session</a> › Groupe</div><h1>${IC.groupe} ${esc(g.nom)}</h1>
+  main.innerHTML=`${hx({titre:g.nom, lab:"Create my session · groupe"})}
    <p class="lead">${J.length} joueur${J.length>1?"s":""} : ${J.map(j=>`<a href="#/joueur/${j.id}">${esc(j.nom)}</a>`).join(", ")||"aucun"}</p>
    <div class="tools" style="margin-top:12px"><a class="ib" href="index.html#/g/${gid}">Dossier du groupe</a></div>
    <section class="sec"><h2>Séances du groupe</h2>${listes(L,"gg")}</section>
@@ -1346,7 +1542,7 @@ function showPlanList(pid){
   const now=Date.now(); let cur=P.W.findIndex(w=>now>=w.d1&&now<w.d1+7*864e5); if(cur<0) cur=0;
   const JC=["Lun","Mar","Mer","Jeu","Ven","Sam","Dim"];
   aide("plan");
-  main.innerHTML=`<div class="crumb"><a href="#/">Create my session</a> › Plan</div><h1>${esc(P.nom)}</h1><p class="lead">${esc(J?.nom||"")} · touche une séance pour la construire.</p>
+  main.innerHTML=`${hx({titre:P.nom, lab:"Create my session · plan", vis:"calendrier"})}<p class="lead" style="margin-top:0">${esc(J?.nom||"")} · touche une séance pour la construire.</p>
   ${P.W.map(w=>`<details${w.i===cur?" open":""} id="pw${w.i}"><summary>S${w.i+1} · ${w.lab} <small class="sm2">${esc(w.mi)}</small></summary>${w.ses.length?`<div class="list">${w.ses.map(x=>{const b=built.get(x.key);return `<a class="li" href="${b?"#/s/"+b:"#/p/"+pid+"/"+encodeURIComponent(x.key)}"><span class="code">${JC[x.j]}</span><span class="tt">${esc(x.t)}<small>${TYPES[x.k]?.n||x.k}${b?" · ✓ construite":""}</small></span></a>`}).join("")}</div>`:`<p class="off">Pas de séance.</p>`}</details>`).join("")}`;
   setTimeout(()=>$("#pw"+cur)?.scrollIntoView({block:"start"}),30);
 }
@@ -1365,7 +1561,7 @@ function showReglages(id){
   const s=getS(id); if(!s){ main.innerHTML=`<div class="empty">Séance introuvable.</div>`; return; }
   const J=GRUN.joueurs.all(), Gs=GRUN.groupes.all(); s.libre||={n:1,age:13,niv:0,zones:[],crois:false,extra:0,sexe:"G"};
   aide("r");
-  main.innerHTML=`<div class="crumb"><a href="#/">Create my session</a> › ${s.boxes?"Modifier la séance":"Créer une séance"}</div><h1>${s.boxes?"Modifier la séance":"Créer une séance"}</h1>
+  main.innerHTML=`${hx({titre:s.boxes?"Modifier la séance":"Créer une séance"})}
   <p class="lead">Pour qui, quoi, où : tout est enregistré tout de suite. Puis touche « ${s.boxes?"Reconstruire":"Construire"} la séance » en bas.</p>
   <section class="sec step"><h2><b>1</b> Joueurs</h2><div class="card">
    ${Gs.length?`<div class="f"><label>Groupe</label><div class="chips">${Gs.map(g=>`<button type="button" class="tg" data-g="${g.id}" aria-pressed="${s.gid===g.id}">${IC.groupe} ${esc(g.nom)} (${g.jids.length})</button>`).join("")}</div></div>`:""}
@@ -1444,12 +1640,13 @@ function showSeance(id){
   const used=new Set(s.boxes.flatMap(b=>b.ex.filter(Boolean).map(x=>x.id)));
   const R=GRUN.journal.retours().filter(r=>r.ref===s.id);
   main.innerHTML=`<div class="crumb"><a href="#/">Create my session</a>${s.gid?` › <a href="#/groupe/${s.gid}">Groupe</a>`:joueursDe(s).length===1?` › <a href="#/joueur/${joueursDe(s)[0].id}">${esc(joueursDe(s)[0].nom)}</a>`:""} › Séance</div>
-  <div class="dochead"><div><h1>${esc(nomAbrege(s)?s.theme:(s.nom||"Séance"))}</h1>
+  <div class="dochead"><div>${hx({titre:nomAbrege(s)?s.theme:(s.nom||"Séance"), lab:"Create my session · séance"})}
    <p class="lead">${TYPES[s.type].n} · ${frD(s.date)} · ${PHASES[s.phase]||""} · ${whoTxt(s,c)} · ${c.al} · ${LIEUX[s.lieu]||""}</p>
    ${s.theme&&s.theme!==s.nom&&!nomAbrege(s)?`<p class="thm">${esc(s.theme)}</p>`:""}${s.lignes.length?`<p>${s.lignes.map(chip).join(" ")}</p>`:""}</div>
    <div class="acts noprint"><a class="ib" href="#/r/${s.id}">Modifier</a>${pdfBtn("prt","Séance PDF")}<button class="ib" id="snd" type="button">${IC.envoi} Envoyer au joueur</button></div></div>
   ${s.recu?`<p class="note">Séance reçue${s.recu!==true?" pour "+esc(s.recu):""}.</p>`:""}
   ${s.faite?`<p class="note ok">✓ Faite le ${frD(s.faite.date)}${s.faite.duree?" · "+s.faite.duree+" min":""}${s.faite.rpe!=null?" · dureté ressentie "+s.faite.rpe+"/10":""}${s.faite.fait==="partiel"?" · faite en partie":""}</p>`:""}
+  ${friseSeance(s)}
   ${resumeHtml(s,c,tot,rest)}
   ${s.prerempli?`<p class="note info">Séance pré-remplie : chaque case a reçu l'exercice le mieux classé et un dosage pour ${c.al}. Touche un exercice pour le modifier, le remplacer ou le déplacer. <button type="button" class="lnk" id="okp">Compris</button></p>`:""}
   ${s.modeleNote?`<p class="note">${esc(s.modeleNote)} <button type="button" class="lnk" id="okm">Compris</button></p>`:""}
@@ -1509,6 +1706,10 @@ function resumeSeance(s){
   ["E","F"].forEach(p=>{ const X=RP(s,p); if(!X) return; let mm=(X.routine?.situations||[]).flatMap(x=>x.mat||[]); if(!mm.length) mm=(WULIB.find(m=>m.id===X.id)?.materiel)||[]; mm.forEach(m=>addM(MATWU[m]||matN[m]||m)); });
   return {Q,M:[...M.values()]};
 }
+/* E1B : la séance en blocs (échauffement / corps de séance / retour au calme), façon frise ; toucher un bloc descend à sa partie */
+function friseSeance(s){ const P=["E","C","F"].map(p=>({p,m:partMin(s,p)})), tot=P.reduce((a,x)=>a+x.m,0)||1;
+  return `<nav class="sfr noprint" aria-label="Déroulé de la séance">${P.map(x=>`<button type="button" class="sfb ${x.p.toLowerCase()}" data-part="${x.p}" style="flex-grow:${Math.max(x.m,tot*.3)}"><b>${PARTS[x.p]}</b><span>${fmtMin(x.m)} min</span></button>`).join("")}</nav>`; }
+document.addEventListener("click",e=>{ const b=e.target.closest&&e.target.closest(".sfb[data-part]"); if(!b) return; const t=document.getElementById("part"+b.dataset.part); if(t) t.scrollIntoView({behavior:"smooth",block:"start"}); });
 function resumeHtml(s,c,tot,rest){
   const {Q,M}=resumeSeance(s);
   return `<section class="resume card noprint" aria-label="Résumé de la séance">
@@ -1621,7 +1822,7 @@ function showSeanceJoueur(s){
   if(!concerne(s,MOI())&&!s.recu){ go("#/"); return; }
   const c=ctxOf(s), W=s.wmode==="routine"&&s.warmup;
   const exs=b=>b.ex.filter(Boolean).map(x=>{ const e=exoOf(x); return e?`<div class="exr"><div class="exm"><button type="button" class="exn" data-fiche="${esc(e.id)}">${esc(e.n)}</button><div class="dz2">${esc(x.d)}</div></div></div>`:""; }).join("");
-  main.innerHTML=`<div class="crumb"><a href="#/">Mes séances</a> › Séance</div><h1>${esc(s.nom||"Séance")}</h1>
+  main.innerHTML=`${hx({titre:s.nom||"Séance", lab:"Ma séance"})}
    <p class="lead">${frD(s.date)} · ${s.duree} min${s.theme?" · "+esc(s.theme):""}</p>
    ${s.faite?`<p class="note ok">✓ Faite le ${frD(s.faite.date)}${s.faite.rpe!=null?" · dureté "+s.faite.rpe+"/10":""}</p>`:""}
    <div class="tools" style="margin:12px 0"><a class="go big" href="#/terrain/${s.id}">▶ Commencer la séance</a></div>
@@ -1742,7 +1943,7 @@ function modeleSheet(s){
 function showModeles(){
   if(!COACH()) return go("#/");
   aide("modeles");
-  main.innerHTML=`<div class="crumb"><a href="#/">Create my session</a> › Modèles</div><h1>Modèles de séance</h1>
+  main.innerHTML=`${hx({titre:"Modèles de séance"})}
    <p class="lead">Applique un modèle à un joueur ou à un groupe : la structure et les exercices sont repris, les dosages sont recalculés pour son âge, les exercices inadaptés sont signalés avec un remplaçant.</p>
    ${ST.modeles.length?`<div class="list">${ST.modeles.slice().reverse().map(m=>`<div class="li"><span class="code">${m.duree} min</span><span class="tt"><b>${esc(m.nom)}</b><small>${TYPES[m.type]?.n||""} · conçu pour ${Math.min(18,+m.age||13)+" ans"} · ${m.boxes.reduce((a,b)=>a+b.ex.filter(Boolean).length,0)} exercices${m.warmup?" · warm-up":""}</small>
      <span class="tools" style="margin-top:6px"><button type="button" class="go sm" data-app="${m.id}">Appliquer</button><button type="button" class="ib sm" data-mdel="${m.id}">Supprimer</button></span></span></div>`).join("")}</div>`:`<div class="empty">Aucun modèle. Ouvre une séance et touche « ★ Enregistrer comme modèle ».</div>`}`;
@@ -1947,7 +2148,7 @@ function showRetour(id){
 function parseHash(){ let h=location.hash.slice(1); if(h.startsWith("/")) h=h.slice(1); const i=h.indexOf("?"); const path=i<0?h:h.slice(0,i), qs=i<0?"":h.slice(i+1);
   const p=path.split("/").map(x=>{ try{ return decodeURIComponent(x); }catch(e){ return x; } }); return {a:p[0]||"",b:p[1],c:p[2],q:new URLSearchParams(qs)}; }
 function route(){
-  clearInterval(TIMER); clearInterval(RTIMER); closeSheet();
+  clearInterval(TIMER); clearInterval(RTIMER); closeSheet(); VX.hero(null);
   const {a,b,c,q}=parseHash(), J=!COACH();
   const ter=a==="t"||a==="terrain"; document.body.classList.toggle("terrain",ter);
   if(!ter&&WL){ try{ WL.release(); }catch(e){} WL=null; }
