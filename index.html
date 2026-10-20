@@ -3,7 +3,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
 <meta name="apple-mobile-web-app-title" content="GRÜN"><meta name="theme-color" content="#07090A"><meta name="color-scheme" content="dark">
-<link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-180.png?v=2"><link rel="icon" href="icon-192.png">
+<link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-180.png?v=3"><link rel="icon" href="icon-192.png?v=3">
 <style>/* GRÜN 2.0 — styles communs injectés dans chaque module (barre du bas, feuilles, toasts, composants partagés).
    Design E « Night court » : UN SEUL THÈME, SOMBRE. Les composants communs utilisent les jetons --gx-* ci-dessous
    (identiques quel que soit le module) ; les modules gardent leurs jetons (--bg, --panel, --ink, --mute, --line, --soft) mis à la palette E. */
@@ -19,7 +19,7 @@ body.grun-has-nav{padding-bottom:calc(var(--nav-h) + env(safe-area-inset-bottom,
 
 /* ---------- WORDMARK « GRÜN » aux deux balles (G.marque()) : la taille suit font-size ---------- */
 .grun-wm{display:inline-flex;align-items:flex-end;font-family:var(--gx-cond);font-weight:800;line-height:.82;letter-spacing:.03em;color:var(--gx-ink);white-space:nowrap}
-.grun-wm .u{position:relative;display:inline-block}
+.grun-wm .u{position:relative;display:inline-block;color:var(--gx-g)}
 .grun-wm .u i{position:absolute;top:-.233em;width:.167em;height:.167em;border-radius:50%;background:var(--gx-y)}
 .grun-wm .u i:first-child{left:.067em}
 .grun-wm .u i+i{right:.067em}
@@ -776,13 +776,15 @@ html.grun-garde #grun-nav,html.grun-garde .grun-topx{display:none}
 html.grun-garde body{padding-bottom:0;overflow:hidden}
 .garde{position:fixed;inset:0;z-index:1;background:var(--bg);overflow:hidden;
   --mt:max(20px,calc(env(safe-area-inset-top,0px) + 12px),calc(env(safe-area-inset-bottom,0px) + 12px)); --mb:var(--mt); --vh:100vh;
-  --u:min(calc((100vw - 24px - env(safe-area-inset-left,0px) - env(safe-area-inset-right,0px)) / 366),calc(560px / 366),calc((var(--vh) - var(--mt) - var(--mb)) / 768))}
+  --u:min(calc((100vw - 24px - env(safe-area-inset-left,0px) - env(safe-area-inset-right,0px)) / 366),calc(560px / 366),calc((var(--vh) - var(--mt) - var(--mb)) / 812))}
 @supports (height:100dvh){.garde{--vh:100dvh}}
-.gd-court{position:absolute;left:50%;top:calc(var(--mt) + (var(--vh) - var(--mt) - var(--mb) - 768 * var(--u)) / 2);width:calc(366 * var(--u));height:calc(768 * var(--u));transform:translateX(-50%)}
+.gd-court{position:absolute;left:50%;top:calc(var(--mt) + (var(--vh) - var(--mt) - var(--mb) - 812 * var(--u)) / 2 + 44 * var(--u));width:calc(366 * var(--u));height:calc(768 * var(--u));transform:translateX(-50%)}
 .gd-l{position:absolute;left:0;top:0;width:100%;height:100%;overflow:visible}
 .gd-meth,.gd-dom{position:absolute;left:calc(22 * var(--u));right:calc(22 * var(--u));margin:0;text-align:center;white-space:nowrap;font-family:var(--display);font-weight:600;line-height:1.2;text-transform:uppercase;color:var(--mute)}
-.gd-meth{top:calc(64 * var(--u));font-size:calc(14 * var(--u));letter-spacing:.28em;padding-left:.28em}
-.gd-dom{top:calc(700 * var(--u));font-size:calc(13 * var(--u));letter-spacing:.22em;padding-left:.22em}
+.gd-meth{top:calc(76 * var(--u));left:calc(34 * var(--u));right:calc(34 * var(--u));font-size:calc(11.5 * var(--u));letter-spacing:.1em;padding-left:.1em;line-height:1.6}
+.gd-meth span,.gd-dom span{display:block}
+.gd-tit{position:absolute;left:0;right:0;top:calc(-38 * var(--u));margin:0;text-align:center;white-space:nowrap;font-family:var(--display);font-weight:700;font-size:calc(17 * var(--u));line-height:1.2;text-transform:uppercase;letter-spacing:.3em;padding-left:.3em;color:var(--ink)}
+.gd-dom{top:calc(684 * var(--u));font-size:calc(11 * var(--u));letter-spacing:.14em;padding-left:.14em;line-height:1.7}
 .gd-cpt{position:absolute;right:calc(30 * var(--u));top:calc(12 * var(--u));width:max(44px,calc(44 * var(--u)));height:max(44px,calc(44 * var(--u)));border-radius:50%;background:var(--btn);border:1px solid var(--line);color:var(--ink);display:flex;align-items:center;justify-content:center;transition:transform .12s ease}
 .gd-cpt svg{width:max(20px,calc(20 * var(--u)));height:max(20px,calc(20 * var(--u)));fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round}
 .gd-door{position:absolute;left:calc(var(--dx) * var(--u));top:calc(var(--dy) * var(--u));width:calc(151 * var(--u));height:calc(182 * var(--u));border-radius:calc(22 * var(--u));background:var(--panel);border:1px solid var(--line);color:var(--ink);
@@ -791,10 +793,10 @@ html.grun-garde body{padding-bottom:0;overflow:hidden}
 .gd-door span{font-family:var(--display);font-weight:800;font-size:calc(24 * var(--u));line-height:1;text-transform:uppercase;letter-spacing:.05em;padding:0 0 calc(20 * var(--u)) .05em;white-space:nowrap}
 .gd-door:active,.gd-cpt:active{transform:scale(.96)}
 .gd-door:active{background:#151B18}
-.gd-net{position:absolute;left:calc(108 * var(--u));top:calc(309 * var(--u));width:calc(150 * var(--u));height:calc(150 * var(--u));border-radius:50%;background:var(--bg);display:flex;align-items:center;justify-content:center;font-size:calc(46 * var(--u))}
+.gd-net{position:absolute;left:calc(108 * var(--u));top:calc(309 * var(--u));width:calc(150 * var(--u));height:calc(150 * var(--u));border-radius:50%;background:var(--bg);display:flex;align-items:center;justify-content:center;font-size:calc(38 * var(--u))}
 .gd-net .gd-rg{position:absolute;inset:0;width:100%;height:100%}
 .gd-net .grun-wm{position:relative}
-.gd-net .grun-wm{margin-top:.167em}
+.gd-net .grun-wm{margin-top:.085em}
 @media (prefers-reduced-motion: reduce){.gd-door,.gd-cpt{transition:none}}
 
 /* ---------- PAGES DES PORTES (Bibliothèque, Outils, Club) ---------- */
@@ -891,7 +893,7 @@ p.hx-sub{color:var(--mute)}
 .cl-l{margin:4px 0 0;color:var(--mute);font-size:1.05rem}
 </style>
 
-<div id="splash" aria-hidden="true"><svg class="sp-u" viewBox="0 0 512 512" aria-hidden="true"><g transform="translate(0 16)"><path d="M180 158 V292 A76 76 0 0 0 332 292 V158" stroke="#F2F5F0" stroke-width="78" fill="none"/><circle cx="180" cy="96" r="34" fill="#E4FF3A"/><path d="M158.9 69.5 Q178.3 96 158.9 122.5" stroke="#07090A" stroke-opacity=".35" stroke-width="4.4" fill="none" stroke-linecap="round"/><path d="M201.1 69.5 Q181.7 96 201.1 122.5" stroke="#07090A" stroke-opacity=".35" stroke-width="4.4" fill="none" stroke-linecap="round"/><circle cx="332" cy="96" r="34" fill="#E4FF3A"/><path d="M310.9 69.5 Q330.3 96 310.9 122.5" stroke="#07090A" stroke-opacity=".35" stroke-width="4.4" fill="none" stroke-linecap="round"/><path d="M353.1 69.5 Q333.7 96 353.1 122.5" stroke="#07090A" stroke-opacity=".35" stroke-width="4.4" fill="none" stroke-linecap="round"/></g></svg><div class="l"></div><div class="s">Méthode Gruner · 4-18 ans</div></div>
+<div id="splash" aria-hidden="true"><svg class="sp-u" viewBox="0 0 512 512" aria-hidden="true"><g transform="translate(0 16)"><path d="M180 158 V292 A76 76 0 0 0 332 292 V158" stroke="#3BE08A" stroke-width="78" fill="none"/><circle cx="180" cy="96" r="34" fill="#E4FF3A"/><path d="M158.9 69.5 Q178.3 96 158.9 122.5" stroke="#07090A" stroke-opacity=".35" stroke-width="4.4" fill="none" stroke-linecap="round"/><path d="M201.1 69.5 Q181.7 96 201.1 122.5" stroke="#07090A" stroke-opacity=".35" stroke-width="4.4" fill="none" stroke-linecap="round"/><circle cx="332" cy="96" r="34" fill="#E4FF3A"/><path d="M310.9 69.5 Q330.3 96 310.9 122.5" stroke="#07090A" stroke-opacity=".35" stroke-width="4.4" fill="none" stroke-linecap="round"/><path d="M353.1 69.5 Q333.7 96 353.1 122.5" stroke="#07090A" stroke-opacity=".35" stroke-width="4.4" fill="none" stroke-linecap="round"/></g></svg><div class="l"></div><div class="s">Méthode Gruner · 4-18 ans</div></div>
 <header class="top"><div class="topin">
   <button class="ib" id="back" type="button" aria-label="Retour"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button>
   <a class="brand" href="#/" aria-label="GRÜN : page de garde"><span class="grun-wm" aria-hidden="true">GR<span class="u">U<i></i><i></i></span>N</span></a>
@@ -1420,11 +1422,12 @@ function vGarde() {
     <svg class="gd-l" viewBox="0 0 366 768" aria-hidden="true" fill="none">
       <g stroke="#3BE08A" stroke-opacity=".4" stroke-width="1.5"><rect x="0" y="0" width="366" height="768" rx="2"/><path d="M22 0V768M344 0V768M22 122H344M22 646H344M183 122V309M183 459V646"/></g>
       <path d="M-12 384H378" stroke="#9AA59E" stroke-opacity=".55" stroke-width="2"/></svg>
-    <p class="gd-meth">Méthode Gruner · 4-18 ans</p>
+    <p class="gd-tit">Méthode Eliot Gruner</p>
+    <p class="gd-meth"><span>Préparation physique, technique, tactique et mentale</span><span>de 0 à 18 ans</span></p>
     <a class="gd-cpt" href="#/reglages" aria-label="Mon compte et réglages">${ico("compte")}</a>
     ${P.map(([k, t, x, y]) => `<a class="gd-door" href="#/${k}" style="--dx:${x};--dy:${y}">${vis(VIS[k], { cls: "gd-v", par: "xMidYMid meet" })}<span>${t}</span></a>`).join("")}
     <div class="gd-net"><svg class="gd-rg" viewBox="0 0 150 150" aria-hidden="true" fill="none" stroke-linecap="round"><circle cx="75" cy="75" r="70" stroke="#1C2320" stroke-width="6"/><circle cx="75" cy="75" r="70" stroke="#2FBF71" stroke-width="6" stroke-dasharray="340 440" transform="rotate(-90 75 75)"/><circle cx="75" cy="75" r="59" stroke="#1C2320" stroke-width="6"/><circle cx="75" cy="75" r="59" stroke="#E4FF3A" stroke-width="6" stroke-dasharray="232 371" transform="rotate(-90 75 75)"/></svg>${G.marque()}</div>
-    <p class="gd-dom">Physique · Technique · Tactique · Mental</p></div></div>`;
+    <p class="gd-dom"><span>Basé sur les connaissances actuelles</span><span>STAPS · FFT · USTA · livres scientifiques</span></p></div></div>`;
   ajusterGarde();
 }
 /* un nom de porte trop large pour sa case (police de secours avant le chargement de Barlow) : réduit jusqu'à tenir */
@@ -1432,7 +1435,7 @@ function ajusterGarde() { requestAnimationFrame(() => {
   const fit = (el, max) => { let n = 0; while (el.scrollWidth > max && n++ < 40) el.style.fontSize = (parseFloat(getComputedStyle(el).fontSize) * 0.96) + "px"; return parseFloat(getComputedStyle(el).fontSize); };
   const D = $$(".gd-door span"); D.forEach(el => { el.style.fontSize = ""; });
   if (D.length) { const m = Math.min(...D.map(el => fit(el, el.parentElement.clientWidth - 16))); D.forEach(el => { el.style.fontSize = m + "px"; }); }   /* 4 portes identiques : même taille */
-  $$(".gd-meth, .gd-dom").forEach(el => { el.style.fontSize = ""; fit(el, el.clientWidth); }); }); }
+  $$(".gd-tit, .gd-meth, .gd-dom").forEach(el => { el.style.fontSize = ""; fit(el, el.clientWidth); }); }); }
 addEventListener("resize", () => { if (document.documentElement.classList.contains("grun-garde")) ajusterGarde(); });
 if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { if (document.documentElement.classList.contains("grun-garde")) ajusterGarde(); });
 
