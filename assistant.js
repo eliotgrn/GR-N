@@ -62,8 +62,7 @@
    ["fatigue", "fatigu", "creve", "crevee", "epuise", "epuisee", "naze", "cuit", "lessive"],
    ["minute", "minutes", "min", "mn", "mins"],
    ["restaurer", "restauration", "remettre", "recharger", "reimporter"],
-   ["appel", "presences", "presence", "absent", "absents", "assiduite"],
-   ["grun", "gruner", "gruen"]
+   ["appel", "presences", "presence", "absent", "absents", "assiduite"]
   ].forEach(g => g.forEach(w => { if (!SYN[w]) SYN[w] = g[0]; }));
   const deacc = s => String(s || "").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/œ/g, "oe").replace(/æ/g, "ae");
   const racine = w => { if (/^\d+$/.test(w) || w.length <= 4) return w; const r = w.replace(/(ements|ement|ees|ee|es|er|ez|ent|e|s|x)$/, ""); return r.length >= 4 ? r : w; };
@@ -197,10 +196,9 @@
     "accueil/joueurs": ["joueur-creer", "joueur-plusieurs", "groupe-creer", "joueur-archiver"],
     "accueil/j": ["bilan-faire", "joueur-retour", "joueur-rapport", "joueur-completer", "mode-joueur", "joueur-supprimer"],
     "accueil/g": ["groupe-presences", "bilan-groupe", "seance-groupe", "groupe-ajouter"],
-    "accueil/reglages": ["sauvegarder", "transferer", "reglages-coach", "demo"],
+    "accueil/reglages": ["sauvegarder", "transferer", "theme", "reglages-coach", "demo"],
     "accueil/recherche": ["recherche", "banque-trouver", "grille-voir"],
     "accueil/pole": ["poles", "seance-creer", "bilan-faire", "banque-trouver"],
-    "accueil/biblio": ["poles-pages", "banque-trouver", "veille-trouver"], "accueil/outils": ["seance-creer", "prog-creer", "bilan-faire"], "accueil/perf": ["accueil-jour", "joueur-creer", "seance-creer", "prog-creer"],
     "accueil/comment": ["poles", "poupee", "methode", "confidentialite"],
     "prog": ["prog-creer", "prog-compet", "prog-coupure", "prog-construire", "prog-ajustement"],
     "seances": ["seance-lancer", "seance-exo-changer", "seance-echauffement", "seance-modeles", "envoyer-joueur"],
@@ -229,35 +227,35 @@
   /* ---------- styles propres à l'assistant (mêmes jetons que grun.css) ---------- */
   function styles() { if (document.getElementById("ga-css")) return; const s = document.createElement("style"); s.id = "ga-css"; s.textContent = `
 .ga .gs-b{gap:12px}
-.ga-aide{border:1px solid var(--gx-line);background:var(--gx-s2);border-radius:13px;padding:10px 12px;font-size:15px;line-height:1.45}
-.ga-aide b{display:block;font-size:12.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--gx-mute);margin-bottom:3px}
-.ga-f{display:flex;gap:8px;align-items:stretch;position:sticky;top:-12px;background:var(--gx-s1);padding:4px 0;z-index:1}
+.ga-aide{border:1px solid var(--line,#D9DDE3);background:var(--soft,#ECEFF3);border-radius:13px;padding:10px 12px;font-size:15px;line-height:1.45}
+.ga-aide b{display:block;font-size:12.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--mute,#5D6675);margin-bottom:3px}
+.ga-f{display:flex;gap:8px;align-items:stretch;position:sticky;top:-12px;background:var(--panel,#fff);padding:4px 0;z-index:1}
 .ga-f .gs-inp{flex:1;min-width:0;font-size:17px}
-.ga-mic{width:52px;min-width:52px;border-radius:13px;border:1px solid var(--gx-line);background:var(--gx-s1);color:var(--gx-ink);cursor:pointer;display:flex;align-items:center;justify-content:center}
+.ga-mic{width:52px;min-width:52px;border-radius:13px;border:1px solid var(--line,#D9DDE3);background:var(--panel,#fff);color:var(--ink,#16202E);cursor:pointer;display:flex;align-items:center;justify-content:center}
 .ga-mic svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round}
-.ga-mic.on{background:var(--gx-bad);border-color:var(--gx-bad);color:var(--gx-on);animation:gaPulse 1.2s infinite}
+.ga-mic.on{background:#B91C1C;border-color:#B91C1C;color:#fff;animation:gaPulse 1.2s infinite}
 @keyframes gaPulse{50%{opacity:.7}}
-.ga-h{font-size:12.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--gx-mute);margin:4px 0 -4px}
-.ga-rep{border:1.5px solid var(--grun-hi);border-radius:15px;padding:12px 14px;display:flex;flex-direction:column;gap:10px;background:var(--gx-s1)}
+.ga-h{font-size:12.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--mute,#5D6675);margin:4px 0 -4px}
+.ga-rep{border:1.5px solid var(--grun-hi);border-radius:15px;padding:12px 14px;display:flex;flex-direction:column;gap:10px;background:var(--panel,#fff)}
 .ga-rep h3{margin:0;font-size:18px;line-height:1.25}
 .ga-rep .gs-p{font-size:16px}
 .ga-acts{display:flex;flex-wrap:wrap;gap:8px}
 .ga-acts .gs-btn{flex:1 1 auto;min-height:50px}
 .ga-acts .gs-btn.main{flex:1 1 100%}
-.ga-src{font-size:13.5px;color:var(--gx-mute);margin:0}
+.ga-src{font-size:13.5px;color:var(--mute,#5D6675);margin:0}
 .ga-src a{color:var(--grun-hi);font-weight:600}
 .ga-lies{display:flex;flex-wrap:wrap;gap:6px}
 .ga-lies .gs-chip{min-height:38px;font-size:14px}
-.ga-it{display:flex;flex-direction:column;align-items:flex-start;gap:2px;min-height:52px;width:100%;text-align:left;padding:9px 12px;border:1px solid var(--gx-line);border-radius:16px;background:var(--gx-s2);color:var(--gx-ink);font:inherit;cursor:pointer}
+.ga-it{display:flex;flex-direction:column;align-items:flex-start;gap:2px;min-height:52px;width:100%;text-align:left;padding:9px 12px;border:1px solid var(--line,#D9DDE3);border-radius:13px;background:var(--panel,#fff);color:var(--ink,#16202E);font:inherit;cursor:pointer}
 .ga-it b{font-size:15.5px;font-weight:650}
-.ga-it span{font-size:13px;color:var(--gx-mute)}
-.ga-it:active{background:var(--gx-s2)}
+.ga-it span{font-size:13px;color:var(--mute,#5D6675)}
+.ga-it:active{background:var(--soft,#ECEFF3)}
 .ga-tag{font-size:11.5px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--grun-hi)}
-.ga-rien{border:1px dashed var(--gx-line);border-radius:13px;padding:12px 14px;display:flex;flex-direction:column;gap:10px}
+.ga-rien{border:1px dashed var(--line,#D9DDE3);border-radius:13px;padding:12px 14px;display:flex;flex-direction:column;gap:10px}
 .ga-ok{color:var(--grun-hi);font-weight:700;margin:0}
-.ga-steps{display:flex;gap:6px}.ga-steps i{flex:1;height:5px;border-radius:3px;background:var(--gx-line)}.ga-steps i.on{background:var(--grun-hi)}
+.ga-steps{display:flex;gap:6px}.ga-steps i{flex:1;height:5px;border-radius:3px;background:var(--line,#D9DDE3)}.ga-steps i.on{background:var(--grun-hi)}
 .ga-num{display:flex;align-items:center;gap:10px}.ga-num b{min-width:2.2em;text-align:center;font-size:22px;font-variant-numeric:tabular-nums}
-.ga-num button{width:48px;height:48px;border-radius:12px;border:1px solid var(--gx-line);background:var(--gx-s1);color:var(--gx-ink);font-size:24px;cursor:pointer}
+.ga-num button{width:48px;height:48px;border-radius:12px;border:1px solid var(--line,#D9DDE3);background:var(--panel,#fff);color:var(--ink,#16202E);font-size:24px;cursor:pointer}
 `; document.head.appendChild(s); }
 
   const CAT = { app: "Dans l'appli", joueur: "Pour ton joueur", grun: "Comprendre GRÜN" };
