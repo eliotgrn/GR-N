@@ -5,39 +5,33 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>GRÜN</title>
 <meta name="description" content="GRÜN : la méthode de préparation physique et de biomécanique du joueur de tennis, de 4 à 18 ans, par Eliot Gruner.">
-<meta name="theme-color" content="#0E4D3F">
+<meta name="theme-color" content="#07090A"><meta name="color-scheme" content="dark">
 <link rel="apple-touch-icon" href="icon-180.png"><link rel="icon" href="icon-192.png">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,500..900&family=Barlow:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=Barlow:wght@400;500;600&display=swap">
 <style>
+/* GRÜN · vitrine — design E « Night court » : fond #07090A, cartes #111614, lignes de court vert lumineux, accent jaune balle. Barlow + Barlow Condensed. */
 :root{
-  --court:#0E4D3F;      /* le vert du court, la couleur de la marque */
-  --court-2:#13604F;    /* bande plus claire (couloirs) */
-  --chalk:#F7F7F2;      /* lignes du court */
-  --ball:#DDF23A;       /* la balle : seul accent, utilisé avec parcimonie */
-  --ink:#0C2A23;        /* texte sur fond clair */
-  --paper:#EEF3EF;      /* fond clair, vert-gris froid */
-  --mute:#4D635C;
-  --rule:#C9D6D0;
-  --display:"Archivo","Arial Narrow",system-ui,sans-serif;
+  --bg:#07090A; --panel:#111614; --soft:#1A211D; --line:#263029; --ink:#F2F5F0; --mute:#9AA59E;
+  --ball:#E4FF3A; --on:#07090A; --g:#3BE08A;
+  --display:"Barlow Condensed","Arial Narrow",system-ui,sans-serif;
   --ui:"Barlow",system-ui,-apple-system,"Segoe UI",sans-serif;
+  color-scheme:dark;
 }
-@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--paper:#0A231D;--ink:#E8F0EC;--mute:#A6BDB4;--rule:#244A40}}
-:root[data-theme="dark"]{--paper:#0A231D;--ink:#E8F0EC;--mute:#A6BDB4;--rule:#244A40}
 *{box-sizing:border-box}
-html{scroll-behavior:smooth}
+html{scroll-behavior:smooth;background:var(--bg)}
 @media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}}
-body{margin:0;background:var(--paper);color:var(--ink);font:400 17px/1.55 var(--ui);-webkit-font-smoothing:antialiased}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 17px/1.55 var(--ui);-webkit-font-smoothing:antialiased}
 a{color:inherit}
-:focus-visible{outline:3px solid var(--ball);outline-offset:3px;border-radius:4px}
+:focus-visible{outline:2px solid var(--ball);outline-offset:3px;border-radius:4px}
 .wrap{width:100%;max-width:1120px;margin:0 auto;padding-inline:max(16px,env(safe-area-inset-left))}
 
-/* ---------- haut de page : le court ---------- */
-.hero{position:relative;background:var(--court);color:var(--chalk);overflow:hidden;min-height:min(100svh,880px);display:flex;flex-direction:column}
+/* ---------- haut de page : le court, vu de dessus ---------- */
+.hero{position:relative;background:var(--bg);color:var(--ink);overflow:hidden;min-height:min(100svh,880px);display:flex;flex-direction:column;border-bottom:1px solid var(--soft)}
 .hero svg.court{position:absolute;inset:0;width:100%;height:100%}
-.court .l{fill:none;stroke:var(--chalk);stroke-opacity:.42;stroke-width:2.2;vector-effect:non-scaling-stroke}
+.court .l{fill:none;stroke:var(--g);stroke-opacity:.4;stroke-width:1.5;vector-effect:non-scaling-stroke}
 .court.v{display:none}
-.court .net{stroke-opacity:.85;stroke-width:3}
+.court .net{stroke:var(--ball);stroke-opacity:1;stroke-width:2.5;stroke-dasharray:2 6;stroke-linecap:round}
 @media (prefers-reduced-motion: no-preference){
   .court .l{opacity:0;animation:appear .5s ease forwards}
   .court .l:nth-child(2){animation-delay:.12s}.court .l:nth-child(3){animation-delay:.24s}.court .l:nth-child(4){animation-delay:.36s}
@@ -47,89 +41,86 @@ a{color:inherit}
 }
 @keyframes appear{to{opacity:1}}
 .top{position:relative;z-index:2;display:flex;justify-content:space-between;align-items:center;padding-top:max(14px,env(safe-area-inset-top));padding-block-end:14px}
-.top .brand{font:800 20px/1 var(--display);font-stretch:112%;letter-spacing:.02em;text-decoration:none}
-.top a.login{font:600 15px/1 var(--ui);text-decoration:none;border:1.5px solid rgba(247,247,242,.6);border-radius:999px;padding:10px 16px;min-height:42px;display:inline-flex;align-items:center}
+.top .brand{font-size:30px;text-decoration:none;padding-top:6px}
+.top a.login{font:600 15px/1 var(--ui);text-decoration:none;border:1px solid var(--line);background:var(--panel);border-radius:999px;padding:0 18px;min-height:44px;display:inline-flex;align-items:center}
 .hero .body{position:relative;z-index:2;flex:1;display:flex;flex-direction:column;justify-content:center;padding-block:40px 64px}
-.mark{margin:0;font:900 clamp(92px,22vw,248px)/.84 var(--display);font-stretch:125%;letter-spacing:-.025em;display:flex;align-items:flex-end}
-.mark .u{position:relative;display:inline-block}
-.mark .dots{position:absolute;left:0;right:0;top:-.04em;display:flex;justify-content:space-between;padding-inline:.09em;pointer-events:none}
-.ball{width:.17em;height:.17em;border-radius:50%;background:var(--ball);position:relative;overflow:hidden;
-  box-shadow:inset -.02em -.02em 0 rgba(0,0,0,.08)}
-.ball::before,.ball::after{content:"";position:absolute;top:-10%;bottom:-10%;width:70%;border:.012em solid var(--court);border-radius:50%}
-.ball::before{left:-46%}.ball::after{right:-46%}
-.hero .lead{max-width:34ch;font:500 clamp(19px,2.4vw,25px)/1.35 var(--ui);margin:28px 0 0;color:#DCE8E2}
+/* wordmark GRÜN : les deux points du Ü sont deux balles jaunes */
+.wm{display:inline-flex;align-items:flex-end;font-family:var(--display);font-weight:800;line-height:.82;letter-spacing:.03em;color:var(--ink);white-space:nowrap}
+.wm .u{position:relative;display:inline-block}
+.wm .u i{position:absolute;top:-.233em;width:.167em;height:.167em;border-radius:50%;background:var(--ball)}
+.wm .u i:first-child{left:.067em}.wm .u i+i{right:.067em}
+.mark{margin:.25em 0 0;font-size:clamp(110px,24vw,270px)}
+.hero .lead{max-width:34ch;font:500 clamp(19px,2.4vw,25px)/1.35 var(--ui);margin:28px 0 0;color:#D5DCD7}
 .acts{display:flex;flex-wrap:wrap;gap:12px;margin-top:30px}
-.btn{display:inline-flex;align-items:center;justify-content:center;min-height:50px;padding:0 22px;border-radius:999px;font:600 16px/1 var(--ui);text-decoration:none;border:0;cursor:pointer}
-.btn.ball-b{background:var(--ball);color:var(--court)}
-.btn.line{border:1.5px solid rgba(247,247,242,.65);color:var(--chalk)}
-.btn.dark{background:var(--court);color:var(--chalk)}
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:52px;padding:0 24px;border-radius:999px;font:600 16px/1 var(--ui);text-decoration:none;border:0;cursor:pointer}
+.btn.ball-b{background:var(--ball);color:var(--on)}
+.btn.line{border:1px solid var(--line);background:var(--panel);color:var(--ink)}
+.btn.dark{background:var(--panel);color:var(--ink)}
 
 /* ---------- sections ---------- */
 section{padding-block:clamp(64px,9vw,112px)}
-h2{font:800 clamp(34px,5.2vw,58px)/1.02 var(--display);font-stretch:108%;letter-spacing:-.012em;margin:0;max-width:18ch;text-wrap:balance}
+h2{font:800 clamp(38px,5.6vw,64px)/.98 var(--display);text-transform:uppercase;letter-spacing:.01em;margin:0;max-width:18ch;text-wrap:balance}
 .intro{max-width:60ch;color:var(--mute);margin:18px 0 0;font-size:18px}
 
 /* la boucle : c'est une vraie séquence, d'où les numéros */
-.loop{list-style:none;margin:48px 0 0;padding:0;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:0;border-top:2px solid var(--ink)}
+.loop{list-style:none;margin:48px 0 0;padding:0;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:0;border-top:1.5px solid var(--ball)}
 .loop li{padding:18px 18px 0 0;position:relative}
-.loop li+li{padding-left:18px;border-left:1px solid var(--rule)}
-.loop .n{font:800 15px/1 var(--display);font-stretch:100%;color:var(--mute)}
-.loop h3{font:700 22px/1.15 var(--display);font-stretch:100%;margin:10px 0 8px}
+.loop li+li{padding-left:18px;border-left:1px solid var(--line)}
+.loop .n{font:800 16px/1 var(--display);color:var(--ball)}
+.loop h3{font:800 24px/1.1 var(--display);text-transform:uppercase;letter-spacing:.02em;margin:10px 0 8px}
 .loop p{margin:0;color:var(--mute);font-size:16px}
 .loop-end{margin-top:22px;color:var(--mute);font-size:16px}
-@media (max-width:900px){.loop{grid-template-columns:1fr}.loop li,.loop li+li{padding:16px 0;border-left:0;border-bottom:1px solid var(--rule);display:grid;grid-template-columns:40px 1fr;column-gap:8px}.loop li .n{grid-row:span 2;padding-top:6px}.loop h3{margin:0 0 4px}}
+@media (max-width:900px){.loop{grid-template-columns:1fr}.loop li,.loop li+li{padding:16px 0;border-left:0;border-bottom:1px solid var(--line);display:grid;grid-template-columns:40px 1fr;column-gap:8px}.loop li .n{grid-row:span 2;padding-top:6px}.loop h3{margin:0 0 4px}}
 
 /* les 4 pôles, posés dans les 4 carrés de service */
-.poles{background:var(--court);color:var(--chalk)}
-.poles h2{color:var(--chalk)}.poles .intro{color:#C3D8CF}
-.boxes{margin-top:44px;display:grid;grid-template-columns:1fr 1fr;border:3px solid var(--chalk);position:relative}
-.boxes::before{content:"";position:absolute;top:0;bottom:0;left:50%;width:6px;margin-left:-3px;background:repeating-linear-gradient(0deg,var(--chalk) 0 6px,transparent 6px 10px);opacity:.9}
+.poles{background:#0B0F0D;color:var(--ink);border-block:1px solid var(--soft)}
+.poles h2{color:var(--ink)}.poles .intro{color:var(--mute)}
+.boxes{margin-top:44px;display:grid;grid-template-columns:1fr 1fr;border:1.5px solid rgba(59,224,138,.4);position:relative}
+.boxes::before{content:"";position:absolute;top:0;bottom:0;left:50%;width:3px;margin-left:-1.5px;background:repeating-linear-gradient(0deg,var(--ball) 0 3px,transparent 3px 9px)}
 .box{padding:clamp(22px,3.4vw,40px);min-height:250px;position:relative}
-.box:nth-child(1),.box:nth-child(3){border-right:3px solid transparent}
-.box:nth-child(1),.box:nth-child(2){border-bottom:3px solid var(--chalk)}
-.box h3{font:800 clamp(24px,3vw,34px)/1.05 var(--display);font-stretch:105%;margin:0 0 12px;max-width:14ch}
-.box p{margin:0 0 14px;color:#DCE8E2;max-width:38ch}
+.box:nth-child(1),.box:nth-child(2){border-bottom:1.5px solid rgba(59,224,138,.4)}
+.box h3{font:800 clamp(26px,3.2vw,36px)/1.02 var(--display);text-transform:uppercase;letter-spacing:.02em;margin:0 0 12px;max-width:14ch}
+.box p{margin:0 0 14px;color:var(--mute);max-width:38ch}
 .box ul{margin:0;padding:0;list-style:none;display:flex;flex-wrap:wrap;gap:8px}
-.box li{font:600 14px/1 var(--ui);border:1.5px solid rgba(247,247,242,.45);border-radius:999px;padding:8px 12px}
+.box li{font:600 14px/1 var(--ui);border:1px solid var(--line);background:var(--panel);border-radius:999px;padding:9px 13px}
 .box.ind li{border-color:var(--ball);color:var(--ball)}
-@media (max-width:760px){.boxes{grid-template-columns:1fr}.boxes::before{display:none}.box{min-height:0}.box:not(:last-child){border-bottom:3px solid var(--chalk)}.box:nth-child(1),.box:nth-child(3){border-right:0}
-  .box:nth-child(2)::before{content:"";position:absolute;left:0;right:0;top:-5px;height:6px;background:repeating-linear-gradient(90deg,var(--chalk) 0 6px,transparent 6px 10px)}}
+@media (max-width:760px){.boxes{grid-template-columns:1fr}.boxes::before{display:none}.box{min-height:0}.box:not(:last-child){border-bottom:1.5px solid rgba(59,224,138,.4)}
+  .box:nth-child(2)::before{content:"";position:absolute;left:0;right:0;top:-2px;height:3px;background:repeating-linear-gradient(90deg,var(--ball) 0 3px,transparent 3px 9px)}}
 
 /* tableau d'affichage : ce que contient la méthode */
-.board{margin-top:44px;background:#0B3B31;color:var(--chalk);border-radius:6px;padding:8px 0;box-shadow:inset 0 0 0 2px #1E5E4F;max-width:760px}
+.board{margin-top:44px;background:var(--panel);color:var(--ink);border-radius:20px;padding:8px 0;border:1px solid var(--line);max-width:760px}
 .board .row{display:grid;grid-template-columns:1fr auto;align-items:baseline;gap:16px;padding:14px clamp(16px,3vw,28px)}
-.board .row+.row{border-top:1px solid #1E5E4F}
-.board .k{font:500 18px/1.3 var(--ui);color:#C7DBD2}
-.board .v{font:800 clamp(28px,4vw,40px)/1 var(--display);font-stretch:90%;font-variant-numeric:tabular-nums;color:var(--chalk)}
+.board .row+.row{border-top:1px solid var(--line)}
+.board .k{font:500 18px/1.3 var(--ui);color:var(--mute)}
+.board .v{font:800 clamp(30px,4vw,44px)/1 var(--display);font-variant-numeric:tabular-nums;color:var(--ink)}
 .board .row:first-child .v{color:var(--ball)}
 
 /* offres */
-.offers{margin-top:44px;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:20px}
+.offers{margin-top:44px;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}
 @media (max-width:1100px){.offers{grid-template-columns:repeat(2,minmax(0,1fr))}}
-.offer{border-top:4px solid var(--ink);padding-top:20px;display:flex;flex-direction:column}
-.offer.main{border-top-color:var(--court)}
-.offer h3{font:800 26px/1.1 var(--display);font-stretch:104%;margin:0}
+.offer{border:1px solid var(--line);background:var(--panel);border-radius:20px;padding:22px 20px;display:flex;flex-direction:column}
+.offer.main{border-color:var(--ball)}
+.offer h3{font:800 28px/1.05 var(--display);text-transform:uppercase;letter-spacing:.02em;margin:0}
 .offer .who{color:var(--mute);margin:6px 0 16px}
 .offer ul{margin:0 0 18px;padding-left:20px}
 .offer li{margin:4px 0}
+.offer li::marker{color:var(--g)}
 .offer li.off{color:var(--mute);text-decoration:line-through;text-decoration-thickness:1px}
-.offer .price{margin-top:auto;font:700 17px/1.3 var(--ui);color:var(--mute);padding-top:14px;border-top:1px solid var(--rule)}
-@media (max-width:900px){.offers{grid-template-columns:1fr;gap:34px}}
+.offer li.off::marker{color:var(--mute)}
+.offer .price{margin-top:auto;font:600 17px/1.3 var(--ui);color:var(--mute);padding-top:14px;border-top:1px solid var(--line)}
+@media (max-width:900px){.offers{grid-template-columns:1fr;gap:14px}}
 
 /* Eliot */
 .author{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.4fr);gap:clamp(24px,5vw,72px);align-items:start}
-.author blockquote{margin:0;font:600 clamp(24px,3.2vw,34px)/1.25 var(--display);font-stretch:96%;letter-spacing:-.005em}
-.author p{margin:0 0 14px}
+.author blockquote{margin:0;font:700 clamp(26px,3.4vw,38px)/1.15 var(--display);letter-spacing:.005em}
+.author p{margin:0 0 14px;color:#D5DCD7}
 @media (max-width:800px){.author{grid-template-columns:1fr}}
-.access{background:var(--ink);color:var(--paper)}
-:root[data-theme="dark"] .access{background:#06150F;color:#E8F0EC}
-@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .access{background:#06150F;color:#E8F0EC}}
-.access h2{color:inherit}.access .intro{color:inherit;opacity:.8}
+.access{background:#0B0F0D;color:var(--ink);border-top:1px solid var(--soft)}
+.access h2{color:inherit}.access .intro{color:var(--mute)}
 .access .acts{margin-top:28px}
-.access .btn.line{border-color:currentColor;color:inherit}
 footer{padding-block:28px calc(28px + env(safe-area-inset-bottom));color:var(--mute);font-size:14px}
 footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
-@media (max-width:700px){.hero svg.court.h{display:none}.hero svg.court.v{display:block;top:auto;height:50%}.court .l{stroke-opacity:.22}.mark{font-size:27vw}.hero .body{justify-content:flex-start;padding-top:5svh;padding-bottom:52svh}}
+@media (max-width:700px){.hero svg.court.h{display:none}.hero svg.court.v{display:block;top:auto;height:50%}.court .l{stroke-opacity:.25}.mark{font-size:30vw}.hero .body{justify-content:flex-start;padding-top:7svh;padding-bottom:52svh}}
 </style>
 </head>
 <body>
@@ -155,11 +146,11 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
     <path class="l net" d="M3 50 H97"/>
   </svg>
   <div class="wrap top">
-    <a class="brand" href="#">GRÜN</a>
+    <a class="brand wm" href="#" aria-label="GRÜN">GR<span class="u">U<i></i><i></i></span>N</a>
     <a class="login" href="index.html">Se connecter</a>
   </div>
   <div class="wrap body">
-    <h1 class="mark" aria-label="GRÜN">GR<span class="u">U<span class="dots" aria-hidden="true"><i class="ball"></i><i class="ball"></i></span></span>N</h1>
+    <h1 class="mark wm" aria-label="GRÜN"><span aria-hidden="true">GR</span><span class="u" aria-hidden="true">U<i></i><i></i></span><span aria-hidden="true">N</span></h1>
     <p class="lead">La science du joueur de tennis de 4 à 18 ans, préparation physique et biomécanique, réunie dans une seule appli : évaluer, programmer, construire chaque séance, suivre chaque joueur.</p>
     <div class="acts"><a class="btn ball-b" href="#offres">Voir les offres</a><a class="btn line" href="#poles">Ce que contient l'appli</a></div>
   </div>
