@@ -3,7 +3,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
 <meta name="apple-mobile-web-app-title" content="GRÜN"><meta name="theme-color" content="#07090A"><meta name="color-scheme" content="dark">
-<link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-180.png"><link rel="icon" href="icon-192.png">
+<link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-180.png?v=2"><link rel="icon" href="icon-192.png">
 <style>/* GRÜN 2.0 — styles communs injectés dans chaque module (barre du bas, feuilles, toasts, composants partagés).
    Design E « Night court » : UN SEUL THÈME, SOMBRE. Les composants communs utilisent les jetons --gx-* ci-dessous
    (identiques quel que soit le module) ; les modules gardent leurs jetons (--bg, --panel, --ink, --mute, --line, --soft) mis à la palette E. */
@@ -775,23 +775,25 @@ html.grun-garde .top,html.grun-porte .top{display:none}
 html.grun-garde #grun-nav,html.grun-garde .grun-topx{display:none}
 html.grun-garde body{padding-bottom:0;overflow:hidden}
 .garde{position:fixed;inset:0;z-index:1;background:var(--bg);overflow:hidden;
-  --mt:max(56px,calc(env(safe-area-inset-top,0px) + 12px)); --mb:max(20px,calc(env(safe-area-inset-bottom,0px) + 8px)); --vh:100vh;
+  --mt:max(20px,calc(env(safe-area-inset-top,0px) + 12px),calc(env(safe-area-inset-bottom,0px) + 12px)); --mb:var(--mt); --vh:100vh;
   --u:min(calc((100vw - 24px - env(safe-area-inset-left,0px) - env(safe-area-inset-right,0px)) / 366),calc(560px / 366),calc((var(--vh) - var(--mt) - var(--mb)) / 768))}
 @supports (height:100dvh){.garde{--vh:100dvh}}
 .gd-court{position:absolute;left:50%;top:calc(var(--mt) + (var(--vh) - var(--mt) - var(--mb) - 768 * var(--u)) / 2);width:calc(366 * var(--u));height:calc(768 * var(--u));transform:translateX(-50%)}
 .gd-l{position:absolute;left:0;top:0;width:100%;height:100%;overflow:visible}
 .gd-meth,.gd-dom{position:absolute;left:calc(22 * var(--u));right:calc(22 * var(--u));margin:0;text-align:center;white-space:nowrap;font-family:var(--display);font-weight:600;line-height:1.2;text-transform:uppercase;color:var(--mute)}
 .gd-meth{top:calc(64 * var(--u));font-size:calc(14 * var(--u));letter-spacing:.28em;padding-left:.28em}
-.gd-dom{top:calc(688 * var(--u));font-size:calc(13 * var(--u));letter-spacing:.22em;padding-left:.22em}
+.gd-dom{top:calc(700 * var(--u));font-size:calc(13 * var(--u));letter-spacing:.22em;padding-left:.22em}
 .gd-cpt{position:absolute;right:calc(30 * var(--u));top:calc(12 * var(--u));width:max(44px,calc(44 * var(--u)));height:max(44px,calc(44 * var(--u)));border-radius:50%;background:var(--btn);border:1px solid var(--line);color:var(--ink);display:flex;align-items:center;justify-content:center;transition:transform .12s ease}
 .gd-cpt svg{width:max(20px,calc(20 * var(--u)));height:max(20px,calc(20 * var(--u)));fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round}
-.gd-door{position:absolute;left:calc(var(--dx) * var(--u));top:calc(var(--dy) * var(--u));width:calc(147 * var(--u));height:calc(180 * var(--u));border-radius:calc(22 * var(--u));background:var(--panel);border:1px solid var(--line);color:var(--ink);
+.gd-door{position:absolute;left:calc(var(--dx) * var(--u));top:calc(var(--dy) * var(--u));width:calc(151 * var(--u));height:calc(182 * var(--u));border-radius:calc(22 * var(--u));background:var(--panel);border:1px solid var(--line);color:var(--ink);
   display:flex;flex-direction:column;align-items:center;justify-content:space-between;overflow:hidden;text-decoration:none;text-align:center;transition:transform .12s ease,background-color .12s ease;-webkit-tap-highlight-color:transparent;-webkit-user-select:none;user-select:none}
 .gd-door svg.gd-v{display:block;flex:0 0 auto;width:100%;height:calc(118 * var(--u))}
 .gd-door span{font-family:var(--display);font-weight:800;font-size:calc(24 * var(--u));line-height:1;text-transform:uppercase;letter-spacing:.05em;padding:0 0 calc(20 * var(--u)) .05em;white-space:nowrap}
 .gd-door:active,.gd-cpt:active{transform:scale(.96)}
 .gd-door:active{background:#151B18}
-.gd-net{position:absolute;left:calc(93 * var(--u));top:calc(340 * var(--u));width:calc(180 * var(--u));height:calc(88 * var(--u));border-radius:calc(24 * var(--u));background:#0B0F0D;border:1.5px solid var(--y);display:flex;align-items:center;justify-content:center;font-size:calc(60 * var(--u))}
+.gd-net{position:absolute;left:calc(108 * var(--u));top:calc(309 * var(--u));width:calc(150 * var(--u));height:calc(150 * var(--u));border-radius:50%;background:var(--bg);display:flex;align-items:center;justify-content:center;font-size:calc(46 * var(--u))}
+.gd-net .gd-rg{position:absolute;inset:0;width:100%;height:100%}
+.gd-net .grun-wm{position:relative}
 .gd-net .grun-wm{margin-top:.167em}
 @media (prefers-reduced-motion: reduce){.gd-door,.gd-cpt{transition:none}}
 
@@ -1412,16 +1414,16 @@ const ico = (k, cl) => `<svg class="${cl || "ic"}" viewBox="0 0 24 24" aria-hidd
 function vGarde() {
   document.title = "GRÜN";
   /* maquette F1 (version noire) : chaque porte porte son visuel (cordage, trajectoires, club, courbe) en haut et son nom en bas */
-  const P = [["biblio", "Bibliothèque", 30, 152], ["outils", "Outils", 189, 152], ["club", "Club", 30, 436], ["perf", "Performance", 189, 436]];
+  const P = [["biblio", "Bibliothèque", 26, 130], ["outils", "Outils", 189, 130], ["club", "Club", 26, 456], ["perf", "Performance", 189, 456]];
   const VIS = { biblio: "cordage", outils: "trajectoires", club: "club", perf: "courbe" };
   main.innerHTML = `<div class="garde"><div class="gd-court">
     <svg class="gd-l" viewBox="0 0 366 768" aria-hidden="true" fill="none">
-      <g stroke="#3BE08A" stroke-opacity=".4" stroke-width="1.5"><rect x="0" y="0" width="366" height="768" rx="2"/><path d="M22 0V768M344 0V768M22 144H344M22 624H344M183 144V340M183 428V624"/></g>
-      <path d="M-12 384H88M278 384H378" stroke="#E4FF3A" stroke-width="2.5" stroke-dasharray="2 5" stroke-linecap="round"/></svg>
+      <g stroke="#3BE08A" stroke-opacity=".4" stroke-width="1.5"><rect x="0" y="0" width="366" height="768" rx="2"/><path d="M22 0V768M344 0V768M22 122H344M22 646H344M183 122V309M183 459V646"/></g>
+      <path d="M-12 384H378" stroke="#9AA59E" stroke-opacity=".55" stroke-width="2"/></svg>
     <p class="gd-meth">Méthode Gruner · 4-18 ans</p>
     <a class="gd-cpt" href="#/reglages" aria-label="Mon compte et réglages">${ico("compte")}</a>
     ${P.map(([k, t, x, y]) => `<a class="gd-door" href="#/${k}" style="--dx:${x};--dy:${y}">${vis(VIS[k], { cls: "gd-v", par: "xMidYMid meet" })}<span>${t}</span></a>`).join("")}
-    <div class="gd-net">${G.marque()}</div>
+    <div class="gd-net"><svg class="gd-rg" viewBox="0 0 150 150" aria-hidden="true" fill="none" stroke-linecap="round"><circle cx="75" cy="75" r="70" stroke="#1C2320" stroke-width="6"/><circle cx="75" cy="75" r="70" stroke="#2FBF71" stroke-width="6" stroke-dasharray="340 440" transform="rotate(-90 75 75)"/><circle cx="75" cy="75" r="59" stroke="#1C2320" stroke-width="6"/><circle cx="75" cy="75" r="59" stroke="#E4FF3A" stroke-width="6" stroke-dasharray="232 371" transform="rotate(-90 75 75)"/></svg>${G.marque()}</div>
     <p class="gd-dom">Physique · Technique · Tactique · Mental</p></div></div>`;
   ajusterGarde();
 }
