@@ -254,6 +254,7 @@ html.grun-mod #back::before{content:"";width:20px;height:20px;background:current
 #grun-nav[data-mode="outils"]{grid-template-columns:minmax(0,.82fr) repeat(3,minmax(0,.9fr)) minmax(0,1.38fr)}
 </style>
 <script src="visuels.js?v=2.1"></script>
+<script src="schema.js?v=2.1"></script>
 <script src="grun.js?v=2.1"></script>
 <script src="assistant.js?v=2.1"></script>
 <meta name="grun-module" content="banque"></head><body><title>Banque d'exercices</title>
@@ -569,6 +570,7 @@ select.sel{min-height:36px;background:#1A211D;border-color:#263029}
 .vx-hero.bas:not(.large):not(.sq){padding-top:calc(var(--vx-hd) + 70px)}
 .vx-hero.bas:not(.large):not(.sq) .vx-vis{height:78px}
 .vx-hero.sq{padding-top:calc(var(--vx-hd) + 128px)}
+.vx-hero.nov{padding-top:calc(var(--vx-hd) + 6px);min-height:0}   /* lot I3 : fiche avec schéma = maquette (étiquette, titre, puis le schéma) */
 .vx-hero.sq .vx-vis{left:max(16px,calc(50% - 534px));right:auto;top:calc(var(--vx-hd) + 2px);bottom:auto;width:112px;height:112px;border-radius:24px;background:#0B1A14;border:1px solid #1A2E24;overflow:hidden}
 .vx-in{position:relative;width:100%;max-width:1100px;margin:0 auto;padding:0 16px 18px;box-sizing:border-box}
 .vx-txt{display:flex;flex-direction:column;gap:8px;max-width:820px;text-shadow:0 0 3px #07090A,0 0 16px #07090A}
@@ -748,7 +750,7 @@ ol.vx-nl>li::before,ul.vx-nl>li::before{content:counter(vxn,decimal-leading-zero
     hero(o){ const h = box(); if(!h) return;
       if(!o){ if(!h.hidden){ h.hidden = true; h.innerHTML = ""; } document.body.classList.remove("vx-on"); sc(); return; }
       maj();
-      h.className = "vx-hero" + (o.bas ? " bas" : "") + (o.large ? " large" : "") + (o.sq ? " sq" : "");
+      h.className = "vx-hero" + (o.bas ? " bas" : "") + (o.large ? " large" : "") + (o.sq ? " sq" : "") + (o.vis ? "" : " nov");
       h.innerHTML = `${o.vis ? `<div class="vx-vis">${svg(o.vis, {par: o.par || (o.large ? "xMaxYMax slice" : "xMaxYMid meet")})}</div>` : ""}<div class="vx-in"><div class="vx-txt">${o.lab ? `<span class="vx-lab">${esc(o.lab)}</span>` : ""}${o.num != null ? `<div class="vx-hrow"><h1 class="vx-h${taille(o.titre)}">${esc(o.titre)}</h1><span class="vx-num">${esc(o.num)}</span></div>` : `<h1 class="vx-h${taille(o.titre)}">${esc(o.titre)}</h1>`}${o.sous ? `<p class="vx-sous">${o.sous}</p>` : ""}</div></div>`;
       h.hidden = false; document.body.classList.add("vx-on"); sc();
       requestAnimationFrame(() => { maj(); sc(); }); },
@@ -765,16 +767,56 @@ ol.vx-nl>li::before,ul.vx-nl>li::before{content:counter(vxn,decimal-leading-zero
   if(document.readyState === "loading") document.addEventListener("DOMContentLoaded", () => { maj(); obs(); }); else { maj(); obs(); }
 })();
 </script><!--VX-FIN-->
+<!-- schémas : window.GRUN_SCHEMA vient de schema.js (apps/grun/schema.js), chargé par build.py dans chaque page, comme visuels.js -->
+<style>
+/* ===== Schémas d'exercices (lot I3) : fiche et éditeur EXACTEMENT comme la maquette validée notes/refonte_design/maquette_schemas.html ===== */
+.gs-fiche{margin:0 0 14px}
+.gs-sch{border-radius:18px;border:1px solid var(--line);overflow:hidden;background:#07090A;display:flex;justify-content:center;padding:6px 0}
+.gs-sch svg{display:block;height:340px;width:auto;max-width:100%}
+.gs-leg{display:flex;flex-wrap:wrap;gap:6px 14px;margin:8px 0 0;font-size:11.5px;color:var(--mute)}
+.gs-leg i{display:inline-block;width:16px;height:0;border-top:2.4px solid #E4FF3A;vertical-align:middle;margin-right:5px}
+.gs-leg i.d{border-top:2px dashed #3BE08A}.gs-leg .z{color:#E4FF3A}
+.gs-steps{margin:10px 0 0;padding:12px 14px;background:#111614;border:1px solid var(--line);border-radius:16px;font-size:13.5px;line-height:1.45}
+.gs-steps b{color:#E4FF3A;font-family:"Barlow Condensed",Arial Narrow,sans-serif;margin-right:6px}
+.gs-steps b.gs-nb{color:#9AA59E;display:inline}
+.gs-form .gs-sch svg{height:260px}
+.gs-dr{display:grid;gap:6px;margin-top:10px}.gs-dr label{display:flex;gap:8px;align-items:center}.gs-dr b{color:#E4FF3A;font-family:"Barlow Condensed",Arial Narrow,sans-serif;min-width:16px;text-align:center}.gs-dr input{flex:1;min-width:0}
+.gse{position:fixed;inset:0;z-index:1000;background:#07090A;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;padding:calc(env(safe-area-inset-top,0px) + 14px) 0 calc(96px + env(safe-area-inset-bottom,0px))}
+.gse-in{max-width:560px;margin:0 auto}
+.gse-top{display:flex;align-items:center;gap:10px;padding:0 18px 8px}
+.gse-back{width:36px;height:36px;border-radius:50%;background:#111614;border:1px solid var(--line);display:flex;align-items:center;justify-content:center;color:var(--ink);font-size:22px;line-height:1;padding:0 0 3px}
+.gse-kick{font:700 11px "Barlow Condensed",Arial Narrow,sans-serif;letter-spacing:.2em;text-transform:uppercase;color:#3BE08A}
+.gse h1{font:800 26px/1.05 "Barlow Condensed",Arial Narrow,sans-serif;text-transform:uppercase;margin:4px 18px 10px;letter-spacing:.01em}
+.gse-seg{display:flex;margin:0 18px 10px;background:#111614;border:1px solid var(--line);border-radius:12px;padding:3px}
+.gse-seg button{flex:1;text-align:center;padding:7px;border-radius:9px;font-size:13px;color:var(--mute);background:none;border:0}
+.gse-seg button[aria-pressed="true"]{background:#1A211D;color:var(--ink)}
+.gse-tool{display:flex;gap:6px;flex-wrap:wrap;margin:0 18px 10px}
+.gse-t{padding:8px 11px;border-radius:12px;background:#111614;border:1px solid var(--line);font-size:13px;display:flex;align-items:center;gap:6px;color:var(--ink);min-height:36px}
+.gse-t[aria-pressed="true"]{border-color:#E4FF3A;color:#E4FF3A}
+.gse-t:disabled{opacity:.4}
+.gse-dot{width:12px;height:12px;border-radius:50%;display:inline-block}
+.gse .gs-sch{margin:0 18px;touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;cursor:crosshair}
+.gse .gs-sch svg{height:min(340px,calc(100vh - 300px));min-height:250px;touch-action:none}
+.gse-hint{margin:8px 18px 0;font-size:12.5px;color:var(--mute);text-align:center}
+.gse-bar{position:fixed;left:0;right:0;bottom:0;z-index:1001;padding:12px 18px calc(18px + env(safe-area-inset-bottom,0px));display:flex;gap:10px;background:linear-gradient(transparent,#07090A 30%)}
+.gse-bar>span{display:flex;gap:10px;width:100%;max-width:524px;margin:0 auto}
+.gse-btn{flex:1;text-align:center;padding:14px;border-radius:14px;font:700 15px "Barlow Condensed",Arial Narrow,sans-serif;letter-spacing:.06em;text-transform:uppercase;border:0;color:var(--ink)}
+.gse-btn.p{background:#E4FF3A;color:#07090A}.gse-btn.s{background:#111614;border:1px solid var(--line)}
+body.gse-on{overflow:hidden}
+</style>
 <script>
 "use strict";
 /* Correspondance ligne de grille → documents de la veille (écrite par build_data.py à partir de plan/liste_documents.tsv) */
-const LV = /*LV*/{"L":{"PP1":{"c":["2.1.1"],"a":["2.1.2"],"s":["2.1.3"],"b":["2.13.1","2.13.2","2.13.4"],"t":["2.16.7","2.16.12","2.16.13"]},"PP2":{"c":["2.2.1"],"a":["2.2.2"],"s":["2.2.3"],"b":["2.13.1","2.13.2","2.13.4","3.2.4"],"t":["2.16.7","2.16.12","2.16.13"]},"PP3":{"c":["2.3.1"],"a":["2.3.2"],"s":["2.3.3"],"b":["3.1.1"],"t":["2.16.9","2.16.12","2.16.13"]},"PP4":{"c":["2.4.1"],"a":["2.4.2"],"s":["2.4.3"],"b":["3.20.2"],"t":["2.16.5","2.16.12","2.16.13"]},"PP5":{"c":["2.5.1"],"a":["2.5.2"],"s":["2.5.3"],"b":["3.1.1","3.6.1"],"t":["2.16.6","2.16.12","2.16.13"]},"PP6":{"c":["2.6.1"],"a":["2.6.2"],"s":["2.6.3"],"b":["3.20.3"],"t":["2.16.3","2.16.12","2.16.13"]},"PP7":{"c":["2.7.1"],"a":["2.7.2"],"s":["2.7.3"],"b":["3.20.8","3.20.9"],"t":["2.16.4","2.16.12","2.16.13"]},"PP8":{"c":["2.8.1"],"a":["2.8.2"],"s":["2.8.3"],"b":["4.2.3"],"t":["2.16.8","2.16.12","2.16.13"]},"PP9":{"c":["2.9.1"],"a":["2.9.2"],"s":["2.9.3"],"b":["4.2.2","4.2.3"],"t":["2.16.8","2.16.12","2.16.13"]},"PP10":{"c":["2.10.1"],"a":["2.10.2"],"s":["2.10.3"],"b":["3.19.1"],"t":["2.16.9","2.16.12","2.16.13"]},"PP11":{"c":["2.11.1"],"a":["2.11.2"],"s":["2.11.3"],"b":["3.1.1"],"t":["2.16.9","2.16.12","2.16.13"]},"PP12":{"c":["2.12.1"],"a":["2.12.2"],"s":["2.12.3"],"b":["2.14.2","3.2.5"],"t":["2.16.9","2.16.12","2.16.13"]},"GE1":{"c":["3.3.1"],"a":["3.3.2"],"s":["4.6.8"],"b":["3.2.1","3.2.2","3.2.3","3.2.4","3.2.5","3.1.1","3.1.5"],"t":["2.16.11"]},"GE2":{"c":["3.4.1"],"a":["3.4.2"],"s":["4.6.8"],"b":["3.2.1","3.2.2","3.2.3","3.2.4","3.2.5","3.1.1","3.1.5"],"t":["2.16.11"]},"GE3":{"c":["3.5.1"],"a":["3.5.2"],"s":["4.6.8"],"b":["3.2.1","3.2.2","3.2.3","3.2.4","3.2.5","3.1.1","3.1.5"],"t":["2.16.11"]},"GE4":{"c":["3.7.1"],"a":["3.7.2"],"s":["4.6.8"],"b":["3.6.1","3.6.2","3.6.3","3.6.4","3.1.1","3.1.5"],"t":["2.16.11"]},"GE5":{"c":["3.8.1"],"a":["3.8.2"],"s":["4.6.8"],"b":["3.6.1","3.6.2","3.6.3","3.6.4","3.1.1","3.1.5"],"t":["2.16.11"]},"GE6":{"c":["3.9.1"],"a":["3.9.2"],"s":["4.6.8"],"b":["3.6.1","3.6.2","3.6.3","3.6.4","3.1.1","3.1.5"],"t":["2.16.11"]},"GE7":{"c":["3.11.1"],"a":["3.11.2"],"s":["4.6.8"],"b":["3.10.1","3.10.2","3.10.3","3.10.4","3.1.1","3.1.5"],"t":["2.16.11"]},"GE8":{"c":["3.12.1"],"a":["3.12.2"],"s":["4.6.8"],"b":["3.10.1","3.10.2","3.10.3","3.10.4","3.1.1","3.1.5"],"t":["2.16.11"]},"GE9":{"c":["3.13.1"],"a":["3.13.2"],"s":["4.6.8"],"b":["3.10.1","3.10.2","3.10.3","3.10.4","3.1.1","3.1.5"],"t":["2.16.11"]},"GE10":{"c":["3.15.1"],"a":["3.15.2"],"s":["4.6.8"],"b":["3.14.1","3.14.2","3.1.1","3.1.5"],"t":["2.16.11"]},"GE11":{"c":["3.16.1"],"a":["3.16.2"],"s":["4.6.8"],"b":["3.14.1","3.14.2","3.1.1","3.1.5"],"t":["2.16.11"]},"GE12":{"c":["3.17.1"],"a":["3.17.2"],"s":["4.6.8"],"b":["3.2.4","3.1.1","3.1.5"],"t":["2.16.11"]},"GE13":{"c":["3.18.3"],"a":[],"s":["4.6.8"],"b":["3.14.1","3.1.1","3.1.5"],"t":["2.16.11"]},"DE1":{"c":["3.20.1","3.19.1"],"a":["3.21.2","3.21.3"],"s":["3.21.4"],"b":["3.21.1","2.6.1"],"t":["2.16.11"]},"DE2":{"c":["3.20.2","3.19.1"],"a":["3.21.2","3.21.3"],"s":["3.21.4"],"b":["3.21.1","2.4.1"],"t":["2.16.11"]},"DE3":{"c":["3.20.3","3.19.1"],"a":["3.21.2","3.21.3"],"s":["3.21.4"],"b":["3.21.1","2.6.1"],"t":["2.16.3","2.16.11"]},"DE4":{"c":["3.20.4","3.19.1"],"a":["3.21.2","3.21.3"],"s":["3.21.4"],"b":["3.21.1","2.7.1"],"t":["2.16.4","2.16.11"]},"DE5":{"c":["3.20.5","3.19.1"],"a":["3.21.2","3.21.3"],"s":["3.21.4"],"b":["3.21.1","2.6.1"],"t":["2.16.11"]},"DE6":{"c":["3.20.6","3.19.1"],"a":["3.21.2","3.21.3"],"s":["3.21.4"],"b":["3.21.1","3.6.3"],"t":["2.16.11"]},"DE7":{"c":["3.20.7","3.19.1"],"a":["3.21.2","3.21.3"],"s":["3.21.4"],"b":["3.21.1","3.6.3","3.1.1"],"t":["2.16.11"]},"DE8":{"c":["3.20.8","3.19.1"],"a":["3.21.2","3.21.3"],"s":["3.21.4"],"b":["3.21.1","2.7.1"],"t":["2.16.4","2.16.11"]},"DE9":{"c":["3.20.9","3.19.1"],"a":["3.21.2","3.21.3"],"s":["3.21.4"],"b":["3.21.1","2.7.1"],"t":["2.16.4","2.16.11"]},"DE10":{"c":["3.20.10","3.19.1"],"a":["3.21.2","3.21.3"],"s":["3.21.4"],"b":["3.21.1","4.2.2"],"t":["2.16.11"]},"DE11":{"c":["3.20.11","3.19.1"],"a":["3.21.2","3.21.3"],"s":["3.21.4"],"b":["3.21.1","2.10.1"],"t":["2.16.11"]}},"g":{"c":"Comprendre","a":"Âge par âge","s":"Séances et routines","b":"Biomécanique et liens","t":"Tests et évaluation"},"t":{"2.1.1":"Comprendre et développer : bases, méthodes, application au tennis","2.1.2":"Âge par âge, filles et garçons : ce qu'on attend et ce qu'on travaille","2.1.3":"Séances, routines et programmes types","2.2.1":"Comprendre et développer : bases, méthodes, application au tennis","2.2.2":"Âge par âge, filles et garçons : ce qu'on attend et ce qu'on travaille","2.2.3":"Séances, routines et programmes types","2.3.1":"Comprendre et développer : bases, méthodes, application au tennis","2.3.2":"Âge par âge, filles et garçons : ce qu'on attend et ce qu'on travaille","2.3.3":"Séances, routines et programmes types","2.4.1":"Comprendre et développer : bases, méthodes, application au tennis","2.4.2":"Âge par âge, filles et garçons : ce qu'on attend et ce qu'on travaille","2.4.3":"Séances, routines et programmes types","2.5.1":"Comprendre et développer : bases, méthodes, application au tennis","2.5.2":"Âge par âge, filles et garçons : ce qu'on attend et ce qu'on travaille","2.5.3":"Séances, routines et programmes types","2.6.1":"Comprendre et développer : bases, méthodes, application au tennis","2.6.2":"Âge par âge, filles et garçons : ce qu'on attend et ce qu'on travaille","2.6.3":"Séances, routines et programmes types","2.7.1":"Comprendre et développer : bases, méthodes, application au tennis","2.7.2":"Âge par âge, filles et garçons : ce qu'on attend et ce qu'on travaille","2.7.3":"Séances, routines et programmes types","2.8.1":"Comprendre et développer : bases, méthodes, application au tennis","2.8.2":"Âge par âge, filles et garçons : ce qu'on attend et ce qu'on travaille","2.8.3":"Séances, routines et programmes types","2.9.1":"Comprendre et développer : bases, méthodes, application au tennis","2.9.2":"Âge par âge, filles et garçons : ce qu'on attend et ce qu'on travaille","2.9.3":"Séances, routines et programmes types","2.10.1":"Comprendre et développer : bases, méthodes, application au tennis","2.10.2":"Âge par âge, filles et garçons : ce qu'on attend et ce qu'on travaille","2.10.3":"Séances, routines et programmes types","2.11.1":"Comprendre et développer : bases, méthodes, application au tennis","2.11.2":"Âge par âge, filles et garçons : ce qu'on attend et ce qu'on travaille","2.11.3":"Séances, routines et programmes types","2.12.1":"Comprendre et développer : bases, méthodes, application au tennis","2.12.2":"Âge par âge, filles et garçons : ce qu'on attend et ce qu'on travaille","2.12.3":"Séances, routines et programmes types","2.13.1":"Charge, tempo et méthodes de musculation","2.13.2":"Technique et sécurité des mouvements de musculation","2.13.4":"La musculation du jeune : principes et précautions","2.14.2":"Les briques de l'échauffement","2.16.3":"Tests de vitesse et d'accélération","2.16.4":"Tests de changement de direction et d'agilité","2.16.5":"Tests de détente et de puissance des jambes","2.16.6":"Tests de puissance du haut du corps et de frappe","2.16.7":"Tests de force et profil force-vitesse","2.16.8":"Tests d'endurance et de sprints répétés","2.16.9":"Tests de souplesse, de gainage, d'équilibre et de coordination","2.16.11":"Observer et évaluer le joueur sur le court","2.16.12":"Valeurs de référence par âge : filles","2.16.13":"Valeurs de référence par âge : garçons","3.1.1":"Chaîne cinétique, transferts d'énergie, appuis et équilibre","3.1.5":"Contraintes mécaniques et fondamentaux des frappes par tranche d'âge","3.2.1":"Vue d'ensemble et repères chiffrés","3.2.2":"Position de départ, lancer de balle, armé","3.2.3":"Appuis, jambes et tronc","3.2.4":"Bras de frappe, impact, accompagnement, muscles","3.2.5":"Erreurs, contraintes articulaires, fatigue, enseigner le service","3.3.1":"Technique : ce qui est propre à ce coup, repères, erreurs, usages","3.3.2":"Âge par âge : attendus et étapes d'apprentissage","3.4.1":"Technique : ce qui est propre à ce coup, repères, erreurs, usages","3.4.2":"Âge par âge : attendus et étapes d'apprentissage","3.5.1":"Technique : ce qui est propre à ce coup, repères, erreurs, usages","3.5.2":"Âge par âge : attendus et étapes d'apprentissage","3.6.1":"Situer le coup droit, prises, chaîne cinétique","3.6.2":"Le coup droit phase par phase","3.6.3":"Appuis, situations de jeu, repères chiffrés, muscles, hommes et femmes","3.6.4":"Erreurs, contraintes articulaires, fatigue, préparation physique du coup droit","3.7.1":"Technique : ce qui est propre à ce coup, repères, erreurs, usages","3.7.2":"Âge par âge : attendus et étapes d'apprentissage","3.8.1":"Technique : ce qui est propre à ce coup, repères, erreurs, usages","3.8.2":"Âge par âge : attendus et étapes d'apprentissage","3.9.1":"Technique : ce qui est propre à ce coup, repères, erreurs, usages","3.9.2":"Âge par âge : attendus et étapes d'apprentissage","3.10.1":"Situer le revers, prises, tronc commun aux revers","3.10.2":"Le revers à deux mains phase par phase","3.10.3":"Le revers à une main phase par phase","3.10.4":"Repères chiffrés, muscles, erreurs, contraintes, préparation physique du revers","3.11.1":"Technique : ce qui est propre à ce coup, repères, erreurs, usages","3.11.2":"Âge par âge : attendus et étapes d'apprentissage","3.12.1":"Technique : ce qui est propre à ce coup, repères, erreurs, usages","3.12.2":"Âge par âge : attendus et étapes d'apprentissage","3.13.1":"Technique : ce qui est propre à ce coup, repères, erreurs, usages","3.13.2":"Âge par âge : attendus et étapes d'apprentissage","3.14.1":"Le jeu au filet : prises, phases, hauteurs, volées particulières, demi-volée, montée","3.14.2":"Muscles, erreurs, contraintes, préparation physique de la volée","3.15.1":"Technique : ce qui est propre à ce coup, repères, erreurs, usages","3.15.2":"Âge par âge : attendus et étapes d'apprentissage","3.16.1":"Technique : ce qui est propre à ce coup, repères, erreurs, usages","3.16.2":"Âge par âge : attendus et étapes d'apprentissage","3.17.1":"Technique : phases, formes de smash, exigences, erreurs","3.17.2":"Âge par âge : attendus, enseigner et entraîner","3.18.3":"La main, l'amortie et la contre-amortie","3.19.1":"Comprendre le jeu de jambes : rôle, cycle de déplacement, exigences","3.20.1":"Ligne 1 · Position d'attention : technique, repères, erreurs, attendus par âge","3.20.2":"Ligne 2 · Allègement et reprise d'appuis : technique, repères, erreurs, attendus par âge","3.20.3":"Ligne 3 · Démarrage et premiers pas : technique, repères, erreurs, attendus par âge","3.20.4":"Ligne 4 · Déplacements latéraux : technique, repères, erreurs, attendus par âge","3.20.5":"Ligne 5 · Déplacements vers l'avant et vers l'arrière : technique, repères, erreurs, attendus par âge","3.20.6":"Ligne 6 · Pas d'ajustement et mise à distance : technique, repères, erreurs, attendus par âge","3.20.7":"Ligne 7 · Appuis de frappe : technique, repères, erreurs, attendus par âge","3.20.8":"Ligne 8 · Freinage et décélération : technique, repères, erreurs, attendus par âge","3.20.9":"Ligne 9 · Changement de direction et réaccélération : technique, repères, erreurs, attendus par âge","3.20.10":"Ligne 10 · Replacement : technique, repères, erreurs, attendus par âge","3.20.11":"Ligne 11 · Enchaînements et liaison des actions : technique, repères, erreurs, attendus par âge","3.21.1":"Le jeu de jambes selon la surface","3.21.2":"Le jeu de jambes âge par âge : de 3 à 10 ans","3.21.3":"Le jeu de jambes âge par âge : de 11 ans à l'adulte","3.21.4":"Observer, corriger, routines et séances types","4.2.2":"Déplacements et frappes en match","4.2.3":"Exigences physiologiques et mentales du match","4.6.8":"Situations types par secteur de jeu"}}/*/LV*/;
-const DOM = {PP:["Préparation physique","--pp"], PH:["Préparation physique hors grille","--ph"], GE:["Biomécanique du geste","--ge"], DE:["Biomécanique du déplacement","--de"], JEU:["Situations de jeu","--jeu"]};
+const LV = /*LV*/{"L":{"PP1":{"c":["PP.1.1"],"a":["PP.1.2"],"s":["PP.1.3"],"b":["PP.13.1","PP.13.2","PP.13.4"],"t":["PP.16.7","PP.16.11","PP.16.12"]},"PP2":{"c":["PP.2.1"],"a":["PP.2.2"],"s":["PP.2.3"],"b":["PP.13.1","PP.13.2","PP.13.4","TE.2.4"],"t":["PP.16.7","PP.16.11","PP.16.12"]},"PP3":{"c":["PP.3.1"],"a":["PP.3.2"],"s":["PP.3.3"],"b":["TE.1.1"],"t":["PP.16.9","PP.16.11","PP.16.12"]},"PP4":{"c":["PP.4.1"],"a":["PP.4.2"],"s":["PP.4.3"],"b":["TE.9.3"],"t":["PP.16.5","PP.16.11","PP.16.12"]},"PP5":{"c":["PP.5.1"],"a":["PP.5.2"],"s":["PP.5.3"],"b":["TE.1.1","TE.4.1"],"t":["PP.16.6","PP.16.11","PP.16.12"]},"PP6":{"c":["PP.6.1"],"a":["PP.6.2"],"s":["PP.6.3"],"b":["TE.9.4"],"t":["PP.16.3","PP.16.11","PP.16.12"]},"PP7":{"c":["PP.7.1"],"a":["PP.7.2"],"s":["PP.7.3"],"b":["TE.9.9","TE.9.10"],"t":["PP.16.4","PP.16.11","PP.16.12"]},"PP8":{"c":["PP.8.1"],"a":["PP.8.2"],"s":["PP.8.3"],"b":["EN.2.3"],"t":["PP.16.8","PP.16.11","PP.16.12"]},"PP9":{"c":["PP.9.1"],"a":["PP.9.2"],"s":["PP.9.3"],"b":["EN.2.2","EN.2.3"],"t":["PP.16.8","PP.16.11","PP.16.12"]},"PP10":{"c":["PP.10.1"],"a":["PP.10.2"],"s":["PP.10.3"],"b":["TE.9.1"],"t":["PP.16.9","PP.16.11","PP.16.12"]},"PP11":{"c":["PP.11.1"],"a":["PP.11.2"],"s":["PP.11.3"],"b":["TE.1.1"],"t":["PP.16.9","PP.16.11","PP.16.12"]},"PP12":{"c":["PP.12.1"],"a":["PP.12.2"],"s":["PP.12.3"],"b":["PP.14.2","TE.2.8"],"t":["PP.16.9","PP.16.11","PP.16.12"]},"GE1":{"c":["TE.2.5"],"a":["TE.2.9"],"s":["TE.2.10","TA.1.4"],"b":["TE.2.1","TE.2.2","TE.2.3","TE.2.4","TE.2.8","TE.1.1","TE.1.5"],"t":["EN.2.7"]},"GE2":{"c":["TE.2.6"],"a":["TE.2.9"],"s":["TE.2.10","TA.1.4"],"b":["TE.2.1","TE.2.2","TE.2.3","TE.2.4","TE.2.8","TE.1.1","TE.1.5"],"t":["EN.2.7"]},"GE3":{"c":["TE.2.7"],"a":["TE.2.9"],"s":["TE.2.10","TA.1.4"],"b":["TE.2.1","TE.2.2","TE.2.3","TE.2.4","TE.2.8","TE.1.1","TE.1.5"],"t":["EN.2.7"]},"GE4":{"c":["TE.4.4"],"a":["TE.4.8"],"s":["TE.4.9","TA.1.4"],"b":["TE.4.1","TE.4.2","TE.4.3","TE.4.7","TE.1.1","TE.1.5"],"t":["EN.2.7"]},"GE5":{"c":["TE.4.5"],"a":["TE.4.8"],"s":["TE.4.9","TA.1.4"],"b":["TE.4.1","TE.4.2","TE.4.3","TE.4.7","TE.1.1","TE.1.5"],"t":["EN.2.7"]},"GE6":{"c":["TE.4.6"],"a":["TE.4.8"],"s":["TE.4.9","TA.1.4"],"b":["TE.4.1","TE.4.2","TE.4.3","TE.4.7","TE.1.1","TE.1.5"],"t":["EN.2.7"]},"GE7":{"c":["TE.5.4"],"a":["TE.5.8"],"s":["TE.5.9","TA.1.4"],"b":["TE.5.1","TE.5.2","TE.5.3","TE.5.7","TE.1.1","TE.1.5"],"t":["EN.2.7"]},"GE8":{"c":["TE.5.5"],"a":["TE.5.8"],"s":["TE.5.9","TA.1.4"],"b":["TE.5.1","TE.5.2","TE.5.3","TE.5.7","TE.1.1","TE.1.5"],"t":["EN.2.7"]},"GE9":{"c":["TE.5.6"],"a":["TE.5.8"],"s":["TE.5.9","TA.1.4"],"b":["TE.5.1","TE.5.2","TE.5.3","TE.5.7","TE.1.1","TE.1.5"],"t":["EN.2.7"]},"GE10":{"c":["TE.6.2"],"a":["TE.6.5"],"s":["TE.6.6","TA.1.4"],"b":["TE.6.1","TE.6.4","TE.1.1","TE.1.5"],"t":["EN.2.7"]},"GE11":{"c":["TE.6.3"],"a":["TE.6.5"],"s":["TE.6.6","TA.1.4"],"b":["TE.6.1","TE.6.4","TE.1.1","TE.1.5"],"t":["EN.2.7"]},"GE12":{"c":["TE.7.1"],"a":["TE.7.2"],"s":["TE.7.3","TA.1.4"],"b":["TE.2.4","TE.1.1","TE.1.5"],"t":["EN.2.7"]},"GE13":{"c":["TE.8.1"],"a":["TE.8.3"],"s":["TE.8.4","TA.1.4"],"b":["TE.6.1","TE.1.1","TE.1.5"],"t":["EN.2.7"]},"DE1":{"c":["TE.9.2","TE.9.1"],"a":["TE.9.14"],"s":["TE.9.15"],"b":["TE.9.13","PP.6.1"],"t":["EN.2.7"]},"DE2":{"c":["TE.9.3","TE.9.1"],"a":["TE.9.14"],"s":["TE.9.15"],"b":["TE.9.13","PP.4.1"],"t":["EN.2.7"]},"DE3":{"c":["TE.9.4","TE.9.1"],"a":["TE.9.14"],"s":["TE.9.15"],"b":["TE.9.13","PP.6.1"],"t":["PP.16.3","EN.2.7"]},"DE4":{"c":["TE.9.5","TE.9.1"],"a":["TE.9.14"],"s":["TE.9.15"],"b":["TE.9.13","PP.7.1"],"t":["PP.16.4","EN.2.7"]},"DE5":{"c":["TE.9.6","TE.9.1"],"a":["TE.9.14"],"s":["TE.9.15"],"b":["TE.9.13","PP.6.1"],"t":["EN.2.7"]},"DE6":{"c":["TE.9.7","TE.9.1"],"a":["TE.9.14"],"s":["TE.9.15"],"b":["TE.9.13","TE.4.3"],"t":["EN.2.7"]},"DE7":{"c":["TE.9.8","TE.9.1"],"a":["TE.9.14"],"s":["TE.9.15"],"b":["TE.9.13","TE.4.3","TE.1.1"],"t":["EN.2.7"]},"DE8":{"c":["TE.9.9","TE.9.1"],"a":["TE.9.14"],"s":["TE.9.15"],"b":["TE.9.13","PP.7.1"],"t":["PP.16.4","EN.2.7"]},"DE9":{"c":["TE.9.10","TE.9.1"],"a":["TE.9.14"],"s":["TE.9.15"],"b":["TE.9.13","PP.7.1"],"t":["PP.16.4","EN.2.7"]},"DE10":{"c":["TE.9.11","TE.9.1"],"a":["TE.9.14"],"s":["TE.9.15"],"b":["TE.9.13","EN.2.2"],"t":["EN.2.7"]},"DE11":{"c":["TE.9.12","TE.9.1"],"a":["TE.9.14"],"s":["TE.9.15"],"b":["TE.9.13","PP.10.1"],"t":["EN.2.7"]}},"g":{"c":"Comprendre","a":"Âge par âge","s":"Séances et routines","b":"Pour aller plus loin","t":"Tests et évaluation"},"t":{"EN.2.2":"Déplacements et frappes en match","EN.2.3":"Exigences physiologiques et mentales du match","EN.2.7":"Observer et évaluer le joueur sur le court","PP.1.1":"Comprendre et développer : bases, méthodes, application au tennis","PP.1.2":"Âge par âge, filles et garçons : ce qu'on attend et ce qu'on travaille","PP.1.3":"Séances, routines et programmes types","PP.10.1":"Comprendre et développer : bases, méthodes, application au tennis","PP.10.2":"Âge par âge, filles et garçons : ce qu'on attend et ce qu'on travaille","PP.10.3":"Séances, routines et programmes types","PP.11.1":"Comprendre et développer : bases, méthodes, application au tennis","PP.11.2":"Âge par âge, filles et garçons : ce qu'on attend et ce qu'on travaille","PP.11.3":"Séances, routines et programmes types","PP.12.1":"Comprendre et développer : bases, méthodes, application au tennis","PP.12.2":"Âge par âge, filles et garçons : ce qu'on attend et ce qu'on travaille","PP.12.3":"Séances, routines et programmes types","PP.13.1":"Charge, tempo et méthodes de musculation","PP.13.2":"Technique et sécurité des mouvements de musculation","PP.13.4":"La musculation du jeune : principes et précautions","PP.14.2":"Les briques de l'échauffement","PP.16.11":"Valeurs de référence par âge : filles","PP.16.12":"Valeurs de référence par âge : garçons","PP.16.3":"Tests de vitesse et d'accélération","PP.16.4":"Tests de changement de direction et d'agilité","PP.16.5":"Tests de détente et de puissance des jambes","PP.16.6":"Tests de puissance du haut du corps et de frappe","PP.16.7":"Tests de force et profil force-vitesse","PP.16.8":"Tests d'endurance et de sprints répétés","PP.16.9":"Tests de souplesse, de gainage, d'équilibre et de coordination","PP.2.1":"Comprendre et développer : bases, méthodes, application au tennis","PP.2.2":"Âge par âge, filles et garçons : ce qu'on attend et ce qu'on travaille","PP.2.3":"Séances, routines et programmes types","PP.3.1":"Comprendre et développer : bases, méthodes, application au tennis","PP.3.2":"Âge par âge, filles et garçons : ce qu'on attend et ce qu'on travaille","PP.3.3":"Séances, routines et programmes types","PP.4.1":"Comprendre et développer : bases, méthodes, application au tennis","PP.4.2":"Âge par âge, filles et garçons : ce qu'on attend et ce qu'on travaille","PP.4.3":"Séances, routines et programmes types","PP.5.1":"Comprendre et développer : bases, méthodes, application au tennis","PP.5.2":"Âge par âge, filles et garçons : ce qu'on attend et ce qu'on travaille","PP.5.3":"Séances, routines et programmes types","PP.6.1":"Comprendre et développer : bases, méthodes, application au tennis","PP.6.2":"Âge par âge, filles et garçons : ce qu'on attend et ce qu'on travaille","PP.6.3":"Séances, routines et programmes types","PP.7.1":"Comprendre et développer : bases, méthodes, application au tennis","PP.7.2":"Âge par âge, filles et garçons : ce qu'on attend et ce qu'on travaille","PP.7.3":"Séances, routines et programmes types","PP.8.1":"Comprendre et développer : bases, méthodes, application au tennis","PP.8.2":"Âge par âge, filles et garçons : ce qu'on attend et ce qu'on travaille","PP.8.3":"Séances, routines et programmes types","PP.9.1":"Comprendre et développer : bases, méthodes, application au tennis","PP.9.2":"Âge par âge, filles et garçons : ce qu'on attend et ce qu'on travaille","PP.9.3":"Séances, routines et programmes types","TA.1.4":"Entraîner la tactique : formes de jeu et séances types","TE.1.1":"Chaîne cinétique, transferts d'énergie, appuis et équilibre","TE.1.5":"Contraintes sur le corps, fatigue, stress et croissance dans les frappes","TE.2.1":"Le service : rôle, phases, repères chiffrés","TE.2.10":"Le service : séances types","TE.2.2":"Position de départ, lancer de balle, armé","TE.2.3":"Jambes, appuis et tronc au service","TE.2.4":"Bras de frappe, impact, accompagnement et muscles du service","TE.2.5":"Le service à plat","TE.2.6":"Le service slicé","TE.2.7":"Le service lifté et kické, la deuxième balle","TE.2.8":"Erreurs, corrections, contraintes et volume de service","TE.2.9":"Le service âge par âge : à plat, slicé, lifté","TE.4.1":"Le coup droit : place dans le jeu, prises, chaîne cinétique","TE.4.2":"Le coup droit phase par phase","TE.4.3":"Appuis, situations de jeu, repères chiffrés et muscles du coup droit","TE.4.4":"Le coup droit lifté","TE.4.5":"Le coup droit à plat","TE.4.6":"Le coup droit slicé : coupé de fond, défense, approche","TE.4.7":"Erreurs, corrections, contraintes et préparation physique du coup droit","TE.4.8":"Le coup droit âge par âge : lifté, à plat, slicé","TE.4.9":"Le coup droit : séances types","TE.5.1":"Le revers : place dans le jeu, une ou deux mains, prises, tronc commun","TE.5.2":"Le revers à deux mains phase par phase","TE.5.3":"Le revers à une main phase par phase","TE.5.4":"Le revers lifté","TE.5.5":"Le revers à plat","TE.5.6":"Le revers slicé","TE.5.7":"Repères chiffrés, erreurs, contraintes et préparation physique du revers","TE.5.8":"Le revers âge par âge : lifté, à plat, slicé, une et deux mains","TE.5.9":"Le revers : séances types","TE.6.1":"Le jeu au filet : prises, phases, hauteurs, demi-volée, montée","TE.6.2":"La volée de coup droit","TE.6.3":"La volée de revers","TE.6.4":"Muscles, erreurs, contraintes et préparation physique de la volée","TE.6.5":"Les volées âge par âge","TE.6.6":"Les volées : séances types","TE.7.1":"Le smash","TE.7.2":"Le smash âge par âge","TE.7.3":"Le smash : séances types","TE.8.1":"Le toucher de balle : amortie, contre-amortie, volée amortie, déguisement","TE.8.3":"Le toucher de balle âge par âge","TE.8.4":"Le toucher de balle : séances types","TE.9.1":"Comprendre le jeu de jambes","TE.9.10":"Changement de direction et réaccélération : technique, repères, erreurs, attendus par âge","TE.9.11":"Replacement : technique, repères, erreurs, attendus par âge","TE.9.12":"Enchaînements et liaison des actions : technique, repères, erreurs, attendus par âge","TE.9.13":"Le jeu de jambes selon la surface","TE.9.14":"Le jeu de jambes âge par âge","TE.9.15":"Observer, corriger, routines et séances types du jeu de jambes","TE.9.2":"Position d'attention : technique, repères, erreurs, attendus par âge","TE.9.3":"Allègement et reprise d'appuis : technique, repères, erreurs, attendus par âge","TE.9.4":"Démarrage et premiers pas : technique, repères, erreurs, attendus par âge","TE.9.5":"Déplacements latéraux : technique, repères, erreurs, attendus par âge","TE.9.6":"Déplacements vers l'avant et vers l'arrière : technique, repères, erreurs, attendus par âge","TE.9.7":"Pas d'ajustement et mise à distance : technique, repères, erreurs, attendus par âge","TE.9.8":"Appuis de frappe : technique, repères, erreurs, attendus par âge","TE.9.9":"Freinage et décélération : technique, repères, erreurs, attendus par âge"}}/*/LV*/;
+const DOM = {PP:["Préparation physique","--pp"], PH:["Préparation physique hors grille","--ph"], GE:["Technique : les coups","--ge"], DE:["Technique : les déplacements","--de"], JEU:["Situations de jeu","--jeu"]};
+/* banque v4 : 8 thèmes (les thèmes 1 et 2 n'ont pas de famille d'exercices) ; couleur = domaine d'origine */
+const TH = {3:"Préparation physique", 4:"Technique", 5:"Tactique", 6:"Préparation mentale", 7:"Santé et récupération", 8:"Entraîner"};
+const THD = {3:"PP", 4:"GE", 5:"JEU", 6:"JEU", 7:"PH", 8:"PH"};
+const MEDIA = {schema:"Schéma", video:"Vidéo", texte:"Texte"};
 const LIG = {
  PP:["Force du bas du corps","Force du haut du corps","Gainage et stabilité du tronc","Puissance des jambes : sauts et pliométrie","Puissance du haut du corps et rotation","Vitesse et accélération","Freinage, changements de direction et agilité","Endurance aérobie","Répétition d'efforts intenses","Coordination, motricité fondamentale et rythme","Équilibre et proprioception","Mobilité et souplesse"],
  GE:["Service à plat","Service slicé","Service lifté","Coup droit lifté","Coup droit à plat","Coup droit slicé","Revers lifté","Revers à plat","Revers slicé","Volée de coup droit","Volée de revers","Smash","Amortie et touché de balle"],
  DE:["Position d'attention","Allègement et reprise d'appuis","Démarrage et premiers pas","Déplacements latéraux","Déplacements vers l'avant et vers l'arrière","Pas d'ajustement et mise à distance","Appuis de frappe","Freinage et décélération","Changement de direction et réaccélération","Replacement","Enchaînements et liaison des actions"]};
-const NIV = ["","Découverte","Maîtrise","Avancé","Expert"];
 const MAT = [["Sans matériel",/\baucun|sans materiel|poids du corps/],["Tapis",/tapis/],["Raquette et balles",/raquette|balle/],["Plots et cibles",/plot|cible|cone|coupelle/],["Élastique",/elastique/],["Médecine-ball",/medecine|ballon leste/],["Ballon suisse",/ballon suisse/],["Lattes, échelle, cerceaux",/latte|echelle|cerceau|haie/],["Corde à sauter",/corde/],["Banc, box, step",/banc|box|step|marche|plinth/],["Barre, haltères, kettlebell",/barre|haltere|kettlebell|disque|poulie|machine|charge/],["Mur",/\bmur\b/],["Partenaire",/partenaire|binome|serveur|relanceur/],["Chrono, My Sprint, My Jump",/chrono|my sprint|my jump|ipad/]];
 /* échauffement (CIBLES.md, CONSIGNES_JEUX.md) */
 const ETN = {MR:"Mise en route",MO:"Mobilité",AC:"Activation",CV:"Coordination et vitesse",PO:"Mise en tension",ST:"Spécifique tennis"};
@@ -805,22 +847,24 @@ const today = () => (window.GRUN ? GRUN.today() : new Date().toISOString().slice
 const MOIFAM = {c:"MOI", t:"Mes exercices", dom:"PH", dossier:"Mes exercices", intro:"<p>Les exercices que tu as créés et rangés dans « Mes exercices ».</p>", subs:[]};
 
 /* « ? » : une aide par écran (G.aide) */
-const AIDES = {explorer:"La banque : tous les exercices, rangés selon les lignes des grilles. Filtre d'une touche (domaine, âge, ligne, niveau…), ♡ sur une ligne = favori en un geste ; tes exercices sont en tête.",
+const AIDES = {explorer:"La banque : tous les exercices, rangés dans les mêmes thèmes que la banque scientifique. Filtre d'une touche (thème, rubrique, âge, matériel…), ♡ sur une ligne = favori en un geste ; tes exercices sont en tête.",
   fiche:"La fiche d'un exercice : but, consignes, matériel, vidéo, dosage. « Utiliser dans une séance » en bas ; « Exercices proches de celui-ci » propose les mêmes qualités à côté ; ♡ le met en favori.",
   form:"Créer ou modifier un exercice, en un écran : le nom suffit pour commencer, le reste (fiche, matériel, vidéo, échauffement, statut) se remplit si tu veux. « Proposer » l'envoie au créateur de GRÜN.",
   ligne:"Les exercices d'une ligne de grille pour l'âge choisi, du plus simple au plus dur.",
-  familles:"Les familles d'exercices, chacune avec son mode d'emploi et ses sous-familles.", favoris:"Tes exercices ♡ : ils reviennent en priorité dans Create my session et le warm-up.",
+  familles:"Les familles d'exercices, rangées par thème et par rubrique, chacune avec son mode d'emploi et ses sous-familles.", favoris:"Tes exercices ♡ : ils reviennent en priorité dans Create my session et le warm-up.",
   listes:"Tes collections : un thème, un joueur, une période. Personnelles.", tournage:"Le suivi des vidéos : à tourner, tourné, monté. Change le statut d'une touche.",
   propositions:"Proposer un exercice à la méthode, exporter tes propositions, valider ou refuser celles reçues."};
 Object.entries(AIDES).forEach(([k,t])=>{ try{ GRUN.aide("banque/"+k, t); }catch(e){} });
 const ecran = k => { try{ GRUN.aide.ecran("banque/"+k); }catch(e){} };
 const cur = () => { try{ const c = GRUN.courant.get(); if(c && c.t==="j" && c.joueur){ const a = GRUN.grilleConseillee ? GRUN.grilleConseillee(c.joueur) : null; return a ? {nom:String(c.nom||"").split(" ")[0], a:Math.max(4,Math.min(18,a))} : null; } }catch(e){} return null; };
-let FAMS=[], EX=[], BY={}, FBY={}, VID={}, MATC=[], FAV=new Set(), HIDE=new Set(), EDITING=false, FLASH="";
+let FAMS=[], FAMS4=[], FBY4={}, AL={}, EX=[], BY={}, FBY={}, VID={}, MATC=[], FAV=new Set(), HIDE=new Set(), EDITING=false, FLASH="";
 const dmsg = t => { FLASH=t; const m=$("#dmsg"); if(m) m.textContent=t; };
 /* ---------- données personnelles du module (appareil, clé historique banque_v1) : listes, notes, liens vidéo, filtres, propositions reçues ---------- */
 const ST="banque_v1";
-const FDEF = {dom:"",lig:"",age:"",niv:"",mat:"",vid:"",lieu:"",wu:"",fav:false,mine:false,mod:false,hid:false,dispo:[],tri:"",vue:"liste"};
-function loadP(){ let o={}; try{ o=JSON.parse(localStorage.getItem(ST))||{}; }catch(e){} const p=Object.assign({fav:[], lists:[], notes:{}, links:{}, recues:[], traitees:[]}, o); p.f=Object.assign({},FDEF,p.f||{}); if(!Array.isArray(p.f.dispo)) p.f.dispo=[]; return p; }
+const FDEF = {th:"",st:"",dom:"",lig:"",age:"",mat:"",vid:"",lieu:"",wu:"",fav:false,mine:false,mod:false,hid:false,dispo:[],tri:"",vue:"liste"};
+function loadP(){ let o={}; try{ o=JSON.parse(localStorage.getItem(ST))||{}; }catch(e){} const p=Object.assign({fav:[], lists:[], notes:{}, links:{}, recues:[], traitees:[]}, o); p.f=Object.assign({},FDEF,p.f||{}); if(!Array.isArray(p.f.dispo)) p.f.dispo=[];
+  /* v4 : plus de filtre par domaine ni par niveau (anciens réglages effacés pour ne rien cacher) */
+  p.f.dom=""; delete p.f.niv; if(p.f.tri==="niv") p.f.tri=""; return p; }
 let P = loadP();
 const save = () => { try{ if(window.GRUN) GRUN.save(ST,P); else localStorage.setItem(ST, JSON.stringify(P)); }catch(e){} };
 /* vidéos importées depuis l'appareil : IndexedDB */
@@ -835,11 +879,21 @@ let LOCALV = new Set();
 /* ---------- chargement : base + exercices perso + modifications + masqués (GRUN.banque) ---------- */
 function index(B){
   FAMS = [...B.fams, MOIFAM]; EX = B.ex; MATC = B.mat||[]; BY = {}; FBY = {};
+  FAMS4 = [...(B.fams4||[]), MOIFAM]; FBY4 = {}; FAMS4.forEach(f=>FBY4[f.c]=f); AL = B.al||{};
   FAV = new Set(B.fav||[]); HIDE = new Set(B.hide||[]);
-  EX.forEach((e,i)=>{ e.i=i; e.L=e.L||[]; BY[e.id]=e; e.k = fold([e.id,e.n,e.ob,e.ma,e.de,e.co,e.er,e.ut,e.s,e.li,e.dos].join(" ")); e.mk = fold(e.ma||""); });
   FAMS.forEach(f=>FBY[f.c]=f);
+  EX.forEach((e,i)=>{ e.i=i; e.L=e.L||[]; BY[e.id]=e; famv4(e); e.k = fold([e.id,e.n,e.ob,e.ma,e.de,e.co,e.er,e.ut,e.s,e.tm,e.li,e.dos].join(" ")); e.mk = fold(e.ma||""); });
   MOIFAM.subs = [...new Set(EX.filter(e=>e.f==="MOI").map(e=>e.s||"Mes exercices"))];
 }
+/* famille v4, thème et média d'un exercice (exercices créés ou modifiés avant la v4 : déduits de la famille ou du domaine) */
+function famv4(e){
+  if(!e.f4 || !FBY4[e.f4]){ const f3=FBY[e.f]; e.f4 = (f3 && f3.c4) || (FBY4[e.f] ? e.f : "MOI"); }
+  const f=FBY4[e.f4];
+  if(!e.th) e.th = (f && f.th) || ({PP:3, PH:3, GE:4, DE:4, JEU:5}[e.dom] || 3);
+  if(!e.md) e.md = (f && f.md) || (+e.th===5 ? "schema" : +e.th===6 ? "texte" : "video");
+}
+const vidOk = e => e.md!=="schema";                       /* tactique : schéma seulement, aucune vidéo (Eliot, 21 oct. 17 h 57) */
+const vidSlot = e => e.md==="video" || (e.md==="texte" && hasVid(e.id));   /* mental, séances types : texte ; vidéo affichée seulement si on en a mis une */
 async function reload(){ index(await GRUN.banque.load()); }
 async function boot(){
   if(!window.GRUN){ $("#main").innerHTML='<div class="empty">Ouvre la banque depuis l\'appli GRÜN.</div>'; return; }
@@ -864,12 +918,12 @@ $("#back").onclick=()=>{ if(history.length>1) history.back(); else location.hash
 function parseHash(){ const raw=location.hash.slice(1), i=raw.indexOf("?"); let path=i<0?raw:raw.slice(0,i); try{ path=decodeURIComponent(path); }catch(e){} return {path, q:new URLSearchParams(i<0?"":raw.slice(i+1))}; }
 function route(keep){
   const {path:h,q} = parseHash(); if(!keep){ scrollTo(0,0); FLASH=""; } EDITING=false; VX.hero(null);
-  if(h.startsWith("/ex/")) return showEx(h.slice(4));
+  if(h.startsWith("/ex/")){ const i=h.slice(4); return showEx(!BY[i] && AL[i] ? AL[i] : i); }
   if(h.startsWith("/l/")) return showLigne(h.slice(3), q.get("a"));
   if(h==="/nouveau") return showForm(null,q);
   if(h.startsWith("/modifier/")) return showForm(h.slice(10),q);
   if(h==="/propositions") return showProps();
-  if(h.startsWith("e/")) return showEx(h.slice(2));
+  if(h.startsWith("e/")){ const i=h.slice(2); return showEx(!BY[i] && AL[i] ? AL[i] : i); }
   if(h.startsWith("f/")) return showFam(h.slice(2));
   if(h==="familles") return showFams();
   if(h==="favoris") return showFav();
@@ -906,11 +960,12 @@ function filtered(){
   const r = EX.filter(e=>{
     if(exact) return e.id===exact;
     const hid = HIDE.has(e.id);
-    if(f.hid ? !hid : hid) return false;
-    if(f.dom && e.dom!==f.dom) return false;
+    if(f.hid ? !(hid || e.x) : hid) return false;
+    if(e.x && !f.hid) return false;   /* non proposé (déconseillé chez le jeune) : visible avec « Masqués » */
+    if(f.th && +e.th !== +f.th) return false;
+    if(f.st && (FBY4[e.f4]||{}).st !== f.st) return false;
     if(f.lig && !e.L.includes(f.lig)) return false;
     if(f.age && (e.a > +f.age || (e.ax||18) < +f.age)) return false;
-    if(f.niv && e.v !== +f.niv) return false;
     if(mat && !mat.test(e.mk)) return false;
     if(dispo.size && !(e.m||[]).every(m=>dispo.has(m))) return false;
     if(f.lieu==="court" && !e.c) return false;
@@ -925,7 +980,7 @@ function filtered(){
     for(const w of ws) if(!e.k.includes(w)) return false;
     return true;
   });
-  const by = {nom:(a,b)=>a.n.localeCompare(b.n,"fr"), niv:(a,b)=>a.v-b.v||a.a-b.a||a.i-b.i, age:(a,b)=>a.a-b.a||a.v-b.v||a.i-b.i}[f.tri];
+  const by = {nom:(a,b)=>a.n.localeCompare(b.n,"fr"), age:(a,b)=>a.a-b.a||a.v-b.v||a.i-b.i}[f.tri];
   /* mes exercices d'abord (créés ou ajoutés par moi), puis l'ordre choisi */
   r.sort((a,b)=>((b.perso?1:0)-(a.perso?1:0)) || (by?by(a,b):0));
   return r;
@@ -933,10 +988,10 @@ function filtered(){
 function showExplore(){
   document.documentElement.style.setProperty("--acc","var(--ink)");
   const f=P.f;
-  const domChips = Object.keys(DOM).map(k=>`<button class="vx-pill" type="button" data-dom="${k}" aria-pressed="${f.dom===k}" title="${esc(DOM[k][0])}">${DOMC[k]}</button>`).join("");
+  const domChips = Object.keys(TH).map(k=>`<button class="vx-pill" type="button" data-th="${k}" aria-pressed="${String(f.th)===k}" title="${esc(TH[k])}">${esc(TH[k])}</button>`).join("");
+  const sts = f.th ? [...new Map(FAMS4.filter(x=>x.c!=="MOI" && String(x.th)===String(f.th)).map(x=>[x.st, x.rub])).entries()] : [];
   const tog = (k,t) => `<button class="chip" type="button" data-tog="${k}" aria-pressed="${!!f[k]}">${t}</button>`;
   const ck = (k, v, t, extra) => `<button class="chip${extra||""}" type="button" data-fk="${k}" data-fv="${esc(v)}" aria-pressed="${String(f[k])===String(v)}">${t}</button>`;
-  const ldoms = f.dom==="PP"||f.dom==="PH" ? ["PP"] : f.dom==="GE" ? ["GE"] : f.dom==="DE" ? ["DE"] : (f.lig ? [f.lig.slice(0,2)] : []);
   const cj = cur();
   ecran("explorer");
   const nMine = EX.filter(e=>e.perso).length;
@@ -944,11 +999,10 @@ function showExplore(){
   $("#main").innerHTML = `${tabs("")}
   ${J()?"":`<a class="vnew" href="#/nouveau"><span aria-hidden="true">+</span>Créer un exercice</a>`}
   <div class="filters vfil">
-    <div class="vx-pills" role="group" aria-label="Domaine">${domChips}</div>
-    <div class="vx-subs" role="group" aria-label="Ligne">${ldoms.length ? ldoms.flatMap(d=>LIG[d].map((n,i)=>`<button class="vx-sub" type="button" data-fk="lig" data-fv="${d+(i+1)}" aria-pressed="${f.lig===d+(i+1)}">${XP()?d+(i+1)+" · ":""}${esc(n)}</button>`)).join("") : `<span class="msg">Touche un domaine pour voir ses lignes${f.lig?` · choisie : ${esc(ligNom(f.lig))}`:""}.</span>`}</div>
+    <div class="vx-pills" role="group" aria-label="Thème">${domChips}</div>
+    <div class="vx-subs" role="group" aria-label="Sous-thème">${sts.length ? sts.map(([c,n])=>`<button class="vx-sub" type="button" data-fk="st" data-fv="${c}" aria-pressed="${f.st===c}">${XP()?c+" · ":""}${esc(n)}</button>`).join("") : `<span class="msg">Touche un thème pour voir ses rubriques.</span>`}${f.lig?`<button class="vx-sub" type="button" data-fk="lig" data-fv="${f.lig}" aria-pressed="true" title="Retirer">Ligne de grille : ${esc(ligNom(f.lig))} ✕</button>`:""}</div>
     <div class="frow scroll"><b>Âge</b>${cj?ck("age", cj.a, `Âge de ${esc(cj.nom)} · ${cj.a} ans`, " cur"):""}${Array.from({length:15},(_,i)=>ck("age", i+4, (i+4)+" ans")).join("")}</div>
-    <details id="fplus" class="fplus" ${f.niv||f.lieu||f.wu||f.vid||f.fav||f.mine||f.mod||f.hid||f.dispo.length||f.mat?"open":""}><summary>Plus de filtres</summary>
-    <div class="frow"><b>Niveau</b>${[1,2,3,4].map(n=>ck("niv", n, n+" · "+NIV[n])).join("")}</div>
+    <details id="fplus" class="fplus" ${f.lieu||f.wu||f.vid||f.fav||f.mine||f.mod||f.hid||f.dispo.length||f.mat?"open":""}><summary>Plus de filtres</summary>
     <div class="frow"><b>Lieu</b>${ck("lieu","court","Sur le court")}${ck("lieu","hors","Hors court")}${ck("lieu","grand","Grand espace")}</div>
     <div class="frow"><b>Échauff.</b>${ck("wu","1","Utilisables en échauffement")}${Object.entries(ETN).map(([k,n])=>ck("wu",k,"Étape · "+n)).join("")}</div>
     <div class="frow"><b>Vidéo</b>${ck("vid","1","Avec vidéo")}${ck("vid","0","Sans vidéo")}</div>
@@ -959,12 +1013,12 @@ function showExplore(){
       <div class="frow"><b>Utilise</b>${MAT.map((m,i)=>ck("mat", i, esc(m[0]))).join("")}</div>
     </details></details>
   </div>
-  <div class="count"><span id="cnt"></span><span class="actbar"><select class="sel" id="ftri" aria-label="Trier"><option value="">Ordre de la banque</option><option value="nom">Trier par nom</option><option value="niv">Trier par niveau</option><option value="age">Trier par âge</option></select>
+  <div class="count"><span id="cnt"></span><span class="actbar"><select class="sel" id="ftri" aria-label="Trier"><option value="">Ordre de la banque</option><option value="nom">Trier par nom</option><option value="age">Trier par âge</option></select>
     <span class="seg" role="group" aria-label="Vue"><button type="button" data-vue="liste" aria-pressed="${f.vue!=="compacte"}">Liste</button><button type="button" data-vue="compacte" aria-pressed="${f.vue==="compacte"}">Compacte</button></span></span></div><div id="res"></div>`;
   [["ftri","tri"]].forEach(([id,k])=>{ const s=$("#"+id); s.value=f[k]; s.onchange=()=>{ f[k]=s.value; save(); shown=PAGE; showExplore(); }; });
   /* filtres en pastilles : une touche choisit, une seconde touche retire */
   $$("[data-fk]").forEach(b=>b.onclick=()=>{ const k=b.dataset.fk, v=b.dataset.fv; f[k] = String(f[k])===v ? "" : v; save(); shown=PAGE; const y=scrollY; showExplore(); scrollTo(0,y); });
-  $$("[data-dom]").forEach(b=>b.onclick=()=>{ f.dom = f.dom===b.dataset.dom ? "" : b.dataset.dom; if(f.lig){ const d=f.lig.slice(0,2); if(f.dom && !(f.dom===d || (f.dom==="PH"&&d==="PP") || f.dom==="JEU")) f.lig=""; } save(); shown=PAGE; const y=scrollY; showExplore(); scrollTo(0,y); });
+  $$("[data-th]").forEach(b=>b.onclick=()=>{ f.th = String(f.th)===b.dataset.th ? "" : b.dataset.th; f.st=""; save(); shown=PAGE; const y=scrollY; showExplore(); scrollTo(0,y); });
   $$("[data-tog]").forEach(b=>b.onclick=()=>{ const k=b.dataset.tog; f[k]=!f[k]; save(); shown=PAGE; showExplore(); });
   $$("[data-mat]").forEach(b=>b.onclick=()=>{ const k=b.dataset.mat; f.dispo = f.dispo.includes(k) ? f.dispo.filter(x=>x!==k) : [...f.dispo,k]; save(); shown=PAGE; showExplore(); $("#fmore").open=true; });
   $$("[data-vue]").forEach(b=>b.onclick=()=>{ f.vue=b.dataset.vue; save(); showExplore(); });
@@ -981,7 +1035,7 @@ function renderRes(){
 function badges(e){ return `${e.perso?`<span class="pill mine">${e.st==="valide"?"méthode":e.st==="propose"?"proposé":"perso"}</span>`:""}${e.modifie?'<span class="pill mod">modifié</span>':""}${HIDE.has(e.id)?'<span class="pill">masqué</span>':""}`; }
 function rowsHTML(arr, compact){
   return `<div class="vx-exs${compact?" cmp":""}">${arr.map(e=>VX.ex({href:"#/ex/"+e.id, id:e.id, cls:compact?"cmp":"", nomHtml:esc(e.n)+(badges(e)?` <span class="bdgs">${badges(e)}</span>`:""),
-    meta:`<span class="xp">${e.id} · </span>${esc(metaEx(e))}${hasVid(e.id)?' · <span class="vok">▶ vidéo</span>':""}`,
+    meta:`<span class="xp">${e.id} · </span>${esc(metaEx(e))}${vidOk(e)&&hasVid(e.id)?' · <span class="vok">▶ vidéo</span>':""}${e.sc?' · <span class="vok">schéma</span>':""}`,
     extra: J()?"":`<span class="rfav" role="button" tabindex="0" data-rfav="${e.id}" aria-pressed="${FAV.has(e.id)}" aria-label="${FAV.has(e.id)?"Retirer des favoris":"Mettre en favori"}">${FAV.has(e.id)?"♥":"♡"}</span>`})).join("")}</div>`;
 }
 /* favori en un geste, sur chaque ligne de la liste */
@@ -1009,7 +1063,98 @@ function showLigne(L, a){
 }
 
 /* ---------- fiche ---------- */
-function linkIds(s, self){ return esc(s).replace(/\b([A-Z]{3}-\d{4})\b/g,(m,id)=> BY[id] && id!==self ? `<a class="ref" href="#/ex/${id}">${esc(BY[id].n)}${XP()?" ("+id+")":""}</a>` : m).replace(/\b(5\.\d\.\d{1,2})\b/g,(m,c)=> FBY[c] ? `<a class="ref" href="#f/${c}">${esc(FBY[c].t)}</a>` : m); }
+function linkIds(s, self){ return esc(s).replace(/\b([A-Z]{3}-\d{4})\b/g,(m,id0)=>{ const id = BY[id0] ? id0 : (AL[id0] && BY[AL[id0]] ? AL[id0] : null); return id && id!==self ? `<a class="ref" href="#/ex/${id}">${esc(BY[id].n)}${XP()?" ("+id0+")":""}</a>` : m; }).replace(/\b(EX\.[A-Z]{2}\.\d{1,2}\.\d{1,2}|5\.\d\.\d{1,2})\b/g,(m,c)=>{ const f=FBY4[c]||FBY4[(FBY[c]||{}).c4]; return f ? `<a class="ref" href="#f/${f.c}">${esc(f.t)}</a>` : m; }); }
+/* schéma de l'exercice (format plan/SCHEMAS_EXERCICES.md) : court vu de dessus, rendu par GRUN_SCHEMA (copié ci-dessous par build_data.py) */
+function schemaHTML(sc, sansDeroule){ if(!window.GRUN_SCHEMA || !sc) return ""; let h=""; try{ h=GRUN_SCHEMA.svg(sc,{cls:"gs"}); }catch(_){ return ""; }
+  const st = (sc.notes||[]).map((n,i)=>{ const m=String(n).match(/^\s*(\d+)\s*[:.)–-]\s*(.*)$/); return [m?m[1]:"", m?m[2]:String(n)]; }).filter(x=>x[1].trim());   /* une note sans numéro (contexte, règle) n'est pas numérotée : seuls les numéros du schéma s'affichent */
+  return `<div class="gs-sch">${h}</div><div class="gs-leg"><span><i></i>Frappe</span><span><i class="d"></i>Déplacement</span><span class="z">▢ Zone cible</span></div>${!sansDeroule&&st.length?`<div class="gs-steps">${st.map(([n,t])=>`<div>${n?`<b>${esc(n)}</b>`:`<b class="gs-nb">·</b>`}${esc(cap(t))}</div>`).join("")}</div>`:""}`; }
+/* numéros des frappes et déplacements d'un schéma (déroulé) */
+const scOrdres = sc => [...new Set([...(sc.frappes||[]), ...(sc.deplacements||[])].map(a=>+a.ordre).filter(Boolean))].sort((a,b)=>a-b);
+const scVide = sc => !sc || !((sc.joueurs||[]).length || (sc.plots||[]).length || (sc.zones||[]).length || (sc.frappes||[]).length || (sc.deplacements||[]).length);
+/* ---------- ÉDITEUR DE SCHÉMA (maquette validée, 21 oct. 17 h 40) : au doigt (pointer events), numérotation automatique, zones par glisser ---------- */
+function editSchema(init, titre, done){
+  if(!window.GRUN_SCHEMA){ alertBox("Le dessin du schéma n'est pas disponible sur cette page."); return; }
+  const clone = o => JSON.parse(JSON.stringify(o));
+  let S = clone(init || {terrain:"entier"}); S.terrain = S.terrain==="demi" ? "demi" : "entier";
+  ["joueurs","plots","zones","frappes","deplacements"].forEach(k=>{ if(!Array.isArray(S[k])) S[k]=[]; });
+  const H = []; let tool = scVide(S) ? "joueur" : "frappe", drag = null;
+  const TOOLS = [["joueur",'<span class="gse-dot" style="background:#F2F5F0"></span>Joueur'],["adversaire",'<span class="gse-dot" style="background:#FF7A59"></span>Adversaire'],["plot","▲ Plot"],["zone","▢ Zone"],["frappe","↗ Frappe"],["deplacement","⇢ Déplacement"]];
+  const HINT = {joueur:"Joueur : touche le court pour le placer, glisse-le pour le déplacer.", adversaire:"Adversaire : touche le court pour le placer, glisse-le pour le déplacer.",
+    plot:"Plot : touche le court pour poser un plot.", zone:"Zone : glisse pour tracer la zone cible. Les numéros se mettent seuls.",
+    frappe:"Frappe : glisse du joueur vers le point visé. Les numéros se mettent seuls.", deplacement:"Déplacement : glisse du joueur vers sa nouvelle place. Les numéros se mettent seuls."};
+  const ov = document.createElement("div"); ov.className = "gse"; ov.setAttribute("role","dialog"); ov.setAttribute("aria-modal","true"); ov.setAttribute("aria-label","Dessine ton exercice");
+  ov.innerHTML = `<div class="gse-in"><div class="gse-top"><button class="gse-back" type="button" data-a="no" aria-label="Retour sans enregistrer le schéma">‹</button><span class="gse-kick">${esc(titre||"Créer un exercice")} · Schéma</span></div>
+   <h1>Dessine ton exercice</h1>
+   <div class="gse-seg" role="group" aria-label="Terrain"><button type="button" data-terrain="entier">Terrain entier</button><button type="button" data-terrain="demi">Demi-terrain</button></div>
+   <div class="gse-tool" role="group" aria-label="Outils de dessin">${TOOLS.map(([k,t])=>`<button class="gse-t" type="button" data-tool="${k}">${t}</button>`).join("")}<button class="gse-t" type="button" data-a="undo">↶ Annuler</button></div>
+   <div class="gs-sch" id="gse_c" aria-label="Court : dessine ici"></div>
+   <div class="gse-hint" id="gse_h"></div></div>
+   <div class="gse-bar"><span><button class="gse-btn s" type="button" data-a="clear">Effacer</button><button class="gse-btn p" type="button" data-a="ok">Valider le schéma</button></span></div>`;
+  document.body.appendChild(ov); document.body.classList.add("gse-on");
+  const box = ov.querySelector("#gse_c");
+  const nextOrdre = () => Math.max(0, ...[...S.frappes, ...S.deplacements].map(a=>+a.ordre||0)) + 1;
+  const nextId = () => { const u = new Set(S.joueurs.map(j=>j.id)); return "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("").find(c=>!u.has(c)) || "Z"; };
+  const r3 = v => Math.round(v*1000)/1000;
+  const push = () => { H.push(clone(S)); if(H.length>80) H.shift(); };
+  function ui(){
+    ov.querySelectorAll("[data-terrain]").forEach(b=>b.setAttribute("aria-pressed", String(b.dataset.terrain===S.terrain)));
+    ov.querySelectorAll("[data-tool]").forEach(b=>b.setAttribute("aria-pressed", String(b.dataset.tool===tool)));
+    ov.querySelector('[data-a="undo"]').disabled = !H.length;
+    ov.querySelector("#gse_h").textContent = HINT[tool];
+  }
+  function draw(tmp){ const v = clone(S); if(tmp) (v[tmp.k] = v[tmp.k] || []).push(tmp.o); box.innerHTML = GRUN_SCHEMA.svg(v, {cls:"gs"}); }
+  /* toucher → coordonnées du schéma (0-1) ; en viewBox, le court commence à M et mesure W × H */
+  function pt(ev){ const svg = box.querySelector("svg"), d = GRUN_SCHEMA.dims(S.terrain); let q;
+    try{ q = new DOMPoint(ev.clientX, ev.clientY).matrixTransform(svg.getScreenCTM().inverse()); }
+    catch(_){ const r = svg.getBoundingClientRect(); q = {x:(ev.clientX-r.left)*d.vbW/r.width, y:(ev.clientY-r.top)*d.vbH/r.height}; }
+    const cl = v => Math.max(-0.06, Math.min(1.06, v));
+    return {x: cl((q.x-d.M)/d.W), y: cl((q.y-d.M)/d.H), d}; }
+  const dist = (a, b, d) => Math.hypot((a.x-b[0])*d.W, (a.y-b[1])*d.H);   /* en unités du dessin */
+  const joueurPres = p => S.joueurs.reduce((m,j)=>{ const dd = dist(p,[j.x,j.y],p.d); return dd<16 && (!m || dd<m.dd) ? {j, dd} : m; }, null);
+  const plotPres = p => S.plots.find(o=>dist(p,[o.x,o.y],p.d)<14);
+  const balle = p => { for(const f of S.frappes){ if(Array.isArray(f.vers) && dist(p,f.vers,p.d)<16) return f.vers.slice(); } return null; };
+  box.addEventListener("pointerdown", ev=>{ if(ev.button>0) return; ev.preventDefault(); try{ box.setPointerCapture(ev.pointerId); }catch(_){}
+    const p = pt(ev), jp = joueurPres(p);
+    if(tool==="joueur" || tool==="adversaire" || tool==="plot"){
+      const po = tool==="plot" ? plotPres(p) : null;
+      if(jp && tool!=="plot"){ push(); drag = {mv:jp.j}; return; }
+      if(po){ push(); drag = {mv:po}; return; }
+      push();
+      if(tool==="plot") S.plots.push({x:r3(p.x), y:r3(p.y)});
+      else { const j = {id:nextId(), x:r3(p.x), y:r3(p.y)}; if(tool==="adversaire") j.role = "adversaire"; S.joueurs.push(j); drag = {mv:j}; }
+      draw(); ui(); return; }
+    if(tool==="zone"){ drag = {z:p}; return; }
+    /* frappe ou déplacement : départ d'un joueur, sinon du point où la balle est arrivée, sinon du point touché */
+    drag = {de: jp ? jp.j.id : (tool==="frappe" && balle(p)) || [r3(p.x), r3(p.y)], p0:p};
+  });
+  box.addEventListener("pointermove", ev=>{ if(!drag) return; ev.preventDefault(); const p = pt(ev);
+    if(drag.mv){ drag.mv.x = r3(p.x); drag.mv.y = r3(p.y); draw(); return; }
+    if(drag.z){ const z = drag.z; draw({k:"zones", o:{x:Math.min(z.x,p.x), y:Math.min(z.y,p.y), w:Math.abs(p.x-z.x), h:Math.abs(p.y-z.y), label:String(S.zones.length+1)}}); return; }
+    draw({k: tool==="frappe" ? "frappes" : "deplacements", o:{de:drag.de, vers:[r3(p.x), r3(p.y)], ordre:nextOrdre()}});
+  });
+  const fin = ev=>{ if(!drag) return; const p = pt(ev), dg = drag; drag = null;
+    if(dg.z){ const w = Math.abs(p.x-dg.z.x), h = Math.abs(p.y-dg.z.y); if(w>0.03 && h>0.015){ push(); S.zones.push({x:r3(Math.max(0,Math.min(dg.z.x,p.x))), y:r3(Math.max(0,Math.min(dg.z.y,p.y))), w:r3(w), h:r3(h), label:String(S.zones.length+1)}); } }
+    else if(dg.p0 && Math.hypot((p.x-dg.p0.x)*p.d.W, (p.y-dg.p0.y)*p.d.H) > 10){ push(); (tool==="frappe" ? S.frappes : S.deplacements).push({de:dg.de, vers:[r3(p.x), r3(p.y)], ordre:nextOrdre()}); }
+    draw(); ui(); };
+  box.addEventListener("pointerup", fin); box.addEventListener("pointercancel", ev=>{ drag = null; draw(); ui(); });
+  box.addEventListener("touchmove", ev=>ev.preventDefault(), {passive:false});   /* iOS : jamais de défilement en dessinant */
+  const close = ok=>{ document.body.classList.remove("gse-on"); ov.remove(); removeEventListener("keydown", key);
+    if(ok){ const o = {terrain:S.terrain}; ["joueurs","plots","zones","frappes","deplacements"].forEach(k=>{ if(S[k].length) o[k]=S[k]; });
+      const ords = scOrdres(o); const nt = (S.notes||[]).filter(n=>{ const m=String(n).match(/^\s*(\d+)/); return m && ords.includes(+m[1]); }); if(nt.length) o.notes = nt;
+      done(scVide(o) ? null : o); } };
+  const key = ev=>{ if(ev.key==="Escape") close(false); if((ev.ctrlKey||ev.metaKey) && ev.key==="z" && H.length){ S = H.pop(); draw(); ui(); } };
+  addEventListener("keydown", key);
+  ov.addEventListener("click", ev=>{ const b = ev.target.closest("button"); if(!b) return;
+    if(b.dataset.tool){ tool = b.dataset.tool; ui(); return; }
+    if(b.dataset.terrain){ if(S.terrain!==b.dataset.terrain){ push(); S.terrain = b.dataset.terrain; draw(); } ui(); return; }
+    const a = b.dataset.a;
+    if(a==="undo" && H.length){ S = H.pop(); draw(); ui(); }
+    else if(a==="clear"){ if(!scVide(S)){ push(); S = {terrain:S.terrain, joueurs:[], plots:[], zones:[], frappes:[], deplacements:[]}; draw(); ui(); } }
+    else if(a==="ok") close(true);
+    else if(a==="no") close(false);
+  });
+  draw(); ui();
+}
 function bullets(s, self){ const parts=String(s||"").split(/\s*;\s*/).filter(Boolean); return parts.length>1 ? `<ul>${parts.map(p=>`<li>${linkIds(cap(p.replace(/\.$/,"")),self)}</li>`).join("")}</ul>` : `<div class="txt">${linkIds(cap(String(s||"")),self)}</div>`; }
 const cap = s => s ? s[0].toUpperCase()+s.slice(1) : s;
 const ageTxt = e => (e.ax||18)<18 ? `${e.a} à ${e.ax} ans` : `dès ${e.a} ans`;
@@ -1034,40 +1179,41 @@ function crossHTML(e){
       <a href="#/l/${l}?a=${age}">Tous les exercices de cette ligne à ${age} ans</a></div></div>`; }).join("")}</div></div>`;
 }
 function neighbours(e){
-  const same = EX.filter(x=>x.f===e.f && x.s===e.s && x.id!==e.id && !HIDE.has(x.id));
+  const same = EX.filter(x=>x.f4===e.f4 && x.s===e.s && x.id!==e.id && !HIDE.has(x.id) && !x.x);
   const near = (v)=> same.filter(x=>x.v===v).sort((a,b)=>Math.abs(a.a-e.a)-Math.abs(b.a-e.a)).slice(0,4);
   const reg = near(e.v-1), pro = near(e.v+1), eq = near(e.v).slice(0,3);
-  const li = arr => arr.length ? arr.map(x=>`<a href="#/ex/${x.id}">${esc(x.n)} <small>· niveau ${x.v} · ${ageTxt(x)}<span class="xp"> · ${x.id}</span></small></a>`).join("") : '<span class="msg">—</span>';
+  const li = arr => arr.length ? arr.map(x=>`<a href="#/ex/${x.id}">${esc(x.n)} <small>· ${ageTxt(x)}<span class="xp"> · ${x.id}</span></small></a>`).join("") : '<span class="msg">—</span>';
   return `<div class="cell"><div class="lab">Exercices voisins · ${esc(e.s||"")}</div><div class="nb">
     <div><b style="font-size:13px">‹ Régression (plus simple)</b>${li(reg.length?reg:eq.filter(x=>x.a<e.a))}</div>
     <div><b style="font-size:13px">Progression (plus dur) ›</b>${li(pro.length?pro:eq.filter(x=>x.a>=e.a))}</div></div></div>`;
 }
-/* « Exercices proches de celui-ci » : mêmes lignes de grille, même famille, âge et niveau voisins (score), hors masqués */
+/* « Exercices proches de celui-ci » : mêmes lignes de grille, même famille, âge et progression voisins (score), hors masqués */
 function proches(e, n){ const L = new Set(e.L||[]), ea = e.a||4, eb = e.ax||18;
-  return EX.filter(x=>x.id!==e.id && !HIDE.has(x.id)).map(x=>{ let sc = 0; (x.L||[]).forEach(l=>{ if(L.has(l)) sc += 4; }); if(x.f===e.f) sc += 2; if(x.s && x.s===e.s) sc += 2; if(x.dom===e.dom) sc += 1;
+  return EX.filter(x=>x.id!==e.id && !HIDE.has(x.id) && !x.x).map(x=>{ let sc = 0; (x.L||[]).forEach(l=>{ if(L.has(l)) sc += 4; }); if(x.f===e.f) sc += 2; if(x.s && x.s===e.s) sc += 2; if(x.dom===e.dom) sc += 1;
     const ov = Math.min(eb, x.ax||18) - Math.max(ea, x.a||4); if(ov<0) sc -= 3; sc -= Math.abs((x.v||1)-(e.v||1))*0.8; if(FAV.has(x.id)) sc += 0.5; return [sc, x]; })
     .filter(([sc])=>sc>=4).sort((a,b)=>b[0]-a[0]).slice(0, n||6).map(([,x])=>x); }
 function prochesHTML(e){ const xs = proches(e, 6); if(!xs.length) return "";
-  return `<div class="cell" id="proches"><div class="lab">Exercices proches de celui-ci</div><p class="msg" style="margin:2px 0 6px">Mêmes qualités travaillées, âge et niveau voisins : pour varier ou adapter.</p>${rowsHTML(xs, true)}</div>`; }
+  return `<div class="cell" id="proches"><div class="lab">Exercices proches de celui-ci</div><p class="msg" style="margin:2px 0 6px">Mêmes qualités travaillées, âge voisin : pour varier ou adapter.</p>${rowsHTML(xs, true)}</div>`; }
 function showEx(id){
   ecran("fiche");
   const e=BY[id]; if(!e) return showExplore();
-  const f=FBY[e.f]||MOIFAM, d=DOM[e.dom]?e.dom:"PH"; document.documentElement.style.setProperty("--acc",dc(d));
-  const sib=EX.filter(x=>x.f===e.f), k=sib.indexOf(e), prev=sib[k-1], next=sib[k+1];
+  const f=FBY4[e.f4]||FBY[e.f]||MOIFAM, d=DOM[e.dom]?e.dom:"PH"; document.documentElement.style.setProperty("--acc",dc(d));
+  const sib=EX.filter(x=>x.f4===e.f4 && !x.x), k=sib.indexOf(e), prev=sib[k-1], next=sib[k+1];
   const fav=FAV.has(id), co=!J();
-  const rel=[...new Set((e.ut||"").match(/\b[A-Z]{3}-\d{4}\b/g)||[])].filter(x=>BY[x]&&x!==id);
+  const rel=[...new Set([...((e.ut||"").match(/\b[A-Z]{3}-\d{4}\b/g)||[]).map(x=>BY[x]?x:(AL[x]||x)), ...(e.vo||[])])].filter(x=>BY[x]&&x!==id);
   const m=$("#main"); m.style.setProperty("--dc",dc(d));
   /* E1B : héros = mini-schéma agrandi (la vidéo, s'il y en a une, s'affiche juste dessous, en grand) */
-  VX.hero({vis:VX.pour(e.id), sq:true, lab:`${DOMC[d]||DOM[d][0]} · ${String(f.t).split(" : ")[0]}`, titre:e.n, sous:`${esc(metaEx(e))}${badges(e)?" "+badges(e):""}`});
+  VX.hero({vis:e.sc?null:VX.pour(e.id), sq:!e.sc, lab:`${TH[e.th]||DOMC[d]||DOM[d][0]} · ${String(f.rub||f.t).split(" : ")[0]}`, titre:e.n, sous:`${esc(metaEx(e))}${badges(e)?" "+badges(e):""}`});
   m.innerHTML = `<article class="fiche">
-    <div class="fhead"><div style="min-width:0"><div class="fid"><span class="xp">${e.id} · </span><a href="#f/${f.c}">${esc(e.s||f.t)}</a></div><div class="fline">${esc(liTxt(e))}</div></div>
+    ${e.sc?`<section class="gs-fiche" aria-label="Schéma de l'exercice">${schemaHTML(e.sc)}</section>`:""}
+    <div class="fhead"><div style="min-width:0"><div class="fid"><span class="xp">${e.id} · </span><a href="#f/${f.c}">${esc(e.s||f.t)}</a></div><div class="fline">${esc(e.tm ? e.tm.replace(/\b(PP|TE|TA|PM|EN)\.\d+ /g, XP()?"$&":"") : liTxt(e))}</div></div>
       <div class="actbar"><a class="btn" href="#proches">Exercices proches</a><button class="btn star" id="fav" type="button" aria-pressed="${fav}">${fav?"♥ Favori":"♡ Favori"}</button><button class="btn" id="addl" type="button">${inCols(id)?"✓ Collection ("+inCols(id)+")":"+ Collection"}</button>${co?`<a class="btn" id="edit" href="#/modifier/${e.id}">Modifier</a>`:""}</div></div>
-    <details class="grun-plus" style="margin:0 0 12px"><summary>Plus d'options</summary><div class="grun-plusb"><div class="actbar">${co?`${e.modifie?'<button class="btn" id="reset" type="button">Remettre l\'original</button>':""}${e.perso?'<button class="btn dan" id="del" type="button">Supprimer</button>':""}<button class="btn" id="hide" type="button">${HIDE.has(id)?"Réafficher":"Masquer"}</button>`:""}${co?`<button class="btn" id="vidch" type="button">Changer la vidéo</button><button class="btn" id="vidrm" type="button">Retirer la vidéo</button>`:""}</div></div></details>
+    <details class="grun-plus" style="margin:0 0 12px"><summary>Plus d'options</summary><div class="grun-plusb"><div class="actbar">${co?`${e.modifie?'<button class="btn" id="reset" type="button">Remettre l\'original</button>':""}${e.perso?'<button class="btn dan" id="del" type="button">Supprimer</button>':""}<button class="btn" id="hide" type="button">${HIDE.has(id)?"Réafficher":"Masquer"}</button>`:""}${co&&vidOk(e)?`<button class="btn" id="vidch" type="button">Changer la vidéo</button><button class="btn" id="vidrm" type="button">Retirer la vidéo</button>`:""}</div></div></details>
     ${e.img?`<div class="photo"><img src="${esc(e.img)}" alt="Photo : ${esc(e.n)}"></div>`:""}
-    <div class="video" id="vid"></div>${co?'<div class="vtools" id="vtools" role="group" aria-label="Vidéo de l\'exercice"></div>':""}${co?tourHTML(id):""}
+    ${vidSlot(e)?`<div class="video" id="vid"></div>${co?'<div class="vtools" id="vtools" role="group" aria-label="Vidéo de l\'exercice"></div>':""}${co?tourHTML(id):""}`:""}
     <div class="keys">
       <div class="key"><small>Âge</small><b>${ageTxt(e)}</b></div>
-      <div class="key"><small>Niveau</small><b>${e.v} · ${NIV[e.v]||""}</b><span class="lv">${[1,2,3,4].map(n=>`<i class="${n<=e.v?"on":""}"></i>`).join("")}</span></div>
+      <div class="key"><small>Thème</small><b style="font-size:14.5px">${esc(TH[e.th]||"")}${f.rub?` · ${esc(f.rub)}`:""}</b></div>
       <div class="key"><small>Famille</small><b style="font-size:14.5px">${esc(e.s||f.t)}</b></div>
       <div class="key"><small>Lieu</small><b style="font-size:14.5px">${e.c?"Sur le court":"Hors court"}${e.e?" · grand espace":""}</b></div>
     </div>
@@ -1081,7 +1227,7 @@ function showEx(id){
       <div class="col">
         <div class="cell"><div class="lab">Consignes au joueur</div>${bullets(e.co,id)}</div>
         ${e.er?`<div class="cell"><div class="lab">Erreurs à éviter</div>${bullets(e.er,id)}</div>`:""}
-        <div class="cell"><div class="lab">Utilisation et progression</div><div class="txt">${linkIds(cap(e.ut||""),id)}</div>${rel.length?`<div class="links">${rel.map(x=>`<a href="#/ex/${x}">${esc(BY[x].n)}</a>`).join("")}</div>`:""}</div>
+        <div class="cell"><div class="lab">Utilisation et progression</div><div class="txt">${linkIds(cap(e.ut||""),id)}</div>${rel.length?`<div class="lab" style="margin-top:10px">Voir aussi</div><div class="links">${rel.map(x=>`<a href="#/ex/${x}">${esc(BY[x].n)}</a>`).join("")}</div>`:""}</div>
         ${e.w?`<div class="cell"><div class="lab">Usage en échauffement</div>${wHTML(e.w)}<div class="msg">Proposé par Choose your warm-up et Create my session.</div></div>`:""}
       </div>
     </div>
@@ -1114,6 +1260,8 @@ function showEx(id){
   }
   const nt=$("#nt"); nt.value=P.notes[id]||""; let tm; nt.oninput=()=>{ clearTimeout(tm); tm=setTimeout(()=>{ if(nt.value.trim()) P.notes[id]=nt.value; else delete P.notes[id]; save(); $("#ntm").textContent="Note enregistrée sur cet appareil."; },500); };
   /* outils vidéo posés tout de suite (synchrone) sous la vidéo : ils ne dépendent plus de la lecture asynchrone d'IndexedDB (iPad) */
+  if(e.x){ const h=$(".fhead"); if(h) h.insertAdjacentHTML("afterend",`<p class="msg" style="margin:0 0 10px">Exercice non proposé : ${esc(String(e.an||"").replace(/^non proposé : /,""))}. Il n'est jamais choisi pour une séance.</p>`); }
+  if(!vidSlot(e)) return;
   if(co) addVidTools($("#vid"),e,hasVid(id));
   renderVideo(e);
 }
@@ -1171,14 +1319,15 @@ function showForm(id, q){
   const ql = q.get("ligne"), qa = +q.get("a") || 0, retour = q.get("retour"), prop = q.get("st")==="propose";
   let qn = q.get("n") || ""; if(!id && !qn){ try{ qn = sessionStorage.getItem("grun_exo_nom")||""; }catch(_){} } try{ sessionStorage.removeItem("grun_exo_nom"); }catch(_){}
   ecran("form"); const cj = !id ? cur() : null;
-  const v = e ? JSON.parse(JSON.stringify(e)) : {n:qn, f:"MOI", s:"", dom: ql ? ligDom(ql) : "PP", L: ql && okLig(ql) ? [ql] : [], a: qa || (cj ? Math.max(4, cj.a-2) : 6), ax:18, v:1, ob:"", de:"", co:"", er:"", ut:"", ma:"", m:[], c:0, e:0, st:prop?"propose":"perso"};
+  const v = e ? JSON.parse(JSON.stringify(e)) : {n:qn, f:"MOI", f4:"MOI", s:"", dom: ql ? ligDom(ql) : "PP", th: ql ? ({PP:3,GE:4,DE:4}[ligDom(ql)]||3) : 3, L: ql && okLig(ql) ? [ql] : [], a: qa || (cj ? Math.max(4, cj.a-2) : 6), ax:18, v:1, ob:"", de:"", co:"", er:"", ut:"", ma:"", m:[], c:0, e:0, st:prop?"propose":"perso"};
+  famv4(v);
   const dz = v.dosq || {};
   const w = v.w || {et:"MR", ets:[], ci:[], a:[v.a||6, v.ax||18], fmt:["seul","groupe"], lieu:["court"], int:2, dur:3, apres:["tennis"]};
   let IMG = v.img || "", VFILE = null;
   EDITING = true;
   document.documentElement.style.setProperty("--acc","var(--ink)");
-  const groups={}; FAMS.filter(f=>f.c!=="MOI").forEach(f=>{ (groups[f.dossier]=groups[f.dossier]||[]).push(f); });
-  const famOpts = `<option value="MOI" ${v.f==="MOI"?"selected":""}>Mes exercices</option>` + Object.entries(groups).map(([g,fs])=>`<optgroup label="${esc(g)}">${fs.map(f=>`<option value="${f.c}" ${v.f===f.c?"selected":""}>${esc(f.t)}</option>`).join("")}</optgroup>`).join("");
+  const groups={}; FAMS4.filter(f=>f.c!=="MOI").forEach(f=>{ (groups[TH[f.th]]=groups[TH[f.th]]||[]).push(f); });
+  const famOpts = `<option value="MOI" ${v.f4==="MOI"?"selected":""}>Mes exercices</option>` + Object.entries(groups).map(([g,fs])=>`<optgroup label="${esc(g)}">${fs.map(f=>`<option value="${f.c}" ${v.f4===f.c?"selected":""}>${esc(f.t)}</option>`).join("")}</optgroup>`).join("");
   const m=$("#main"); m.style.setProperty("--dc","var(--ink)");
   const stRadios = `${[["perso","Perso","Visible seulement par toi."],["propose","Proposé à la méthode","À exporter depuis « Propositions » pour que le créateur de GRÜN le relise."],["valide","Exercice de la méthode","Validé par le créateur de GRÜN : visible par tous les abonnés dès que les comptes en ligne seront ouverts."]].map(([k,t,s])=>`<label class="radio"><input type="radio" name="st" value="${k}" ${(v.st||"perso")===k?"checked":""}><span><b>${t}</b><small>${s}</small></span></label>`).join("")}`;
   VX.hero({vis:e?VX.pour(e.id):"ex_geste", sq:!!e, bas:true, lab:e?"Modifier un exercice":"Bibliothèque · exercices", titre:e?e.n:prop?"Proposer un exercice":"Créer un exercice"});
@@ -1189,8 +1338,7 @@ function showForm(id, q){
     <div class="fld full"><label for="f_n">Nom de l'exercice *</label><input type="text" id="f_n" value="${esc(v.n)}" required maxlength="120"><small id="f_nm"></small></div>
     <div class="fld"><label for="f_f">Famille</label><select id="f_f">${famOpts}</select></div>
     <div class="fld"><label for="f_s">Sous-famille</label><input type="text" id="f_s" list="dl_s" value="${esc(v.s||"")}" placeholder="Choisis ou écris"><datalist id="dl_s"></datalist></div>
-    <div class="fld"><label for="f_dom">Domaine</label><select id="f_dom">${Object.entries(DOM).map(([k,[n]])=>`<option value="${k}" ${v.dom===k?"selected":""}>${n}</option>`).join("")}</select></div>
-    <div class="fld"><label for="f_v">Niveau</label><select id="f_v">${[1,2,3,4].map(n=>`<option value="${n}" ${+v.v===n?"selected":""}>${n} · ${NIV[n]}</option>`).join("")}</select></div>
+    <div class="fld"><label for="f_th">Thème</label><select id="f_th">${Object.entries(TH).map(([k,n])=>`<option value="${k}" ${+v.th===+k?"selected":""}>${n}</option>`).join("")}</select><small id="f_thm">${+v.th===5?"Tactique : un schéma, pas de vidéo.":+v.th===6?"Préparation mentale : la fiche suffit, vidéo facultative.":"Capsule vidéo en plus de la fiche."}</small></div>
     <div class="fld"><label for="f_a">Âge mini</label><select id="f_a">${optA(v.a||6)}</select></div>
     <div class="fld"><label for="f_ax">Âge maxi</label><select id="f_ax">${optA(v.ax||18)}</select></div>
     <div class="fld full"><span class="l">Lignes de grille (plusieurs possibles)</span>
@@ -1204,6 +1352,11 @@ function showForm(id, q){
     <div class="fld"><label for="f_er">Erreurs fréquentes</label><textarea id="f_er">${esc(v.er)}</textarea><small>Sépare par « ; ».</small></div>
     <div class="fld full"><label for="f_ut">Utilisation et progression</label><textarea id="f_ut" rows="2">${esc(v.ut)}</textarea><small class="xp">Tu peux citer d'autres exercices par leur identifiant (FOR-0002).</small></div>
    </div></div>
+   <div class="fs gs-form" id="f_scfs" ${window.GRUN_SCHEMA?"":"hidden"}><h2>Schéma <small class="msg" style="font-family:var(--ui)" id="f_scm"></small></h2>
+    <div id="f_scv"></div>
+    <div class="actbar" style="margin-top:10px"><button class="btn pri" type="button" id="f_scd">Dessiner le schéma</button><button class="btn" type="button" id="f_scx" hidden>Retirer le schéma</button></div>
+    <div class="gs-dr" id="f_scn"></div>
+   </div>
    <details class="grun-plus" ${e?"open":""}><summary>Plus d'options : matériel, dosage, vidéo, photo, échauffement, statut</summary><div class="grun-plusb">
    <div class="fs"><h2>Matériel et lieu</h2><div class="fg">
     <div class="fld full"><label for="f_ma">Matériel (texte)</label><input type="text" id="f_ma" value="${esc(v.ma)}" placeholder="aucun, 4 plots, raquette et balles…"></div>
@@ -1218,8 +1371,8 @@ function showForm(id, q){
     <div class="fld"><label for="d_txt">Précisions</label><input type="text" id="d_txt" value="${esc(dz.txt|| (v.dosq?"":(v.dos||"")))}" placeholder="tempo, charge, consignes de dosage…"></div>
    </div></div>
    <div class="fs"><h2>Vidéo et photo</h2><div class="fg">
-    <div class="fld full"><label for="f_vid">Lien vidéo</label><input type="url" id="f_vid" value="${esc(v.vid||"")}" placeholder="https://… (YouTube non répertoriée, iCloud, Drive, .mp4)"></div>
-    <div class="fld"><span class="l">Ou vidéo de l'appareil</span><label class="btn" for="f_vf">Choisir une vidéo</label><input type="file" id="f_vf" accept="video/*" hidden><small id="f_vfm">${e&&LOCALV.has(e.id)?"Une vidéo de l'appareil est déjà enregistrée.":"Gardée hors ligne sur cet appareil."}</small></div>
+    <div class="fld full vidf" ${+v.th===5?"hidden":""}><label for="f_vid">Lien vidéo</label><input type="url" id="f_vid" value="${esc(v.vid||"")}" placeholder="https://… (YouTube non répertoriée, iCloud, Drive, .mp4)"></div>
+    <div class="fld vidf" ${+v.th===5?"hidden":""}><span class="l">Ou vidéo de l'appareil</span><label class="btn" for="f_vf">Choisir une vidéo</label><input type="file" id="f_vf" accept="video/*" hidden><small id="f_vfm">${e&&LOCALV.has(e.id)?"Une vidéo de l'appareil est déjà enregistrée.":"Gardée hors ligne sur cet appareil."}</small></div>
     <div class="fld"><span class="l">Photo</span><div class="actbar"><label class="btn" for="f_img">Choisir une photo</label><button class="btn" type="button" id="f_imgx" ${IMG?"":"hidden"}>Retirer</button></div><input type="file" id="f_img" accept="image/*" hidden><img class="imgprev" id="f_imgp" alt="Aperçu de la photo" ${IMG?`src="${esc(IMG)}"`:"hidden"}><small>Réduite à 800 px.</small></div>
    </div></div>
    <div class="fs"><h2>Usage en échauffement <small class="msg" style="font-family:var(--ui)">facultatif</small></h2>
@@ -1245,9 +1398,23 @@ function showForm(id, q){
    <div class="grun-actbar"><button class="btn" type="button" id="f_no">Annuler</button><button class="gs-btn main" type="submit" id="f_ok">${e?"Enregistrer":prop?"Proposer":"Créer"}</button></div>
   </form>`;
   if(e && !e.perso) $$('input[name="st"]').forEach(r=>{ r.disabled=true; });
-  const fillSubs=()=>{ const f=FBY[$("#f_f").value]; $("#dl_s").innerHTML=(f?f.subs:[]).map(s=>`<option value="${esc(s)}">`).join(""); };
+  const fillSubs=()=>{ const f=FBY4[$("#f_f").value]; $("#dl_s").innerHTML=(f?f.subs:[]).map(s=>`<option value="${esc(s)}">`).join(""); };
   if(!e) setTimeout(()=>{ try{ const n=$("#f_n"); n.focus({preventScroll:true}); if(n.value) n.setSelectionRange(n.value.length, n.value.length); }catch(_){} },50);   /* nouveau : le nom est prêt à taper */
-  fillSubs(); $("#f_f").onchange=()=>{ fillSubs(); const f=FBY[$("#f_f").value]; if(f && f.c!=="MOI" && !e) $("#f_dom").value=f.dom; };
+  const thUI=()=>{ const t=+$("#f_th").value; $$(".vidf").forEach(x=>x.hidden=(t===5)); $("#f_thm").textContent = t===5?"Tactique : un schéma, pas de vidéo.":t===6?"Préparation mentale : la fiche suffit, vidéo facultative.":"Capsule vidéo en plus de la fiche.";
+    const sm=$("#f_scm"); if(sm) sm.textContent = t===5 ? "le média de l'exercice de tactique" : t===4 ? "facultatif : quand le placement ou la trajectoire compte" : "facultatif"; };
+  /* schéma de l'exercice : dessiné dans l'éditeur (plein écran), puis déroulé numéroté écrit ici */
+  let SC = v.sc ? JSON.parse(JSON.stringify(v.sc)) : null;
+  const scForm=()=>{ const has = !scVide(SC);
+    $("#f_scv").innerHTML = has ? schemaHTML(SC, true) : `<p class="msg" style="margin:0">Court vu de dessus : joueurs, plots, zones cibles, frappes et déplacements numérotés.</p>`;
+    $("#f_scd").textContent = has ? "Modifier le schéma" : "Dessiner le schéma"; $("#f_scx").hidden = !has;
+    const ords = has ? scOrdres(SC) : [], nt = {}; (SC&&SC.notes||[]).forEach(n=>{ const m=String(n).match(/^\s*(\d+)\s*[:.)–-]\s*(.*)$/); if(m) nt[m[1]]=m[2]; });
+    $("#f_scn").innerHTML = ords.length ? `<span class="l">Déroulé : ce qui se passe à chaque numéro</span>${ords.map(n=>`<label><b>${n}</b><input type="text" data-scn="${n}" value="${esc(nt[n]||"")}" placeholder="${n===1?"A sert extérieur dans la zone 1":"ce qui se passe"}" maxlength="140"></label>`).join("")}` : "";
+    $$("[data-scn]").forEach(i=>i.oninput=()=>{ SC.notes = $$("[data-scn]").filter(x=>x.value.trim()).map(x=>`${x.dataset.scn} : ${x.value.trim()}`); if(!SC.notes.length) delete SC.notes; }); };
+  scForm();
+  $("#f_scd").onclick=()=>editSchema(SC, e?"Modifier un exercice":"Créer un exercice", sc=>{ SC = sc; scForm(); const b=$("#f_scfs"); if(b) b.scrollIntoView({block:"start"}); });
+  $("#f_scx").onclick=()=>{ const old=SC; SC=null; scForm(); GRUN.ui && GRUN.ui.annuler ? GRUN.ui.annuler("Schéma retiré", ()=>{ SC=old; scForm(); }) : 0; };
+  fillSubs(); $("#f_f").onchange=()=>{ fillSubs(); const f=FBY4[$("#f_f").value]; if(f && f.c!=="MOI") { $("#f_th").value=f.th; thUI(); } };
+  $("#f_th").onchange=thUI; thUI();
   const ciSel = new Set(w.ci||[]);
   const fillCi=()=>{ $$('input[name="ci"]').forEach(x=>x.checked?ciSel.add(x.value):ciSel.delete(x.value)); const ets=[...new Set([$("#w_et").value, ...$$('input[name="ets"]:checked').map(x=>x.value)])];
     $("#w_ci").innerHTML = ets.map(et=>`<div class="lgrp"><b>${ETN[et]}</b>${ckH("ci", CIB[et], [...ciSel])}</div>`).join(""); };
@@ -1265,15 +1432,19 @@ function showForm(id, q){
     if(!n){ $("#f_n").classList.add("bad"); $("#f_n").focus(); msg.className="msg err"; msg.textContent="Donne un nom à l'exercice."; return; }
     if(!chkName()){ $("#f_n").focus(); msg.className="msg err"; msg.textContent="Ce nom est déjà pris."; return; }
     let a=+$("#f_a").value, ax=+$("#f_ax").value; if(ax<a) [a,ax]=[ax,a];
-    const L=$$('input[name="L"]:checked').map(x=>x.value), vv=+$("#f_v").value;
+    const L=$$('input[name="L"]:checked').map(x=>x.value), vv=+(v.v||1);
+    const f4=$("#f_f").value, F4=FBY4[f4], th=+$("#f_th").value, md=(F4&&F4.c!=="MOI"&&+F4.th===th)?F4.md:(th===5?"schema":th===6?"texte":"video");
+    const dom = (e && e.f4===f4 && +e.th===th) ? e.dom : (F4&&F4.c!=="MOI"&&+F4.th===th) ? F4.dom : th===4 ? (L.some(l=>l.startsWith("DE"))&&!L.some(l=>l.startsWith("GE"))?"DE":"GE") : th===5||th===6 ? "JEU" : (L.some(l=>l.startsWith("PP"))?"PP":"PH");
     const dq={se:$("#d_se").value.trim(), re:$("#d_re").value.trim(), rec:$("#d_rec").value.trim(), txt:$("#d_txt").value.trim()};
     const dos=[dq.se&&dq.re?`${dq.se} série${+dq.se>1?"s":""} × ${dq.re}`:dq.se?`${dq.se} série${+dq.se>1?"s":""}`:dq.re, dq.rec&&`récupération ${dq.rec}`, dq.txt].filter(Boolean).join(" · ");
     const mm=$$('input[name="m"]:checked').map(x=>x.value);
-    const x={ n, f:$("#f_f").value, s:$("#f_s").value.trim() || (FBY[$("#f_f").value]||MOIFAM).subs[0] || "Mes exercices", dom:$("#f_dom").value, L, a, ax, v:vv,
-      an:`de ${a} à ${ax} ans · niveau ${vv}`, li:L.map(l=>`${l} · ${ligNom(l)}`).join(" · "),
+    /* f = famille d'origine (lue par le moteur de Create my session), f4 = famille v4 affichée */
+    const x={ n, f: f4==="MOI" ? "MOI" : ((F4&&F4.src&&F4.src[0]) || f4), f4, th, md, s:$("#f_s").value.trim() || (F4||MOIFAM).subs[0] || "Mes exercices", dom, L, a, ax, v:vv,
+      an: ax>=18 ? `à partir de ${a} ans` : `de ${a} à ${ax} ans`, li:L.map(l=>`${l} · ${ligNom(l)}`).join(" · "),
       ob:$("#f_ob").value.trim(), de:$("#f_de").value.trim(), co:$("#f_co").value.trim(), er:$("#f_er").value.trim(), ut:$("#f_ut").value.trim(),
       ma:$("#f_ma").value.trim() || (mm.length ? mm.map(c=>(MATC.find(y=>y[0]===c)||[c,c])[1].toLowerCase()).join(", ") : "aucun"), m:mm, c:$("#f_c").checked?1:0, e:$("#f_e").checked?1:0,
-      dos, dosq:dq, vid:$("#f_vid").value.trim(), img:IMG };
+      dos, dosq:dq, vid: th===5 ? (e&&e.vid||"") : $("#f_vid").value.trim(), img:IMG };
+    if(!scVide(SC)) x.sc=SC; else if(e && e.sc) x.sc=null;
     if($("#w_on").checked){
       const et=$("#w_et").value, ets=[...new Set([et,...$$('input[name="ets"]:checked').map(y=>y.value)])], ci=$$('input[name="ci"]:checked').map(y=>y.value);
       let w0=+$("#w_a0").value||a, w1=+$("#w_a1").value||ax; if(w1<w0) [w0,w1]=[w1,w0];
@@ -1287,21 +1458,21 @@ function showForm(id, q){
     if(!e){ const nx=GRUN.banque.add(x); nid=nx.id; if(!GRUN.banque.perso().some(y=>y.id===nid)){ msg.className="msg err"; msg.textContent="Enregistrement impossible : la mémoire de l'appareil est pleine (essaie sans photo)."; return; } }
     else if(e.perso){ GRUN.banque.edit(e.id,x); nid=e.id; }
     else { const patch={}; for(const k in x){ const cur=e[k]; if(JSON.stringify(cur??"")!==JSON.stringify(x[k]??"")) patch[k]=x[k]; }
-      if(!("a" in patch || "ax" in patch || "v" in patch)) delete patch.an; if(!("L" in patch)) delete patch.li; if(!dos && !e.dosq) delete patch.dosq; if(!$("#f_ma").value.trim() && !("m" in patch)) delete patch.ma;
+      if(!("a" in patch || "ax" in patch)) delete patch.an; delete patch.v; if(!("L" in patch)) delete patch.li; if(!dos && !e.dosq) delete patch.dosq; if(!$("#f_ma").value.trim() && !("m" in patch)) delete patch.ma;
       if(Object.keys(patch).length) GRUN.banque.edit(e.id,patch); nid=e.id; }
-    if(VFILE){ try{ await IDB.put(nid,VFILE); LOCALV.add(nid); }catch(err){ alertBox("La vidéo n'a pas pu être enregistrée sur l'appareil (espace insuffisant ?). Utilise plutôt un lien."); } }
+    if(VFILE && th!==5){ try{ await IDB.put(nid,VFILE); LOCALV.add(nid); }catch(err){ alertBox("La vidéo n'a pas pu être enregistrée sur l'appareil (espace insuffisant ?). Utilise plutôt un lien."); } }
     await reload(); EDITING=false; back(nid);
   };
 }
 
 /* ---------- propositions : circuit de validation (fichier ce soir, en ligne demain) ---------- */
-const PROPKEYS = ["n","f","s","dom","L","a","ax","v","an","li","ob","de","co","er","ut","ma","m","c","e","dos","dosq","vid","img","w","par","id","cree"];
+const PROPKEYS = ["n","f","f4","th","md","s","dom","L","a","ax","v","an","li","sc","ob","de","co","er","ut","ma","m","c","e","dos","dosq","vid","img","w","par","id","cree"];
 const clean = e => Object.fromEntries(PROPKEYS.filter(k=>e[k]!=null && e[k]!=="").map(k=>[k,e[k]]));
 function showProps(){
   if(J()) return reserve(); ecran("propositions");
   document.documentElement.style.setProperty("--acc","var(--ink)");
   const mine = EX.filter(e=>e.perso && e.st==="propose"), val = EX.filter(e=>e.perso && e.st==="valide"), rec = P.recues||[];
-  const pv = x => `<details><summary>Voir la fiche</summary><dl>${[["Famille",(FBY[x.f]||MOIFAM).t+(x.s?" · "+x.s:"")],["Lignes",(x.L||[]).join(", ")],["Âge et niveau",`${x.a||"?"} à ${x.ax||18} ans · niveau ${x.v||1}`],["Objectif",x.ob],["Description",x.de],["Consignes",x.co],["Erreurs",x.er],["Matériel",x.ma],["Dosage",x.dos],["Échauffement",x.w?[ETN[x.w.et],...(x.w.ets||[]).filter(y=>y!==x.w.et).map(y=>ETN[y])].join(" + "):""],["Vidéo",x.vid]].filter(([,y])=>y).map(([k,y])=>`<dt>${k}</dt><dd>${esc(y)}</dd>`).join("")}${x.img?`<dd><img class="imgprev" src="${esc(x.img)}" alt=""></dd>`:""}</dl></details>`;
+  const pv = x => `<details><summary>Voir la fiche</summary><dl>${[["Famille",(FBY[x.f]||MOIFAM).t+(x.s?" · "+x.s:"")],["Lignes",(x.L||[]).join(", ")],["Âge",`${x.a||"?"} à ${x.ax||18} ans`],["Thème",TH[x.th]||""],["Objectif",x.ob],["Description",x.de],["Consignes",x.co],["Erreurs",x.er],["Matériel",x.ma],["Dosage",x.dos],["Échauffement",x.w?[ETN[x.w.et],...(x.w.ets||[]).filter(y=>y!==x.w.et).map(y=>ETN[y])].join(" + "):""],["Vidéo",x.vid]].filter(([,y])=>y).map(([k,y])=>`<dt>${k}</dt><dd>${esc(y)}</dd>`).join("")}${x.img?`<dd><img class="imgprev" src="${esc(x.img)}" alt=""></dd>`:""}</dl></details>`;
   heroBq("Propositions", "Proposé par un coach, validé pour la méthode", "balles");
   $("#main").innerHTML = `${tabs("/propositions")}
    <p class="msg">Un coach propose un exercice → le créateur de GRÜN le relit et le valide → il devient un exercice de la méthode, visible par tous les abonnés (par fichier pour l'instant).</p>
@@ -1319,7 +1490,7 @@ function showProps(){
   $("#pimp").onchange=async ev=>{ const f=ev.target.files[0]; ev.target.value=""; if(!f) return; try{ const d=JSON.parse(await f.text()); const n=importProps(d); showProps(); $("#pmsg").className="msg ok"; $("#pmsg").textContent=`${n} proposition${n>1?"s":""} ajoutée${n>1?"s":""} à relire.`; }catch(err){ $("#pmsg").className="msg err"; $("#pmsg").textContent="Ce fichier n'est pas un fichier de propositions (GRUN_propositions_….json)."; } };
   $$("[data-ok]").forEach(b=>b.onclick=async()=>{ const r=P.recues.find(y=>y.rid===b.dataset.ok); if(!r) return;
     const x={...r.ex}; const pid=x.id; delete x.id; delete x.cree; if(nameTaken(x.n)) x.n=`${x.n} (${r.de||"proposé"})`; let k=2; while(nameTaken(x.n)) x.n=`${r.ex.n} (${r.de||"proposé"} ${k++})`;
-    if(!FBY[x.f]) x.f="MOI";
+    if(!FBY[x.f] && !FBY4[x.f]) x.f="MOI"; if(x.f4 && !FBY4[x.f4]) delete x.f4;
     const nx=GRUN.banque.add({...x, st:"valide", propPar:r.de||"", propId:pid||""});
     P.recues=P.recues.filter(y=>y.rid!==r.rid); P.traitees=[{n:nx.n,de:r.de,date:today(),res:"validé",id:nx.id},...(P.traitees||[])]; save(); await reload(); showProps(); });
   $$("[data-no]").forEach(b=>b.onclick=()=>{ const r=P.recues.find(y=>y.rid===b.dataset.no); if(!r) return; const k=P.recues.indexOf(r);
@@ -1338,16 +1509,19 @@ function importProps(d){
 /* ---------- familles ---------- */
 function showFams(){ ecran("familles");
   document.documentElement.style.setProperty("--acc","var(--ink)");
-  const groups={}; FAMS.forEach(f=>{ if(f.c==="MOI" && !EX.some(e=>e.f==="MOI")) return; (groups[f.dossier]=groups[f.dossier]||[]).push(f); });
-  heroBq("Familles", `<b>${FAMS.length-1}</b> familles · mode d'emploi et repères d'âge`, "balles");
+  const groups={}; FAMS4.forEach(f=>{ if(f.c==="MOI" && !EX.some(e=>e.f4==="MOI")) return; const g=f.c==="MOI"?"Mes exercices":TH[f.th]; (groups[g]=groups[g]||[]).push(f); });
+  const n4 = {}; EX.forEach(e=>{ if(!e.x) n4[e.f4]=(n4[e.f4]||0)+1; });
+  heroBq("Familles", `<b>${FAMS4.length-1}</b> familles en ${Object.keys(groups).filter(g=>g!=="Mes exercices").length} thèmes · mode d'emploi et repères d'âge`, "balles");
   $("#main").innerHTML=`${tabs("familles")}`+
-    Object.entries(groups).map(([g,fs])=>`<div class="sec"><h2>${esc(g.replace(/^\d+\.\d+\s/,""))}</h2><div class="fams" style="margin-top:8px">${fs.map(f=>`<a class="fam" href="#f/${f.c}" style="--dc:${dc(f.dom)}"><b>${esc(f.t)}</b><small>${EX.filter(e=>e.f===f.c).length} exercices · ${f.subs.length} sous-familles</small></a>`).join("")}</div></div>`).join("");
+    Object.entries(groups).map(([g,fs])=>{ const rubs={}; fs.forEach(f=>{ (rubs[f.rub||""]=rubs[f.rub||""]||[]).push(f); });
+      return `<div class="sec"><h2>${esc(g)}</h2>${Object.entries(rubs).map(([r,xs])=>`${r && Object.keys(rubs).length>1?`<h3 class="subh">${esc(r)}</h3>`:""}<div class="fams" style="margin-top:8px">${xs.map(f=>`<a class="fam" href="#f/${f.c}" style="--dc:${dc(f.dom)}"><b>${esc(f.t)}</b><small>${n4[f.c]||0} exercices · ${f.subs.length} sous-familles${f.md==="schema"?" · schémas":""}</small></a>`).join("")}</div>`).join("")}</div>`; }).join("");
 }
 function showFam(c){
-  const f=FBY[c]; if(!f) return showFams(); document.documentElement.style.setProperty("--acc",dc(f.dom));
-  const xs=EX.filter(e=>e.f===c && !HIDE.has(e.id)), subs={}; xs.forEach(e=>{ (subs[e.s]=subs[e.s]||[]).push(e); });
+  if(!FBY4[c] && FBY[c] && FBY[c].c4){ location.replace("#f/"+FBY[c].c4); return; }   /* ancien code de famille (5.x.y) */
+  const f=FBY4[c]; if(!f) return showFams(); document.documentElement.style.setProperty("--acc",dc(f.dom));
+  const xs=EX.filter(e=>e.f4===c && !HIDE.has(e.id) && !e.x), subs={}; xs.forEach(e=>{ (subs[e.s]=subs[e.s]||[]).push(e); });
   const m=$("#main"); m.style.setProperty("--dc",dc(f.dom));
-  const ex0 = xs[0]; VX.hero({vis:ex0?VX.pour(ex0.id):"balles", sq:true, lab:`Familles · ${DOMC[f.dom]||""}`, titre:f.t, num:String(xs.length), sous:"exercices"});
+  const ex0 = xs[0]; VX.hero({vis:ex0?VX.pour(ex0.id):"balles", sq:true, lab:`Familles · ${TH[f.th]||DOMC[f.dom]||""}${f.rub?" · "+f.rub:""}`, titre:f.t, num:String(xs.length), sous:"exercices"});
   m.innerHTML=`
    <div class="intro"><details><summary>Mode d'emploi de la famille : à quoi elle sert, comment choisir, progression, repères d'âge</summary><div class="tw">${f.intro}</div></details></div>`+
    Object.entries(subs).map(([s,arr])=>`<h3 class="subh">${esc(s)}</h3>${rowsHTML(arr)}`).join("");
@@ -1406,12 +1580,12 @@ function tourHTML(id){ const v=tourOf(id); return `<div class="tour"><span class
 let SHOW_T = PAGE;
 function showShoot(){ ecran("tournage");
   document.documentElement.style.setProperty("--acc","var(--ink)");
-  const f = P.ft || "a", n = {a:0,t:0,m:0}; EX.forEach(e=>n[tourOf(e.id)]++);
-  const xs = EX.filter(e=>tourOf(e.id)===f).sort((a,b)=>((b.perso?1:0)-(a.perso?1:0)));
+  const f = P.ft || "a", n = {a:0,t:0,m:0}, EV = EX.filter(e=>e.md==="video" && !e.x); EV.forEach(e=>n[tourOf(e.id)]++);
+  const xs = EV.filter(e=>tourOf(e.id)===f).sort((a,b)=>((b.perso?1:0)-(a.perso?1:0)));
   heroBq("Vidéos", `<b>${n.m}</b> montées · <b>${n.t}</b> à monter · <b>${n.a.toLocaleString("fr-FR")}</b> à tourner`, "ex_geste");
   $("#main").innerHTML=`${tabs("tournage")}
-   <div class="sec"><div class="tbar" style="height:10px;border-radius:5px;overflow:hidden;display:flex;background:var(--line)"><i style="width:${n.m/EX.length*100}%;background:var(--de)"></i><i style="width:${n.t/EX.length*100}%;background:var(--pp)"></i></div>
-   <div class="actbar" style="margin-top:10px"><span class="seg" role="group" aria-label="Filtrer par statut">${Object.entries(TOURN).map(([k,t])=>`<button type="button" data-ft="${k}" aria-pressed="${f===k}">${t} (${n[k].toLocaleString("fr-FR")})</button>`).join("")}</span><button class="btn" id="copyshoot" type="button">Copier cette liste</button></div><div class="msg" id="smsg">Change le statut sur la fiche de l'exercice (sous la vidéo) ou ici, d'une touche.</div></div>
+   <div class="sec"><div class="tbar" style="height:10px;border-radius:5px;overflow:hidden;display:flex;background:var(--line)"><i style="width:${n.m/Math.max(1,EV.length)*100}%;background:var(--de)"></i><i style="width:${n.t/Math.max(1,EV.length)*100}%;background:var(--pp)"></i></div>
+   <div class="actbar" style="margin-top:10px"><span class="seg" role="group" aria-label="Filtrer par statut">${Object.entries(TOURN).map(([k,t])=>`<button type="button" data-ft="${k}" aria-pressed="${f===k}">${t} (${n[k].toLocaleString("fr-FR")})</button>`).join("")}</span><button class="btn" id="copyshoot" type="button">Copier cette liste</button></div><div class="msg" id="smsg">Capsules vidéo : technique, préparation physique, santé. La tactique a un schéma, la préparation mentale du texte. Change le statut sur la fiche (sous la vidéo) ou ici, d'une touche.</div></div>
    <div class="sec">${xs.length?`<div class="list">${xs.slice(0,SHOW_T).map(e=>`<div class="row" style="--dc:${dc(e.dom)}"><span class="bar"></span><span class="id">${e.id}</span><a class="nm" href="#/ex/${e.id}" style="text-decoration:none"><b>${esc(e.n)}</b><small>${esc(e.ma||"")}</small></a><span class="meta">${f!=="t"?`<button class="chip" type="button" data-mv="${e.id}" data-to="t">Tourné</button>`:""}${f!=="m"?`<button class="chip" type="button" data-mv="${e.id}" data-to="m">Monté</button>`:""}${f!=="a"?`<button class="chip" type="button" data-mv="${e.id}" data-to="a">À tourner</button>`:""}</span></div>`).join("")}</div>${xs.length>SHOW_T?`<div class="actbar" style="margin-top:10px"><button class="btn" id="tmore" type="button">Voir plus (${xs.length-SHOW_T} restants)</button></div>`:""}`:'<div class="empty">Aucun exercice dans ce statut.</div>'}</div>
    <details class="grun-plus sec"><summary>Comment ajouter les vidéos</summary><div class="grun-plusb"><ol style="margin:6px 0 0;padding-left:20px;line-height:1.6">
    <li>Filme l'exercice et nomme le fichier avec son identifiant : <code>FOR-0123.mp4</code>.</li>
