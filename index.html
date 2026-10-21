@@ -254,6 +254,7 @@ html.grun-mod #back::before{content:"";width:20px;height:20px;background:current
 #grun-nav[data-mode="outils"]{grid-template-columns:minmax(0,.82fr) repeat(3,minmax(0,.9fr)) minmax(0,1.38fr)}
 </style>
 <script src="visuels.js?v=2.1"></script>
+<script src="schema.js?v=2.1"></script>
 <script src="grun.js?v=2.1"></script>
 <script src="assistant.js?v=2.1"></script>
 <meta name="grun-module" content="accueil"></head><body><title>GRÜN</title>
@@ -893,7 +894,7 @@ p.hx-sub{color:var(--mute)}
 .cl-l{margin:4px 0 0;color:var(--mute);font-size:1.05rem}
 </style>
 
-<div id="splash" aria-hidden="true"><svg class="sp-u" viewBox="0 0 512 512" aria-hidden="true"><g transform="translate(0 16)"><path d="M180 158 V292 A76 76 0 0 0 332 292 V158" stroke="#3BE08A" stroke-width="78" fill="none"/><circle cx="180" cy="96" r="34" fill="#E4FF3A"/><path d="M158.9 69.5 Q178.3 96 158.9 122.5" stroke="#07090A" stroke-opacity=".35" stroke-width="4.4" fill="none" stroke-linecap="round"/><path d="M201.1 69.5 Q181.7 96 201.1 122.5" stroke="#07090A" stroke-opacity=".35" stroke-width="4.4" fill="none" stroke-linecap="round"/><circle cx="332" cy="96" r="34" fill="#E4FF3A"/><path d="M310.9 69.5 Q330.3 96 310.9 122.5" stroke="#07090A" stroke-opacity=".35" stroke-width="4.4" fill="none" stroke-linecap="round"/><path d="M353.1 69.5 Q333.7 96 353.1 122.5" stroke="#07090A" stroke-opacity=".35" stroke-width="4.4" fill="none" stroke-linecap="round"/></g></svg><div class="l"></div><div class="s">Méthode Gruner · 4-18 ans</div></div>
+<div id="splash" aria-hidden="true"><svg class="sp-u" viewBox="0 0 512 512" aria-hidden="true"><g transform="translate(0 16)"><path d="M180 158 V292 A76 76 0 0 0 332 292 V158" stroke="#3BE08A" stroke-width="78" fill="none"/><circle cx="180" cy="96" r="34" fill="#E4FF3A"/><path d="M158.9 69.5 Q178.3 96 158.9 122.5" stroke="#07090A" stroke-opacity=".35" stroke-width="4.4" fill="none" stroke-linecap="round"/><path d="M201.1 69.5 Q181.7 96 201.1 122.5" stroke="#07090A" stroke-opacity=".35" stroke-width="4.4" fill="none" stroke-linecap="round"/><circle cx="332" cy="96" r="34" fill="#E4FF3A"/><path d="M310.9 69.5 Q330.3 96 310.9 122.5" stroke="#07090A" stroke-opacity=".35" stroke-width="4.4" fill="none" stroke-linecap="round"/><path d="M353.1 69.5 Q333.7 96 353.1 122.5" stroke="#07090A" stroke-opacity=".35" stroke-width="4.4" fill="none" stroke-linecap="round"/></g></svg><div class="l"></div><div class="s">Méthode Eliot Gruner · 0-18 ans</div></div>
 <header class="top"><div class="topin">
   <button class="ib" id="back" type="button" aria-label="Retour"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button>
   <a class="brand" href="#/" aria-label="GRÜN : page de garde"><span class="grun-wm" aria-hidden="true">GR<span class="u">U<i></i><i></i></span>N</span></a>
@@ -1457,13 +1458,13 @@ function nbExercices() { const B = G.banque.cache(); if (B) return nf0(B.ex.leng
 function vBiblio() {
   document.title = "Bibliothèque · GRÜN";
   const carte = (href, t, sous, v) => `<a class="bc" href="${esc(href)}"><span class="tt"><b>${t}</b><small>${sous}</small></span>${vis(v, { cls: "bc-v", w: 120, h: 124, par: "xMaxYMid meet" })}</a>`;
-  const nd = arr(RD.docs).length;
+  const nd = arr(RD.docs).filter(d => !/^ME\./.test(d.c)).length;   /* banque scientifique seule (la Méthode ME.1-10 est au Référentiel) */
   main.innerHTML = heros({ v: "heros_cordage", h: 270, retour: "#/", retourLab: "Retour à la page de garde", k: "Savoirs · exercices · méthode", t: "Bibliothèque" }) + `<div class="pg">
     <button type="button" class="agep" data-a="agebib" aria-label="Âge et sexe de la bibliothèque : ${esc(G.ageBibTxt())}. Changer">${esc(G.ageBibTxt())}<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button>
     <nav class="bcs" aria-label="Bibliothèque">
     ${carte(G.href("veille"), "Banque scientifique", nd ? `<em>${nd}</em> documents de la méthode` : "Les documents de la méthode", "anneaux")}
     ${carte(G.href("banque"), "Exercices", `<em id="nbex">${nbExercices()}</em> fiches · vidéos`, "balles")}
-    ${carte(G.href("saisons"), "Référentiel", "La méthode Gruner, de 4 à 18 ans", "marches")}</nav>
+    ${carte(G.href("veille", "#/ref"), "Référentiel", "La méthode Eliot Gruner, de 0 à 18 ans", "marches")}</nav>
     <details class="grun-plus" data-sx="p-biblio"${OPEN.has("p-biblio") ? " open" : ""}><summary>Plus d'options</summary><div class="grun-plusb">${poleCorps("biblio")}</div></details></div>`;
 }
 function vOutils(sous) {
@@ -2193,7 +2194,7 @@ function chercher(q) {
   const ro = ROUT().routines.filter(r => hit([r.nom, APRES[r.apres], routJids(r).map(id => (G.joueurs.get(id) || {}).nom).join(" "), "echauffement warm-up"].join(" "), ts)).map(r => ({ h: G.href("warmup", "#/r/" + r.id), t: r.nom || "Échauffement", w: [r.duree ? r.duree + " min" : "", r.apres ? "avant " + (APRES[r.apres] || r.apres) : ""].filter(Boolean).join(" · ") }));
   grp("Échauffements", "var(--create)", ro.slice(0, 15), ro.length);
   const dv = RD.docs.filter(d => hit([d.c, d.t, d.d, d.k].join(" "), ts)).map(d => ({ s: sc(d.t, ts) + (hit(d.t, ts) ? 20 : 0), h: G.href("veille", "#d/" + d.c), t: d.t, w: String(d.p).replace(/^\d+\s*/, "").toLowerCase() + " › " + d.d.replace(/^\d+(\.\d+)*\s/, ""), x: extrait(d.k, ts) }));
-  if (!auto()) grp("Veille", "var(--res)", top(dv, 12), dv.length);
+  if (!auto()) grp("Banque scientifique", "var(--res)", top(dv, 12), dv.length);
   const tp = G.tests.perso().map(t => ({ id: t.id, n: t.nom, l: "Test personnel", dom: t.dom }));
   const tt = [...RD.tests, ...tp].filter(t => hit([t.id, t.n, t.l].join(" "), ts)).map(t => ({ s: sc(t.n, ts), h: G.href("grilles", "#/test/" + t.id), t: t.n, w: t.l }));
   grp("Tests", "var(--tests)", top(tt, 12), tt.length);
@@ -2216,13 +2217,13 @@ function vRecherche(q) {
   setAcc("var(--ink)"); document.title = "Recherche · GRÜN";
   const inp = $("#q"); if (document.activeElement !== inp) inp.value = q;
   const ts = termes(q);
-  if (!ts.length) { main.innerHTML = `<h1>Recherche</h1><p class="lead">Tape au moins 2 lettres : joueur, groupe, séance, programmation, échauffement, document de la veille, test, exercice, famille, saison. Tu peux aussi taper un code (« F12 ») ou une action (« nouveau joueur », « tester Tom »).</p>`; return; }
+  if (!ts.length) { main.innerHTML = `<h1>Recherche</h1><p class="lead">Tape au moins 2 lettres : joueur, groupe, séance, programmation, échauffement, document de la banque scientifique, test, exercice, famille, saison. Tu peux aussi taper un code (« F12 ») ou une action (« nouveau joueur », « tester Tom »).</p>`; return; }
   if (!BQ && !BQload) BQload = G.banque.load().then(b => { BQ = b; if (location.hash.startsWith("#/recherche/")) render(true); }).catch(() => { BQ = { ex: [] }; });
   const R = chercher(q), n = R.reduce((a, g) => a + g.n, 0);
   let h = `<h1>Recherche</h1><p class="lead">${n ? n + " résultat" + (n > 1 ? "s" : "") + " pour « " + esc(q) + " »" : "Rien pour « " + esc(q) + " ». Essaie un mot plus court ou un synonyme."}${!BQ ? " · chargement de la banque…" : ""}</p>`;
   h += `<button class="res ask" data-a="assistant" data-src="recherche" data-q="${esc(q)}"><div class="t">Demander à l'assistant : « ${esc(q)} »</div><div class="w">Il répond aux questions sur la méthode et sur l'appli, hors connexion.</div></button>`;
   h += R.map(g => `<div class="rgrp" style="--rc:${g.col}"><h2>${esc(g.t)} <small>${g.n > g.items.length ? g.items.length + " sur " + g.n : g.n}</small></h2>${g.items.map(r => r.act ? `<a class="res act" href="${esc(r.h)}" ${r.attrs || ""}><div class="t">${r.t}</div><div class="w">${esc(r.w || "")}</div></a>` : `<a class="res" href="${esc(r.h)}"><div class="t">${marque(r.t, ts)}</div><div class="w">${esc(r.w || "")}</div>${r.x ? `<div class="s">${marque(r.x, ts)}</div>` : ""}</a>`).join("")}</div>`).join("");
-  if (!auto()) h += `<div class="sec tools"><a class="ib" href="${G.href("veille", "#s/" + encodeURIComponent(q))}">Chercher « ${esc(q)} » dans le texte complet de la veille ›</a></div>`;
+  if (!auto()) h += `<div class="sec tools"><a class="ib" style="white-space:normal;text-align:center;padding:8px 14px;max-width:100%" href="${G.href("veille", "#s/" + encodeURIComponent(q))}">Chercher « ${esc(q)} » dans le texte complet de la banque scientifique ›</a></div>`;
   main.innerHTML = h;
 }
 let qT;
@@ -2258,7 +2259,7 @@ function vReglages() {
     <p class="msg" id="impm"></p>
     <p class="msg">La restauration fusionne avec ce qui est déjà là (rien n'est effacé). Elle reconnaît aussi les anciennes sauvegardes des applis séparées : Grilles et tests, Banque d'exercices, Programmation, Séances, Routines, Veille, Référentiel des saisons, Profil radar.</p></div></section>`;
   if (!auto()) h += demoSection();
-  h += `<section class="sec"><h2>À propos de GRÜN</h2><div class="card note"><p style="margin-top:0"><b>GRÜN</b> réunit en une seule appli la méthode Gruner de préparation physique et de biomécanique du tennis : la science du joueur de tennis de 4 à 18 ans : préparation physique, biomécanique, physiologie, de la méthode de formation jusqu'à la séance. Notre modèle haute performance : le niveau 3, c'est être dans les temps du haut niveau de sa génération.</p>
+  h += `<section class="sec"><h2>À propos de GRÜN</h2><div class="card note"><p style="margin-top:0"><b>GRÜN</b> réunit en une seule appli la méthode Eliot Gruner : la science du joueur de tennis de 0 à 18 ans, préparation physique, technique, tactique et mentale, de la méthode de formation jusqu'à la séance. Notre modèle haute performance : le niveau 3, c'est être dans les temps du haut niveau de sa génération.</p>
     <p>Quatre portes : <b>Bibliothèque</b> (banque scientifique, exercices, référentiel), <b>Outils</b> (Create my session, Choose your warm-up, tests et profilage, Create my prog), <b>Club</b> (en construction) et <b>Performance</b> (le dossier complet de chaque joueur et de chaque groupe, l'agenda).</p>
     <p class="msg" style="margin-bottom:0">Données sur l'appareil · fonctionne hors connexion.</p></div></section>`;
   main.innerHTML = h;

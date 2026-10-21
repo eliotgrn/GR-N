@@ -254,9 +254,10 @@ html.grun-mod #back::before{content:"";width:20px;height:20px;background:current
 #grun-nav[data-mode="outils"]{grid-template-columns:minmax(0,.82fr) repeat(3,minmax(0,.9fr)) minmax(0,1.38fr)}
 </style>
 <script src="visuels.js?v=2.1"></script>
+<script src="schema.js?v=2.1"></script>
 <script src="grun.js?v=2.1"></script>
 <script src="assistant.js?v=2.1"></script>
-<meta name="grun-module" content="veille"></head><body><title>Veille de connaissances</title>
+<meta name="grun-module" content="veille"></head><body><title>Banque scientifique</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=Barlow:wght@400;500;600;700&display=swap">
 <style>
 /* Layout : barre fixe (retour, recherche) ; accueil = recherche, accès direct, 4 portes, favoris ; document = fil d'Ariane, sommaire, L'essentiel ouvert, Le détail en sections dépliables */
@@ -607,16 +608,50 @@ details.fold>summary{font-family:var(--display);font-weight:800!important;font-s
 .lines>b{color:#E4FF3A}
 .toc{margin:0 0 6px}
 .pn a{border-radius:18px;padding:12px 14px}
+/* Banque scientifique · étape 2 (21 oct. 2026) : 8 thèmes, rubriques, sélecteur âge + sexe, Référentiel (Méthode) */
+.agerow{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center;margin:0 0 14px}
+.agerow .msg{font-size:13px}
+.agep{min-height:44px;padding:0 16px;border-radius:22px;border:1px solid #E4FF3A;background:none;color:#E4FF3A;display:inline-flex;align-items:center;gap:8px;font:700 16px/1 var(--display);letter-spacing:.08em;text-transform:uppercase;cursor:pointer}
+.agep svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+.agep:active{transform:scale(.97)}
+.agebar{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;margin:0 0 14px;font-size:13.5px;color:var(--mute)}
+.agebar b{font:700 16px/1 var(--display);letter-spacing:.08em;text-transform:uppercase;color:#E4FF3A}
+.agebar .agep{min-height:38px;font-size:15px}
+.doc details.age-on{border:1px solid #E4FF3A;border-radius:16px;padding:2px 14px 8px;margin:10px -4px;background:#0D110F}
+.doc details.age-on>summary::before{color:#E4FF3A}
+.agetag{font:700 11px/1 var(--display);letter-spacing:.16em;text-transform:uppercase;font-style:normal;color:#07090A;background:#E4FF3A;border-radius:10px;padding:4px 8px;margin-left:auto;white-space:nowrap}
+.doc .sx-on{border-left:3px solid #E4FF3A;padding-left:12px;margin-left:-2px}
+.doc h4.sx-on,.doc h5.sx-on{color:#E4FF3A}
+.doc tr.age-on td{background:#1F2410}
+.doc tr.age-on td:first-child{box-shadow:inset 3px 0 0 #E4FF3A;font-weight:700}
+.doc a.ex,.doc a.exf{font-family:var(--ui);font-size:.82em;background:#1A211D;color:#3BE08A;border:1px solid #263029;border-radius:6px;padding:1px 6px;text-decoration:none;white-space:nowrap}
+.doc a.ex:hover,.doc a.exf:hover{border-color:#3BE08A}
+.doc a.ref.rub{border-bottom-style:dashed}
+.fold>h3 small,.sec>h2 small{font-family:var(--ui);font-weight:500;font-size:13px;letter-spacing:0;text-transform:none;color:#9AA59E;margin-left:8px}
+.li.rubl{grid-template-columns:30px minmax(0,1fr)}
+.resume.entree{margin:0 0 16px;border-color:#3BE08A}
+.resume.entree .ex1{color:var(--mute);font-weight:400;font-size:14px;line-height:1.45}
+.refess{margin:0 0 6px}
+.refess .vx-pt>span b{color:#F2F5F0}
+.steps.chap a{grid-template-columns:34px minmax(0,1fr);position:relative;overflow:hidden;padding-right:84px;min-height:84px}
+.steps.chap .cv{position:absolute;right:8px;top:10px;width:70px;height:64px;opacity:.85;pointer-events:none}
+.steps.chap .cv svg{width:100%;height:100%}
+.steps .lu .n{background:#3BE08A;border-color:#3BE08A}
+.steps .n{border-color:#3BE08A;color:#3BE08A}
+.steps .tt em{color:#E4FF3A}
+.vdoc.vref .doc details{border-top-color:#263029}
+.vdoc.vref .doc summary{color:#F2F5F0}
+@media (max-width:400px){.steps.chap a{padding-right:64px}.steps.chap .cv{width:52px;height:48px;right:6px;top:12px}}
 </style>
 
 <header class="top"><div class="topin">
   <button class="ib" id="back" type="button" aria-label="Retour">‹</button>
-  <a class="brand" href="#">Veille</a>
+  <a class="brand" href="#">Banque scientifique</a>
   <div class="sbox"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
-    <input id="q" type="search" placeholder="Rechercher dans toute la veille" autocomplete="off" enterkeyhint="search"></div>
+    <input id="q" type="search" placeholder="Rechercher dans la banque scientifique" autocomplete="off" enterkeyhint="search"></div>
 </div></header>
 <div id="vxh" hidden></div>
-<main id="main"><div class="load">Chargement de la veille…</div></main>
+<main id="main"><div class="load">Chargement de la banque scientifique…</div></main>
 
 <!--VX-DEBUT--><script>
 /* GRÜN · E1B — héros et cartes illustrées : bloc commun, IDENTIQUE dans les 7 modules (window.VX). Visuels : window.GRUN_VIS (visuels.js, chargé avant). */
@@ -667,36 +702,38 @@ details.fold>summary{font-family:var(--display);font-weight:800!important;font-s
 </script><!--VX-FIN-->
 <script>
 "use strict";
-const PORTES = {
-  "1": {n:"Par âge", c:"--p1", s:"Un document par âge, de 0 à 3 ans à 18 ans : tout ce qui concerne cet âge au même endroit."},
-  "2": {n:"Préparation physique", c:"--p2", s:"Les 12 lignes des grilles, la musculation, l'échauffement, la prévention et les tests."},
-  "3": {n:"Biomécanique", c:"--p3", s:"Les 13 coups du geste et les 11 lignes du déplacement, principes et âge par âge."},
-  "4": {n:"Entraîner", c:"--p4", s:"Développement de l'enfant, analyse du jeu, sciences, planification, récupération, pédagogie, mental."}
-};
-/* E1B : ordre des portes à l'accueil (01 grande carte, 02-03 en grille, 04 carte large) et visuel de chaque domaine (visuels.js) */
-const PORTE_ORD = ["2","3","4","1"];
-const PORTE_VIS = {"1":"anneaux", "2":"physique", "3":"technique", "4":"entrainement"};
-/* onglets segmentés d'un thème (lignes PP : comprendre / âge par âge / séances ; coups du geste : technique / âge par âge) */
-const ONG = t => /^Comprendre/.test(t) ? "Comprendre" : /^Âge par âge/.test(t) ? "Âge par âge" : /^Séances/.test(t) ? "Séances types" : /^Technique/.test(t) ? "Technique" : null;
-const DOC_VIS = {"1":["anneaux",false], "2":["physique",false], "3":["technique",false], "4":["entrainement",false]};
+/* ===== Banque scientifique + Référentiel (étape 2, 21 oct. 2026) =====
+   Données : apps/veille/build_data.py publie redaction_v4/ selon plan/structure_v4.tsv (idx.json + paquets).
+   Adresses : #  accueil (8 thèmes) · #t/<n> thème · #r/<id> rubrique · #d/<code>[/s<i>|/a<âge>|/q<mots>] document · #/ref Référentiel (Méthode ME.1-10)
+              #/l/<LIGNE> documents d'une ligne de grille · #/parcours/<id> · #s/<mots> recherche · #p/<n> (anciennes portes, redirigées)
+   Anciens codes v3 (favoris, notes, liens des autres modules) : table AL (data.al) → redirection et migration des préférences, clé veille_v1 inchangée. */
+const TYL = {"comprendre":"Comprendre", "âge par âge":"Âge par âge", "séances types":"Séances types", "autre":"Autres documents"};
+const TYO = ["comprendre","âge par âge","séances types","autre"];
+/* anciennes portes (v3) → thèmes : 1 → 1 Développement · 2 → 3 Préparation physique · 3 (geste et déplacement) → 4 Technique · 4 → 8 Entraîner */
+const PORTES = {"1":"1", "2":"3", "3":"4", "4":"8"};
+const ME_VIS = {"ME.1":"anneaux", "ME.2":"cordage", "ME.3":"courbe", "ME.4":"radar", "ME.5":"calendrier", "ME.6":"trajectoires", "ME.7":"seance", "ME.8":"marches", "ME.9":"frise", "ME.10":"club"};
+/* onglets segmentés d'une rubrique (comprendre / âge par âge / séances types) */
+const ONG = ty => ({"comprendre":"Comprendre", "âge par âge":"Âge par âge", "séances types":"Séances types"})[ty] || null;
 const PP = ["Force du bas du corps","Force du haut du corps","Gainage et stabilité du tronc","Puissance des jambes : sauts et pliométrie","Puissance du haut du corps et rotation","Vitesse et accélération","Freinage, changements de direction et agilité","Endurance aérobie","Répétition d'efforts intenses","Coordination, motricité fondamentale et rythme","Équilibre et proprioception","Mobilité et souplesse"];
-const GE = [["Service à plat","3.3.2"],["Service slicé","3.4.2"],["Service lifté","3.5.2"],["Coup droit lifté","3.7.2"],["Coup droit à plat","3.8.2"],["Coup droit slicé","3.9.2"],["Revers lifté","3.11.2"],["Revers à plat","3.12.2"],["Revers slicé","3.13.2"],["Volée de coup droit","3.15.2"],["Volée de revers","3.16.2"],["Smash","3.17.2"],["Amortie et touché de balle","3.18.3"]];
+const GE = [["Service à plat","TE.2.9"],["Service slicé","TE.2.9"],["Service lifté","TE.2.9"],["Coup droit lifté","TE.4.8"],["Coup droit à plat","TE.4.8"],["Coup droit slicé","TE.4.8"],["Revers lifté","TE.5.8"],["Revers à plat","TE.5.8"],["Revers slicé","TE.5.8"],["Volée de coup droit","TE.6.5"],["Volée de revers","TE.6.5"],["Smash","TE.7.2"],["Amortie et touché de balle","TE.8.3"]];
 const DE = ["Position d'attention","Allègement et reprise d'appuis","Démarrage et premiers pas","Déplacements latéraux","Déplacements vers l'avant et vers l'arrière","Pas d'ajustement et mise à distance","Appuis de frappe","Freinage et décélération","Changement de direction et réaccélération","Replacement","Enchaînements et liaison des actions"];
 const RADAR = "grilles.html";
-/* parcours de lecture : des documents existants, dans un ordre qui se lit d'une traite (aucun contenu nouveau) */
+/* parcours de lecture : des documents existants, dans un ordre qui se lit d'une traite (aucun contenu nouveau) — codes v4 */
 const PARCOURS = [
-  {id:"demarrer", n:"Démarrer", c:"--p1", s:"Les repères de base pour entraîner un joueur de 4 à 18 ans, en 7 documents.", d:["1.0.1","4.1.3","4.2.6","4.4.11","2.14.1","2.16.1","4.7.6"]},
-  {id:"croissance", n:"Croissance et maturation", c:"--p1", s:"Le pic de croissance, l'âge biologique et ce qu'ils changent à l'entraînement.", d:["4.1.1","4.1.2","2.16.2","4.1.3","4.1.4","2.15.2","2.13.4"]},
-  {id:"fille", n:"Prévention chez la fille", c:"--p2", s:"Ce qui change chez la fille : maturation, genou, sauts, freinage, volumes, hygiène de vie.", d:["4.1.5","4.1.2","2.15.10","2.15.7","2.7.2","2.4.2","4.5.9"]},
-  {id:"echauffement", n:"Échauffement et récupération", c:"--p2", s:"Construire un échauffement, le retour au calme, puis récupérer, en tournoi aussi, et dormir.", d:["2.14.1","2.14.2","2.14.3","2.14.4","2.14.5","4.5.2","4.5.3","4.5.4","4.5.5"]},
-  {id:"saison", n:"Planifier une saison", c:"--p4", s:"De la démarche à la semaine type : cycles, programmation annuelle, compétitions, charge.", d:["4.4.1","4.4.3","4.4.8","4.4.9","4.4.10","4.4.2","4.4.12"], plus:["saisons.html","Voir les saisons de référence"]},
-  {id:"evaluer", n:"Évaluer et suivre", c:"--p2", s:"Organiser les tests et les bilans, lire les valeurs de référence, suivre la charge.", d:["2.16.1","2.16.2","2.16.11","2.16.12","2.16.13","2.16.15"], plus:["grilles.html","Ouvrir Grilles et tests"]}
+  {id:"demarrer", n:"Démarrer", s:"Les repères de base pour entraîner un joueur de 0 à 18 ans, dans les 4 domaines.", d:["EN.1.8","EN.1.3","PP.0.1","TE.1.6","TA.1.3","PM.1.3","EN.2.6","EN.4.11","EN.6.6"]},
+  {id:"croissance", n:"Croissance et maturation", s:"Le pic de croissance, l'âge biologique et ce qu'ils changent à l'entraînement.", d:["EN.1.1","EN.1.2","PP.16.2","EN.1.3","EN.1.4","PP.15.2","PP.13.4","EN.1.9"]},
+  {id:"fille", n:"Prévention chez la fille", s:"Ce qui change chez la fille : maturation, genou, sauts, freinage, volumes, hygiène de vie.", d:["EN.1.5","EN.1.2","PP.15.10","PP.15.7","PP.7.2","PP.4.2","EN.4.6","EN.5.9"]},
+  {id:"echauffement", n:"Échauffement et récupération", s:"Construire un échauffement, le retour au calme, puis récupérer, en tournoi aussi, et dormir.", d:["PP.14.1","PP.14.2","PP.14.3","PP.14.4","PP.14.5","EN.5.2","EN.5.3","EN.5.4","EN.5.5","EN.5.10"]},
+  {id:"saison", n:"Planifier une saison", s:"De la démarche à la semaine type : cycles, programmation annuelle, compétitions, charge.", d:["EN.4.1","EN.4.3","EN.4.5","EN.4.6","EN.4.8","EN.4.9","EN.4.10","EN.4.2","EN.4.12"], plus:["#/ref","Lire la méthode : la saison type (Référentiel)"]},
+  {id:"evaluer", n:"Évaluer et suivre", s:"Organiser les tests et les bilans, lire les valeurs de référence, suivre la fatigue et la santé.", d:["PP.16.1","PP.16.2","EN.2.7","PP.16.11","PP.16.12","PP.16.14"], plus:["grilles.html","Ouvrir Tests et profilage"]},
+  {id:"tactique", n:"Apprendre à jouer", s:"Les principes du jeu, les situations, lire le jeu et décider, de l'initiation au haut niveau.", d:["TA.1.1","TA.1.2","TA.1.3","TA.10.1","TA.10.2","TA.7.1","TA.1.4"]},
+  {id:"mental", n:"Le mental en match", s:"Ce que le tennis demande à la tête, la confiance, les émotions, les routines, avant, pendant et après le match.", d:["PM.1.1","PM.1.3","PM.2.1","PM.4.1","PM.7.1","PM.8.1","TA.8.1"]}
 ];
 const PCB = Object.fromEntries(PARCOURS.map(x=>[x.id,x]));
 const GR = window.GRUN || null;
-/* nom clair d'un document (sans code) : « Vitesse et accélération · Comprendre et développer » plutôt que « 2.6.1 » */
-function nomClair(x){ if(!x) return ""; const dos = String(x.d||"").replace(/^\d+(\.\d+)*\s/,"").replace(/^Ligne \d+ · /,"");
-  if(/^(Comprendre et développer|Âge par âge|Séances, routines|Technique|Ligne \d+ ·)/.test(x.t) && !/^\d|ans$/.test(x.t)) return dos + " · " + x.t.replace(/^Ligne \d+ · /,"").split(" : ")[0].replace(/, filles et garçons$/,"");
+/* nom clair d'un document (sans code) : « Vitesse et accélération · Comprendre et développer » plutôt que « PP.6.1 » */
+function nomClair(x){ if(!x) return "";
+  if(/^(Comprendre et développer|Âge par âge|Séances, routines)/.test(x.t) && x.d) return x.d + " · " + x.t.split(" : ")[0].replace(/, filles et garçons$/,"");
   return x.t; }
 /* âge du joueur (ou du groupe) en cours, pour préremplir l'âge partout */
 function courant(){ try{ return GR&&GR.courant ? GR.courant.get() : null; }catch(e){ return null; } }
@@ -704,55 +741,80 @@ function ageCourant(){ const c = courant(); if(!c) return null;
   try{ if(c.t==="j") return GR.grilleConseillee(c.joueur);
     const as = GR.groupes.joueurs(c.id).map(j=>GR.grilleConseillee(j)).filter(a=>a!=null).sort((a,b)=>a-b); return as.length ? as[Math.floor(as.length/2)] : null; }catch(e){ return null; } }
 const prenom = c => c ? (c.t==="j" ? String(c.nom||"").split(" ")[0] : c.nom) : "";
+/* âge + sexe de la Bibliothèque (G.ageBib : choix mémorisé, sinon joueur en cours) ; age 0 = 0-3 ans */
+function ageSel(){ if(GR&&GR.ageBib){ try{ return GR.ageBib(); }catch(e){ return null; } }
+  return P.ageBib && /^\d+$/.test(P.ageBib) ? {sexe:"", age:+P.ageBib, auto:false} : null; }
+const ageLab = a => a ? (a.sexe==="F" ? "Fille · " : a.sexe==="G" ? "Garçon · " : "") + (a.age<4 ? "0-3 ans" : a.age+" ans") : "Choisir un âge";
+const ageAppli = () => { const a = ageSel(); return a ? Math.max(4, Math.min(18, a.age||4)) : (ageCourant() || 10); };   /* outils (grilles, exercices) : 4-18 ans */
+function agePill(id){ return `<button type="button" class="agep" id="${id||"agep"}" aria-label="Âge et sexe de la bibliothèque : ${esc(ageLab(ageSel()))}. Changer">${esc(ageLab(ageSel()))}<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button>`; }
+function choisirAge(){
+  if(GR&&GR.ui&&GR.ui.choisirAgeBib){ GR.ui.choisirAgeBib().then(a=>{ if(a!==null || !GR.ageBib()) route(true); }); return; }
+  const v = prompt("Âge (0 pour 0-3 ans, ou 4 à 18) :", P.age||""); if(v==null) return; if(/^\d+$/.test(v.trim())){ P.ageBib = String(Math.min(18,+v)); save(); route(true); } }
 function aide(cle){ try{ GR&&GR.aide&&GR.aide.ecran&&GR.aide.ecran(cle); }catch(e){} }
-function titre(t){ document.title = t ? t+" · Veille" : "Veille de connaissances"; }
+function titre(t){ document.title = t ? t+" · Banque scientifique" : "Banque scientifique"; }
+/* barre du bas : onglet Savoirs ou Référentiel selon l'écran */
+function onglet(ref){ const br = document.querySelector(".brand"); if(br){ br.textContent = ref ? "Référentiel" : "Savoirs"; br.setAttribute("href", ref ? "#/ref" : "#"); }
+  try{ if(GR&&GR.navMode&&!GR.isJoueur()&&!GR.seul) GR.navMode("biblio", ref ? "saisons" : "veille"); }catch(e){} }
 /* action principale en bas (zone du pouce) : [texte, href | fonction] */
 function actbar(t, act){ if(!t) return ""; return `<div class="grun-actbar"><${typeof act==="string"?`a href="${act}"`:"button type=\"button\" id=\"actmain\""} class="gs-btn main">${esc(t)}</${typeof act==="string"?"a":"button"}></div>`; }
+/* une phrase de « L'essentiel » : [titre en gras, suite] → texte (pas d'espace avant une ponctuation) */
+const e1txt = e => e ? (e[0] ? e[0] + (/^[,.)]/.test(e[1]||"") ? "" : " ") : "") + (e[1]||"") : "";
 function e30HTML(x, court){ const e = x.e||[]; if(!e.length) return "";
   return `<section class="e30"><b>L'essentiel en 30 secondes</b><ul>${e.slice(0, court?2:4).map(([a,b])=>`<li>${a?`<strong>${esc(a)}</strong>${b?" ":""}`:""}${esc(b)}</li>`).join("")}</ul>${court?"":`<p class="msg">Phrases tirées du bloc « L'essentiel » ci-dessous.</p>`}</section>`; }
 
-let DOCS = [], BY = {}, NORM = null, LV = {L:{}, g:{}}, REV = {};
+let DOCS = [], BY = {}, NORM = null, LV = {L:{}, g:{}}, REV = {}, TH = [], RUB = {}, REF = [], AL = {};
 const LIGNES = {PP:PP, GE:GE.map(x=>x[0]), DE:DE};
-const LCOL = {PP:"var(--p2)", GE:"var(--p3)", DE:"var(--p3)"};
-const DOMN = {PP:"Préparation physique", GE:"Biomécanique du geste", DE:"Biomécanique du déplacement"};
+const LCOL = {PP:"#3BE08A", GE:"#3BE08A", DE:"#3BE08A"};
+const DOMN = {PP:"Préparation physique", GE:"Technique · les coups", DE:"Technique · les déplacements"};
 const okLig = l => /^(PP|GE|DE)\d{1,2}$/.test(l) && !!LIGNES[l.slice(0,2)][+l.slice(2)-1];
 const ligNom = l => LIGNES[l.slice(0,2)][+l.slice(2)-1];
 const $ = s => document.querySelector(s);
 const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const fold = s => { let o=""; for(const ch of s){ const d=ch.normalize("NFD")[0]; o += (d||ch).toLowerCase(); } return o; };
-const keyc = c => c.split(".").map(Number);
+const keyc = c => c.split(".").map(x=>isNaN(+x)?x:+x);
 
-/* ---------- préférences locales ---------- */
+/* ---------- préférences locales (clé historique veille_v1) ---------- */
 const ST = "veille_v1";
 function load(){ try{ return JSON.parse(localStorage.getItem(ST)) || {}; }catch(e){ return {}; } }
 let P = Object.assign({fav:[], rec:[], notes:{}, fs:17, age:"10", dom:"PP", ligne:"0", lu:[], pc:null}, load());
 if(!Array.isArray(P.lu)) P.lu = [];
 function save(){ try{ if(window.GRUN) GRUN.save(ST,P); else localStorage.setItem(ST, JSON.stringify(P)); }catch(e){} }
 document.documentElement.style.setProperty("--fs", P.fs+"px");
+/* anciens codes (v3) dans les favoris, l'historique, les notes : convertis une fois en codes v4 (rien n'est perdu ; notes fusionnées si deux anciens documents vont au même) */
+function migrer(){ let ch = false; const m = c => { if(BY[c] || !AL[c]) return c; ch = true; return AL[c].split("/")[0]; };
+  P.fav = [...new Set((P.fav||[]).map(m))]; P.rec = [...new Set((P.rec||[]).map(m))]; P.lu = [...new Set((P.lu||[]).map(m))];
+  for(const k of Object.keys(P.notes||{})){ if(BY[k] || !AL[k]) continue; const n = AL[k].split("/")[0], v = P.notes[k];
+    P.notes[n] = P.notes[n] && P.notes[n] !== v ? P.notes[n] + "\n\n" + v : v; delete P.notes[k]; ch = true; }
+  if(P.last && P.last.c && !BY[P.last.c] && AL[P.last.c]){ P.last = {c:AL[P.last.c].split("/")[0], s:null, st:""}; ch = true; }
+  if(ch) save(); }
 
 /* ---------- données ---------- */
 async function boot(){
   if(window.GRUN){ GRUN.nav("res");
     /* « ? » : une aide par écran */
-    [["veille","La Banque scientifique : les 230 documents de la méthode. Touche une porte, ou choisis un âge et une ligne dans « Accès direct ». Les parcours de lecture sont dans « Plus d'options ». « Reprendre » rouvre le dernier document lu."],
-     ["veille/d","Un document : « L'essentiel en 30 secondes » en haut, puis « Mettre en pratique » (exercices, séance, grilles), puis le détail en sections dépliables. ☆ le garde en favori ; tes notes s'enregistrent seules."],
+    [["veille","La Banque scientifique : les documents de la méthode en 8 thèmes, de 0 à 18 ans. Touche un thème, puis une rubrique. La pastille d'âge ouvre chaque document âge par âge sur la section de cet âge. Les parcours de lecture et l'accès par ligne de grille sont dans « Plus d'options »."],
+     ["veille/d","Un document : « L'essentiel » en haut, puis « Mettre en pratique » quand il touche une ligne de grille, puis le détail en sections dépliables. Les codes soulignés ouvrent l'autre document, les identifiants d'exercice ouvrent leur fiche. ☆ le garde en favori ; tes notes s'enregistrent seules."],
+     ["veille/t","Un thème de la banque scientifique : ses rubriques, puis dans chaque rubrique les documents pour comprendre, âge par âge, les séances types et les autres."],
+     ["veille/r","Une rubrique : ses documents pour comprendre, âge par âge, les séances types, puis les autres documents."],
+     ["veille/ref","Le Référentiel : la méthode Eliot Gruner en 10 chapitres, à lire en entier, et les saisons de référence."],
      ["veille/parcours","Un parcours de lecture : quelques documents dans le bon ordre. Les étapes lues se cochent seules ; le bouton du bas ouvre la suivante."],
-     ["veille/p","Une porte de la veille : tous ses documents, rangés par dossier. Touche un titre pour l'ouvrir."],
      ["veille/l","Tout sur une ligne de grille : exercices pour l'âge, séance prête à construire, grilles filles et garçons, puis les documents pour comprendre, situer l'âge et évaluer."],
-     ["veille/s","La recherche lit le texte complet des 230 documents. Touche un résultat : le document s'ouvre sur le passage surligné."]].forEach(([k,t])=>{ try{ GRUN.aide(k,t); }catch(e){} });
-    if(GRUN.isJoueur()){ $("#q").disabled=true; $("#main").innerHTML='<h1>Réservé au coach</h1><p class="lead">La veille de connaissances est réservée au coach. En mode joueur, retrouve ton dossier, tes séances et tes tests.</p><div class="sec tools"><button class="go" id="jback" type="button">← Retour</button><a class="ib" href="index.html">Mon dossier</a></div>';
+     ["veille/s","La recherche lit le texte complet de tous les documents, méthode comprise. Touche un résultat : le document s'ouvre sur le passage surligné."]].forEach(([k,t])=>{ try{ GRUN.aide(k,t); }catch(e){} });
+    if(GRUN.isJoueur()){ $("#q").disabled=true; $("#main").innerHTML='<h1>Réservé au coach</h1><p class="lead">La banque scientifique est réservée au coach. En mode joueur, retrouve ton dossier, tes séances et tes tests.</p><div class="sec tools"><button class="go" id="jback" type="button">← Retour</button><a class="ib" href="index.html">Mon dossier</a></div>';
       $("#jback").onclick=()=>{ if(history.length>1) history.back(); else location.href="index.html"; }; return; } }
   try{
     const r = await fetch("data-veille.json"); const d = await r.json();
     DOCS = d.docs; DOCS.forEach((x,i)=>{ x.i=i; BY[x.c]=x; }); PF = d.pf || null; PH = d.ph || {};
-    if(d.lv) LV = d.lv;
+    if(d.lv) LV = d.lv; TH = d.th || []; REF = d.ref || []; AL = d.al || {};
+    TH.forEach(T=>T.rub.forEach(R=>{ RUB[R.id] = Object.assign(R, {th:T.n}); }));
     for(const [l,g] of Object.entries(LV.L||{})) for(const [k,cs] of Object.entries(g)) for(const c of cs) (REV[c]=REV[c]||[]).push([l,k]);
-  }catch(e){ $("#main").innerHTML = '<div class="empty">La veille n\'a pas pu se charger. Vérifie la connexion pour la première ouverture, puis recharge la page.</div>'; return; }
+  }catch(e){ $("#main").innerHTML = '<div class="empty">La banque scientifique n\'a pas pu se charger. Vérifie la connexion pour la première ouverture, puis recharge la page.</div>'; return; }
+  migrer();
   route();
   setTimeout(precharger, 1500);
   $("#q").addEventListener("focus", ()=>{ tousPaquets().catch(()=>{}); }, {once:true});
 }
-/* ---------- chargement rapide : index léger au démarrage (titres, dossiers, lignes), texte des documents par paquets (data-veille-<n>.json) chargés à la demande ---------- */
+/* ---------- chargement rapide : index léger au démarrage, texte des documents par paquets (data-veille-<n>.json) chargés à la demande ---------- */
 let PF = null, PH = {}; const PAQ = {};
 function paquet(k){
   if(!PF || !k) return Promise.resolve();
@@ -784,73 +846,122 @@ function extrait(x, first, ts){ const h = x.h;
 }
 
 /* ---------- routage ---------- */
-window.addEventListener("hashchange", route);
+window.addEventListener("hashchange", ()=>route());
 $("#back").onclick = () => { if(history.length > 1) history.back(); else location.hash = ""; };
-function route(){
+function route(garder){
   const h = decodeURIComponent(location.hash.slice(1));
-  const m = $("#main"); window.scrollTo(0,0); VX.hero(null);
+  const m = $("#main"); if(!garder) window.scrollTo(0,0); VX.hero(null); m.style.removeProperty("--pc");
+  onglet(h.startsWith("/ref") || /^d\/ME\./.test(h)); viderQ(h);
   if(h.startsWith("/l/")) return showLigne(h.slice(3).split("?")[0], (h.split("?")[1]||"").match(/a=(\d+)/));
-  if(h.startsWith("d/")) return showDoc(h.slice(2).split("/")[0], h.split("/")[2]);
+  if(h.startsWith("d/")){ const c = h.slice(2).split("/")[0], hint = h.split("/")[2];
+    if(!BY[c] && AL[c]){ const [nc, ah] = AL[c].split("/"); location.replace("#d/" + nc + ((hint || ah) ? "/" + (hint || ah) : "")); return; }
+    return showDoc(c, hint); }
+  if(h.startsWith("/ref")) return showRef();
   if(h.startsWith("/parcours/")) return showParcours(h.slice(10));
+  if(h.startsWith("t/")) return showTheme(+h.slice(2));
+  if(h.startsWith("r/")) return showRub(h.slice(2));
   if(h.startsWith("p/")) return showPorte(h.slice(2));
   if(h.startsWith("s/")) { $("#q").value = h.slice(2); return showSearch(h.slice(2)); }
   showHome();
 }
-function porteOf(x){ return x.c[0]; }
-function pc(p){ return `var(${PORTES[p].c})`; }
+/* la recherche tapée ne reste pas affichée hors de la page de résultats (sauf retour sur un résultat) */
+function viderQ(h){ if(!h.startsWith("s/") && !/^d\/[^/]+\/q/.test(h)) { const q = $("#q"); if(q && document.activeElement !== q) q.value = ""; }
+}
+/* thème d'un document (1-8 ; 0 = Méthode, au Référentiel) */
+function porteOf(x){ return x ? (x.th||0) : 0; }
+function pc(p){ return p ? "#3BE08A" : "#E4FF3A"; }
+const thNom = x => x && x.th ? (TH[x.th-1]||{}).t || "" : "Référentiel";
+const docsTheme = T => [...T.ent, ...T.rub.flatMap(R=>R.docs)].map(c=>BY[c]).filter(Boolean);
+function parType(cs){ const g = {}; cs.map(c=>BY[c]).filter(Boolean).forEach(x=>{ (g[x.ty]=g[x.ty]||[]).push(x); });
+  return TYO.filter(t=>g[t]).map(t=>`<div class="fold"><h3>${esc(TYL[t])}<small>${g[t].length}</small></h3>${listHTML(g[t], false)}</div>`).join(""); }
+function entreeHTML(T){ return T.ent.map(c=>BY[c]).filter(Boolean).map(x=>{ const e=(x.e||[])[0];
+  return `<a class="resume entree" href="#d/${x.c}"><small>Pour commencer</small><b>${esc(x.t)}</b>${e?`<span class="ex1">${esc(e1txt(e))}</span>`:""}</a>`; }).join(""); }
 
-/* ---------- accueil ---------- */
+/* ---------- accueil : 8 thèmes ---------- */
 function pcLus(x){ return x.d.filter(c=>P.lu.includes(c)).length; }
 function showHome(){
-  document.documentElement.style.setProperty("--acc", "var(--ink)"); titre("");
+  titre("");
   const m = $("#main");
-  const count = p => DOCS.filter(x=>porteOf(x)===p).length;
-  const c = courant(), ac = ageCourant();
-  /* E1B (maquette F3) : héros + BANQUE SCIENTIFIQUE, puis les portes en cartes illustrées numérotées 01-04 */
-  VX.hero({vis:"heros_savoirs", lab:"Bibliothèque · savoirs", titre:"Banque scientifique", sous:`<b>${DOCS.length}</b> documents`, large:true});
-  let html = `<div class="vx-cards vx-doors c2">${PORTE_ORD.map((p,i)=>VX.carte({href:"#p/"+p, vis:PORTE_VIS[p], n:VX.n2(i+1), t:PORTES[p].n, s:`${count(p)} documents`, k:i===0?"big":i===3?"row":""})).join("")}</div>
-    <p class="msg">Les exercices de chaque ligne sont dans la <a class="ref" href="banque.html">banque d'exercices</a> ; les tests et les bilans dans <a class="ref" href="grilles.html">Grilles et tests</a>.</p>`;
+  const nbs = DOCS.filter(x=>x.th).length, c = courant(), ac = ageCourant();
+  VX.hero({vis:"heros_savoirs", lab:"Bibliothèque · savoirs", titre:"Banque scientifique", sous:`<b>${nbs}</b> documents · 8 thèmes · de 0 à 18 ans`, large:true});
+  let html = `<div class="agerow">${agePill()}<span class="msg">Chaque document âge par âge s'ouvre sur cet âge.</span></div>
+    <div class="vx-cards vx-doors c2">${TH.map(T=>VX.carte({href:"#t/"+T.n, vis:T.v, n:VX.n2(T.n), t:T.t, s:`${T.nb} documents`})).join("")}</div>
+    <p class="msg">La méthode Eliot Gruner est dans le <a class="ref" href="#/ref">Référentiel</a> ; les exercices dans la <a class="ref" href="banque.html">banque d'exercices</a>.</p>`;
   const L = P.last && BY[P.last.c] ? P.last : null;
-  if(L) html += `<div class="sec"><a class="resume" href="#d/${L.c}${L.s?"/"+L.s:""}" style="--pc:${pc(porteOf(BY[L.c]))}"><small>Reprendre où j'en étais</small><b>${esc(nomClair(BY[L.c]))}</b>${L.st?`<span>${esc(L.st)}</span>`:""}</a></div>`;
-  html += `<div class="sec"><h2>Accès direct</h2><div class="quick">
-    <div class="f"><label for="qa">Âge${c&&ac?` · ${esc(prenom(c))}`:""}</label><select id="qa">${["0-3","3",...Array.from({length:15},(_,i)=>String(i+4))].map(a=>`<option value="${a}">${a==="0-3"?"0 à 3 ans":a+" ans"}</option>`).join("")}</select></div>
-    <div class="f"><label for="qd">Domaine</label><select id="qd"><option value="AGE">Tout l'âge (document de l'âge)</option><option value="PP">Préparation physique</option><option value="GE">Biomécanique du geste</option><option value="DE">Biomécanique du déplacement</option></select></div>
-    <div class="f" id="qlw" style="flex:1;min-width:200px"><label for="ql">Ligne</label><select id="ql"></select></div>
-    <button class="go" id="qgo" type="button">Ouvrir</button><button class="ib" id="qline" type="button">Tout sur cette ligne</button></div></div>`;
-  html += `<div class="sec"><h2>Par ligne de grille</h2><p class="msg" style="margin:-4px 0 8px">Tous les documents d'une ligne : comprendre, âge par âge, séances, biomécanique, tests.</p>${["PP","GE","DE"].map(d=>`<details class="fold" style="--pc:${LCOL[d]}" ${d==="PP"?"open":""}><summary style="cursor:pointer;font-weight:600;padding:6px 0">${DOMN[d]}</summary><div class="lgrid">${LIGNES[d].map((n,i)=>`<a href="#/l/${d}${i+1}${ac?`?a=${ac}`:""}">${esc(n)}</a>`).join("")}</div></details>`).join("")}</div>`;
+  if(L) html += `<div class="sec"><a class="resume" href="#d/${L.c}${L.s?"/"+L.s:""}"><small>Reprendre où j'en étais</small><b>${esc(nomClair(BY[L.c]))}</b>${L.st?`<span>${esc(L.st)}</span>`:""}</a></div>`;
   const favs = P.fav.filter(c=>BY[c]), recs = P.rec.filter(c=>BY[c]).slice(0,8);
   html += `<div class="sec"><h2>Favoris</h2>${favs.length ? listHTML(favs.map(c=>BY[c]), true) : '<div class="empty">Touche ☆ en haut d\'un document pour le retrouver ici.</div>'}</div>`;
   if(recs.length) html += `<div class="sec"><h2>Consultés récemment</h2>${listHTML(recs.map(c=>BY[c]), true)}</div>`;
-  /* E1B-vérif : plus de parcours proposé à l'ouverture (demande d'Eliot) ; les parcours de lecture restent dans « Plus d'options » */
-  html += `<details class="grun-plus"><summary>Plus d'options</summary><div class="grun-plusb"><h2 class="plus-h">Parcours de lecture</h2><div class="pcs">${PARCOURS.map((x,i)=>{ const n=pcLus(x), t=x.d.length;
-      return `<a class="pcx" href="#/parcours/${x.id}" style="--pc:var(${x.c})"><span class="n2">${VX.n2(i+1)}</span><b>${esc(x.n)}</b><span>${esc(x.s)}</span><small class="${n===t?"ok":""}">${n===t?"✓ Lu en entier":n?`${n} sur ${t} lus`:`${t} documents`}</small><div class="pbar"><i style="width:${Math.round(n/t*100)}%"></i></div></a>`; }).join("")}</div><div class="tools" style="margin-top:14px">
+  /* parcours de lecture, accès par ligne de grille et outils : dans « Plus d'options » */
+  html += `<details class="grun-plus"><summary>Plus d'options</summary><div class="grun-plusb"><h2 class="plus-h">Parcours de lecture</h2><div class="pcs">${PARCOURS.map((x,i)=>{ const n=pcLus(x), t=x.d.filter(c=>BY[c]).length;
+      return `<a class="pcx" href="#/parcours/${x.id}"><span class="n2">${VX.n2(i+1)}</span><b>${esc(x.n)}</b><span>${esc(x.s)}</span><small class="${n===t?"ok":""}">${n===t?"✓ Lu en entier":n?`${n} sur ${t} lus`:`${t} documents`}</small><div class="pbar"><i style="width:${Math.round(n/t*100)}%"></i></div></a>`; }).join("")}</div>
+    <h2 class="plus-h" style="margin-top:18px">Accès direct</h2><div class="quick">
+    <div class="f"><label for="qa">Âge${c&&ac?` · ${esc(prenom(c))}`:""}</label><select id="qa">${["0",...Array.from({length:15},(_,i)=>String(i+4))].map(a=>`<option value="${a}">${a==="0"?"0 à 3 ans":a+" ans"}</option>`).join("")}</select></div>
+    <div class="f"><label for="qd">Domaine</label><select id="qd"><option value="AGE">Portrait de l'âge</option><option value="PP">Préparation physique</option><option value="GE">Technique · les coups</option><option value="DE">Technique · les déplacements</option></select></div>
+    <div class="f" id="qlw" style="flex:1;min-width:200px"><label for="ql">Ligne</label><select id="ql"></select></div>
+    <button class="go" id="qgo" type="button">Ouvrir</button><button class="ib" id="qline" type="button">Tout sur cette ligne</button></div>
+    <h2 class="plus-h" style="margin-top:18px">Par ligne de grille</h2><p class="msg" style="margin:-4px 0 8px">Tous les documents d'une ligne : comprendre, âge par âge, séances, tests.</p>${["PP","GE","DE"].map(d=>`<details class="fold" ${d==="PP"?"open":""}><summary style="cursor:pointer;font-weight:600;padding:6px 0">${DOMN[d]}</summary><div class="lgrid">${LIGNES[d].map((n,i)=>`<a href="#/l/${d}${i+1}${ac?`?a=${ac}`:""}">${esc(n)}</a>`).join("")}</div></details>`).join("")}
+    <div class="tools" style="margin-top:14px">
      <button class="ib" id="bsave" type="button">${GR&&GR.TXT?GR.TXT.sauver:"Tout sauvegarder"}</button>
      <label class="ib" for="frest">${GR&&GR.TXT?GR.TXT.restaurer:"Restaurer une sauvegarde"}</label><input id="frest" type="file" accept=".json,application/json" hidden>
      <button class="ib" id="fsm" type="button" aria-label="Texte plus petit">A−</button><button class="ib" id="fsp" type="button" aria-label="Texte plus grand">A+</button>
-     <a class="ib" href="${RADAR}">Profil radar</a></div><p class="msg" id="dmsg">Une seule sauvegarde pour tout GRÜN (favoris, notes et parcours de la veille compris). Les anciennes sauvegardes Veille_favoris_notes_….json sont acceptées.</p></div></details>`;
+     <a class="ib" href="${RADAR}">Profil radar</a></div><p class="msg" id="dmsg">Une seule sauvegarde pour tout GRÜN (favoris, notes et parcours de la banque scientifique compris). Les anciennes sauvegardes Veille_favoris_notes_….json sont acceptées.</p></div></details>`;
   m.innerHTML = html;
-  const qa=$("#qa"), qd=$("#qd"), ql=$("#ql");
-  if(![...qa.options].some(o=>o.value===P.age)) P.age="10"; qa.value = ac ? String(ac) : P.age; qd.value=P.dom;
+  $("#agep").onclick = choisirAge;
+  const qa=$("#qa"), qd=$("#qd"), ql=$("#ql"), as = ageSel();
+  if(![...qa.options].some(o=>o.value===P.age)) P.age="10"; qa.value = as ? String(as.age<4?0:as.age) : ac ? String(ac) : P.age; qd.value=P.dom;
   const fill=()=>{ const d=qd.value; $("#qlw").hidden = d==="AGE"; const L = d==="PP"?PP : d==="GE"?GE.map(x=>x[0]) : d==="DE"?DE : [];
     ql.innerHTML = L.map((n,i)=>`<option value="${i}">${i+1} · ${esc(n)}</option>`).join(""); if(+P.ligne < L.length) ql.value=P.ligne; };
   fill(); qd.onchange=()=>{ P.ligne="0"; fill(); };
   $("#qgo").onclick=()=>{ P.age=qa.value; P.dom=qd.value; P.ligne=ql.value||"0"; save(); quickGo(qa.value, qd.value, +ql.value); };
   $("#qline").hidden = qd.value==="AGE"; qd.addEventListener("change",()=>{ $("#qline").hidden = qd.value==="AGE"; });
-  $("#qline").onclick=()=>{ if(qd.value==="AGE") return; P.age=qa.value; P.dom=qd.value; P.ligne=ql.value||"0"; save(); location.hash=`/l/${qd.value}${(+ql.value||0)+1}`+(/^\d+$/.test(qa.value)?`?a=${qa.value}`:""); };
+  $("#qline").onclick=()=>{ if(qd.value==="AGE") return; P.age=qa.value; P.dom=qd.value; P.ligne=ql.value||"0"; save(); location.hash=`/l/${qd.value}${(+ql.value||0)+1}`+(+qa.value>=4?`?a=${qa.value}`:""); };
   $("#bsave").onclick=exportData; $("#frest").onchange=importData;
   $("#fsm").onclick=()=>setFs(-1); $("#fsp").onclick=()=>setFs(1);
+}
+/* ---------- un thème : document d'entrée, puis rubriques (ou documents rangés par type) ---------- */
+function showTheme(n){
+  const T = TH[n-1]; if(!T) return showHome();
+  titre(T.t);
+  VX.hero({vis:T.v, lab:`Banque scientifique · ${T.nb} documents`, titre:T.t, sous:esc(T.s), bas:true});
+  let html = entreeHTML(T);
+  if(T.plat) html += parType(T.rub.flatMap(R=>R.docs));
+  else html += `<div class="sec"><h2>Rubriques<small>${T.rub.length}</small></h2><div class="list">${T.rub.map((R,i)=>{ const tys = TYO.filter(t=>R.docs.some(c=>BY[c]&&BY[c].ty===t)).map(t=>TYL[t].toLowerCase());
+      return `<a class="li rubl" href="#r/${R.id}"><span class="code">${VX.n2(i+1)}</span><span class="tt">${esc(R.t)}<small>${R.docs.length} document${R.docs.length>1?"s":""} · ${esc(tys.join(", "))}</small></span></a>`; }).join("")}</div></div>`;
+  $("#main").innerHTML = html;
+}
+/* ---------- une rubrique : comprendre · âge par âge · séances types · autres ---------- */
+function showRub(id){
+  const R = RUB[id]; if(!R) return showHome(); const T = TH[R.th-1];
+  if(T.plat) { location.replace("#t/"+T.n); return; }
+  titre(R.t);
+  VX.hero({vis:T.v, lab:T.t, titre:R.t, sous:`${R.docs.length} document${R.docs.length>1?"s":""}`, bas:true});
+  $("#main").innerHTML = parType(R.docs) + `<p class="msg" style="margin-top:16px"><a class="ref" href="#t/${T.n}">‹ Toutes les rubriques · ${esc(T.t)}</a></p>`;
+}
+/* ---------- Référentiel : la méthode Eliot Gruner (ME.1 à ME.10), à lire en entier ---------- */
+function showRef(){
+  titre("Référentiel"); document.title = "Référentiel · GRÜN";
+  const ds = REF.map(c=>BY[c]).filter(Boolean), n = ds.filter(x=>P.lu.includes(x.c)).length, suiv = ds.find(x=>!P.lu.includes(x.c));
+  VX.hero({vis:"marches", lab:"Bibliothèque · référentiel", titre:"Méthode Eliot Gruner", sous:`La méthode du joueur de tennis de <b>0 à 18 ans</b>, en ${ds.length} chapitres`, large:true});
+  const e = ds[0] ? (ds[0].e||[]) : [];
+  $("#main").innerHTML = `${e.length?`<section class="vx-ess refess"><span class="vx-lt">La méthode en bref</span>${e.slice(0,3).map((p,i)=>`<div class="vx-pt"><i>${VX.n2(i+1)}</i><span>${p[0]?`<b>${esc(p[0])}</b> `:""}${esc(p[1])}</span></div>`).join("")}</section>`:""}
+    <div class="sec"><h2>Sommaire<small>${n?`${n} sur ${ds.length} lus`:`${ds.length} chapitres`}</small></h2>
+    <ol class="steps chap">${ds.map((x,i)=>{ const lu=P.lu.includes(x.c), e1=(x.e||[])[0];
+      return `<li class="${lu?"lu":""}"><a href="#d/${x.c}"><span class="cv">${window.GRUN_VIS?GRUN_VIS.svg(ME_VIS[x.c]||"marches",{par:"xMidYMid meet"}):""}</span><span class="n">${lu?"✓":i+1}</span><span class="tt"><b>${esc(x.t)}</b>${e1?`<span>${esc(e1txt(e1))}</span>`:""}${suiv&&x.c===suiv.c&&n?`<em>À lire maintenant</em>`:""}</span></a></li>`; }).join("")}</ol></div>
+    <div class="sec"><h2>Les saisons de référence</h2><div class="vx-cards c2">${VX.carte({href:"saisons.html", vis:"calendrier", t:"Saisons de référence", s:"Une saison type par âge, filles et garçons, semaine par semaine", k:"row"})}</div></div>
+    ${actbar(suiv ? (n ? "Continuer : " : "Lire la méthode : ") + (n ? suiv.t : "chapitre 1") : "Relire depuis le début", "#d/"+(suiv||ds[0]||{c:""}).c)}`;
 }
 /* ---------- parcours de lecture ---------- */
 function showParcours(id){
   const x = PCB[id]; if(!x) return showHome();
-  document.documentElement.style.setProperty("--acc", `var(${x.c})`); titre("Parcours · "+x.n);
+  titre("Parcours · "+x.n);
   P.pc = id; save();
   const ds = x.d.filter(c=>BY[c]), n = pcLus(x), suiv = ds.find(c=>!P.lu.includes(c));
-  const m = $("#main"); m.style.setProperty("--pc", `var(${x.c})`);
+  const m = $("#main");
   VX.hero({vis:"marches", lab:"Parcours de lecture", titre:x.n, sous:esc(x.s), bas:true});
   m.innerHTML = `<p class="msg" style="margin-top:0">${n===ds.length?"✓ Parcours lu en entier.":n?`${n} sur ${ds.length} documents lus.`:`${ds.length} documents · l'essentiel de chacun se lit en 30 secondes.`}</p>
     <ol class="steps">${ds.map((c,i)=>{ const d=BY[c], lu=P.lu.includes(c), e=(d.e||[])[0];
-      return `<li class="${lu?"lu":""}"><a href="#d/${c}"><span class="n">${lu?"✓":i+1}</span><span class="tt"><b>${esc(nomClair(d))}</b>${e?`<span>${esc((e[0]?e[0]+" ":"")+e[1])}</span>`:""}${c===suiv?`<em>À lire maintenant</em>`:""}</span></a></li>`; }).join("")}</ol>
+      return `<li class="${lu?"lu":""}"><a href="#d/${c}"><span class="n">${lu?"✓":i+1}</span><span class="tt"><b>${esc(nomClair(d))}</b>${e?`<span>${esc(e1txt(e))}</span>`:""}${c===suiv?`<em>À lire maintenant</em>`:""}</span></a></li>`; }).join("")}</ol>
     ${x.plus?`<p class="msg" style="margin-top:12px">Et ensuite : <a class="ref" href="${x.plus[0]}">${esc(x.plus[1])}</a></p>`:""}
     ${n?`<details class="grun-plus"><summary>Plus d'options</summary><div class="grun-plusb"><div class="tools"><button class="ib" id="praz" type="button">Remettre ce parcours à zéro</button></div></div></details>`:""}
     ${actbar(suiv ? (n ? "Continuer : " : "Commencer : ")+nomClair(BY[suiv]) : "Relire depuis le début", "#d/"+(suiv||ds[0]))}`;
@@ -858,30 +969,20 @@ function showParcours(id){
     if(GR&&GR.ui&&GR.ui.annuler) GR.ui.annuler("Parcours remis à zéro", ()=>{ P.lu = av; save(); showParcours(id); }); };
 }
 function setFs(d){ P.fs=Math.max(14,Math.min(24,P.fs+d)); save(); document.documentElement.style.setProperty("--fs",P.fs+"px"); const m=$("#dmsg"); if(m) m.textContent="Taille du texte des documents : "+P.fs+" px."; }
+/* accès direct : portrait de l'âge, ou le document âge par âge d'une ligne, ouvert à cet âge */
 function quickGo(age, dom, i){
-  const ageCode = {"0-3":"1.1.1","3":"1.1.2"}[age] || ("1.1."+(Math.min(18,+age||10)-1));
-  let code = ageCode;
-  if(dom==="PP") code = `2.${i+1}.2`;
-  if(dom==="GE") code = GE[i][1];
-  if(dom==="DE") code = `3.20.${i+1}`;
-  location.hash = `d/${code}` + (dom!=="AGE" && /^\d+$/.test(age) ? `/a${age}` : "");
+  let code = "EN.1.8";
+  if(dom==="PP") code = `PP.${i+1}.2`;
+  if(dom==="GE") code = ((LV.L["GE"+(i+1)]||{}).a||[])[0] || GE[i][1];
+  if(dom==="DE") code = ((LV.L["DE"+(i+1)]||{}).c||[])[0] || `TE.9.${i+2}`;
+  location.hash = `d/${code}` + (/^\d+$/.test(age) ? `/a${age}` : "");
 }
 function listHTML(xs, withPath){
-  return `<div class="list">${xs.map(x=>`<a class="li hasx" href="#d/${x.c}"><span class="code cx">${x.c}</span><span class="tt">${esc(x.t)}${withPath?`<small>${esc(x.d.replace(/^\d+(\.\d+)?\s/,""))}</small>`:""}</span></a>`).join("")}</div>`;
+  return `<div class="list">${xs.map(x=>`<a class="li hasx" href="#d/${x.c}"><span class="code cx">${x.c}</span><span class="tt">${esc(x.t)}${withPath?`<small>${esc(x.th ? thNom(x) + (x.d && x.d!==thNom(x) ? " › " + x.d : "") : "Référentiel · Méthode Eliot Gruner")}</small>`:""}</span></a>`).join("")}</div>`;
 }
 
-/* ---------- porte ---------- */
-function showPorte(p){
-  if(!PORTES[p]) return showHome();
-  document.documentElement.style.setProperty("--acc", pc(p));
-  const xs = DOCS.filter(x=>porteOf(x)===p), groups = {};
-  xs.forEach(x=>{ (groups[x.d] = groups[x.d] || []).push(x); });
-  titre(PORTES[p].n);
-  VX.hero({vis:DOC_VIS[p][0], large:DOC_VIS[p][1], lab:`Banque scientifique · ${xs.length} documents`, titre:PORTES[p].n, sous:esc(PORTES[p].s), bas:true});
-  let html = "";
-  html += Object.entries(groups).map(([d,arr])=>`<div class="fold" style="--pc:${pc(p)}"><h3>${esc(d)}</h3>${listHTML(arr,false)}</div>`).join("");
-  $("#main").innerHTML = html;
-}
+/* ---------- anciennes portes (v3) : redirigées vers leur thème ---------- */
+function showPorte(p){ if(PORTES[p]) { location.replace("#t/"+PORTES[p]); return; } if(TH[+p-1]) { location.replace("#t/"+p); return; } showHome(); }
 
 /* ---------- document ---------- */
 function showDoc(code, hint){
@@ -889,33 +990,40 @@ function showDoc(code, hint){
   if(x.h==null){ const h0 = location.hash, tm = setTimeout(()=>{ if(location.hash===h0) $("#main").innerHTML = '<div class="load">Ouverture du document…</div>'; }, 150);
     const ko = ()=>{ clearTimeout(tm); if(location.hash===h0) $("#main").innerHTML = '<div class="empty">Ce document n\'a pas pu se charger. Vérifie la connexion pour la première ouverture, puis réessaie.</div>'; };
     paquet(x.k).then(()=>{ if(x.h==null) return ko(); clearTimeout(tm); if(location.hash===h0) showDoc(code, hint); }, ko); return; }
-  const p = porteOf(x); document.documentElement.style.setProperty("--acc", pc(p));
+  const ref = !x.th, T = ref ? null : TH[x.th-1], R = x.r ? RUB[x.r] : null;
   P.rec = [code, ...P.rec.filter(c=>c!==code)].slice(0,20); if(!P.lu.includes(code)) P.lu.push(code); save(); titre(nomClair(x));
-  const sib = DOCS.filter(y=>y.d===x.d), k = sib.indexOf(x), prev = sib[k-1], next = sib[k+1];
+  if(ref) document.title = x.t + " · Référentiel";
+  const sib = (ref ? REF : T.plat ? docsTheme(T).map(y=>y.c) : R ? R.docs : [code]).map(c=>BY[c]).filter(Boolean), k = sib.indexOf(x), prev = sib[k-1], next = sib[k+1];
   const fav = P.fav.includes(code);
   const pcx = P.pc && PCB[P.pc] && PCB[P.pc].d.includes(code) ? PCB[P.pc] : null, pk = pcx ? pcx.d.indexOf(code) : -1, pnext = pcx ? BY[pcx.d[pk+1]] : null;
-  const lsx = [...new Set((REV[code]||[]).map(y=>y[0]))], ageDoc = hint && hint.startsWith("a") ? +hint.slice(1) : (ageCourant() || (/^\d+$/.test(P.age) ? +P.age : 10));
-  const m = $("#main"); m.style.setProperty("--pc", pc(p));
-  /* E1B (maquette F4) : héros avec le visuel du domaine, « DOMAINE · THÈME », titre ; onglets segmentés quand le thème a plusieurs documents ;
-     « L'essentiel » du document en carte numérotée 01, 02… (le résumé « en 30 secondes » qui le répétait n'est plus affiché ici) */
-  const theme = x.d.replace(/^\d+(\.\d+)*\s/,"").replace(/^Ligne \d+ · /,"");
-  VX.hero({vis:DOC_VIS[p][0], large:DOC_VIS[p][1], lab:`${PORTES[p].n} · ${theme}`, titre:x.t, bas:true});
-  const ong = sib.length>=2 && sib.length<=4 && sib.every(y=>ONG(y.t)) ? sib : null;
-  m.innerHTML = `<div class="vdoc">
-    ${ong?`<nav class="vx-seg" aria-label="Documents du thème">${ong.map(y=>`<a href="#d/${y.c}"${y===x?' aria-current="page"':""}>${esc(ONG(y.t))}</a>`).join("")}</nav>`:""}
+  const lsx = [...new Set((REV[code]||[]).map(y=>y[0]))];
+  const ah = hint && /^a\d+$/.test(hint) ? +hint.slice(1) : null, as = ageSel();
+  const ageDoc = ah != null ? Math.max(4, Math.min(18, ah)) : ageAppli();
+  const m = $("#main"); m.style.setProperty("--pc", pc(x.th));
+  /* héros : visuel du thème (ou du chapitre), « THÈME · RUBRIQUE », titre */
+  const lab = ref ? `Référentiel · chapitre ${REF.indexOf(code)+1} sur ${REF.length}` : (x.d && x.d!==T.t ? `${T.t} · ${x.d}` : T.t);
+  VX.hero({vis:ref ? (ME_VIS[code]||"marches") : T.v, lab, titre:x.t, bas:true});
+  const ong = !ref && R && !T.plat && sib.length>=2 && sib.length<=4 && sib.every(y=>ONG(y.ty)) && new Set(sib.map(y=>y.ty)).size===sib.length ? sib : null;
+  const ageBar = x.ag ? `<div class="agebar"><span>${ah!=null ? "Ouvert sur" : as ? "Ouvert sur l'âge choisi" : "Ouvrir à un âge"}</span>${ah!=null ? `<b>${ah<4?"0-3":ah} ans</b>` : agePill("agep2")}</div>` : "";
+  m.innerHTML = `<div class="vdoc${ref?" vref":""}">
+    ${ong?`<nav class="vx-seg" aria-label="Documents de la rubrique">${ong.map(y=>`<a href="#d/${y.c}"${y===x?' aria-current="page"':""}>${esc(ONG(y.ty))}</a>`).join("")}</nav>`:""}
     <div class="vacts"><button class="ib star" id="fav" type="button" aria-pressed="${fav}">${fav?"★ Favori":"☆ Favori"}</button>
-    ${pcx?`<div class="pcbar">Parcours <a href="#/parcours/${pcx.id}">${esc(pcx.n)}</a><span>étape ${pk+1} sur ${pcx.d.length}</span></div>`:""}<span class="crumb xp">${esc(x.ch||"")} · document ${x.c}</span></div>
+    ${pcx?`<div class="pcbar">Parcours <a href="#/parcours/${pcx.id}">${esc(pcx.n)}</a><span>étape ${pk+1} sur ${pcx.d.length}</span></div>`:""}<span class="crumb xp">${esc(x.ch||"")} · ${x.c}</span></div>
+    ${ageBar}
     <div id="vlines">${linesBox(code, ageDoc)}</div>
     <details class="toc" id="toc" hidden></details>
     <article class="doc" id="doc"></article>
-    <div class="pn">${prev?`<a href="#d/${prev.c}"><small>‹ Précédent</small>${esc(prev.t)}</a>`:"<span></span>"}${next?`<a class="nx" href="#d/${next.c}"><small>Suivant ›</small>${esc(next.t)}</a>`:"<span></span>"}</div>
+    <div class="pn">${prev?`<a href="#d/${prev.c}"><small>‹ ${ref?"Chapitre précédent":"Précédent"}</small>${esc(prev.t)}</a>`:"<span></span>"}${next?`<a class="nx" href="#d/${next.c}"><small>${ref?"Chapitre suivant":"Suivant"} ›</small>${esc(next.t)}</a>`:"<span></span>"}</div>
     <div class="notes"><label for="nt" style="font-weight:600">Mes notes sur ce document</label><textarea id="nt" placeholder="Idées, joueurs concernés, à tester…"></textarea><div class="msg" id="ntm"></div></div>
     <details class="grun-plus"><summary>Plus d'options</summary><div class="grun-plusb"><div class="tools">
       <button class="ib" id="fsm" type="button" aria-label="Texte plus petit">A−</button><button class="ib" id="fsp" type="button" aria-label="Texte plus grand">A+</button>
-      <a class="ib" href="#p/${p}">Tous les documents · ${esc(PORTES[p].n)}</a></div><p class="msg" id="dmsg"></p></div></details></div>
+      <button class="ib" id="tout" type="button">Tout déplier</button>
+      ${ref?`<a class="ib" href="#/ref">Sommaire de la méthode</a>`:`<a class="ib" href="#${R&&!T.plat?"r/"+R.id:"t/"+T.n}">Tous les documents · ${esc(R&&!T.plat?R.t:T.t)}</a>`}</div><p class="msg" id="dmsg"></p></div></details></div>
     ${pcx ? (pnext ? actbar("Étape suivante : "+nomClair(pnext), "#d/"+pnext.c) : actbar("Parcours terminé · revoir les étapes", "#/parcours/"+pcx.id))
+      : ref ? (next ? actbar("Chapitre suivant : "+next.t, "#d/"+next.c) : actbar("Sommaire de la méthode", "#/ref"))
       : lsx.length && lsx.length<=4 ? actbar("Créer une séance · "+ligNom(lsx[0]), ()=>0) : next ? actbar("Suivant : "+nomClair(next), "#d/"+next.c) : ""}`;
   const am = $("#actmain"); if(am){ am.dataset.sess = lsx[0]; am.dataset.age = ageDoc; }
+  const ap = $("#agep2"); if(ap) ap.onclick = choisirAge;
   // structure : L'essentiel encadré, Le détail en sections dépliables
   const doc = $("#doc"); const tmp = document.createElement("div"); tmp.innerHTML = x.h;
   tmp.querySelectorAll("table").forEach(t=>{ const w=document.createElement("div"); w.className="tw"; t.replaceWith(w); w.appendChild(t); });
@@ -924,6 +1032,8 @@ function showDoc(code, hint){
     if(node.nodeName==="H2"){
       const t = fold(node.textContent);
       if(t.includes("essentiel")){ cur = document.createElement("section"); cur.className="ess"; cur.appendChild(node); doc.appendChild(cur); mode="ess"; continue; }
+      if(/^exercices et renvois/.test(t)) node.textContent = "Exercices et renvois";
+      else if(/^le detail/.test(t)) node.textContent = "Le détail";
       mode = "det"; doc.appendChild(node); cur = doc; continue;
     }
     if(node.nodeName==="H3" && mode!=="ess"){
@@ -937,10 +1047,11 @@ function showDoc(code, hint){
   const essS = doc.querySelector("section.ess");
   if(essS){ const ul = essS.querySelector(":scope > ul"); if(ul) ul.classList.add("vx-nl"); const h2 = essS.querySelector("h2"); if(h2) h2.textContent = "L'essentiel";
     essS.after($("#vlines")); $("#vlines").after($("#toc")); }
-  if(sections.length>2){ const toc=$("#toc"); toc.hidden=false; toc.open = matchMedia("(min-width:900px)").matches;
+  if(sections.length>2){ const toc=$("#toc"); toc.hidden=false; toc.open = ref || matchMedia("(min-width:900px)").matches;
     toc.innerHTML = `<summary>Sommaire · ${sections.length} sections</summary><ol>${sections.map(([id,t])=>`<li><a href="#d/${code}/${id}" data-s="${id}">${esc(t.replace(/^\d+\.\s*/,""))}</a></li>`).join("")}</ol>`;
     toc.onclick = e=>{ const a=e.target.closest("a[data-s]"); if(!a) return; e.preventDefault(); history.replaceState(null,"","#d/"+code+"/"+a.dataset.s); ouvrirSection(a.dataset.s); }; }
-  if(sections.length===1){ doc.querySelector("details").open = true; }
+  if(sections.length===1 || ref){ doc.querySelectorAll("details").forEach(d=>d.open = true); }   /* Méthode : lisible en entier, tout est déplié */
+  $("#tout").onclick = ()=>{ const ds=[...doc.querySelectorAll("details")], o=ds.some(d=>!d.open); ds.forEach(d=>d.open=o); $("#tout").textContent = o ? "Tout replier" : "Tout déplier"; };
   if(window.GRUN&&GRUN.clair) GRUN.clair(document.getElementById("doc"));   /* lignes de grille en clair (mode simple) */
   refsClaires(doc);
   // favoris, taille, notes
@@ -951,12 +1062,13 @@ function showDoc(code, hint){
   // reprendre : dernière section ouverte de ce document
   P.last = {c:code, s:null, st:""}; save();
   doc.addEventListener("toggle", e=>{ const d=e.target; if(d.tagName!=="DETAILS"||!d.open||!/^s\d+$/.test(d.id)) return; P.last={c:code, s:d.id, st:d.querySelector("summary").dataset.t||d.querySelector("summary").textContent.replace(/^\d+\.\s*/,"")}; save(); }, true);
-  // aller à un âge, à une section ou surligner une recherche
+  // aller à une section, à un âge (adresse, sinon âge choisi de la Bibliothèque) ou surligner une recherche
   if(hint && /^s\d+$/.test(hint)) ouvrirSection(hint);
-  else if(hint && hint.startsWith("a")) goAge(+hint.slice(1));
+  else if(ah != null) goAge(ah, as && as.sexe);
   else if(hint && hint.startsWith("q")) highlight(hint.slice(1));
+  else if(x.ag && as) goAge(as.age, as.sexe);
 }
-/* renvois « 2.4.1 » : en mode simple, le code laisse place au nom du document (le code reste visible en mode expert) */
+/* renvois « PP.6.1 » : en mode simple, le code laisse place au nom du document (le code reste visible en mode expert) */
 function refsClaires(root){
   root.querySelectorAll("a.ref[href^='#d/']").forEach(a=>{ const c=a.getAttribute("href").slice(3), y=BY[c]; if(!y || a.textContent.trim()!==c) return;
     const nx = a.nextSibling, t = nx && nx.nodeType===3 ? nx.nodeValue : "";
@@ -982,28 +1094,41 @@ function linesBox(code, age){
 /* ---------- documents d'une ligne de grille ---------- */
 function showLigne(l, am){
   if(!okLig(l)) return showHome();
-  const age = am ? Math.max(4, Math.min(18, +am[1])) : (ageCourant() || (/^\d+$/.test(P.age) ? +P.age : null)); titre(ligNom(l));
+  const age = am ? Math.max(4, Math.min(18, +am[1])) : (ageCourant() || (ageSel() ? ageAppli() : null)); titre(ligNom(l));
   const d = l.slice(0,2), col = LCOL[d], g = (LV.L||{})[l] || {}, G = LV.g || {};
-  document.documentElement.style.setProperty("--acc", col);
-  const lst = cs => `<div class="list">${cs.filter(c=>BY[c]).map(c=>{ const x=BY[c]; return `<a class="li hasx" href="#d/${c}${(g.a||[]).includes(c)&&age?`/a${age}`:""}"><span class="code cx">${c}</span><span class="tt">${esc(x.t)}<small>${esc(x.d.replace(/^\d+(\.\d+)?\s/,""))}</small></span></a>`; }).join("")}</div>`;
-  const order = [["c","Comprendre"],["a","Âge par âge"],["s","Séances et routines"],["b","Biomécanique et liens"],["t","Tests et évaluation"]];
+  const lst = cs => `<div class="list">${cs.filter(c=>BY[c]).map(c=>{ const x=BY[c]; return `<a class="li hasx" href="#d/${c}${(g.a||[]).includes(c)&&age?`/a${age}`:""}"><span class="code cx">${c}</span><span class="tt">${esc(x.t)}<small>${esc(thNom(x)+(x.d&&x.d!==thNom(x)?" › "+x.d:""))}</small></span></a>`; }).join("")}</div>`;
+  const order = [["c","Comprendre"],["a","Âge par âge"],["s","Séances et routines"],["t","Tests et évaluation"],["b","Pour aller plus loin"]];
   const m = $("#main"); m.style.setProperty("--pc", col);
   VX.hero({vis:d==="PP"?"physique":"technique", lab:`${DOMN[d]} · ligne ${+l.slice(2)}`, titre:ligNom(l), sous:"Comprendre, situer l'âge, entraîner, évaluer", bas:true});
   m.innerHTML = `<div class="lines"><div class="lrow"><a class="lk pri" href="banque.html#/l/${l}${age?`?a=${age}`:""}">Exercices de cette ligne${age?` · ${age} ans`:""}</a><a class="lk" href="#" data-sess="${l}" data-age="${age||""}">Créer une séance</a><a class="lk" href="grilles.html#/ligne/${l}/G/${age||10}">Grille garçons ${age||10} ans</a><a class="lk" href="grilles.html#/ligne/${l}/F/${age||10}">Grille filles ${age||10} ans</a></div></div>
-   ${order.filter(([k])=>(g[k]||[]).some(c=>BY[c])).map(([k,t])=>`<div class="fold" style="--pc:${col}"><h3>${esc(G[k]||t)}</h3>${lst(g[k])}</div>`).join("") || '<div class="empty" style="margin-top:12px">Aucun document lié à cette ligne.</div>'}
+   ${order.filter(([k])=>(g[k]||[]).some(c=>BY[c])).map(([k,t])=>`<div class="fold"><h3>${esc(G[k]||t)}</h3>${lst(g[k])}</div>`).join("") || '<div class="empty" style="margin-top:12px">Aucun document lié à cette ligne.</div>'}
    ${actbar("Créer une séance · "+ligNom(l), ()=>0)}`;
   const am2=$("#actmain"); if(am2){ am2.dataset.sess=l; am2.dataset.age=age||""; }
 }
+/* âge écrit dans un titre de section : « 12-13 ans », « 6 ans », « 0-2 ans », « 16 à 18 ans » (numérotation « 5. » ignorée) */
+function ageRange(t){ const m = /^(?:\d+\.\s*)?(\d{1,2})(?:\s*(?:-|–|à)\s*(\d{1,2}))?\s*ans$/i.exec(String(t).trim()); return m ? [+m[1], +(m[2]||m[1])] : null; }
+const ageDans = (r, age) => age < 4 ? r[0] <= 3 : age >= r[0] && age <= r[1];
 function ageIn(text, age){
   const t = fold(text); if(!/\ban|ans\b/.test(t)) return false;
   const nums = (t.match(/\d+/g)||[]).map(Number).filter(n=>n<=25); if(!nums.length) return false;
   if(/\d+\s*(-|a|à|et)\s*\d+/.test(t) && nums.length>=2){ const lo=Math.min(...nums), hi=Math.max(...nums); return age>=lo && age<=hi; }
   return nums.includes(age);
 }
-function goAge(age){
-  const doc = $("#doc");
+/* ouvre la (les) section(s) de l'âge, la met en évidence ; à l'intérieur, la partie « Filles » ou « Garçons » du sexe choisi */
+function goAge(age, sexe){
+  const doc = $("#doc"); if(!doc) return;
+  doc.querySelectorAll(".age-on").forEach(e=>e.classList.remove("age-on")); doc.querySelectorAll(".sx-on").forEach(e=>e.classList.remove("sx-on")); doc.querySelectorAll(".agetag").forEach(e=>e.remove());
+  /* lignes « âge » des tableaux (L'essentiel, tableaux de synthèse) */
+  doc.querySelectorAll("tr").forEach(tr=>{ const c = tr.cells[0]; const r = c && c.tagName==="TD" ? ageRange(c.textContent.replace(/\s*\(.*\)$/,"")) : null; if(r && ageDans(r, age)) tr.classList.add("age-on"); });
+  const cibles = [...doc.querySelectorAll("details")].filter(d=>{ const r = ageRange(d.querySelector("summary").dataset.t || d.querySelector("summary").textContent); return r && ageDans(r, age); });
+  if(cibles.length){
+    cibles.forEach(d=>{ d.open = true; d.classList.add("age-on"); const s = d.querySelector("summary"); const tag = document.createElement("em"); tag.className = "agetag"; tag.textContent = "Âge choisi"; s.appendChild(tag);
+      if(sexe){ let on = false; for(const n of d.children){ if(n.tagName==="SUMMARY") continue;
+        if(/^H[3-5]$/.test(n.tagName)){ const t = fold(n.textContent.trim()); on = sexe==="F" ? /^(les )?(filles?|jeunes? filles?)\b/.test(t) : /^(les )?(garcons?|jeunes? garcons?)\b/.test(t); }
+        if(on) n.classList.add("sx-on"); } } });
+    const t = cibles[0]; setTimeout(()=>{ t.scrollIntoView({behavior:"smooth",block:"start"}); t.querySelector("summary").classList.add("flash"); },60); return; }
   let target = [...doc.querySelectorAll("details")].find(d=>ageIn(d.querySelector("summary").textContent, age));
-  if(target){ target.open=true; setTimeout(()=>{ target.scrollIntoView({behavior:"smooth",block:"start"}); target.querySelector("summary").classList.add("flash"); },60); return; }
+  if(target){ target.open=true; target.classList.add("age-on"); setTimeout(()=>{ target.scrollIntoView({behavior:"smooth",block:"start"}); target.querySelector("summary").classList.add("flash"); },60); return; }
   const h = [...doc.querySelectorAll("h4,h5")].find(e=>ageIn(e.textContent, age));
   if(h){ const d=h.closest("details"); if(d) d.open=true; setTimeout(()=>{ h.scrollIntoView({behavior:"smooth",block:"center"}); h.classList.add("flash"); },60); return; }
   const td = [...doc.querySelectorAll("td:first-child")].find(e=>ageIn(e.textContent, age));
@@ -1016,10 +1141,9 @@ $("#q").addEventListener("input", e=>{ clearTimeout(sT); const v=e.target.value.
 $("#q").addEventListener("keydown", e=>{ if(e.key==="Enter"){ e.target.blur(); } });
 function terms(q){ return fold(q).split(/\s+/).filter(w=>w.length>=2); }
 function showSearch(q, fini){
-  document.documentElement.style.setProperty("--acc", "var(--ink)");
   const ts = terms(q), m = $("#main");
   if(!ts.length){ showHome(); return; } titre("Recherche « "+q+" »");
-  if(!fini && DOCS.some(x=>x.h==null)){ const h0 = location.hash; if(!m.querySelector(".res")) m.innerHTML = `<h1>Recherche</h1><p class="lead">Recherche de « ${esc(q)} » dans toute la veille…</p>`;
+  if(!fini && DOCS.some(x=>x.h==null)){ const h0 = location.hash; if(!m.querySelector(".res")) m.innerHTML = `<h1>Recherche</h1><p class="lead">Recherche de « ${esc(q)} » dans toute la banque scientifique…</p>`;
     tousPaquets().then(()=>{ if(location.hash===h0) showSearch(q, true); }, ()=>{ if(location.hash===h0) m.innerHTML = '<div class="empty">La recherche n\'a pas pu charger tous les documents. Vérifie la connexion pour la première ouverture, puis réessaie.</div>'; }); return; }
   const res = [], RE = ts.map(motif);
   DOCS.forEach((x,i)=>{ if(x.h==null) return;
@@ -1033,7 +1157,7 @@ function showSearch(q, fini){
   let html = `<h1>Recherche</h1><p class="lead">${res.length ? `${res.length} document${res.length>1?"s":""} pour « ${esc(q)} »${res.length>60?" · les 60 plus pertinents":""}` : `Aucun document ne contient « ${esc(q)} ». Essaie un mot plus court ou un synonyme.`}</p><div class="sec">`;
   html += top.map(r=>{ const x=DOCS[r.i];
     const snip = markTerms(esc(extrait(x, r.first, ts)), ts);
-    return `<a class="res" href="#d/${x.c}/q${encodeURIComponent(q)}" style="--pc:${pc(porteOf(x))}"><div class="t">${esc(x.t)}</div><div class="w"><span class="xp">${x.c} · </span>${PORTES[porteOf(x)].n} › ${esc(x.d.replace(/^\d+(\.\d+)?\s/,""))}</div><div class="s">${snip}</div></a>`; }).join("");
+    return `<a class="res" href="#d/${x.c}/q${encodeURIComponent(q)}"><div class="t">${esc(x.t)}</div><div class="w"><span class="xp">${x.c} · </span>${esc(thNom(x))}${x.d&&x.d!==thNom(x)?" › "+esc(x.d):""}</div><div class="s">${snip}</div></a>`; }).join("");
   m.innerHTML = html + "</div>";
 }
 function markTerms(htmlText, ts){
@@ -1068,9 +1192,9 @@ async function exportData(){
 async function importData(e){
   const f=e.target.files&&e.target.files[0]; e.target.value=""; if(!f) return; const m=$("#dmsg");
   try{ const d=JSON.parse(await f.text());
-    if(window.GRUN && d && d.app==="GRUN" && d.data){ GRUN.importAll(d); P=Object.assign(P, load()); showHome(); $("#dmsg").textContent="Sauvegarde GRÜN restaurée (fusionnée avec les données de l'appareil)."; return; }
+    if(window.GRUN && d && d.app==="GRUN" && d.data){ GRUN.importAll(d); P=Object.assign(P, load()); migrer(); showHome(); $("#dmsg").textContent="Sauvegarde GRÜN restaurée (fusionnée avec les données de l'appareil)."; return; }
     if(d.format!=="veille") throw 0;
-    P.fav=[...new Set([...(d.fav||[]),...P.fav])]; P.notes=Object.assign({},P.notes,d.notes||{}); save(); showHome(); $("#dmsg").textContent="Favoris et notes restaurés."; }
+    P.fav=[...new Set([...(d.fav||[]),...P.fav])]; P.notes=Object.assign({},P.notes,d.notes||{}); migrer(); save(); showHome(); $("#dmsg").textContent="Favoris et notes restaurés."; }
   catch(err){ m.textContent="Ce fichier n'est pas une sauvegarde reconnue (GRUN_sauvegarde_….json ou Veille_favoris_notes_….json)."; }
 }
 

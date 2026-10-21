@@ -73,7 +73,7 @@
     prog: { f: "prog.html", t: "Create my prog", pole: "create", s: "Programmation adaptée au joueur : semaine, cycle ou saison" },
     seances: { f: "seances.html", t: "Create my session", pole: "create", s: "Structure automatique, exercices choisis dans la banque" },
     warmup: { f: "warmup.html", t: "Choose your warm-up", pole: "create", s: "30 échauffements performance prêts à lancer, modifiables" },
-    veille: { f: "veille.html", t: "Veille de connaissances", pole: "res", s: "230 documents : âge, préparation physique, biomécanique, entraîner" },
+    veille: { f: "veille.html", t: "Banque scientifique", pole: "res", s: "Les documents de la méthode en 8 thèmes, de 0 à 18 ans, et le référentiel de la méthode" },
     banque: { f: "banque.html", t: "Banque d'exercices", pole: "res", s: "Tous les exercices, jeux et situations, plus les tiens" },
     saisons: { f: "saisons.html", t: "Référentiel de programmation", pole: "res", s: "Les saisons de référence de la méthode, 4 à 18 ans" },
     grilles: { f: "grilles.html", t: "Grilles et tests", pole: "tests", s: "Grilles de compétences 4-18 ans, tests, barèmes, bilans, profil radar" }
@@ -138,7 +138,7 @@
     const W2 = document.createTreeWalker(root, NodeFilter.SHOW_TEXT), E = [];
     while (W2.nextNode()) { const n = W2.currentNode; if (/\b[A-Z]{3}-\d{4}\b/.test(n.nodeValue) && !(n.parentNode && n.parentNode.closest && n.parentNode.closest("a,code,textarea"))) E.push(n); }
     if (E.length) G.banque.load().then(B => { for (const n of E) { if (!n.parentNode) continue; const f = document.createDocumentFragment(); let last = 0; const t = n.nodeValue;
-      t.replace(/\b[A-Z]{3}-\d{4}\b/g, (id, off) => { const e = B.byId[id]; if (!e) return id; f.appendChild(document.createTextNode(t.slice(last, off))); const a = document.createElement("a"); a.className = "ref"; a.href = G.href("banque", "#/ex/" + id); a.textContent = e.n; f.appendChild(a); last = off + id.length; return id; });
+      t.replace(/\b[A-Z]{3}-\d{4}\b/g, (id0, off) => { const id = B.byId[id0] ? id0 : ((B.al || {})[id0] || id0), e = B.byId[id]; if (!e) return id0; f.appendChild(document.createTextNode(t.slice(last, off))); const a = document.createElement("a"); a.className = "ref"; a.href = G.href("banque", "#/ex/" + id); a.textContent = e.n; f.appendChild(a); last = off + id0.length; return id0; });
       f.appendChild(document.createTextNode(t.slice(last))); n.parentNode.replaceChild(f, n); } }).catch(() => {});
   };
 
@@ -187,7 +187,7 @@
   /* âge civil (entier) et décimal */
   G.ageCiv = (nai, ref) => { if (!nai) return null; const a = new Date(nai), r = new Date(ref || G.today()); let y = r.getFullYear() - a.getFullYear(); if (r.getMonth() < a.getMonth() || (r.getMonth() === a.getMonth() && r.getDate() < a.getDate())) y--; return y; };
   /* adulte : case cochée sur la fiche (j.adulte) ou 19 ans et plus. Grille de référence adulte = 18 ans. */
-  G.adulte = () => false; /* GRÜN = 4-18 ans uniquement (décision du 15 oct. 23 h 12) ; les adultes auront leur propre appli « GRÜN Adulte » */
+  G.adulte = () => false; /* GRÜN = 0-18 ans, aucun adulte (décisions du 15 oct. 23 h 12 et du 20 oct. 21 h 53) ; les adultes auront leur propre appli « GRÜN Adulte » */
   G.ageDec = (nai, ref) => nai ? (new Date(ref || G.today()) - new Date(nai)) / (365.25 * 864e5) : null;
 
   /* ---------- MATURATION (âge biologique) ----------
@@ -304,7 +304,7 @@
     const s = bstore(), byId = {};
     const ex = base.ex.map(e => { const o = s.over[e.id]; const x = o ? { ...e, ...o, modifie: true, orig: e } : e; byId[x.id] = x; return x; });
     for (const p of s.perso) { const x = { ...p, perso: true }; ex.push(x); byId[x.id] = x; }
-    return { ex, fams: base.fams, mat: base.mat, lv: base.lv, byId, fav: s.fav, hide: s.hide };
+    return { ex, fams: base.fams, fams4: base.fams4, al: base.al, mat: base.mat, lv: base.lv, byId, fav: s.fav, hide: s.hide };
   }
   G.banque = {
     async load() { if (!BQP) BQP = fetch("data-banque.json").then(r => r.json()); const base = await BQP; BQ = merge(base); return BQ; },
@@ -431,7 +431,7 @@
     semaine: '<rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4M7.5 14h2M11 14h2M14.5 14h2M7.5 17.5h2M11 17.5h2"/>'
   });
   G.NAVS = {
-    biblio: [["veille", "Savoirs", "veille.html"], ["banque", "Exercices", "banque.html"], ["saisons", "Référentiel", "saisons.html"]],
+    biblio: [["veille", "Savoirs", "veille.html"], ["banque", "Exercices", "banque.html"], ["saisons", "Référentiel", "veille.html#/ref"]],
     outils: [["seances", "Séance", "seances.html"], ["warmup", "Warm-up", "warmup.html"], ["grilles", "Tests", "grilles.html"], ["prog", "Programmation", "prog.html"]],
     club: [],
     perf: [["auj", "Aujourd'hui", "index.html#/perf"], ["joueurs", "Joueurs", "index.html#/joueurs"], ["plus"], ["semaine", "Ma semaine", "index.html#/semaine"]]
@@ -513,17 +513,17 @@
   G.reglages.coach = () => { const c = G.reglages().coach || {}; return { materiel: Array.isArray(c.materiel) ? c.materiel : [], lieu: c.lieu || "", creneaux: Array.isArray(c.creneaux) ? c.creneaux : [], duree: +c.duree || 60, demo: !!c.demo }; };
   G.reglages.setCoach = patch => { const r = G.reglages(); r.coach = { ...G.reglages.coach(), ...patch }; G.save(G.K.reglages, r); return r.coach; };
   G.reglages.set = patch => { const r = { ...G.reglages(), ...patch }; G.save(G.K.reglages, r); return r; };
-  /* ---------- âge et sexe de la Bibliothèque (GRÜN 2.1) : grun_reglages_v1.ageBib = {sexe:"F"|"G", age:4-18} ----------
+  /* ---------- âge et sexe de la Bibliothèque (GRÜN 2.1, 0-18 ans à l'étape 2) : grun_reglages_v1.ageBib = {sexe:"F"|"G", age:0 (= 0-3 ans) | 4-18} ----------
      G.ageBib() → {sexe, age, auto} | null : le choix mémorisé, sinon l'âge et le sexe du joueur en cours (auto:true), sinon null.
-     G.setAgeBib({sexe, age}) mémorise (null efface). G.ageBibTxt() → « Fille · 13 ans » ou « Choisir un âge ».
-     La Banque scientifique s'en servira à l'étape 2 (documents de l'âge choisi). */
+     G.setAgeBib({sexe, age}) mémorise (null efface). G.ageBibTxt() → « Fille · 13 ans », « Garçon · 0-3 ans » ou « Choisir un âge ».
+     La Banque scientifique ouvre chaque document « âge par âge » (et toute section d'âge) sur la section de l'âge choisi. */
   G.ageBib = () => {
-    const a = G.reglages().ageBib; if (a && (a.sexe === "F" || a.sexe === "G") && +a.age >= 4 && +a.age <= 18) return { sexe: a.sexe, age: +a.age, auto: false };
+    const a = G.reglages().ageBib; if (a && (a.sexe === "F" || a.sexe === "G") && a.age != null && a.age !== "" && +a.age >= 0 && +a.age <= 18) return { sexe: a.sexe, age: +a.age < 4 ? 0 : +a.age, auto: false };
     const jid = G.isJoueur() ? G.mode().jid : G.isAutonome() ? G.moi() : (G.courant.get() && G.courant.get().t === "j" ? G.courant.get().id : null);
     const j = jid && G.joueurs.get(jid), n = j && G.ageCiv(j.naissance);
-    return j && n != null ? { sexe: j.sexe === "F" ? "F" : "G", age: Math.max(4, Math.min(18, n)), auto: true } : null; };
-  G.setAgeBib = o => { const r = G.reglages(); if (o && (o.sexe === "F" || o.sexe === "G") && +o.age >= 4 && +o.age <= 18) r.ageBib = { sexe: o.sexe, age: +o.age }; else delete r.ageBib; G.save(G.K.reglages, r); return G.ageBib(); };
-  G.ageBibTxt = () => { const a = G.ageBib(); return a ? (a.sexe === "F" ? "Fille" : "Garçon") + " · " + a.age + " ans" : "Choisir un âge"; };
+    return j && n != null ? { sexe: j.sexe === "F" ? "F" : "G", age: n < 4 ? 0 : Math.min(18, n), auto: true } : null; };
+  G.setAgeBib = o => { const r = G.reglages(); if (o && (o.sexe === "F" || o.sexe === "G") && o.age != null && o.age !== "" && +o.age >= 0 && +o.age <= 18) r.ageBib = { sexe: o.sexe, age: +o.age < 4 ? 0 : +o.age }; else delete r.ageBib; G.save(G.K.reglages, r); return G.ageBib(); };
+  G.ageBibTxt = () => { const a = G.ageBib(); return a ? (a.sexe === "F" ? "Fille" : "Garçon") + " · " + (a.age < 4 ? "0-3" : a.age) + " ans" : "Choisir un âge"; };
   /* prochain créneau habituel à partir d'aujourd'hui : {date, h, duree} | null */
   G.reglages.prochainCreneau = () => { const C = G.reglages.coach().creneaux; if (!C.length) return null; const t = new Date(G.today());
     for (let i = 0; i < 8; i++) { const d = new Date(t.getTime() + i * 864e5), dw = (d.getUTCDay() + 6) % 7; const c = C.filter(x => +x.j === dw).sort((a, b) => String(a.h).localeCompare(String(b.h)))[0]; if (c) return { date: d.toISOString().slice(0, 10), h: c.h || "", duree: +c.duree || G.reglages.coach().duree, gid: c.gid || null }; } return null; };
@@ -892,9 +892,9 @@
   UI.choisirAgeBib = () => new Promise(res => { const a = G.ageBib(); let sx = a ? a.sexe : "F", fait = false;
     const sh = UI.sheet({ titre: "Âge et sexe", html: `<p class="gs-m">La Bibliothèque s'ouvre à cet âge. ${a && a.auto ? "Pour l'instant : l'âge du joueur en cours." : ""}</p>
       <div class="gs-l">Sexe${seg("sxb", [["F", "Fille"], ["G", "Garçon"]], sx)}</div>
-      <div class="gs-l">Âge<div class="gs-ages">${Array.from({ length: 15 }, (_, i) => i + 4).map(n => `<button type="button" class="gs-chip" data-age="${n}" aria-pressed="${!!a && !a.auto && a.age === n}">${n} ans</button>`).join("")}</div></div>`,
+      <div class="gs-l">Âge<div class="gs-ages">${[0, ...Array.from({ length: 15 }, (_, i) => i + 4)].map(n => `<button type="button" class="gs-chip" data-age="${n}" aria-pressed="${!!a && !a.auto && a.age === n}">${n ? n + " ans" : "0-3 ans"}</button>`).join("")}</div></div>`,
       secondaire: a && !a.auto ? [{ t: "Effacer le choix", fn: () => { G.setAgeBib(null); fait = true; return true; } }] : [], fermer: () => res(fait ? G.ageBib() : null) });
-    bindSeg(sh, (k, v) => { sx = v; const cur = G.reglages().ageBib; if (cur && cur.age) { G.setAgeBib({ sexe: sx, age: cur.age }); fait = true; } });
+    bindSeg(sh, (k, v) => { sx = v; const cur = G.reglages().ageBib; if (cur && cur.age != null) { G.setAgeBib({ sexe: sx, age: cur.age }); fait = true; } });
     sh.el.addEventListener("click", e => { const b = e.target.closest("[data-age]"); if (!b) return; G.setAgeBib({ sexe: sx, age: +b.dataset.age }); fait = true; sh.fermer(true); UI.toast("Bibliothèque : " + G.ageBibTxt()); }); });
 
   /* ---------- AIDE « ? » : une ou deux phrases par écran ----------
@@ -919,7 +919,7 @@
   /* textes d'aide par défaut des modules (chaque module peut les remplacer par G.aide(cle, texte)) */
   Object.entries({
     accueil: "La page de garde : 4 portes. Bibliothèque (le savoir), Outils (créer et lancer), Club (bientôt), Performance (tes joueurs et tes groupes). Le bouton rond en haut : les réglages (profil coach ou joueur, mode Simple ou Expert, sauvegarde).",
-    "accueil/biblio": "La Bibliothèque : la banque scientifique (les documents de la méthode), les exercices et le référentiel des saisons. La pastille jaune choisit l'âge et le sexe. « Plus d'options » : créer un exercice, familles, recherche, tous les modules.",
+    "accueil/biblio": "La Bibliothèque : la banque scientifique (les documents de la méthode en 8 thèmes, de 0 à 18 ans), les exercices et le référentiel (la méthode Eliot Gruner et les saisons de référence). La pastille jaune choisit l'âge et le sexe. « Plus d'options » : créer un exercice, familles, recherche, tous les modules.",
     "accueil/outils": "Les Outils : Create my session, Choose your warm-up, Tests et profilage, Create my prog. « Plus d'options » : lancer pour un joueur ou un groupe précis, bilans, profil radar.",
     "accueil/club": "Le mode Club arrive bientôt : pour l'instant, cette porte est en construction. « GRÜN » en bas ramène à la page de garde.",
     "accueil/perf": "Performance : l'agenda des prochains jours (touche une séance pour la lancer ou la construire), ton joueur en cours, tes joueurs et groupes, l'assistant. En bas : Aujourd'hui, Joueurs, « + » pour créer, Ma semaine ; « GRÜN » ramène à la page de garde.",
@@ -951,7 +951,7 @@
     <rect x="104" y="93" width="112" height="28" rx="10" class="s-n"/><text x="160" y="113" class="s-w">GRÜN</text></svg>`;
   G.visite = () => {
     const E = [
-      ["Bienvenue dans GRÜN", "La méthode du joueur de tennis de 4 à 18 ans, dans une seule appli. La page de garde ouvre 4 portes ; tout reste sur ton appareil.", G.SCHEMA],
+      ["Bienvenue dans GRÜN", "La méthode du joueur de tennis de 0 à 18 ans, dans une seule appli. La page de garde ouvre 4 portes ; tout reste sur ton appareil.", G.SCHEMA],
       ["Bibliothèque", "Le savoir de la méthode : la banque scientifique (les documents), les exercices et le référentiel des saisons. Tout ce que les outils proposent vient de là.", ""],
       ["Outils : la poupée russe", "Create my session, Choose your warm-up, Tests et profilage, Create my prog. Chacun s'utilise seul, ou s'emboîte : la programmation contient les séances, la séance contient l'échauffement.", `<div class="grun-doll"><div>Programmation<div>Séance<div>Échauffement</div></div></div></div>`],
       ["Club et Performance", "Performance : tes joueurs et tes groupes, leur dossier complet (fiche, croissance, tests, programmations, séances, journal) et l'agenda. Le mode Club arrive bientôt.", ""],

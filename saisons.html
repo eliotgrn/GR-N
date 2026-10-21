@@ -254,6 +254,7 @@ html.grun-mod #back::before{content:"";width:20px;height:20px;background:current
 #grun-nav[data-mode="outils"]{grid-template-columns:minmax(0,.82fr) repeat(3,minmax(0,.9fr)) minmax(0,1.38fr)}
 </style>
 <script src="visuels.js?v=2.1"></script>
+<script src="schema.js?v=2.1"></script>
 <script src="grun.js?v=2.1"></script>
 <script src="assistant.js?v=2.1"></script>
 <meta name="grun-module" content="saisons"></head><body><title>Référentiel de programmation · GRÜN</title>
@@ -337,11 +338,13 @@ h1{font-family:var(--display);font-weight:700;font-size:30px;line-height:1.1;mar
 .ref{color:var(--pc);font-weight:600;text-decoration:none;border-bottom:1px dotted currentColor}
 .bq,.ex{font-family:var(--ui);font-size:.82em;background:var(--soft);border-radius:5px;padding:1px 5px;white-space:nowrap}
 mark{background:var(--mark);color:inherit;border-radius:2px}
-.frw{overflow-x:auto;margin:10px 0 4px;background:#F8F6F5;border-radius:14px;border:1px solid #D9D0D6;filter:invert(1) hue-rotate(180deg)} .frise{display:block;min-width:720px;width:100%;height:auto}
+.frw{overflow-x:auto;margin:10px 0 4px;background:#0C0F0D;border-radius:14px;border:1px solid #263029} .frise{display:block;min-width:720px;width:100%;height:auto}
 .leg{display:flex;flex-wrap:wrap;gap:4px 12px;font-family:var(--ui);font-size:12px;margin:4px 0} .leg span{display:inline-flex;align-items:center;gap:5px} .leg i{width:11px;height:11px;border-radius:3px;display:inline-block}
 .lc{font-family:var(--ui);font-size:11px;font-weight:700;border-radius:5px;padding:1px 5px;margin-right:2px;white-space:nowrap} .lc.pp{color:#FF9F6B;background:#2A1A10} .lc.ge{color:#7CC8FF;background:#10202C} .lc.de{color:#3BE08A;background:#0F2A1C}
 .doc table.wk{width:100%;font-size:.86em} .doc table.wk td{padding:6px 8px} .doc table.wk td.sl{width:7.5em;border-left:4px solid var(--c)} .doc table.wk td.sl small{color:var(--mute);font-size:.86em}
 .doc tr.pp{--c:#FF9F6B} .doc tr.pp td{background:#1C1611} .doc tr.tb{--c:#7CC8FF} .doc tr.tb td{background:#111A1F} .doc tr.ten{--c:#9AA59E} .doc tr.ten td{background:#141916} .doc tr.pm{--c:#B9A2FF} .doc tr.pm td{background:#17151F}
+.doc tr.as{--c:#7CC8FF} .doc tr.as td{background:#111A1F} .doc tr.to{--c:#FF5C5C} .doc tr.to td{background:#1F1414} .doc tr.to td:last-child{font-weight:600}
+.wth{font-family:var(--ui);font-size:14px;margin:0 0 8px;color:var(--ink)} .wth b{font-family:var(--display);font-weight:700;letter-spacing:.12em;text-transform:uppercase;font-size:12px;color:#E4FF3A;margin-right:6px}
 .doc tr td div{margin-top:3px} .doc b.tour{color:#FF5C5C}
 .doc h4{display:flex;flex-wrap:wrap;gap:6px;align-items:center} .chg{display:inline-flex;gap:2px;margin-left:4px} .chg b{width:9px;height:9px;border-radius:2px;border:1px solid var(--pc);display:inline-block} .chg b.on{background:var(--pc)}
 .wf{font-family:var(--ui);font-size:13px;margin:0 0 6px} .fl{border-radius:999px;padding:2px 8px;font-weight:600;font-size:12px;margin-right:4px} .fl.t{background:#2A1515;color:#FF6B6B} .fl.v{background:#262B0C;color:#E4FF3A} .fl.b{background:#0F2A1C;color:#3BE08A}
@@ -462,7 +465,7 @@ table{color:var(--ink)}
 .jump a,.jump button{background:#111614;border-color:#263029;border-radius:18px;min-height:36px;display:inline-flex;align-items:center}
 .stb{border-radius:12px}
 .pj{border-radius:16px;box-shadow:inset 3px 0 0 var(--p3)}
-.leg i{filter:invert(1) hue-rotate(180deg);border:1px solid #D9D0D6}
+.leg i{border:1px solid #263029}
 .lc:empty{display:none}
 .pjbar{background:#111614;border:1px solid #263029;border-radius:14px}
 .tl{border-radius:20px}
@@ -631,6 +634,7 @@ ol.vx-nl>li::before,ul.vx-nl>li::before{content:counter(vxn,decimal-leading-zero
 .stb{border:0;border-radius:12px;padding:10px 9px;min-height:58px;font-size:13px}
 .stb.pp{background:#2A1D14;box-shadow:inset 3px 0 0 #FF9F6B}.stb.tb{background:#12222D;box-shadow:inset 3px 0 0 #7CC8FF}.stb.ten{background:#18201B;box-shadow:inset 3px 0 0 #C9D2CC}.stb.pm{background:#1D1A2B;box-shadow:inset 3px 0 0 #B9A2FF}
 .stb.rp{background:#111614;box-shadow:none;border:1px dashed #263029}
+.stb.as{background:#12222D;box-shadow:inset 3px 0 0 #7CC8FF}.stb.to{background:#2A1515;box-shadow:inset 3px 0 0 #FF5C5C}
 .doc table.wk td.sl{border-left-width:3px}
 .doc h2{font-weight:800;font-size:20px;letter-spacing:.04em;color:#F2F5F0}
 .doc summary{font-family:var(--display);font-weight:700;font-size:18px;text-transform:uppercase;letter-spacing:.03em;min-height:44px;align-items:center}
@@ -699,9 +703,9 @@ ol.vx-nl>li::before,ul.vx-nl>li::before{content:counter(vxn,decimal-leading-zero
 <script>
 "use strict";
 const PORTES = {
-  "1": {n:"Filles", c:"--p1", s:"Les saisons de référence filles de __A__ : frise, mésocycles, chaque semaine et le thème de chaque séance."},
-  "2": {n:"Garçons", c:"--p2", s:"Les saisons de référence garçons de __A__ : frise, mésocycles, chaque semaine et le thème de chaque séance."},
-  "3": {n:"La méthode", c:"--p3", s:"Calendrier 2026-2027, semaines types __G__, types de cycles, charge, lignes des grilles."}
+  "1": {n:"Filles", c:"--p1", s:"Les saisons de référence filles de __A__, rangées par étape : frise, périodes, chaque semaine et le thème de chaque séance."},
+  "2": {n:"Garçons", c:"--p2", s:"Les saisons de référence garçons de __A__, rangées par étape : frise, périodes, chaque semaine et le thème de chaque séance."},
+  "3": {n:"La méthode", c:"--p3", s:"Les six étapes, le calendrier de la saison type, les semaines types de chaque âge, les périodes et la dureté, les garde-fous."}
 };
 const GR = window.GRUN || null;
 const normCode = c => { const m=/^([FG])(\d{1,2})$/i.exec(c||""); return m ? m[1].toUpperCase()+String(+m[2]).padStart(2,"0") : c; };
@@ -798,10 +802,10 @@ function showHome(){
   const c0 = cour(), cd0 = c0 ? (c0.t==="j" ? jCode(c0.joueur) : gCode(c0.id)) : null;
   /* E1B : héros marches + RÉFÉRENTIEL ; choix des saisons en cartes illustrées */
   const nS = DOCS.filter(x=>x.sx).length;
-  VX.hero({vis:"marches", lab:"Bibliothèque · la méthode Gruner", titre:"Référentiel", sous:`<b>${nS}</b> saisons · ${AGES.length?AGES[0]+" à "+AGES[AGES.length-1]+" ans":""}`});
+  VX.hero({vis:"marches", lab:"Bibliothèque · méthode Eliot Gruner", titre:"Référentiel", sous:`<b>${nS}</b> saisons · ${AGES.length?AGES[0]+" à "+AGES[AGES.length-1]+" ans":""}`});
   let html = "";
   if(cd0 && BY[cd0]) html += `<a class="pj vpj" href="#/s/${cd0}/w${cw}"><small>${c0.t==="g"?"Groupe en cours":"Joueur en cours"}</small><b>${esc(c0.nom)} · ${esc(BY[cd0].t)}</b><small>Ouvrir à la semaine en cours (S${cw})${c0.t==="g"?" · âge médian du groupe":""}</small></a>`;
-  html += `<div class="vx-cards c3 vdoors">${[["1","frise"],["2","frise_g"],["3","calendrier"]].map(([p,v],i)=>VX.carte({href:"#p/"+p, vis:v, n:VX.n2(i+1), t:PORTES[p].n, s:p==="3"?"Calendrier, semaines types, cycles, charge":`${count(p)} saisons`, k:p==="3"?"row":""})).join("")}</div>`;
+  html += `<div class="vx-cards c3 vdoors">${[["1","frise"],["2","frise_g"],["3","calendrier"]].map(([p,v],i)=>VX.carte({href:"#p/"+p, vis:v, n:VX.n2(i+1), t:PORTES[p].n, s:p==="3"?"Étapes, calendrier, semaines types":`${count(p)} saisons`, k:p==="3"?"row":""})).join("")}</div>`;
   html += `<div class="sec"><h2>Accès direct</h2><div class="quick">
     <div class="f"><label for="qs">Sexe</label><select id="qs"><option value="F">Fille</option><option value="G">Garçon</option></select></div>
     <div class="f"><label for="qa">Âge</label><select id="qa">${AGES.map(a=>`<option value="${a}">${a} ans</option>`).join("")}</select></div>
@@ -855,7 +859,7 @@ function showDoc(code, hint){
   const fav = P.fav.includes(code), jb = jGet(JID), gb = jb ? null : gGet(GID); titre(x.t); ecran(x.sx ? "saisons/saison" : "saisons/doc"); CURX = x.sx ? {x, jb, gb} : null;
   const cible = jb ? prenom(jb) : gb ? gb.nom : null, wsel = hint && /^w\d+$/.test(hint) ? +hint.slice(1) : curWeek();
   const m = $("#main"); m.style.setProperty("--pc", pc(p));
-  VX.hero({vis:x.sx?(x.sx==="F"?"frise":"frise_g"):"calendrier", bas:true, lab:`Référentiel · ${PORTES[p].n} · ${String(x.d).replace(/^\d+(\.\d+)*\s/,"")}`, titre:x.t});
+  VX.hero({vis:x.sx?(x.sx==="F"?"frise":"frise_g"):"calendrier", bas:true, lab:`Référentiel · ${PORTES[p].n}${x.d&&x.d!==PORTES[p].n?" · "+String(x.d).replace(/^\d+(\.\d+)*\s/,""):""}`, titre:x.t});
   m.innerHTML = `<div class="vacts"><button class="ib star" id="fav" type="button" aria-pressed="${fav}">${fav?"★ Favori":"☆ Favori"}</button><span class="crumb xp">${esc(x.ch||"")}</span></div>${jumps(x)}
     ${x.sx?`${jb?`<div class="pjbar">Pour <b>${esc(jb.nom)}</b>${jCode(jb)!==x.c?` · sa saison : <a href="#/s/${jCode(jb)}/w${curWeek()}?j=${encodeURIComponent(jb.id)}">${jb.sexe==="F"?"fille":"garçon"} ${jAge(jb)} ans</a>`:""}</div>`
       : gb?`<div class="pjbar">Pour le groupe <b>${esc(gb.nom)}</b>${gCode(gb.id)&&gCode(gb.id)!==x.c&&BY[gCode(gb.id)]?` · sa saison : <a href="#/s/${gCode(gb.id)}/w${curWeek()}?g=${encodeURIComponent(gb.id)}">${esc(BY[gCode(gb.id)].t.replace(/^Saison /,""))}</a>`:""}</div>`:""}
@@ -895,7 +899,7 @@ function showDoc(code, hint){
     toc.onclick = e=>{ const a=e.target.closest("a[data-s]"); if(!a) return; e.preventDefault(); const d=document.getElementById(a.dataset.s); d.open=true; d.scrollIntoView({behavior:"smooth",block:"start"}); }; }
   if(sections.length===1){ doc.querySelector("details").open = true; }
   /* l'ancienne frise SVG (charge, tournois, bilans) reste, repliée sous la frise touchable */
-  if(x.sx){ const fw = doc.querySelector(".frw"); if(fw){ const dt = document.createElement("details"); dt.className = "frd"; dt.innerHTML = "<summary>Frise détaillée : charge, tournois, bilans</summary>"; fw.before(dt);
+  if(x.sx){ const fw = doc.querySelector(".frw"); if(fw){ const dt = document.createElement("details"); dt.className = "frd"; dt.innerHTML = "<summary>Frise détaillée : périodes, tournois, bilans</summary>"; fw.before(dt);
     let n = fw; const L = [fw]; while((n = n.nextSibling) && n.nodeName==="P" && /leg|msg/.test(n.className)) L.push(n); L.forEach(e=>dt.appendChild(e)); } }
   if(window.GRUN&&GRUN.clair) GRUN.clair(document.getElementById("doc"));   /* lignes de grille en clair (mode simple) */
   doc.querySelectorAll('.wkgo a[href*="#/nouveau/"]').forEach(a=>{ const q=a.getAttribute("href").split("?")[1]||""; const w=(q.match(/w=(\d+)/)||[])[1]; a.href = progHref(x.c, w, jb&&jb.id); });
@@ -916,28 +920,27 @@ function showDoc(code, hint){
 /* design E : couleurs des phases (fixées dans les données) traduites pour le fond sombre, à l'affichage seulement */
 const ECOL = {"#0F766E":"#3BE08A","#1D4ED8":"#7CC8FF","#7C3AED":"#B9A2FF","#B91C1C":"#FF9F6B","#0369A1":"#C9D2CC","#94A3B8":"#8A968F","#64748B":"#8A968F"};
 const ecol = c => ECOL[String(c||"").toUpperCase()] || c;
-function frise(x, wsel){ const F = x.fr; if(!F) return ""; const cw = curWeek();
-  const col = n => { const m = F.m.find(m=>n>=m[3]&&n<=m[4]); return ecol(m ? m[5] : "#94A3B8"); };
+function frise(x, wsel){ const F = x.fr; if(!F) return ""; const cw = curWeek(), petit = F.pl == null;
   const mois = []; let last = -1; CALW.forEach(w=>{ const d = new Date(w.du+"T12:00:00"); d.setDate(d.getDate()+3); if(d.getMonth()!==last){ mois.push([w.n, MOISC[d.getMonth()]]); last = d.getMonth(); } });
-  const types = [...new Set(F.m.map(m=>m[2]))];
+  const haut = w => petit ? (w[3] ? 40 : 10) : Math.max(6, (w[1]||0)*10);
   return `<section class="tl" aria-label="Frise de la saison"><div class="tlh"><b>La saison en un coup d'œil</b><span class="msg">Touche une semaine pour l'ouvrir · S${cw} = cette semaine</span></div>
     <div class="tls" id="tls"><div class="tlg" id="tlz" style="grid-template-columns:repeat(52,30px)">
-    ${F.M.map(m=>`<div class="tlM" style="grid-column:${m[2]}/${m[3]+1}" title="${esc(m[1])}"><span class="xp">${esc(m[0])} · </span>${esc(m[1])}</div>`).join("")}
+    ${(F.M||[]).map(m=>`<div class="tlM" style="grid-column:${m[2]}/${m[3]+1}" title="${esc(m[1])}">${esc(m[1])}</div>`).join("")}
     ${F.m.map(m=>`<button type="button" class="tlm" data-wk="${m[3]}" style="grid-column:${m[3]}/${m[4]+1};background:${ecol(m[5])}" title="${esc(m[1]+" · "+m[2])}">${esc(m[1])}</button>`).join("")}
-    ${F.w.map(([n,ch,mi,se])=>{ const C = CALW.find(w=>w.n===n)||{};
-      return `<button type="button" class="tlw${se?"":" off"}${n===cw?" now":""}${n===wsel?" sel":""}" data-wk="${n}" style="grid-column:${n};--c:${col(n)}" aria-label="Semaine ${n}, ${C.du?dd(C.du):""}, ${esc(mi)}, charge ${ch} sur 5"><span>${n}</span>${C.bilan?'<em class="bb">B</em>':""}${C.tournois?'<em class="tt"></em>':""}<i style="height:${ch*10}px"></i></button>`; }).join("")}
+    ${F.w.map(w=>{ const [n,ch,mi,se,c,bi,to] = w, C = CALW.find(z=>z.n===n)||{};
+      return `<button type="button" class="tlw${se?"":" off"}${n===cw?" now":""}${n===wsel?" sel":""}" data-wk="${n}" style="grid-column:${n};--c:${ecol(c)}" aria-label="Semaine ${n}, ${C.du?dd(C.du):""}, ${esc(mi)}${petit?"":", dureté "+ch+" sur 5"}"><span>${n}</span>${bi?'<em class="bb">B</em>':""}${to?'<em class="tt"></em>':""}<i style="height:${haut(w)}px"></i></button>`; }).join("")}
     ${mois.map(([n,t])=>`<div class="tlmo" style="grid-column:${n}/span 4">${t}</div>`).join("")}
     </div></div>
-    <div class="tll">${types.map(t=>`<span><i style="background:${ecol(MESOC[t]||"#64748B")}"></i>${esc(t)}</span>`).join("")}<span><i style="background:#FF5C5C;border-radius:50%"></i>Tournois</span><span><i style="background:#3BE08A"></i>B = bilan</span><span><i style="background:repeating-linear-gradient(135deg,var(--soft),var(--soft) 3px,var(--panel) 3px,var(--panel) 6px);border:1px solid var(--line)"></i>Sans entraînement</span></div>
+    <div class="tll">${(F.leg||[]).map(([t,c])=>`<span><i style="background:${ecol(c)}"></i>${esc(t)}</span>`).join("")}${F.w.some(w=>w[6])?'<span><i style="background:#FF5C5C;border-radius:50%"></i>Tournoi</span>':""}<span><i style="background:#3BE08A"></i>B = ${petit?"observation":"bilan"}</span>${petit?"":'<span>Hauteur = dureté prévue (0 à 5)</span>'}</div>
     <div class="tlc" id="tlc"></div></section>`; }
 function voirSemaine(x, n, jb, gb, defil){
   const F = x.fr, w = F.w.find(w=>w[0]===n), C = CALW.find(c=>c.n===n), m = F.m.find(m=>n>=m[3]&&n<=m[4]); if(!w||!C) return; SEL = n;
   document.querySelectorAll("#tlz .tlw").forEach(b=>b.classList.toggle("sel", +b.dataset.wk===n));
   const h = document.getElementById("w"+n), part = [];
   if(h){ let e = h.nextElementSibling; while(e && !/^H[34]$/.test(e.nodeName)){ if(!e.classList.contains("wkgo")) part.push(e.cloneNode(true)); e = e.nextElementSibling; } }
-  const box = $("#tlc"); box.style.setProperty("--c", m ? ecol(m[5]) : "var(--pc)");
+  const box = $("#tlc"); box.style.setProperty("--c", w[4] ? ecol(w[4]) : m ? ecol(m[5]) : "var(--pc)");
   const q = (jb ? "" : "") + (gb ? "&gid="+encodeURIComponent(gb.id) : "");
-  box.innerHTML = `<h3>Semaine ${n} · ${dd(C.du)} - ${dd(C.au)}</h3><p class="ph">${m?`${esc(m[1])} · ${esc(m[2])}`:""}${w[2]&&(!m||w[2]!==m[2])?`${m?" · ":""}${esc(w[2])}`:""} · charge ${w[1]} sur 5${n===curWeek()?" · <b>cette semaine</b>":""}</p><div class="doc tlx"></div>
+  box.innerHTML = `<h3>Semaine ${n} · ${dd(C.du)} - ${dd(C.au)}</h3><p class="ph">${m?`${esc(m[1])} · ${esc(m[2])}`:""}${w[2]&&(!m||w[2]!==m[2])?`${m?" · ":""}${esc(w[2])}`:""}${w[1]==null?"":` · dureté ${w[1]} sur 5`}${n===curWeek()?" · <b>cette semaine</b>":""}</p><div class="doc tlx"></div>
     <div class="tools">${w[3]?`<a class="ib" href="${progHref(x.c, n, jb&&jb.id)}${q}">Créer les séances de cette semaine</a>`:""}<button class="ib" type="button" id="tlvoir">Voir dans la saison</button></div>`;
   part.forEach(e=>box.querySelector(".tlx").appendChild(e));
   box.querySelectorAll("table").forEach(t=>{ if(t.parentNode.className!=="tw"){ const d=document.createElement("div"); d.className="tw"; t.replaceWith(d); d.appendChild(t); } });
@@ -1046,9 +1049,9 @@ async function importData(e){
 }
 
 if(GR){ try{ GR.nav("res"); if(GR.isJoueur()) document.body.classList.add("joueur"); }catch(e){}
-  [["saisons","Le référentiel : une saison de référence par âge (4 à 18 ans) et par sexe, semaine par semaine. Il s'ouvre sur la saison de ton joueur en cours ; « Accès direct » ouvre n'importe quelle saison."],
-   ["saisons/saison","Une saison : la frise montre les phases et les 52 semaines ; touche une semaine pour voir ses séances. Le bouton du bas l'applique à ton joueur ou ton groupe dans Create my prog, déjà rempli."],
-   ["saisons/doc","Un document de la méthode : calendrier, semaines types, cycles et charge, lignes des grilles. « L'essentiel » d'abord, le détail en sections dépliables."],
+  [["saisons","Le référentiel : une saison de référence par âge (4 à 18 ans) et par sexe, construite sur la méthode : année type légère jusqu'à 8 ans, semaine type répétée ensuite, périodes à partir de 12 ans (fille) ou 13 ans (garçon). Il s'ouvre sur la saison de ton joueur en cours ; « Accès direct » ouvre n'importe quelle saison."],
+   ["saisons/saison","Une saison : la frise montre les périodes et les 52 semaines (couleur = type de semaine) ; touche une semaine pour voir son thème et celui de chaque séance : tennis, préparation physique, préparation mentale. Le bouton du bas l'applique à ton joueur ou ton groupe dans Create my prog."],
+   ["saisons/doc","Un document de la méthode : étapes, calendrier, semaines types dessinées, périodes et dureté, garde-fous. « L'essentiel » d'abord, le détail en sections dépliables."],
    ["saisons/porte","Toutes les saisons d'une porte (filles, garçons) ou les documents de la méthode. Touche un titre pour l'ouvrir."],
    ["saisons/recherche","La recherche lit toutes les saisons : un thème, une ligne, un mot. Le document s'ouvre sur le passage surligné."]].forEach(([k,t])=>{ try{ GR.aide(k,t); }catch(e){} }); }
 function ecran(k){ try{ GR&&GR.aide&&GR.aide.ecran&&GR.aide.ecran(k); }catch(e){} }
