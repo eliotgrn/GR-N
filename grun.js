@@ -304,7 +304,7 @@
     const s = bstore(), byId = {};
     const ex = base.ex.map(e => { const o = s.over[e.id]; const x = o ? { ...e, ...o, modifie: true, orig: e } : e; byId[x.id] = x; return x; });
     for (const p of s.perso) { const x = { ...p, perso: true }; ex.push(x); byId[x.id] = x; }
-    return { ex, fams: base.fams, fams4: base.fams4, al: base.al, mat: base.mat, lv: base.lv, byId, fav: s.fav, hide: s.hide };
+    return { ex, fams: base.fams, fams4: base.fams4, al: base.al, fal: base.fal, mat: base.mat, lv: base.lv, byId, fav: s.fav, hide: s.hide };
   }
   G.banque = {
     async load() { if (!BQP) BQP = fetch("data-banque.json").then(r => r.json()); const base = await BQP; BQ = merge(base); return BQ; },

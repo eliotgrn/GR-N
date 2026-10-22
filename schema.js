@@ -46,10 +46,30 @@
     const pt = v => Array.isArray(v) ? v : (pos[v] || [.5, .5]);
     const badge = (x, y, n, col) => `<circle cx="${x}" cy="${y}" r="8" fill="${C.bg}" stroke="${col}" stroke-width="1.6"/><text x="${x}" y="${y + 4}" text-anchor="middle" font-family="Barlow,Arial,sans-serif" font-weight="700" font-size="10.5" fill="${col}">${n}</text>`;
     // déplacements (pointillés verts)
+    // placement des numéros sans chevauchement (joueurs, autres numéros) : on essaie plusieurs points du trajet, des deux côtés
+    const occ = (s.joueurs || []).map(j => [X(j.x), Y(j.y), 13]);
+    const libre = (x, y) => occ.every(([ox, oy, r]) => Math.hypot(x - ox, y - oy) > r + 9) && x > 8 && x < g.vbW - 8 && y > 8 && y < g.vbH - 8;
+    const placer = (at, n, col) => {   // at(t) → [x, y, dx, dy] (point et tangente)
+      let best = null;
+      for (const t of [.5, .38, .62, .28, .72, .2, .8]) for (const sgn of [1, -1]) {
+        const [x, y, dx, dy] = at(t), L = Math.hypot(dx, dy) || 1, ox = -dy / L * 11 * sgn, oy = dx / L * 11 * sgn;
+        if (libre(x + ox, y + oy)) { best = [x + ox, y + oy]; break; }
+        if (!best && t === .5 && sgn === 1) best = [x + ox, y + oy];
+      }
+      if (!libre(best[0], best[1])) {   // trajet très court ou encombré : on cherche autour
+        const [mx, my] = at(.5);
+        search: for (const r of [20, 28, 36]) for (let k = 0; k < 8; k++) {
+          const x = mx + r * Math.cos(k * Math.PI / 4), y = my + r * Math.sin(k * Math.PI / 4);
+          if (libre(x, y)) { best = [x, y]; break search; }
+        }
+      }
+      occ.push([best[0], best[1], 8]); return badge(best[0], best[1], n, col);
+    };
     (s.deplacements || []).forEach(d => {
       const a = pt(d.de), b = pt(d.vers);
-      h += `<path d="M${X(a[0])} ${Y(a[1])}L${X(b[0])} ${Y(b[1])}" stroke="${C.line}" stroke-width="2" stroke-dasharray="5 4" marker-end="url(#gsD)" fill="none"/>`;
-      if (d.ordre) h += badge((X(a[0]) + X(b[0])) / 2 + 10, (Y(a[1]) + Y(b[1])) / 2, d.ordre, C.line);
+      const x1 = X(a[0]), y1 = Y(a[1]), x2 = X(b[0]), y2 = Y(b[1]);
+      h += `<path d="M${x1} ${y1}L${x2} ${y2}" stroke="${C.line}" stroke-width="2" stroke-dasharray="5 4" marker-end="url(#gsD)" fill="none"/>`;
+      if (d.ordre) h += placer(t => [x1 + (x2 - x1) * t, y1 + (y2 - y1) * t, x2 - x1, y2 - y1], d.ordre, C.line);
     });
     // frappes (courbes jaunes)
     (s.frappes || []).forEach(f => {
@@ -58,7 +78,7 @@
       const cx = (x1 + x2) / 2 + (f.effet === "slice" ? -14 : 14) * (x2 >= x1 ? 1 : -1), cy = (y1 + y2) / 2;
       h += `<path d="M${x1} ${y1}Q${cx} ${cy} ${x2} ${y2}" stroke="${C.ball}" stroke-width="2.4" fill="none" marker-end="url(#gsF)"/>`;
       h += `<circle cx="${x2}" cy="${y2}" r="3.4" fill="${C.ball}"/>`;
-      if (f.ordre) h += badge(cx, cy, f.ordre, C.ball);
+      if (f.ordre) h += placer(t => { const u = 1 - t; return [u * u * x1 + 2 * u * t * cx + t * t * x2, u * u * y1 + 2 * u * t * cy + t * t * y2, 2 * u * (cx - x1) + 2 * t * (x2 - cx), 2 * u * (cy - y1) + 2 * t * (y2 - cy)]; }, f.ordre, C.ball);
     });
     // joueurs
     (s.joueurs || []).forEach(j => {
