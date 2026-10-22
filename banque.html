@@ -812,6 +812,12 @@ const DOM = {PP:["Préparation physique","--pp"], PH:["Préparation physique hor
 /* banque v4 : 8 thèmes (les thèmes 1 et 2 n'ont pas de famille d'exercices) ; couleur = domaine d'origine */
 const TH = {3:"Préparation physique", 4:"Technique", 5:"Tactique", 6:"Préparation mentale", 7:"Santé et récupération", 8:"Entraîner"};
 const THD = {3:"PP", 4:"GE", 5:"JEU", 6:"JEU", 7:"PH", 8:"PH"};
+/* lot I4 (Eliot, 21 oct. 23 h 49) : entrée « Tennis » de la banque d'exercices = technique + tactique + exercices de jeu (cohérente avec la séance tennis) ;
+   les thèmes de la banque scientifique ne changent pas. Exercices de jeu = familles marquées « jeu » au build (plan/decisions_I4.py). */
+const ENTREES = [["T","Tennis"],["3",TH[3]],["6",TH[6]],["7",TH[7]],["8",TH[8]]];
+const TENNIS = [["TE","Technique"],["TA","Tactique"],["JEU","Exercices de jeu"]];
+const jeuEx = e => !!(FBY4[e.f4]||{}).jeu;
+const tennisEx = e => +e.th===4 || +e.th===5 || jeuEx(e);
 const MEDIA = {schema:"Schéma", video:"Vidéo", texte:"Texte"};
 const LIG = {
  PP:["Force du bas du corps","Force du haut du corps","Gainage et stabilité du tronc","Puissance des jambes : sauts et pliométrie","Puissance du haut du corps et rotation","Vitesse et accélération","Freinage, changements de direction et agilité","Endurance aérobie","Répétition d'efforts intenses","Coordination, motricité fondamentale et rythme","Équilibre et proprioception","Mobilité et souplesse"],
@@ -847,24 +853,27 @@ const today = () => (window.GRUN ? GRUN.today() : new Date().toISOString().slice
 const MOIFAM = {c:"MOI", t:"Mes exercices", dom:"PH", dossier:"Mes exercices", intro:"<p>Les exercices que tu as créés et rangés dans « Mes exercices ».</p>", subs:[]};
 
 /* « ? » : une aide par écran (G.aide) */
-const AIDES = {explorer:"La banque : tous les exercices, rangés dans les mêmes thèmes que la banque scientifique. Filtre d'une touche (thème, rubrique, âge, matériel…), ♡ sur une ligne = favori en un geste ; tes exercices sont en tête.",
+const AIDES = {explorer:"La banque : tous les exercices, rangés par ce qu'ils travaillent. « Tennis » regroupe technique, tactique et exercices de jeu (comme la séance tennis) ; puis préparation physique, mentale, santé et entraîner. Filtre d'une touche (thème, rubrique, âge, matériel…), ♡ sur une ligne = favori en un geste ; tes exercices sont en tête.",
   fiche:"La fiche d'un exercice : but, consignes, matériel, vidéo, dosage. « Utiliser dans une séance » en bas ; « Exercices proches de celui-ci » propose les mêmes qualités à côté ; ♡ le met en favori.",
   form:"Créer ou modifier un exercice, en un écran : le nom suffit pour commencer, le reste (fiche, matériel, vidéo, échauffement, statut) se remplit si tu veux. « Proposer » l'envoie au créateur de GRÜN.",
   ligne:"Les exercices d'une ligne de grille pour l'âge choisi, du plus simple au plus dur.",
-  familles:"Les familles d'exercices, rangées par thème et par rubrique, chacune avec son mode d'emploi et ses sous-familles.", favoris:"Tes exercices ♡ : ils reviennent en priorité dans Create my session et le warm-up.",
+  familles:"Les familles d'exercices, rangées par thème et par rubrique (Tennis : exercices de jeu, technique, tactique), chacune avec son mode d'emploi et ses sous-familles.", favoris:"Tes exercices ♡ : ils reviennent en priorité dans Create my session et le warm-up.",
   listes:"Tes collections : un thème, un joueur, une période. Personnelles.", tournage:"Le suivi des vidéos : à tourner, tourné, monté. Change le statut d'une touche.",
   propositions:"Proposer un exercice à la méthode, exporter tes propositions, valider ou refuser celles reçues."};
 Object.entries(AIDES).forEach(([k,t])=>{ try{ GRUN.aide("banque/"+k, t); }catch(e){} });
 const ecran = k => { try{ GRUN.aide.ecran("banque/"+k); }catch(e){} };
 const cur = () => { try{ const c = GRUN.courant.get(); if(c && c.t==="j" && c.joueur){ const a = GRUN.grilleConseillee ? GRUN.grilleConseillee(c.joueur) : null; return a ? {nom:String(c.nom||"").split(" ")[0], a:Math.max(4,Math.min(18,a))} : null; } }catch(e){} return null; };
-let FAMS=[], FAMS4=[], FBY4={}, AL={}, EX=[], BY={}, FBY={}, VID={}, MATC=[], FAV=new Set(), HIDE=new Set(), EDITING=false, FLASH="";
+let FAMS=[], FAMS4=[], FBY4={}, AL={}, FAL={}, EX=[], BY={}, FBY={}, VID={}, MATC=[], FAV=new Set(), HIDE=new Set(), EDITING=false, FLASH="";
 const dmsg = t => { FLASH=t; const m=$("#dmsg"); if(m) m.textContent=t; };
 /* ---------- données personnelles du module (appareil, clé historique banque_v1) : listes, notes, liens vidéo, filtres, propositions reçues ---------- */
 const ST="banque_v1";
-const FDEF = {th:"",st:"",dom:"",lig:"",age:"",mat:"",vid:"",lieu:"",wu:"",fav:false,mine:false,mod:false,hid:false,dispo:[],tri:"",vue:"liste"};
+const FDEF = {th:"",tg:"",st:"",dom:"",lig:"",age:"",mat:"",vid:"",lieu:"",wu:"",fav:false,mine:false,mod:false,hid:false,dispo:[],tri:"",vue:"liste"};
 function loadP(){ let o={}; try{ o=JSON.parse(localStorage.getItem(ST))||{}; }catch(e){} const p=Object.assign({fav:[], lists:[], notes:{}, links:{}, recues:[], traitees:[]}, o); p.f=Object.assign({},FDEF,p.f||{}); if(!Array.isArray(p.f.dispo)) p.f.dispo=[];
   /* v4 : plus de filtre par domaine ni par niveau (anciens réglages effacés pour ne rien cacher) */
-  p.f.dom=""; delete p.f.niv; if(p.f.tri==="niv") p.f.tri=""; return p; }
+  p.f.dom=""; delete p.f.niv; if(p.f.tri==="niv") p.f.tri="";
+  /* lot I4 : Technique et Tactique passent sous l'entrée « Tennis » (ancien réglage repris) */
+  if(String(p.f.th)==="4"||String(p.f.th)==="5"){ p.f.tg = String(p.f.th)==="4" ? "TE" : "TA"; p.f.th = "T"; }
+  return p; }
 let P = loadP();
 const save = () => { try{ if(window.GRUN) GRUN.save(ST,P); else localStorage.setItem(ST, JSON.stringify(P)); }catch(e){} };
 /* vidéos importées depuis l'appareil : IndexedDB */
@@ -879,10 +888,10 @@ let LOCALV = new Set();
 /* ---------- chargement : base + exercices perso + modifications + masqués (GRUN.banque) ---------- */
 function index(B){
   FAMS = [...B.fams, MOIFAM]; EX = B.ex; MATC = B.mat||[]; BY = {}; FBY = {};
-  FAMS4 = [...(B.fams4||[]), MOIFAM]; FBY4 = {}; FAMS4.forEach(f=>FBY4[f.c]=f); AL = B.al||{};
+  FAMS4 = [...(B.fams4||[]), MOIFAM]; FBY4 = {}; FAMS4.forEach(f=>FBY4[f.c]=f); AL = B.al||{}; FAL = B.fal||{};
   FAV = new Set(B.fav||[]); HIDE = new Set(B.hide||[]);
   FAMS.forEach(f=>FBY[f.c]=f);
-  EX.forEach((e,i)=>{ e.i=i; e.L=e.L||[]; BY[e.id]=e; famv4(e); e.k = fold([e.id,e.n,e.ob,e.ma,e.de,e.co,e.er,e.ut,e.s,e.tm,e.li,e.dos].join(" ")); e.mk = fold(e.ma||""); });
+  EX.forEach((e,i)=>{ e.i=i; e.L=e.L||[]; BY[e.id]=e; famv4(e); e.k = fold([e.id,e.n,e.ob,e.ma,e.de,e.co,e.er,e.ut,e.s,e.tm,e.li,e.dos,e.lt,e.v15].join(" ")); e.mk = fold(e.ma||""); });
   MOIFAM.subs = [...new Set(EX.filter(e=>e.f==="MOI").map(e=>e.s||"Mes exercices"))];
 }
 /* famille v4, thème et média d'un exercice (exercices créés ou modifiés avant la v4 : déduits de la famille ou du domaine) */
@@ -962,8 +971,9 @@ function filtered(){
     const hid = HIDE.has(e.id);
     if(f.hid ? !(hid || e.x) : hid) return false;
     if(e.x && !f.hid) return false;   /* non proposé (déconseillé chez le jeune) : visible avec « Masqués » */
-    if(f.th && +e.th !== +f.th) return false;
-    if(f.st && (FBY4[e.f4]||{}).st !== f.st) return false;
+    if(f.th==="T"){ if(!tennisEx(e)) return false; if(f.tg==="TE" && +e.th!==4) return false; if(f.tg==="TA" && +e.th!==5) return false; if(f.tg==="JEU" && !jeuEx(e)) return false; }
+    else if(f.th && +e.th !== +f.th) return false;
+    if(f.st && (f.st.startsWith("EX.") ? e.f4 !== f.st : (FBY4[e.f4]||{}).st !== f.st)) return false;
     if(f.lig && !e.L.includes(f.lig)) return false;
     if(f.age && (e.a > +f.age || (e.ax||18) < +f.age)) return false;
     if(mat && !mat.test(e.mk)) return false;
@@ -988,8 +998,11 @@ function filtered(){
 function showExplore(){
   document.documentElement.style.setProperty("--acc","var(--ink)");
   const f=P.f;
-  const domChips = Object.keys(TH).map(k=>`<button class="vx-pill" type="button" data-th="${k}" aria-pressed="${String(f.th)===k}" title="${esc(TH[k])}">${esc(TH[k])}</button>`).join("");
-  const sts = f.th ? [...new Map(FAMS4.filter(x=>x.c!=="MOI" && String(x.th)===String(f.th)).map(x=>[x.st, x.rub])).entries()] : [];
+  const domChips = ENTREES.map(([k,n])=>`<button class="vx-pill" type="button" data-th="${k}" aria-pressed="${String(f.th)===k}" title="${esc(n)}">${esc(n)}</button>`).join("");
+  /* lot I4 : « Tennis » = Technique + Tactique + Exercices de jeu ; puis les rubriques (ou les familles de jeu) */
+  const thR = f.th==="T" ? (f.tg==="TE" ? "4" : f.tg==="TA" ? "5" : "") : String(f.th||"");
+  const sts = f.th==="T" && f.tg==="JEU" ? FAMS4.filter(x=>x.jeu).map(x=>[x.c, x.t]) : thR ? [...new Map(FAMS4.filter(x=>x.c!=="MOI" && String(x.th)===thR).map(x=>[x.st, x.rub])).entries()] : [];
+  const tgs = f.th==="T" ? `<div class="vx-subs" role="group" aria-label="Tennis">${TENNIS.map(([k,n])=>`<button class="vx-sub" type="button" data-tg="${k}" aria-pressed="${f.tg===k}">${esc(n)}</button>`).join("")}</div>` : "";
   const tog = (k,t) => `<button class="chip" type="button" data-tog="${k}" aria-pressed="${!!f[k]}">${t}</button>`;
   const ck = (k, v, t, extra) => `<button class="chip${extra||""}" type="button" data-fk="${k}" data-fv="${esc(v)}" aria-pressed="${String(f[k])===String(v)}">${t}</button>`;
   const cj = cur();
@@ -1000,7 +1013,7 @@ function showExplore(){
   ${J()?"":`<a class="vnew" href="#/nouveau"><span aria-hidden="true">+</span>Créer un exercice</a>`}
   <div class="filters vfil">
     <div class="vx-pills" role="group" aria-label="Thème">${domChips}</div>
-    <div class="vx-subs" role="group" aria-label="Sous-thème">${sts.length ? sts.map(([c,n])=>`<button class="vx-sub" type="button" data-fk="st" data-fv="${c}" aria-pressed="${f.st===c}">${XP()?c+" · ":""}${esc(n)}</button>`).join("") : `<span class="msg">Touche un thème pour voir ses rubriques.</span>`}${f.lig?`<button class="vx-sub" type="button" data-fk="lig" data-fv="${f.lig}" aria-pressed="true" title="Retirer">Ligne de grille : ${esc(ligNom(f.lig))} ✕</button>`:""}</div>
+    ${tgs}<div class="vx-subs" role="group" aria-label="Sous-thème">${sts.length ? sts.map(([c,n])=>`<button class="vx-sub" type="button" data-fk="st" data-fv="${c}" aria-pressed="${f.st===c}">${XP()?c+" · ":""}${esc(n)}</button>`).join("") : `<span class="msg">${f.th==="T"?"Technique, tactique ou exercices de jeu : touche pour préciser.":"Touche un thème pour voir ses rubriques."}</span>`}${f.lig?`<button class="vx-sub" type="button" data-fk="lig" data-fv="${f.lig}" aria-pressed="true" title="Retirer">Ligne de grille : ${esc(ligNom(f.lig))} ✕</button>`:""}</div>
     <div class="frow scroll"><b>Âge</b>${cj?ck("age", cj.a, `Âge de ${esc(cj.nom)} · ${cj.a} ans`, " cur"):""}${Array.from({length:15},(_,i)=>ck("age", i+4, (i+4)+" ans")).join("")}</div>
     <details id="fplus" class="fplus" ${f.lieu||f.wu||f.vid||f.fav||f.mine||f.mod||f.hid||f.dispo.length||f.mat?"open":""}><summary>Plus de filtres</summary>
     <div class="frow"><b>Lieu</b>${ck("lieu","court","Sur le court")}${ck("lieu","hors","Hors court")}${ck("lieu","grand","Grand espace")}</div>
@@ -1018,7 +1031,8 @@ function showExplore(){
   [["ftri","tri"]].forEach(([id,k])=>{ const s=$("#"+id); s.value=f[k]; s.onchange=()=>{ f[k]=s.value; save(); shown=PAGE; showExplore(); }; });
   /* filtres en pastilles : une touche choisit, une seconde touche retire */
   $$("[data-fk]").forEach(b=>b.onclick=()=>{ const k=b.dataset.fk, v=b.dataset.fv; f[k] = String(f[k])===v ? "" : v; save(); shown=PAGE; const y=scrollY; showExplore(); scrollTo(0,y); });
-  $$("[data-th]").forEach(b=>b.onclick=()=>{ f.th = String(f.th)===b.dataset.th ? "" : b.dataset.th; f.st=""; save(); shown=PAGE; const y=scrollY; showExplore(); scrollTo(0,y); });
+  $$("[data-th]").forEach(b=>b.onclick=()=>{ f.th = String(f.th)===b.dataset.th ? "" : b.dataset.th; f.st=""; f.tg=""; save(); shown=PAGE; const y=scrollY; showExplore(); scrollTo(0,y); });
+  $$("[data-tg]").forEach(b=>b.onclick=()=>{ f.tg = f.tg===b.dataset.tg ? "" : b.dataset.tg; f.st=""; save(); shown=PAGE; const y=scrollY; showExplore(); scrollTo(0,y); });
   $$("[data-tog]").forEach(b=>b.onclick=()=>{ const k=b.dataset.tog; f[k]=!f[k]; save(); shown=PAGE; showExplore(); });
   $$("[data-mat]").forEach(b=>b.onclick=()=>{ const k=b.dataset.mat; f.dispo = f.dispo.includes(k) ? f.dispo.filter(x=>x!==k) : [...f.dispo,k]; save(); shown=PAGE; showExplore(); $("#fmore").open=true; });
   $$("[data-vue]").forEach(b=>b.onclick=()=>{ f.vue=b.dataset.vue; save(); showExplore(); });
@@ -1063,7 +1077,7 @@ function showLigne(L, a){
 }
 
 /* ---------- fiche ---------- */
-function linkIds(s, self){ return esc(s).replace(/\b([A-Z]{3}-\d{4})\b/g,(m,id0)=>{ const id = BY[id0] ? id0 : (AL[id0] && BY[AL[id0]] ? AL[id0] : null); return id && id!==self ? `<a class="ref" href="#/ex/${id}">${esc(BY[id].n)}${XP()?" ("+id0+")":""}</a>` : m; }).replace(/\b(EX\.[A-Z]{2}\.\d{1,2}\.\d{1,2}|5\.\d\.\d{1,2})\b/g,(m,c)=>{ const f=FBY4[c]||FBY4[(FBY[c]||{}).c4]; return f ? `<a class="ref" href="#f/${f.c}">${esc(f.t)}</a>` : m; }); }
+function linkIds(s, self){ return esc(s).replace(/\b([A-Z]{3}-\d{4})\b/g,(m,id0)=>{ const id = BY[id0] ? id0 : (AL[id0] && BY[AL[id0]] ? AL[id0] : null); return id && id!==self ? `<a class="ref" href="#/ex/${id}">${esc(BY[id].n)}${XP()?" ("+id0+")":""}</a>` : m; }).replace(/\b(EX\.[A-Z]{2}\.\d{1,2}\.\d{1,2}|5\.\d\.\d{1,2})\b/g,(m,c)=>{ const f=FBY4[c]||FBY4[FAL[c]]||FBY4[(FBY[c]||{}).c4]; return f ? `<a class="ref" href="#f/${f.c}">${esc(f.t)}</a>` : m; }); }
 /* schéma de l'exercice (format plan/SCHEMAS_EXERCICES.md) : court vu de dessus, rendu par GRUN_SCHEMA (copié ci-dessous par build_data.py) */
 function schemaHTML(sc, sansDeroule){ if(!window.GRUN_SCHEMA || !sc) return ""; let h=""; try{ h=GRUN_SCHEMA.svg(sc,{cls:"gs"}); }catch(_){ return ""; }
   const st = (sc.notes||[]).map((n,i)=>{ const m=String(n).match(/^\s*(\d+)\s*[:.)–-]\s*(.*)$/); return [m?m[1]:"", m?m[2]:String(n)]; }).filter(x=>x[1].trim());   /* une note sans numéro (contexte, règle) n'est pas numérotée : seuls les numéros du schéma s'affichent */
@@ -1222,12 +1236,13 @@ function showEx(id){
         <div class="cell"><div class="lab">Objectif</div><div class="txt">${linkIds(cap(e.ob||""),id)}</div></div>
         <div class="cell"><div class="lab">Description</div><div class="txt">${linkIds(cap(e.de||""),id)}</div></div>
         <div class="cell"><div class="lab">Matériel</div>${bullets(e.ma,id)}${(e.m||[]).length?`<div class="links">${e.m.map(c=>`<a>${esc((MATC.find(x=>x[0]===c)||[c,c])[1])}</a>`).join("")}</div>`:""}</div>
-        ${e.dos?`<div class="cell"><div class="lab">Dosage conseillé</div><div class="txt">${esc(e.dos)}</div></div>`:""}
+        ${e.dos?`<div class="cell"><div class="lab">Dosage</div>${bullets(e.dos,id)}</div>`:""}
+        ${e.lt?`<div class="cell"><div class="lab">Lien avec le tennis</div><div class="txt">${linkIds(cap(e.lt),id)}</div></div>`:""}
       </div>
       <div class="col">
         <div class="cell"><div class="lab">Consignes au joueur</div>${bullets(e.co,id)}</div>
         ${e.er?`<div class="cell"><div class="lab">Erreurs à éviter</div>${bullets(e.er,id)}</div>`:""}
-        <div class="cell"><div class="lab">Utilisation et progression</div><div class="txt">${linkIds(cap(e.ut||""),id)}</div>${rel.length?`<div class="lab" style="margin-top:10px">Voir aussi</div><div class="links">${rel.map(x=>`<a href="#/ex/${x}">${esc(BY[x].n)}</a>`).join("")}</div>`:""}</div>
+        <div class="cell"><div class="lab">Utilisation et progression</div><div class="txt">${linkIds(cap(e.ut||""),id)}</div>${e.v15?`<div class="lab" style="margin-top:10px">Version 15-18 ans</div><div class="txt">${linkIds(cap(e.v15),id)}</div>`:""}${rel.length?`<div class="lab" style="margin-top:10px">Voir aussi</div><div class="links">${rel.map(x=>`<a href="#/ex/${x}">${esc(BY[x].n)}</a>`).join("")}</div>`:""}</div>
         ${e.w?`<div class="cell"><div class="lab">Usage en échauffement</div>${wHTML(e.w)}<div class="msg">Proposé par Choose your warm-up et Create my session.</div></div>`:""}
       </div>
     </div>
@@ -1509,15 +1524,18 @@ function importProps(d){
 /* ---------- familles ---------- */
 function showFams(){ ecran("familles");
   document.documentElement.style.setProperty("--acc","var(--ink)");
-  const groups={}; FAMS4.forEach(f=>{ if(f.c==="MOI" && !EX.some(e=>e.f4==="MOI")) return; const g=f.c==="MOI"?"Mes exercices":TH[f.th]; (groups[g]=groups[g]||[]).push(f); });
+  /* lot I4 : « Tennis » en tête (exercices de jeu, puis rubriques de technique et de tactique), puis les autres thèmes */
+  const groups={"Tennis":[]}; FAMS4.forEach(f=>{ if(f.c==="MOI" && !EX.some(e=>e.f4==="MOI")) return; const g=f.c==="MOI"?"Mes exercices":(+f.th===4||+f.th===5)?"Tennis":TH[f.th]; (groups[g]=groups[g]||[]).push(f); });
   const n4 = {}; EX.forEach(e=>{ if(!e.x) n4[e.f4]=(n4[e.f4]||0)+1; });
-  heroBq("Familles", `<b>${FAMS4.length-1}</b> familles en ${Object.keys(groups).filter(g=>g!=="Mes exercices").length} thèmes · mode d'emploi et repères d'âge`, "balles");
+  const rubOf = (g,f) => g==="Tennis" ? `${TH[f.th]} · ${f.rub||""}` : (f.rub||"");
+  heroBq("Familles", `<b>${FAMS4.length-1}</b> familles · Tennis, préparation physique, mentale, santé, entraîner · mode d'emploi et repères d'âge`, "balles");
   $("#main").innerHTML=`${tabs("familles")}`+
-    Object.entries(groups).map(([g,fs])=>{ const rubs={}; fs.forEach(f=>{ (rubs[f.rub||""]=rubs[f.rub||""]||[]).push(f); });
+    Object.entries(groups).map(([g,fs])=>{ const rubs={}; if(g==="Tennis") rubs["Exercices de jeu"]=FAMS4.filter(f=>f.jeu); fs.forEach(f=>{ const r=rubOf(g,f); (rubs[r]=rubs[r]||[]).push(f); });
       return `<div class="sec"><h2>${esc(g)}</h2>${Object.entries(rubs).map(([r,xs])=>`${r && Object.keys(rubs).length>1?`<h3 class="subh">${esc(r)}</h3>`:""}<div class="fams" style="margin-top:8px">${xs.map(f=>`<a class="fam" href="#f/${f.c}" style="--dc:${dc(f.dom)}"><b>${esc(f.t)}</b><small>${n4[f.c]||0} exercices · ${f.subs.length} sous-familles${f.md==="schema"?" · schémas":""}</small></a>`).join("")}</div>`).join("")}</div>`; }).join("");
 }
 function showFam(c){
   if(!FBY4[c] && FBY[c] && FBY[c].c4){ location.replace("#f/"+FBY[c].c4); return; }   /* ancien code de famille (5.x.y) */
+  if(!FBY4[c] && FAL[c] && FBY4[FAL[c]]){ location.replace("#f/"+FAL[c]); return; }   /* lot I4 : famille redistribuée (EX.PP.13.5) */   /* ancien code de famille (5.x.y) */
   const f=FBY4[c]; if(!f) return showFams(); document.documentElement.style.setProperty("--acc",dc(f.dom));
   const xs=EX.filter(e=>e.f4===c && !HIDE.has(e.id) && !e.x), subs={}; xs.forEach(e=>{ (subs[e.s]=subs[e.s]||[]).push(e); });
   const m=$("#main"); m.style.setProperty("--dc",dc(f.dom));
