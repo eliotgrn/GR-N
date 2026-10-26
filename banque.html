@@ -708,6 +708,14 @@ ol.vx-nl>li::before,ul.vx-nl>li::before{content:counter(vxn,decimal-leading-zero
 .fam b{font-family:var(--display);font-weight:800;text-transform:uppercase;letter-spacing:.03em;font-size:18px}
 .subh{font-family:var(--display);font-weight:800;text-transform:uppercase;letter-spacing:.05em;font-size:18px;color:#F2F5F0;margin:22px 0 10px}
 .intro{border-radius:20px}
+/* tâche 0.1 · tri par pertinence : pastille « Niveau », repères discrets entre les groupes, reste légèrement atténué (rien n'est masqué) */
+.chip.nivp{border-color:#E4FF3A80;color:#E4FF3A;font-weight:600}
+.chip.nivp.auto{border-style:dashed;color:#F2F5F0;font-weight:500}
+.pj{grid-column:1/-1;display:flex;align-items:center;gap:8px;margin:6px 0 -2px;font-family:var(--display);font-size:11.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#9AA59E}
+.pj::after{content:"";flex:1 1 auto;height:1px;background:#263029}
+.pj b{color:#E4FF3A;font-weight:700}
+.vx-ex.att{opacity:.6}
+.vx-ex.att:hover,.vx-ex.att:focus-visible{opacity:1}
 </style>
 
 <header class="top"><div class="topin">
@@ -853,7 +861,7 @@ const today = () => (window.GRUN ? GRUN.today() : new Date().toISOString().slice
 const MOIFAM = {c:"MOI", t:"Mes exercices", dom:"PH", dossier:"Mes exercices", intro:"<p>Les exercices que tu as créés et rangés dans « Mes exercices ».</p>", subs:[]};
 
 /* « ? » : une aide par écran (G.aide) */
-const AIDES = {explorer:"La banque : tous les exercices, rangés par ce qu'ils travaillent. « Tennis » regroupe technique, tactique et exercices de jeu (comme la séance tennis) ; puis préparation physique, mentale, santé et entraîner. Filtre d'une touche (thème, rubrique, âge, matériel…), ♡ sur une ligne = favori en un geste ; tes exercices sont en tête.",
+const AIDES = {explorer:"La banque : tous les exercices, rangés par ce qu'ils travaillent. « Tennis » regroupe technique, tactique et exercices de jeu (comme la séance tennis) ; puis préparation physique, mentale, santé et entraîner. Filtre d'une touche (thème, rubrique, matériel…). L'âge (le même que dans la Bibliothèque) et la pastille « Niveau » (1 à 4, ou classement FFT dès 10 ans) trient la liste : d'abord les exercices pour ce joueur, puis les voisins, puis le reste, plus pâle ; rien n'est masqué. ♡ sur une ligne = favori en un geste ; tes exercices sont en tête.",
   fiche:"La fiche d'un exercice : but, consignes, matériel, vidéo, dosage. « Utiliser dans une séance » en bas ; « Exercices proches de celui-ci » propose les mêmes qualités à côté ; ♡ le met en favori.",
   form:"Créer ou modifier un exercice, en un écran : le nom suffit pour commencer, le reste (fiche, matériel, vidéo, échauffement, statut) se remplit si tu veux. « Proposer » l'envoie au créateur de GRÜN.",
   ligne:"Les exercices d'une ligne de grille pour l'âge choisi, du plus simple au plus dur.",
@@ -862,7 +870,67 @@ const AIDES = {explorer:"La banque : tous les exercices, rangés par ce qu'ils t
   propositions:"Proposer un exercice à la méthode, exporter tes propositions, valider ou refuser celles reçues."};
 Object.entries(AIDES).forEach(([k,t])=>{ try{ GRUN.aide("banque/"+k, t); }catch(e){} });
 const ecran = k => { try{ GRUN.aide.ecran("banque/"+k); }catch(e){} };
-const cur = () => { try{ const c = GRUN.courant.get(); if(c && c.t==="j" && c.joueur){ const a = GRUN.grilleConseillee ? GRUN.grilleConseillee(c.joueur) : null; return a ? {nom:String(c.nom||"").split(" ")[0], a:Math.max(4,Math.min(18,a))} : null; } }catch(e){} return null; };
+const cur = () => { try{ const c = GRUN.courant.get(); if(c && c.t==="j" && c.joueur){ const a = GRUN.grilleConseillee ? GRUN.grilleConseillee(c.joueur) : null; return a ? {nom:String(c.nom||"").split(" ")[0], a:Math.max(4,Math.min(18,a)), sx:c.joueur.sexe==="F"?"F":"G"} : null; } }catch(e){} return null; };
+/* ---------- tâche 0.1 · TRI PAR PERTINENCE (plan/HARMONISATION_A_FAIRE.md ; données plan/tri_exercices.json : ta-tb = tranche d'âge utile,
+   tn = niveau d'exigence 1-4, tq = niveau de la Version 15-18 ans). Âge = sélecteur âge + sexe de la Bibliothèque (GRUN.ageBib, partagé) ;
+   niveau = pastille « Niveau » (1 à 4, ou classement FFT dès 10 ans converti par âge ; facultatif, sinon déduit de l'âge), mémorisé dans
+   grun_reglages_v1.nivBib = {n:1-4} | {clt:"15/2"}. Les listes sont triées (pour ce joueur, puis voisins, puis le reste atténué) : rien n'est masqué. ---------- */
+const NIVN = {1:"Découverte, fondamentaux", 2:"Compétition", 3:"Avancé (régional, national jeune)", 4:"Haut niveau junior, pré-pro"};
+const CLT = ["NC","40","30/5","30/4","30/3","30/2","30/1","30","15/5","15/4","15/3","15/2","15/1","15","5/6","4/6","3/6","2/6","1/6","0","-2/6","-4/6","-15","-30","Top 60"];
+/* classement FFT → niveau, par âge : rang minimal (dans CLT) pour les niveaux 2, 3 et 4. NC = 1 (un 10-11 ans non classé qui joue en compétition : choisir 2) */
+const CLT_SEUILS = [[10,11,[1,5,8]], [12,13,[1,7,11]], [14,15,[1,10,16]], [16,18,[1,12,19]]];
+function cltIdx(s){ let t = String(s||"").trim().toLowerCase().replace(/\s+/g,"");
+  if(!t) return -1; if(/^(nc|non)/.test(t)) return 0; if(/^(top|n°|no\d|num|promo)/.test(t)) return CLT.length-1;
+  t = t.replace(/^(-?\d+)[.\-:](\d)$/, "$1/$2"); return CLT.findIndex(c=>c.toLowerCase()===t); }
+function cltNiv(s, A){ const i = cltIdx(s); if(i<0 || !(A>=10)) return null; const sl = (CLT_SEUILS.find(([a,b])=>A>=a && A<=b)||CLT_SEUILS[3])[2];
+  return i>=sl[2] ? 4 : i>=sl[1] ? 3 : i>=sl[0] ? 2 : 1; }
+const nivAuto = A => A==null ? [] : A<=8 ? [1] : A<=10 ? [2] : A<=13 ? [2,3] : [3];
+function joueurTri(){
+  let a = null; try{ a = GRUN.ageBib ? GRUN.ageBib() : null; }catch(_){}
+  const A = a ? (a.age<4 ? 3 : a.age) : null;
+  let nb = null; try{ nb = (GRUN.reglages()||{}).nivBib || null; }catch(_){}
+  let n = [], src = "auto", clt = "";
+  if(nb && nb.n>=1 && nb.n<=4){ n=[+nb.n]; src="choix"; }
+  else if(nb && nb.clt){ const v = cltNiv(nb.clt, A); if(v){ n=[v]; src="clt"; clt=nb.clt; } }
+  if(!n.length) n = nivAuto(A);
+  return (A==null && src==="auto") ? null : {A, a, n, src, clt};
+}
+const nivTxt = j => j && j.n.length ? (j.n.length>1 ? j.n[0]+"-"+j.n[j.n.length-1] : String(j.n[0])) : "";
+/* groupe d'un exercice pour ce joueur : 0 = âge dans la tranche et niveau égal ; 1 = niveau voisin (±1) ou âge voisin (±2 ans) ; 2 = le reste */
+function pert(e, j){
+  const ta = e.ta!=null ? e.ta : (e.a||4), tb = e.tb!=null ? e.tb : (e.ax||18);
+  const ne = (j.A!=null && j.A>=15 && e.tq) ? e.tq : (e.tn || (ta<=7?1:ta<=10?2:ta<=14?3:4));
+  const dn = j.n.length ? Math.min(...j.n.map(t=>Math.abs(ne-t))) : 0;
+  const dA = j.A==null ? 0 : j.A<ta ? ta-j.A : j.A>tb ? j.A-tb : 0;
+  const g = (dA===0 && dn===0) ? 0 : ((dA===0 && dn===1) || (dA<=2 && dn===0)) ? 1 : 2;
+  return [g, g ? dn+dA : 0, g<2 ? Math.floor((tb-ta)/3) : 0];   /* à égalité : la tranche la plus resserrée autour de l'âge d'abord */
+}
+/* tri stable par pertinence ; pose e._g (groupe) pour les repères et l'atténuation */
+function triPert(arr, j){ if(!j){ arr.forEach(e=>{ e._g = null; }); return arr; }
+  const k = new Map(arr.map((e,i)=>{ const p = pert(e,j); e._g = p[0]; return [e, [...p, i]]; }));
+  return arr.sort((x,y)=>{ const a=k.get(x), b=k.get(y); return a[0]-b[0] || a[1]-b[1] || a[2]-b[2] || a[3]-b[3]; }); }
+/* pastille « Niveau » (une seule) et feuille de choix : 1 à 4, ou classement FFT dès 10 ans, ou automatique selon l'âge */
+function nivPill(){ const j = joueurTri(), t = j ? nivTxt(j) : "";
+  return `<button class="chip nivp${!j||j.src==="auto"?" auto":""}" type="button" id="fniv" aria-label="Niveau du joueur${t?" : "+t:""}${j&&j.src==="auto"?" (déduit de l'âge)":""}. Changer">${j&&j.src==="clt"?esc(j.clt)+" · ":""}Niveau${t?" "+t:""} ▾</button>`; }
+function choisirNiveau(done){
+  if(!(GRUN.ui && GRUN.ui.sheet)) return;
+  const j = joueurTri(), A = j ? j.A : null, nb = (GRUN.reglages()||{}).nivBib || {};
+  const auto = nivAuto(A);
+  const sh = GRUN.ui.sheet({titre:"Niveau du joueur", html:`<p class="gs-m">Facultatif : les exercices de ce niveau passent en tête de liste, rien n'est masqué.${A!=null?` Âge : ${A<4?"0-3":A} ans (sélecteur de la Bibliothèque).`:" Choisis aussi un âge pour un tri complet."}</p>
+    <div class="gs-l">Niveau<div class="gs-chips">${[1,2,3,4].map(n=>`<button type="button" class="gs-chip" data-niv="${n}" aria-pressed="${+nb.n===n}"><b>${n}</b>&nbsp;${esc(NIVN[n])}</button>`).join("")}
+      <button type="button" class="gs-chip" data-niv="" aria-pressed="${!nb.n && !nb.clt}">Selon l'âge${auto.length?" ("+auto.join("-")+")":""}</button></div></div>
+    <div class="gs-l">Classement FFT <small>(à partir de 10 ans)</small>
+      <input class="gs-inp" id="fclt" type="text" inputmode="text" autocomplete="off" placeholder="${A!=null&&A<10?"à partir de 10 ans":"ex. 30/2, 15/1, 4/6, NC"}" value="${esc(nb.clt||"")}" ${A!=null&&A<10?"disabled":""} aria-describedby="fcltm">
+      <p class="gs-m" id="fcltm" aria-live="polite"></p></div>`,
+    secondaire:[{t:"Fermer", fn:()=>true}], principal:{t:"Valider le classement", fn:()=>{ const v=sh.$("#fclt").value.trim(); if(!v) return true;
+      const n = cltNiv(v, A); if(n==null){ sh.$("#fcltm").textContent = A==null||A<10 ? "Le classement se lit à partir de 10 ans : choisis d'abord l'âge." : "Classement non reconnu (ex. 30/2, 15/1, 2/6, 0, -2/6, NC)."; return false; }
+      GRUN.reglages.set({nivBib:{clt: CLT[cltIdx(v)]}}); GRUN.ui.toast(`${CLT[cltIdx(v)]} à ${A} ans : niveau ${n}`); return true; }},
+    fermer:()=>{ done && done(); }});
+  const msg = () => { const v = sh.$("#fclt").value.trim(); const n = v ? cltNiv(v, A) : null; sh.$("#fcltm").textContent = v ? (n ? `${CLT[cltIdx(v)]} à ${A} ans → niveau ${n} · ${NIVN[n]}` : (A==null||A<10 ? "Le classement se lit à partir de 10 ans." : "Classement non reconnu.")) : ""; };
+  sh.$("#fclt").addEventListener("input", msg); msg();
+  sh.el.addEventListener("click", ev=>{ const b = ev.target.closest("[data-niv]"); if(!b) return; const n = +b.dataset.niv;
+    GRUN.reglages.set({nivBib: n ? {n} : null}); sh.fermer(true); });
+}
 let FAMS=[], FAMS4=[], FBY4={}, AL={}, FAL={}, EX=[], BY={}, FBY={}, VID={}, MATC=[], FAV=new Set(), HIDE=new Set(), EDITING=false, FLASH="";
 const dmsg = t => { FLASH=t; const m=$("#dmsg"); if(m) m.textContent=t; };
 /* ---------- données personnelles du module (appareil, clé historique banque_v1) : listes, notes, liens vidéo, filtres, propositions reçues ---------- */
@@ -871,6 +939,8 @@ const FDEF = {th:"",tg:"",st:"",dom:"",lig:"",age:"",mat:"",vid:"",lieu:"",wu:""
 function loadP(){ let o={}; try{ o=JSON.parse(localStorage.getItem(ST))||{}; }catch(e){} const p=Object.assign({fav:[], lists:[], notes:{}, links:{}, recues:[], traitees:[]}, o); p.f=Object.assign({},FDEF,p.f||{}); if(!Array.isArray(p.f.dispo)) p.f.dispo=[];
   /* v4 : plus de filtre par domaine ni par niveau (anciens réglages effacés pour ne rien cacher) */
   p.f.dom=""; delete p.f.niv; if(p.f.tri==="niv") p.f.tri="";
+  /* tâche 0.1 : plus de filtre d'âge qui masque ; l'âge vient du sélecteur âge + sexe de la Bibliothèque et sert au tri par pertinence */
+  p.f.age="";
   /* lot I4 : Technique et Tactique passent sous l'entrée « Tennis » (ancien réglage repris) */
   if(String(p.f.th)==="4"||String(p.f.th)==="5"){ p.f.tg = String(p.f.th)==="4" ? "TE" : "TA"; p.f.th = "T"; }
   return p; }
@@ -916,6 +986,8 @@ async function boot(){
   LOCALV = new Set(await IDB.keys());
   GRUN.on("grun:banque", ()=>{ const B=GRUN.banque.cache(); if(!B) return; index(B); if(!EDITING){ const y=scrollY; route(true); scrollTo(0,y); } });
   GRUN.on(ST, ()=>{ P = loadP(); });
+  /* tâche 0.1 : âge ou niveau changés (ici, dans la Bibliothèque ou un autre onglet) → listes retriées */
+  GRUN.on(GRUN.K.reglages, ()=>{ if(EDITING) return; const h=parseHash().path; if(h==="" || h.startsWith("f/")){ const y=scrollY; route(true); scrollTo(0,y); } });
   route();
 }
 const vidOf = e => P.links[e.id] || e.vid || VID[e.id] || "";
@@ -975,7 +1047,6 @@ function filtered(){
     else if(f.th && +e.th !== +f.th) return false;
     if(f.st && (f.st.startsWith("EX.") ? e.f4 !== f.st : (FBY4[e.f4]||{}).st !== f.st)) return false;
     if(f.lig && !e.L.includes(f.lig)) return false;
-    if(f.age && (e.a > +f.age || (e.ax||18) < +f.age)) return false;
     if(mat && !mat.test(e.mk)) return false;
     if(dispo.size && !(e.m||[]).every(m=>dispo.has(m))) return false;
     if(f.lieu==="court" && !e.c) return false;
@@ -991,8 +1062,10 @@ function filtered(){
     return true;
   });
   const by = {nom:(a,b)=>a.n.localeCompare(b.n,"fr"), age:(a,b)=>a.a-b.a||a.v-b.v||a.i-b.i}[f.tri];
-  /* mes exercices d'abord (créés ou ajoutés par moi), puis l'ordre choisi */
-  r.sort((a,b)=>((b.perso?1:0)-(a.perso?1:0)) || (by?by(a,b):0));
+  /* mes exercices d'abord (créés ou ajoutés par moi), puis l'ordre choisi ; « Pertinence » (défaut quand un âge ou un niveau est connu) : tâche 0.1 */
+  const j = !f.tri && !exact ? joueurTri() : null;
+  if(j){ triPert(r, j); r.sort((a,b)=>(b.perso?1:0)-(a.perso?1:0)); }
+  else { r.forEach(e=>{ e._g = null; }); r.sort((a,b)=>((b.perso?1:0)-(a.perso?1:0)) || (by?by(a,b):0)); }
   return r;
 }
 function showExplore(){
@@ -1006,6 +1079,9 @@ function showExplore(){
   const tog = (k,t) => `<button class="chip" type="button" data-tog="${k}" aria-pressed="${!!f[k]}">${t}</button>`;
   const ck = (k, v, t, extra) => `<button class="chip${extra||""}" type="button" data-fk="${k}" data-fv="${esc(v)}" aria-pressed="${String(f[k])===String(v)}">${t}</button>`;
   const cj = cur();
+  /* tâche 0.1 : les pastilles d'âge règlent l'âge partagé de la Bibliothèque (GRUN.ageBib) et trient, sans rien masquer */
+  const jb = joueurTri(), Ab = jb && jb.a ? jb.a.age : null;
+  const ageb = (v, t, extra, sx) => `<button class="chip${extra||""}" type="button" data-ageb="${v}"${sx?` data-sx="${sx}"`:""} aria-pressed="${Ab===v}">${t}</button>`;
   ecran("explorer");
   const nMine = EX.filter(e=>e.perso).length;
   heroBq("Exercices", nMine?`dont ${nMine} à toi`:"");
@@ -1014,7 +1090,7 @@ function showExplore(){
   <div class="filters vfil">
     <div class="vx-pills" role="group" aria-label="Thème">${domChips}</div>
     ${tgs}<div class="vx-subs" role="group" aria-label="Sous-thème">${sts.length ? sts.map(([c,n])=>`<button class="vx-sub" type="button" data-fk="st" data-fv="${c}" aria-pressed="${f.st===c}">${XP()?c+" · ":""}${esc(n)}</button>`).join("") : `<span class="msg">${f.th==="T"?"Technique, tactique ou exercices de jeu : touche pour préciser.":"Touche un thème pour voir ses rubriques."}</span>`}${f.lig?`<button class="vx-sub" type="button" data-fk="lig" data-fv="${f.lig}" aria-pressed="true" title="Retirer">Ligne de grille : ${esc(ligNom(f.lig))} ✕</button>`:""}</div>
-    <div class="frow scroll"><b>Âge</b>${cj?ck("age", cj.a, `Âge de ${esc(cj.nom)} · ${cj.a} ans`, " cur"):""}${Array.from({length:15},(_,i)=>ck("age", i+4, (i+4)+" ans")).join("")}</div>
+    <div class="frow scroll"><b>Âge</b>${nivPill()}${cj?ageb(cj.a, `Âge de ${esc(cj.nom)} · ${cj.a} ans`, " cur", cj.sx):""}${Array.from({length:15},(_,i)=>ageb(i+4, (i+4)+" ans")).join("")}</div>
     <details id="fplus" class="fplus" ${f.lieu||f.wu||f.vid||f.fav||f.mine||f.mod||f.hid||f.dispo.length||f.mat?"open":""}><summary>Plus de filtres</summary>
     <div class="frow"><b>Lieu</b>${ck("lieu","court","Sur le court")}${ck("lieu","hors","Hors court")}${ck("lieu","grand","Grand espace")}</div>
     <div class="frow"><b>Échauff.</b>${ck("wu","1","Utilisables en échauffement")}${Object.entries(ETN).map(([k,n])=>ck("wu",k,"Étape · "+n)).join("")}</div>
@@ -1026,11 +1102,18 @@ function showExplore(){
       <div class="frow"><b>Utilise</b>${MAT.map((m,i)=>ck("mat", i, esc(m[0]))).join("")}</div>
     </details></details>
   </div>
-  <div class="count"><span id="cnt"></span><span class="actbar"><select class="sel" id="ftri" aria-label="Trier"><option value="">Ordre de la banque</option><option value="nom">Trier par nom</option><option value="age">Trier par âge</option></select>
+  <div class="count"><span id="cnt"></span><span class="actbar"><select class="sel" id="ftri" aria-label="Trier"><option value="">${joueurTri()?"Pertinence pour ce joueur":"Ordre de la banque"}</option><option value="nom">Trier par nom</option><option value="age">Trier par âge</option></select>
     <span class="seg" role="group" aria-label="Vue"><button type="button" data-vue="liste" aria-pressed="${f.vue!=="compacte"}">Liste</button><button type="button" data-vue="compacte" aria-pressed="${f.vue==="compacte"}">Compacte</button></span></span></div><div id="res"></div>`;
   [["ftri","tri"]].forEach(([id,k])=>{ const s=$("#"+id); s.value=f[k]; s.onchange=()=>{ f[k]=s.value; save(); shown=PAGE; showExplore(); }; });
   /* filtres en pastilles : une touche choisit, une seconde touche retire */
   $$("[data-fk]").forEach(b=>b.onclick=()=>{ const k=b.dataset.fk, v=b.dataset.fv; f[k] = String(f[k])===v ? "" : v; save(); shown=PAGE; const y=scrollY; showExplore(); scrollTo(0,y); });
+  $$("[data-ageb]").forEach(b=>b.onclick=()=>{ const v=+b.dataset.ageb, a=GRUN.ageBib?GRUN.ageBib():null; shown=PAGE;
+    if(a && !a.auto && a.age===v){ GRUN.setAgeBib(null); return; }                       /* seconde touche : retire le choix */
+    const sx = b.dataset.sx || (a && a.sexe);
+    if(sx) GRUN.setAgeBib({sexe:sx, age:v});
+    else if(GRUN.ui && GRUN.ui.choisirAgeBib) GRUN.ui.choisirAgeBib();                     /* sexe inconnu : le sélecteur âge + sexe de la Bibliothèque */ });
+  { const nb=$("#fniv"); if(nb) nb.onclick=()=>choisirNiveau(); }
+  { const pr=$("[data-ageb][aria-pressed=true]"), row=pr&&pr.parentElement; if(row){ const x = pr.getBoundingClientRect().left - row.getBoundingClientRect().left + row.scrollLeft - row.clientWidth/2 + pr.offsetWidth/2; if(x>0) row.scrollLeft = x; } }   /* l'âge choisi reste visible */
   $$("[data-th]").forEach(b=>b.onclick=()=>{ f.th = String(f.th)===b.dataset.th ? "" : b.dataset.th; f.st=""; f.tg=""; save(); shown=PAGE; const y=scrollY; showExplore(); scrollTo(0,y); });
   $$("[data-tg]").forEach(b=>b.onclick=()=>{ f.tg = f.tg===b.dataset.tg ? "" : b.dataset.tg; f.st=""; save(); shown=PAGE; const y=scrollY; showExplore(); scrollTo(0,y); });
   $$("[data-tog]").forEach(b=>b.onclick=()=>{ const k=b.dataset.tog; f[k]=!f[k]; save(); shown=PAGE; showExplore(); });
@@ -1043,14 +1126,18 @@ function renderRes(){
   const r = filtered();
   const c=$("#cnt"); if(!c) return;
   c.innerHTML = r.length===EX.length ? "" : `<b>${r.length.toLocaleString("fr-FR")}</b> exercice${r.length>1?"s":""}`;   /* le total est déjà dans le héros */
-  $("#res").innerHTML = r.length ? rowsHTML(r.slice(0,shown), P.f.vue==="compacte") + (r.length>shown?`<div class="more"><button class="btn" id="more" type="button">Afficher ${Math.min(PAGE,r.length-shown)} de plus</button></div>`:"") : '<div class="empty">Aucun exercice ne correspond. Retire un filtre ou raccourcis la recherche.</div>';
+  $("#res").innerHTML = r.length ? rowsHTML(r.slice(0,shown), P.f.vue==="compacte", joueurTri()) + (r.length>shown?`<div class="more"><button class="btn" id="more" type="button">Afficher ${Math.min(PAGE,r.length-shown)} de plus</button></div>`:"") : '<div class="empty">Aucun exercice ne correspond. Retire un filtre ou raccourcis la recherche.</div>';
   const m=$("#more"); if(m) m.onclick=()=>{ shown+=PAGE; renderRes(); };
 }
 function badges(e){ return `${e.perso?`<span class="pill mine">${e.st==="valide"?"méthode":e.st==="propose"?"proposé":"perso"}</span>`:""}${e.modifie?'<span class="pill mod">modifié</span>':""}${HIDE.has(e.id)?'<span class="pill">masqué</span>':""}`; }
-function rowsHTML(arr, compact){
-  return `<div class="vx-exs${compact?" cmp":""}">${arr.map(e=>VX.ex({href:"#/ex/"+e.id, id:e.id, cls:compact?"cmp":"", nomHtml:esc(e.n)+(badges(e)?` <span class="bdgs">${badges(e)}</span>`:""),
+/* j (facultatif, tâche 0.1) : repères « Pour ce joueur », « Voisins », « Autres âges et niveaux » et reste atténué ; sep:false = atténuation seule */
+function sepHTML(g, j){ const qui = `${j.A!=null?(j.A<4?"0-3":j.A)+" ans":""}${j.A!=null&&j.n.length?" · ":""}${j.n.length?"niveau "+nivTxt(j):""}`;
+  return g===0 ? `<div class="pj" role="note"><span><b>Pour ce joueur</b> · ${qui}</span></div>` : g===1 ? `<div class="pj" role="note"><span>Âges et niveaux voisins</span></div>` : `<div class="pj" role="note"><span>Autres âges et niveaux</span></div>`; }
+function rowsHTML(arr, compact, j, sep){ let last = -1;
+  return `<div class="vx-exs${compact?" cmp":""}">${arr.map(e=>{ const g = j && e._g!=null && !e.perso ? e._g : null; const s = g!=null && sep!==false && g!==last ? sepHTML(g, j) : ""; if(g!=null) last = g;
+    return s + VX.ex({href:"#/ex/"+e.id, id:e.id, cls:(compact?"cmp":"")+(g===2?" att":""), nomHtml:esc(e.n)+(badges(e)?` <span class="bdgs">${badges(e)}</span>`:""),
     meta:`<span class="xp">${e.id} · </span>${esc(metaEx(e))}${vidOk(e)&&hasVid(e.id)?' · <span class="vok">▶ vidéo</span>':""}${e.sc?' · <span class="vok">schéma</span>':""}`,
-    extra: J()?"":`<span class="rfav" role="button" tabindex="0" data-rfav="${e.id}" aria-pressed="${FAV.has(e.id)}" aria-label="${FAV.has(e.id)?"Retirer des favoris":"Mettre en favori"}">${FAV.has(e.id)?"♥":"♡"}</span>`})).join("")}</div>`;
+    extra: J()?"":`<span class="rfav" role="button" tabindex="0" data-rfav="${e.id}" aria-pressed="${FAV.has(e.id)}" aria-label="${FAV.has(e.id)?"Retirer des favoris":"Mettre en favori"}">${FAV.has(e.id)?"♥":"♡"}</span>`}); }).join("")}</div>`;
 }
 /* favori en un geste, sur chaque ligne de la liste */
 document.addEventListener("click", ev=>{ const b = ev.target.closest && ev.target.closest("[data-rfav]"); if(!b) return; ev.preventDefault(); ev.stopPropagation();
@@ -1184,7 +1271,7 @@ function wHTML(w){
 }
 function crossHTML(e){
   if(!e.L.length) return "";
-  const age = +P.f.age || Math.max(e.a||4, 4);
+  const jt = joueurTri(), age = (jt && jt.A>=4 ? jt.A : 0) || Math.max(e.a||4, 4);   /* âge de la Bibliothèque (tâche 0.1) */
   const T = LV.t||{}, G = LV.g||{};
   return `<div class="cell"><div class="lab">Comprendre et évaluer</div><div class="xl">${e.L.filter(okLig).map(l=>{ const d=(LV.L||{})[l]||{}; const docs=[...(d.c||[]),...(d.a||[])].slice(0,4);
     return `<div class="xline"><b style="color:${ligCol(l)}">${esc(ligNom(l))}<span class="xp"> · ${l}</span></b><div class="links">
@@ -1542,7 +1629,7 @@ function showFam(c){
   const ex0 = xs[0]; VX.hero({vis:ex0?VX.pour(ex0.id):"balles", sq:true, lab:`Familles · ${TH[f.th]||DOMC[f.dom]||""}${f.rub?" · "+f.rub:""}`, titre:f.t, num:String(xs.length), sous:"exercices"});
   m.innerHTML=`
    <div class="intro"><details><summary>Mode d'emploi de la famille : à quoi elle sert, comment choisir, progression, repères d'âge</summary><div class="tw">${f.intro}</div></details></div>`+
-   Object.entries(subs).map(([s,arr])=>`<h3 class="subh">${esc(s)}</h3>${rowsHTML(arr)}`).join("");
+   Object.entries(subs).map(([s,arr])=>{ const j = joueurTri(); return `<h3 class="subh">${esc(s)}</h3>${j ? rowsHTML(triPert(arr, j), false, j, false) : rowsHTML(arr)}`; }).join("");
 }
 
 /* ---------- favoris et listes ---------- */
