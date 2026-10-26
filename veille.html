@@ -634,6 +634,11 @@ details.fold>summary{font-family:var(--display);font-weight:800!important;font-s
 .refess{margin:0 0 6px}
 .refess .vx-pt>span b{color:#F2F5F0}
 .steps.chap a{grid-template-columns:34px minmax(0,1fr);position:relative;overflow:hidden;padding-right:84px;min-height:84px}
+.refblocs{margin-top:4px}
+/* I5 : visuel en haut à droite, titre dessous : jamais de chevauchement */
+.refblocs .vx-c.big{display:flex;flex-direction:column;min-height:0}
+.refblocs .vx-c.big .vx-cv{position:relative;left:auto;top:auto;align-self:flex-end;width:58%;height:96px;margin:14px 14px 0 0;flex:0 0 auto}
+.refblocs .vx-c.big .vx-ct{position:static;max-width:none;padding:10px 18px 18px}
 .steps.chap .cv{position:absolute;right:8px;top:10px;width:70px;height:64px;opacity:.85;pointer-events:none}
 .steps.chap .cv svg{width:100%;height:100%}
 .steps .lu .n{background:#3BE08A;border-color:#3BE08A}
@@ -793,10 +798,10 @@ async function boot(){
   if(window.GRUN){ GRUN.nav("res");
     /* « ? » : une aide par écran */
     [["veille","La Banque scientifique : les documents de la méthode en 8 thèmes, de 0 à 18 ans. Touche un thème, puis une rubrique. La pastille d'âge ouvre chaque document âge par âge sur la section de cet âge. Les parcours de lecture et l'accès par ligne de grille sont dans « Plus d'options »."],
-     ["veille/d","Un document : « L'essentiel » en haut, puis « Mettre en pratique » quand il touche une ligne de grille, puis le détail en sections dépliables. Les codes soulignés ouvrent l'autre document, les identifiants d'exercice ouvrent leur fiche. ☆ le garde en favori ; tes notes s'enregistrent seules."],
+     ["veille/d","Un document : « L'essentiel » en haut, puis le détail en sections dépliables. Les codes soulignés ouvrent l'autre document, les identifiants d'exercice ouvrent leur fiche. ☆ le garde en favori ; tes notes s'enregistrent seules."],
      ["veille/t","Un thème de la banque scientifique : ses rubriques, puis dans chaque rubrique les documents pour comprendre, âge par âge, les séances types et les autres."],
      ["veille/r","Une rubrique : ses documents pour comprendre, âge par âge, les séances types, puis les autres documents."],
-     ["veille/ref","Le Référentiel : la méthode Eliot Gruner en 10 chapitres, à lire en entier, et les saisons de référence."],
+     ["veille/ref","Le Référentiel : deux blocs. « Fonctionnement de la méthode » ouvre les 10 chapitres, à consulter librement ; « Saisons de référence » ouvre les 30 saisons types, filles et garçons."],
      ["veille/parcours","Un parcours de lecture : quelques documents dans le bon ordre. Les étapes lues se cochent seules ; le bouton du bas ouvre la suivante."],
      ["veille/l","Tout sur une ligne de grille : exercices pour l'âge, séance prête à construire, grilles filles et garçons, puis les documents pour comprendre, situer l'âge et évaluer."],
      ["veille/s","La recherche lit le texte complet de tous les documents, méthode comprise. Touche un résultat : le document s'ouvre sur le passage surligné."]].forEach(([k,t])=>{ try{ GRUN.aide(k,t); }catch(e){} });
@@ -856,7 +861,7 @@ function route(garder){
   if(h.startsWith("d/")){ const c = h.slice(2).split("/")[0], hint = h.split("/")[2];
     if(!BY[c] && AL[c]){ const [nc, ah] = AL[c].split("/"); location.replace("#d/" + nc + ((hint || ah) ? "/" + (hint || ah) : "")); return; }
     return showDoc(c, hint); }
-  if(h.startsWith("/ref")) return showRef();
+  if(h.startsWith("/ref")) return showRef(h.split("/")[2]);
   if(h.startsWith("/parcours/")) return showParcours(h.slice(10));
   if(h.startsWith("t/")) return showTheme(+h.slice(2));
   if(h.startsWith("r/")) return showRub(h.slice(2));
@@ -938,18 +943,23 @@ function showRub(id){
   VX.hero({vis:T.v, lab:T.t, titre:R.t, sous:`${R.docs.length} document${R.docs.length>1?"s":""}`, bas:true});
   $("#main").innerHTML = parType(R.docs) + `<p class="msg" style="margin-top:16px"><a class="ref" href="#t/${T.n}">‹ Toutes les rubriques · ${esc(T.t)}</a></p>`;
 }
-/* ---------- Référentiel : la méthode Eliot Gruner (ME.1 à ME.10), à lire en entier ---------- */
-function showRef(){
+/* ---------- Référentiel (lot I5, 26 oct. 2026) : deux blocs, accès libre, sans parcours ni progression ----------
+   #/ref : « Fonctionnement de la méthode » (→ #/ref/methode, les 10 chapitres ME.1-10) et « Saisons de référence » (→ saisons.html, 30 saisons) */
+function showRef(sub){
+  const ds = REF.map(c=>BY[c]).filter(Boolean);
+  if(sub === "methode"){
+    titre("Fonctionnement de la méthode"); document.title = "Fonctionnement de la méthode · Référentiel · GRÜN";
+    VX.hero({vis:"anneaux", lab:"Référentiel", titre:"Fonctionnement de la méthode", sous:`${ds.length} chapitres, à ouvrir dans l'ordre de ton choix`, bas:true});
+    $("#main").innerHTML = `<div class="sec"><ol class="steps chap libre">${ds.map((x,i)=>{ const e1=(x.e||[])[0];
+      return `<li><a href="#d/${x.c}"><span class="cv">${window.GRUN_VIS?GRUN_VIS.svg(ME_VIS[x.c]||"marches",{par:"xMidYMid meet"}):""}</span><span class="n">${i+1}</span><span class="tt"><b>${esc(x.t)}</b>${e1?`<span>${esc(e1txt(e1))}</span>`:""}</span></a></li>`; }).join("")}</ol></div>
+      <p class="msg" style="margin-top:14px"><a class="ref" href="#/ref">‹ Référentiel</a> · <a class="ref" href="saisons.html">Saisons de référence</a></p>`;
+    return; }
   titre("Référentiel"); document.title = "Référentiel · GRÜN";
-  const ds = REF.map(c=>BY[c]).filter(Boolean), n = ds.filter(x=>P.lu.includes(x.c)).length, suiv = ds.find(x=>!P.lu.includes(x.c));
-  VX.hero({vis:"marches", lab:"Bibliothèque · référentiel", titre:"Méthode Eliot Gruner", sous:`La méthode du joueur de tennis de <b>0 à 18 ans</b>, en ${ds.length} chapitres`, large:true});
-  const e = ds[0] ? (ds[0].e||[]) : [];
-  $("#main").innerHTML = `${e.length?`<section class="vx-ess refess"><span class="vx-lt">La méthode en bref</span>${e.slice(0,3).map((p,i)=>`<div class="vx-pt"><i>${VX.n2(i+1)}</i><span>${p[0]?`<b>${esc(p[0])}</b> `:""}${esc(p[1])}</span></div>`).join("")}</section>`:""}
-    <div class="sec"><h2>Sommaire<small>${n?`${n} sur ${ds.length} lus`:`${ds.length} chapitres`}</small></h2>
-    <ol class="steps chap">${ds.map((x,i)=>{ const lu=P.lu.includes(x.c), e1=(x.e||[])[0];
-      return `<li class="${lu?"lu":""}"><a href="#d/${x.c}"><span class="cv">${window.GRUN_VIS?GRUN_VIS.svg(ME_VIS[x.c]||"marches",{par:"xMidYMid meet"}):""}</span><span class="n">${lu?"✓":i+1}</span><span class="tt"><b>${esc(x.t)}</b>${e1?`<span>${esc(e1txt(e1))}</span>`:""}${suiv&&x.c===suiv.c&&n?`<em>À lire maintenant</em>`:""}</span></a></li>`; }).join("")}</ol></div>
-    <div class="sec"><h2>Les saisons de référence</h2><div class="vx-cards c2">${VX.carte({href:"saisons.html", vis:"calendrier", t:"Saisons de référence", s:"Une saison type par âge, filles et garçons, semaine par semaine", k:"row"})}</div></div>
-    ${actbar(suiv ? (n ? "Continuer : " : "Lire la méthode : ") + (n ? suiv.t : "chapitre 1") : "Relire depuis le début", "#d/"+(suiv||ds[0]||{c:""}).c)}`;
+  VX.hero({vis:"marches", lab:"Bibliothèque · référentiel", titre:"Méthode Eliot Gruner", sous:`Le joueur de tennis de <b>0 à 18 ans</b>`, large:true});
+  $("#main").innerHTML = `<div class="vx-cards c2 refblocs">
+      ${VX.carte({href:"#/ref/methode", vis:"anneaux", t:"Fonctionnement de la méthode", s:`${ds.length} chapitres`, k:"big"})}
+      ${VX.carte({href:"saisons.html", vis:"calendrier", t:"Saisons de référence", s:"30 saisons types, filles et garçons, de 4 à 18 ans", k:"big"})}
+    </div>`;
 }
 /* ---------- parcours de lecture ---------- */
 function showParcours(id){
@@ -1001,7 +1011,7 @@ function showDoc(code, hint){
   const ageDoc = ah != null ? Math.max(4, Math.min(18, ah)) : ageAppli();
   const m = $("#main"); m.style.setProperty("--pc", pc(x.th));
   /* héros : visuel du thème (ou du chapitre), « THÈME · RUBRIQUE », titre */
-  const lab = ref ? `Référentiel · chapitre ${REF.indexOf(code)+1} sur ${REF.length}` : (x.d && x.d!==T.t ? `${T.t} · ${x.d}` : T.t);
+  const lab = ref ? `Fonctionnement de la méthode · ${code}` : (x.d && x.d!==T.t ? `${T.t} · ${x.d}` : T.t);
   VX.hero({vis:ref ? (ME_VIS[code]||"marches") : T.v, lab, titre:x.t, bas:true});
   const ong = !ref && R && !T.plat && sib.length>=2 && sib.length<=4 && sib.every(y=>ONG(y.ty)) && new Set(sib.map(y=>y.ty)).size===sib.length ? sib : null;
   const ageBar = x.ag ? `<div class="agebar"><span>${ah!=null ? "Ouvert sur" : as ? "Ouvert sur l'âge choisi" : "Ouvrir à un âge"}</span>${ah!=null ? `<b>${ah<4?"0-3":ah} ans</b>` : agePill("agep2")}</div>` : "";
@@ -1010,7 +1020,6 @@ function showDoc(code, hint){
     <div class="vacts"><button class="ib star" id="fav" type="button" aria-pressed="${fav}">${fav?"★ Favori":"☆ Favori"}</button>
     ${pcx?`<div class="pcbar">Parcours <a href="#/parcours/${pcx.id}">${esc(pcx.n)}</a><span>étape ${pk+1} sur ${pcx.d.length}</span></div>`:""}<span class="crumb xp">${esc(x.ch||"")} · ${x.c}</span></div>
     ${ageBar}
-    <div id="vlines">${linesBox(code, ageDoc)}</div>
     <details class="toc" id="toc" hidden></details>
     <article class="doc" id="doc"></article>
     <div class="pn">${prev?`<a href="#d/${prev.c}"><small>‹ ${ref?"Chapitre précédent":"Précédent"}</small>${esc(prev.t)}</a>`:"<span></span>"}${next?`<a class="nx" href="#d/${next.c}"><small>${ref?"Chapitre suivant":"Suivant"} ›</small>${esc(next.t)}</a>`:"<span></span>"}</div>
@@ -1018,9 +1027,9 @@ function showDoc(code, hint){
     <details class="grun-plus"><summary>Plus d'options</summary><div class="grun-plusb"><div class="tools">
       <button class="ib" id="fsm" type="button" aria-label="Texte plus petit">A−</button><button class="ib" id="fsp" type="button" aria-label="Texte plus grand">A+</button>
       <button class="ib" id="tout" type="button">Tout déplier</button>
-      ${ref?`<a class="ib" href="#/ref">Sommaire de la méthode</a>`:`<a class="ib" href="#${R&&!T.plat?"r/"+R.id:"t/"+T.n}">Tous les documents · ${esc(R&&!T.plat?R.t:T.t)}</a>`}</div><p class="msg" id="dmsg"></p></div></details></div>
+      ${ref?`<a class="ib" href="#/ref/methode">Les ${REF.length} chapitres</a>`:`<a class="ib" href="#${R&&!T.plat?"r/"+R.id:"t/"+T.n}">Tous les documents · ${esc(R&&!T.plat?R.t:T.t)}</a>`}</div><p class="msg" id="dmsg"></p></div></details></div>
     ${pcx ? (pnext ? actbar("Étape suivante : "+nomClair(pnext), "#d/"+pnext.c) : actbar("Parcours terminé · revoir les étapes", "#/parcours/"+pcx.id))
-      : ref ? (next ? actbar("Chapitre suivant : "+next.t, "#d/"+next.c) : actbar("Sommaire de la méthode", "#/ref"))
+      : ref ? actbar("Les "+REF.length+" chapitres de la méthode", "#/ref/methode")
       : lsx.length && lsx.length<=4 ? actbar("Créer une séance · "+ligNom(lsx[0]), ()=>0) : next ? actbar("Suivant : "+nomClair(next), "#d/"+next.c) : ""}`;
   const am = $("#actmain"); if(am){ am.dataset.sess = lsx[0]; am.dataset.age = ageDoc; }
   const ap = $("#agep2"); if(ap) ap.onclick = choisirAge;
@@ -1043,10 +1052,10 @@ function showDoc(code, hint){
     }
     (cur || doc).appendChild(node);
   }
-  /* « L'essentiel » : la première liste devient des points numérotés 01, 02… ; « Mettre en pratique » et le sommaire viennent juste après */
+  /* « L'essentiel » : la première liste devient des points numérotés 01, 02… ; le sommaire vient juste après */
   const essS = doc.querySelector("section.ess");
   if(essS){ const ul = essS.querySelector(":scope > ul"); if(ul) ul.classList.add("vx-nl"); const h2 = essS.querySelector("h2"); if(h2) h2.textContent = "L'essentiel";
-    essS.after($("#vlines")); $("#vlines").after($("#toc")); }
+    essS.after($("#toc")); }
   if(sections.length>2){ const toc=$("#toc"); toc.hidden=false; toc.open = ref || matchMedia("(min-width:900px)").matches;
     toc.innerHTML = `<summary>Sommaire · ${sections.length} sections</summary><ol>${sections.map(([id,t])=>`<li><a href="#d/${code}/${id}" data-s="${id}">${esc(t.replace(/^\d+\.\s*/,""))}</a></li>`).join("")}</ol>`;
     toc.onclick = e=>{ const a=e.target.closest("a[data-s]"); if(!a) return; e.preventDefault(); history.replaceState(null,"","#d/"+code+"/"+a.dataset.s); ouvrirSection(a.dataset.s); }; }
@@ -1085,12 +1094,6 @@ document.addEventListener("click", e=>{ const b=e.target.closest("[data-sess]");
   if(GR&&GR.ui&&GR.ui.session){ try{ GR.ui.session({relais:rel}); return; }catch(x){ console.warn(x); } }
   if(GR&&GR.relais){ try{ GR.relais.envoyer(Object.assign(rel, {age:+b.dataset.age||null})); }catch(x){} location.href=GR.href("seances","#/nouvelle"); }
   else location.href="seances.html#/nouvelle"; });
-/* boutons « Exercices de cette ligne » et « Tests » sur les documents liés à des lignes de grille */
-function linesBox(code, age){
-  const ls = [...new Set((REV[code]||[]).map(x=>x[0]))]; if(!ls.length || ls.length>4) return "";
-  age = Math.max(4, Math.min(18, age||10));
-  return `<div class="lines"><b>Mettre en pratique</b>${ls.map(l=>`<div class="lrow"><span>${esc(ligNom(l))}<span class="xp"> · ${l}</span></span><a class="lk pri" href="banque.html#/l/${l}?a=${age}">Exercices · ${age} ans</a><a class="lk" href="#" data-sess="${l}" data-age="${age}">Créer une séance</a><a class="lk" href="grilles.html#/ligne/${l}/G/${age}">Grille garçons ${age} ans</a><a class="lk" href="grilles.html#/ligne/${l}/F/${age}">Grille filles ${age} ans</a><a class="lk" href="#/l/${l}">Tous les documents</a></div>`).join("")}</div>`;
-}
 /* ---------- documents d'une ligne de grille ---------- */
 function showLigne(l, am){
   if(!okLig(l)) return showHome();

@@ -934,7 +934,7 @@
     prog: "Create my prog : la programmation d'un joueur ou d'un groupe, d'une semaine à une saison. Chaque séance prévue se construit ensuite dans Create my session.",
     seances: "Create my session : la séance se construit seule (structure, exercices de la banque, échauffement) ; tu touches un exercice pour le changer, puis tu lances le mode terrain.",
     warmup: "Choose your warm-up : choisis la durée, ce qui suit et le lieu, et lance. L'échauffement s'enchaîne seul, chrono et vidéos compris.",
-    veille: "La veille : les documents de la méthode (âge, physique, geste, entraîner). Commence par « L'essentiel », puis « Mettre en pratique ».",
+    veille: "La veille : les documents de la méthode (âge, physique, geste, entraîner). Commence par « L'essentiel », puis le détail.",
     banque: "La banque d'exercices : tous les exercices rangés par qualité travaillée, filtrés pour l'âge. Ton exercice personnel s'ajoute avec « + ».",
     saisons: "Le référentiel : une saison de référence par âge et par sexe, semaine par semaine. « Utiliser comme base » la transforme en programmation pour ton joueur.",
     grilles: "Grilles et tests : la grille de compétences de chaque âge, les tests (une mesure) et les bilans (une batterie de tests) qui donnent le profil radar."
