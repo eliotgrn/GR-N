@@ -34,6 +34,8 @@ body.grun-has-nav{padding-bottom:calc(var(--nav-h) + env(safe-area-inset-bottom,
 #grun-nav a span{letter-spacing:-.01em}#grun-nav a{padding-left:1px;padding-right:1px}
 #grun-nav svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 #grun-nav a.on{color:var(--gx-y);font-weight:600}
+/* audit 26 oct. : « Banque scientifique » (un seul nom par module) peut passer sur 2 lignes ; les icônes restent alignées */
+#grun-nav[data-mode=biblio] a:not(.nv-g){justify-content:flex-start;padding-top:8px;gap:3px}#grun-nav[data-mode=biblio] a:not(.nv-g) span{white-space:normal;text-align:center;line-height:1.02;max-height:2.1em}
 #grun-nav a:active{opacity:.7}
 /* « GRÜN » (deux balles du Ü) + « Accueil » : retour à la page de garde, toujours à gauche */
 #grun-nav a.nv-g{font:800 13px/1 var(--gx-cond);letter-spacing:.06em;gap:5px}
@@ -257,7 +259,7 @@ html.grun-mod #back::before{content:"";width:20px;height:20px;background:current
 <script src="schema.js?v=2.1"></script>
 <script src="grun.js?v=2.1"></script>
 <script src="assistant.js?v=2.1"></script>
-<meta name="grun-module" content="banque"></head><body><title>Banque d'exercices</title>
+<meta name="grun-module" content="banque"></head><body><title>Exercices · GRÜN</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=Barlow:wght@400;500;600;700&display=swap">
 <style>
 /* Layout : barre fixe (retour, recherche, + exercice) ; explorateur = filtres en puces + liste des exercices ; fiche = en-tête coloré par domaine, photo, vidéo, repères, consignes, liens croisés ; formulaire de création / modification ; propositions */
@@ -720,7 +722,7 @@ ol.vx-nl>li::before,ul.vx-nl>li::before{content:counter(vxn,decimal-leading-zero
 
 <header class="top"><div class="topin">
   <button class="btn" id="back" type="button" aria-label="Retour">‹</button>
-  <a class="brand" href="#">Banque</a>
+  <a class="brand" href="#">Exercices</a>
   <div class="sbox"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
     <input id="q" type="search" placeholder="Chercher un exercice : nom, matériel, mot…" autocomplete="off" enterkeyhint="search"></div>
 </div></header>
@@ -845,7 +847,7 @@ const FMTN = {seul:"Seul",deux:"À deux",groupe:"En groupe"};
 const LIEUN = {court:"Court",salle:"Salle",ext:"Extérieur",bord:"Bord de court",hotel:"Chambre d'hôtel"};
 const APRN = {tennis:"Avant le tennis",pp:"Avant la préparation physique",match:"Avant un match",bilan:"Avant un bilan / tests"};
 const WMAT = new Set(["rb","plots","lattes","echelle","cerceaux","haies","corde","mb","ballon","elast","banc","mur","cibles","chasubles","tapis"]);
-const STN = {perso:"Perso",propose:"Proposé",valide:"Exercice de la méthode"};
+const STN = {perso:"Perso",propose:"Proposé",valide:"Exercice GRÜN"};
 const PAGE = 60;
 const $ = s => document.querySelector(s);
 const $$ = s => [...document.querySelectorAll(s)];
@@ -862,12 +864,12 @@ const MOIFAM = {c:"MOI", t:"Mes exercices", dom:"PH", dossier:"Mes exercices", i
 
 /* « ? » : une aide par écran (G.aide) */
 const AIDES = {explorer:"La banque : tous les exercices, rangés par ce qu'ils travaillent. « Tennis » regroupe technique, tactique et exercices de jeu (comme la séance tennis) ; puis préparation physique, mentale, santé et entraîner. Filtre d'une touche (thème, rubrique, matériel…). L'âge (le même que dans la Bibliothèque) et la pastille « Niveau » (1 à 4, ou classement FFT dès 10 ans) trient la liste : d'abord les exercices pour ce joueur, puis les voisins, puis le reste, plus pâle ; rien n'est masqué. ♡ sur une ligne = favori en un geste ; tes exercices sont en tête.",
-  fiche:"La fiche d'un exercice : but, consignes, matériel, vidéo, dosage. « Utiliser dans une séance » en bas ; « Exercices proches de celui-ci » propose les mêmes qualités à côté ; ♡ le met en favori.",
+  fiche:"La fiche d'un exercice : l'essentiel d'abord (âge, niveau, matériel, objectif), puis la vidéo, la description, les consignes, le dosage. « Exercices voisins » : plus simple, plus dur, et d'autres pour varier. « Utiliser dans une séance » en bas ; ♡ le met en favori.",
   form:"Créer ou modifier un exercice, en un écran : le nom suffit pour commencer, le reste (fiche, matériel, vidéo, échauffement, statut) se remplit si tu veux. « Proposer » l'envoie au créateur de GRÜN.",
   ligne:"Les exercices d'une ligne de grille pour l'âge choisi, du plus simple au plus dur.",
   familles:"Les familles d'exercices, rangées par thème et par rubrique (Tennis : exercices de jeu, technique, tactique), chacune avec son mode d'emploi et ses sous-familles.", favoris:"Tes exercices ♡ : ils reviennent en priorité dans Create my session et le warm-up.",
   listes:"Tes collections : un thème, un joueur, une période. Personnelles.", tournage:"Le suivi des vidéos : à tourner, tourné, monté. Change le statut d'une touche.",
-  propositions:"Proposer un exercice à la méthode, exporter tes propositions, valider ou refuser celles reçues."};
+  propositions:"Proposer un exercice à GRÜN, exporter tes propositions, valider ou refuser celles reçues."};
 Object.entries(AIDES).forEach(([k,t])=>{ try{ GRUN.aide("banque/"+k, t); }catch(e){} });
 const ecran = k => { try{ GRUN.aide.ecran("banque/"+k); }catch(e){} };
 const cur = () => { try{ const c = GRUN.courant.get(); if(c && c.t==="j" && c.joueur){ const a = GRUN.grilleConseillee ? GRUN.grilleConseillee(c.joueur) : null; return a ? {nom:String(c.nom||"").split(" ")[0], a:Math.max(4,Math.min(18,a)), sx:c.joueur.sexe==="F"?"F":"G"} : null; } }catch(e){} return null; };
@@ -1129,7 +1131,7 @@ function renderRes(){
   $("#res").innerHTML = r.length ? rowsHTML(r.slice(0,shown), P.f.vue==="compacte", joueurTri()) + (r.length>shown?`<div class="more"><button class="btn" id="more" type="button">Afficher ${Math.min(PAGE,r.length-shown)} de plus</button></div>`:"") : '<div class="empty">Aucun exercice ne correspond. Retire un filtre ou raccourcis la recherche.</div>';
   const m=$("#more"); if(m) m.onclick=()=>{ shown+=PAGE; renderRes(); };
 }
-function badges(e){ return `${e.perso?`<span class="pill mine">${e.st==="valide"?"méthode":e.st==="propose"?"proposé":"perso"}</span>`:""}${e.modifie?'<span class="pill mod">modifié</span>':""}${HIDE.has(e.id)?'<span class="pill">masqué</span>':""}`; }
+function badges(e){ return `${e.perso?`<span class="pill mine">${e.st==="valide"?"GRÜN":e.st==="propose"?"proposé":"perso"}</span>`:""}${e.modifie?'<span class="pill mod">modifié</span>':""}${HIDE.has(e.id)?'<span class="pill">masqué</span>':""}`; }
 /* j (facultatif, tâche 0.1) : repères « Pour ce joueur », « Voisins », « Autres âges et niveaux » et reste atténué ; sep:false = atténuation seule */
 function sepHTML(g, j){ const qui = `${j.A!=null?(j.A<4?"0-3":j.A)+" ans":""}${j.A!=null&&j.n.length?" · ":""}${j.n.length?"niveau "+nivTxt(j):""}`;
   return g===0 ? `<div class="pj" role="note"><span><b>Pour ce joueur</b> · ${qui}</span></div>` : g===1 ? `<div class="pj" role="note"><span>Âges et niveaux voisins</span></div>` : `<div class="pj" role="note"><span>Autres âges et niveaux</span></div>`; }
@@ -1158,16 +1160,26 @@ function showLigne(L, a){
   VX.hero({vis:ligDom(L)==="PP"?"physique":"technique", bas:true, lab:`${DOM[ligDom(L)][0]} · ligne ${ligN(L)}`, titre:ligNom(L), num:String(xs.length), sous:`exercice${xs.length>1?"s":""}${age?` · ${age} ans`:""} · du plus simple au plus dur`});
   m.innerHTML = `${J()?"":`<div class="vx-row" style="margin-bottom:12px"><a class="btn new" href="#/nouveau?ligne=${L}${age?`&a=${age}`:""}">+ Créer un exercice pour cette ligne</a></div>`}
    <div class="filters"><div class="frow"><b>Âge</b><select class="sel" id="lage" aria-label="Âge du joueur"><option value="">Tous âges</option>${Array.from({length:15},(_,i)=>`<option value="${i+4}" ${age===i+4?"selected":""}>Joueur de ${i+4} ans</option>`).join("")}</select></div>
-   <div class="frow"><b>Liens</b>${J()?"":`<a class="chip" href="veille.html#/l/${L}">Comprendre (veille)</a>`}<a class="chip" href="grilles.html#/ligne/${L}/G/${age||10}">Tests · garçons</a><a class="chip" href="grilles.html#/ligne/${L}/F/${age||10}">Tests · filles</a></div></div>
+   <div class="frow"><b>Liens</b>${J()?"":`<a class="chip" href="veille.html#/l/${L}">Comprendre · Banque scientifique</a>`}<a class="chip" href="grilles.html#/ligne/${L}/G/${age||10}">Tests · garçons</a><a class="chip" href="grilles.html#/ligne/${L}/F/${age||10}">Tests · filles</a></div></div>
    ${xs.length ? `<div class="sec">${rowsHTML(xs)}</div>` : '<div class="empty" style="margin-top:12px">Aucun exercice pour cette ligne à cet âge. Change l\'âge ou crée un exercice.</div>'}`;
   $("#lage").onchange=ev=>{ location.hash = `#/l/${L}${ev.target.value?`?a=${ev.target.value}`:""}`; };
 }
 
 /* ---------- fiche ---------- */
-function linkIds(s, self){ return esc(s).replace(/\b([A-Z]{3}-\d{4})\b/g,(m,id0)=>{ const id = BY[id0] ? id0 : (AL[id0] && BY[AL[id0]] ? AL[id0] : null); return id && id!==self ? `<a class="ref" href="#/ex/${id}">${esc(BY[id].n)}${XP()?" ("+id0+")":""}</a>` : m; }).replace(/\b(EX\.[A-Z]{2}\.\d{1,2}\.\d{1,2}|5\.\d\.\d{1,2})\b/g,(m,c)=>{ const f=FBY4[c]||FBY4[FAL[c]]||FBY4[(FBY[c]||{}).c4]; return f ? `<a class="ref" href="#f/${f.c}">${esc(f.t)}</a>` : m; }); }
+function linkIds(s, self){ return esc(s).replace(/\b([A-Z]{3}-\d{4})\b/g,(m,id0)=>{ const id = BY[id0] ? id0 : (AL[id0] && BY[AL[id0]] ? AL[id0] : null); return id && id!==self ? `<a class="ref" href="#/ex/${id}">${esc(BY[id].n)}${XP()?" ("+id0+")":""}</a>` : m; }).replace(/\b(EX\.[A-Z]{2}\.\d{1,2}\.\d{1,2}|5\.\d\.\d{1,2})\b/g,(m,c)=>{ const f=FBY4[c]||FBY4[FAL[c]]||FBY4[(FBY[c]||{}).c4]; return f ? `<a class="ref" href="#f/${f.c}">${esc(f.t)}</a>` : m; })
+  .replace(/(?<![\w.\/#])((?:PP|TE|TA|PM|EN|ME)\.\d{1,2}(?:\.\d{1,2})?)(?![\w]|\.\d)/g,(m,c)=>{ const t=(LV.t||{})[c]; return t && !J() ? `<a class="ref" href="veille.html#d/${c}"><span class="xp">${c} · </span>${esc(t)}</a>` : m; }); }
+/* audit 26 oct. : « Voir aussi » du mode d'emploi d'une famille : « PP.1.1 Comprendre… · EX.PP.1.2 Chaîne postérieure… » → liens nommés, codes masqués en mode simple */
+function introClaire(html){
+  const RC = /(?<![\w.\/#])(EX\.[A-Z]{2}\.\d{1,2}\.\d{1,2}|(?:PP|TE|TA|PM|EN|ME)\.\d{1,2}(?:\.\d{1,2})?)(?![\w]|\.\d)( [^·;<()]*?)?(?=\s*[·;)]|\.\s|\.$|$)/g;
+  return String(html||"").split(/(<[^>]+>)/).map(part=>part.startsWith("<") ? part : part.replace(RC, (m, c, nom)=>{
+    let href = null, t = (nom||"").trim();
+    if(c.startsWith("EX.")){ const f = FBY4[c] || FBY4[FAL[c]]; if(f){ href = "#f/"+f.c; if(!t) t = f.t; } }
+    else if(!J()){ href = "veille.html#d/"+c; if(!t) t = (LV.t||{})[c] || ""; }
+    if(!href || !t) return m;
+    return `<a class="ref" href="${href}"><span class="xp">${c} </span>${esc(t)}</a>`; })).join(""); }
 /* schéma de l'exercice (format plan/SCHEMAS_EXERCICES.md) : court vu de dessus, rendu par GRUN_SCHEMA (copié ci-dessous par build_data.py) */
 function schemaHTML(sc, sansDeroule){ if(!window.GRUN_SCHEMA || !sc) return ""; let h=""; try{ h=GRUN_SCHEMA.svg(sc,{cls:"gs"}); }catch(_){ return ""; }
-  const st = (sc.notes||[]).map((n,i)=>{ const m=String(n).match(/^\s*(\d+)\s*[:.)–-]\s*(.*)$/); return [m?m[1]:"", m?m[2]:String(n)]; }).filter(x=>x[1].trim());   /* une note sans numéro (contexte, règle) n'est pas numérotée : seuls les numéros du schéma s'affichent */
+  const st = (sc.notes||[]).map((n,i)=>{ const m=String(n).match(/^\s*(\d+(?:\s*(?:[-–à]|et)\s*\d+)?)\s*[:.)]\s*(.*)$/); return [m?m[1]:"", m?m[2]:String(n)]; }).filter(x=>x[1].trim());   /* une note sans numéro (contexte, règle) n'est pas numérotée : seuls les numéros du schéma s'affichent ; « 1-3 : », « 1 à 3 : », « 1 et 2 : » = une note pour plusieurs numéros (SCHEMAS_NUMEROS, 26 oct.) */
   return `<div class="gs-sch">${h}</div><div class="gs-leg"><span><i></i>Frappe</span><span><i class="d"></i>Déplacement</span><span class="z">▢ Zone cible</span></div>${!sansDeroule&&st.length?`<div class="gs-steps">${st.map(([n,t])=>`<div>${n?`<b>${esc(n)}</b>`:`<b class="gs-nb">·</b>`}${esc(cap(t))}</div>`).join("")}</div>`:""}`; }
 /* numéros des frappes et déplacements d'un schéma (déroulé) */
 const scOrdres = sc => [...new Set([...(sc.frappes||[]), ...(sc.deplacements||[])].map(a=>+a.ordre).filter(Boolean))].sort((a,b)=>a-b);
@@ -1275,7 +1287,7 @@ function crossHTML(e){
   const T = LV.t||{}, G = LV.g||{};
   return `<div class="cell"><div class="lab">Comprendre et évaluer</div><div class="xl">${e.L.filter(okLig).map(l=>{ const d=(LV.L||{})[l]||{}; const docs=[...(d.c||[]),...(d.a||[])].slice(0,4);
     return `<div class="xline"><b style="color:${ligCol(l)}">${esc(ligNom(l))}<span class="xp"> · ${l}</span></b><div class="links">
-      ${J()?"":`<a class="main" href="veille.html#/l/${l}">Comprendre · veille</a>${docs.map(c=>`<a href="veille.html#d/${c}${(d.a||[]).includes(c)?`/a${age}`:""}" title="${esc(G[(d.c||[]).includes(c)?"c":"a"]||"")}"><span class="xp">${c} · </span>${esc((T[c]||"").split(":")[0].slice(0,46))}</a>`).join("")}`}
+      ${J()?"":`<a class="main" href="veille.html#/l/${l}">Comprendre · Banque scientifique</a>${docs.map(c=>`<a href="veille.html#d/${c}${(d.a||[]).includes(c)?`/a${age}`:""}" title="${esc(G[(d.c||[]).includes(c)?"c":"a"]||"")}"><span class="xp">${c} · </span>${esc((T[c]||"").split(":")[0].slice(0,46))}</a>`).join("")}`}
       <a href="grilles.html#/ligne/${l}/G/${age}">Tests garçons ${age} ans</a><a href="grilles.html#/ligne/${l}/F/${age}">Tests filles ${age} ans</a>
       <a href="#/l/${l}?a=${age}">Tous les exercices de cette ligne à ${age} ans</a></div></div>`; }).join("")}</div></div>`;
 }
@@ -1288,6 +1300,27 @@ function neighbours(e){
     <div><b style="font-size:13px">‹ Régression (plus simple)</b>${li(reg.length?reg:eq.filter(x=>x.a<e.a))}</div>
     <div><b style="font-size:13px">Progression (plus dur) ›</b>${li(pro.length?pro:eq.filter(x=>x.a>=e.a))}</div></div></div>`;
 }
+/* audit 26 oct. : UNE seule liste d'exercices liés sur la fiche (au lieu de 4 : bouton, « Voir aussi », « Exercices voisins », « Exercices proches »).
+   « Exercices voisins » : plus simple et plus dur (même sous-famille), puis « Pour varier » (cités dans la fiche + proches par les qualités), sans doublon. */
+function voisinsHTML(e, rel){
+  const same = EX.filter(x=>x.f4===e.f4 && x.s===e.s && x.id!==e.id && !HIDE.has(x.id) && !x.x);
+  const near = v => same.filter(x=>x.v===v).sort((a,b)=>Math.abs(a.a-e.a)-Math.abs(b.a-e.a)).slice(0,4);
+  const eq = near(e.v).slice(0,3), r0 = near(e.v-1), p0 = near(e.v+1);
+  const reg = r0.length ? r0 : eq.filter(x=>x.a<e.a), pro = p0.length ? p0 : eq.filter(x=>x.a>=e.a && !reg.includes(x));
+  const vu = new Set([e.id, ...reg.map(x=>x.id), ...pro.map(x=>x.id)]);
+  const cites = new Set(((e.ut||"")+" "+(e.v15||"")).match(/\b[A-Z]{3}-\d{4}\b/g)||[]);   /* déjà en lien dans « Utilisation et progression » */
+  const autres = [...(rel||[]).filter(i=>!cites.has(i)).map(i=>BY[i]).filter(Boolean), ...proches(e, 10)].filter(x=>!HIDE.has(x.id) && !cites.has(x.id) && !vu.has(x.id) && (vu.add(x.id), true)).slice(0, 6);
+  if(!reg.length && !pro.length && !autres.length) return "";
+  const li = arr => arr.length ? arr.map(x=>`<a href="#/ex/${x.id}">${esc(x.n)} <small>· ${ageTxt(x)}<span class="xp"> · ${x.id}</span></small></a>`).join("") : '<span class="msg">—</span>';
+  return `<div class="cell" id="proches"><div class="lab">Exercices voisins${e.s?` · ${esc(e.s)}`:""}</div>
+    ${reg.length||pro.length?`<div class="nb"><div><b style="font-size:13px">‹ Plus simple</b>${li(reg)}</div><div><b style="font-size:13px">Plus dur ›</b>${li(pro)}</div></div>`:""}
+    ${autres.length?`<div class="lab" style="margin-top:12px">Pour varier</div>${rowsHTML(autres, true)}`:""}</div>`; }
+/* fiche : niveau d'exigence (tri par pertinence, plan/tri_exercices.json) et matériel en un mot, pour « l'essentiel » du premier écran */
+function nivEx(e){ const ta = e.ta!=null ? e.ta : (e.a||4); const n = e.tn || (ta<=7?1:ta<=10?2:ta<=14?3:4); return `${n} · ${esc(String(NIVN[n]||"").split(/[,(]/)[0].trim())}`; }
+function matCourt(e){ const m = (e.m||[]).map(c=>(MATC.find(x=>x[0]===c)||[c,c])[1]);
+  if(m.length) return m[0] + (m.length>1 ? " +"+(m.length-1) : "");
+  if(/^\s*(aucun|sans)/i.test(e.ma||"aucun")) return "Sans matériel";
+  return cap(String(e.ma).split(/[,;.]/)[0].trim().slice(0,30)); }
 /* « Exercices proches de celui-ci » : mêmes lignes de grille, même famille, âge et progression voisins (score), hors masqués */
 function proches(e, n){ const L = new Set(e.L||[]), ea = e.a||4, eb = e.ax||18;
   return EX.filter(x=>x.id!==e.id && !HIDE.has(x.id) && !x.x).map(x=>{ let sc = 0; (x.L||[]).forEach(l=>{ if(L.has(l)) sc += 4; }); if(x.f===e.f) sc += 2; if(x.s && x.s===e.s) sc += 2; if(x.dom===e.dom) sc += 1;
@@ -1308,19 +1341,18 @@ function showEx(id){
   m.innerHTML = `<article class="fiche">
     ${e.sc?`<section class="gs-fiche" aria-label="Schéma de l'exercice">${schemaHTML(e.sc)}</section>`:""}
     <div class="fhead"><div style="min-width:0"><div class="fid"><span class="xp">${e.id} · </span><a href="#f/${f.c}">${esc(e.s||f.t)}</a></div><div class="fline">${esc(e.tm ? e.tm.replace(/\b(PP|TE|TA|PM|EN)\.\d+ /g, XP()?"$&":"") : liTxt(e))}</div></div>
-      <div class="actbar"><a class="btn" href="#proches">Exercices proches</a><button class="btn star" id="fav" type="button" aria-pressed="${fav}">${fav?"♥ Favori":"♡ Favori"}</button><button class="btn" id="addl" type="button">${inCols(id)?"✓ Collection ("+inCols(id)+")":"+ Collection"}</button>${co?`<a class="btn" id="edit" href="#/modifier/${e.id}">Modifier</a>`:""}</div></div>
-    <details class="grun-plus" style="margin:0 0 12px"><summary>Plus d'options</summary><div class="grun-plusb"><div class="actbar">${co?`${e.modifie?'<button class="btn" id="reset" type="button">Remettre l\'original</button>':""}${e.perso?'<button class="btn dan" id="del" type="button">Supprimer</button>':""}<button class="btn" id="hide" type="button">${HIDE.has(id)?"Réafficher":"Masquer"}</button>`:""}${co&&vidOk(e)?`<button class="btn" id="vidch" type="button">Changer la vidéo</button><button class="btn" id="vidrm" type="button">Retirer la vidéo</button>`:""}</div></div></details>
+      <div class="actbar"><button class="btn star" id="fav" type="button" aria-pressed="${fav}">${fav?"♥ Favori":"♡ Favori"}</button><button class="btn" id="addl" type="button">${inCols(id)?"✓ Collection ("+inCols(id)+")":"+ Collection"}</button>${co?`<a class="btn" id="edit" href="#/modifier/${e.id}">Modifier</a>`:""}</div></div>
     ${e.img?`<div class="photo"><img src="${esc(e.img)}" alt="Photo : ${esc(e.n)}"></div>`:""}
-    ${vidSlot(e)?`<div class="video" id="vid"></div>${co?'<div class="vtools" id="vtools" role="group" aria-label="Vidéo de l\'exercice"></div>':""}${co?tourHTML(id):""}`:""}
     <div class="keys">
       <div class="key"><small>Âge</small><b>${ageTxt(e)}</b></div>
-      <div class="key"><small>Thème</small><b style="font-size:14.5px">${esc(TH[e.th]||"")}${f.rub?` · ${esc(f.rub)}`:""}</b></div>
-      <div class="key"><small>Famille</small><b style="font-size:14.5px">${esc(e.s||f.t)}</b></div>
+      <div class="key"><small>Niveau</small><b style="font-size:14.5px">${nivEx(e)}</b></div>
+      <div class="key"><small>Matériel</small><b style="font-size:14.5px">${esc(matCourt(e))}</b></div>
       <div class="key"><small>Lieu</small><b style="font-size:14.5px">${e.c?"Sur le court":"Hors court"}${e.e?" · grand espace":""}</b></div>
     </div>
+    <div class="cell obj"><div class="lab">Objectif</div><div class="txt">${linkIds(cap(e.ob||""),id)}</div></div>
+    ${vidSlot(e)?`<div class="video" id="vid"></div>${co?'<div class="vtools" id="vtools" role="group" aria-label="Vidéo de l\'exercice"></div>':""}${co?tourHTML(id):""}`:""}
     <div class="grid">
       <div class="col">
-        <div class="cell"><div class="lab">Objectif</div><div class="txt">${linkIds(cap(e.ob||""),id)}</div></div>
         <div class="cell"><div class="lab">Description</div><div class="txt">${linkIds(cap(e.de||""),id)}</div></div>
         <div class="cell"><div class="lab">Matériel</div>${bullets(e.ma,id)}${(e.m||[]).length?`<div class="links">${e.m.map(c=>`<a>${esc((MATC.find(x=>x[0]===c)||[c,c])[1])}</a>`).join("")}</div>`:""}</div>
         ${e.dos?`<div class="cell"><div class="lab">Dosage</div>${bullets(e.dos,id)}</div>`:""}
@@ -1329,13 +1361,13 @@ function showEx(id){
       <div class="col">
         <div class="cell"><div class="lab">Consignes au joueur</div>${bullets(e.co,id)}</div>
         ${e.er?`<div class="cell"><div class="lab">Erreurs à éviter</div>${bullets(e.er,id)}</div>`:""}
-        <div class="cell"><div class="lab">Utilisation et progression</div><div class="txt">${linkIds(cap(e.ut||""),id)}</div>${e.v15?`<div class="lab" style="margin-top:10px">Version 15-18 ans</div><div class="txt">${linkIds(cap(e.v15),id)}</div>`:""}${rel.length?`<div class="lab" style="margin-top:10px">Voir aussi</div><div class="links">${rel.map(x=>`<a href="#/ex/${x}">${esc(BY[x].n)}</a>`).join("")}</div>`:""}</div>
+        <div class="cell"><div class="lab">Utilisation et progression</div><div class="txt">${linkIds(cap(e.ut||""),id)}</div>${e.v15?`<div class="lab" style="margin-top:10px">Version 15-18 ans</div><div class="txt">${linkIds(cap(e.v15),id)}</div>`:""}</div>
         ${e.w?`<div class="cell"><div class="lab">Usage en échauffement</div>${wHTML(e.w)}<div class="msg">Proposé par Choose your warm-up et Create my session.</div></div>`:""}
       </div>
     </div>
     ${crossHTML(e)}
-    ${neighbours(e)}
-    ${prochesHTML(e)}
+    ${voisinsHTML(e, rel)}
+    <details class="grun-plus" style="margin:12px 0"><summary>Plus d'options</summary><div class="grun-plusb"><div class="actbar">${co?`${e.modifie?'<button class="btn" id="reset" type="button">Remettre l\'original</button>':""}${e.perso?'<button class="btn dan" id="del" type="button">Supprimer</button>':""}<button class="btn" id="hide" type="button">${HIDE.has(id)?"Réafficher":"Masquer"}</button>`:""}${co&&vidOk(e)?`<button class="btn" id="vidch" type="button">Changer la vidéo</button><button class="btn" id="vidrm" type="button">Retirer la vidéo</button>`:""}</div></div></details>
     <div class="cell notes"><label class="lab" for="nt">Mes notes</label><textarea id="nt" placeholder="Variantes, joueurs, charges utilisées…"></textarea><div class="msg" id="ntm"></div></div>
   </article>
   <div class="pn">${prev?`<a href="#/ex/${prev.id}"><small>‹ Précédent</small>${esc(prev.n)}</a>`:"<span></span>"}${next?`<a class="nx" href="#/ex/${next.id}"><small>Suivant ›</small>${esc(next.n)}</a>`:"<span></span>"}</div>
@@ -1431,9 +1463,9 @@ function showForm(id, q){
   const groups={}; FAMS4.filter(f=>f.c!=="MOI").forEach(f=>{ (groups[TH[f.th]]=groups[TH[f.th]]||[]).push(f); });
   const famOpts = `<option value="MOI" ${v.f4==="MOI"?"selected":""}>Mes exercices</option>` + Object.entries(groups).map(([g,fs])=>`<optgroup label="${esc(g)}">${fs.map(f=>`<option value="${f.c}" ${v.f4===f.c?"selected":""}>${esc(f.t)}</option>`).join("")}</optgroup>`).join("");
   const m=$("#main"); m.style.setProperty("--dc","var(--ink)");
-  const stRadios = `${[["perso","Perso","Visible seulement par toi."],["propose","Proposé à la méthode","À exporter depuis « Propositions » pour que le créateur de GRÜN le relise."],["valide","Exercice de la méthode","Validé par le créateur de GRÜN : visible par tous les abonnés dès que les comptes en ligne seront ouverts."]].map(([k,t,s])=>`<label class="radio"><input type="radio" name="st" value="${k}" ${(v.st||"perso")===k?"checked":""}><span><b>${t}</b><small>${s}</small></span></label>`).join("")}`;
+  const stRadios = `${[["perso","Perso","Visible seulement par toi."],["propose","Proposé à GRÜN","À exporter depuis « Propositions » pour que le créateur de GRÜN le relise."],["valide","Exercice GRÜN","Validé par le créateur de GRÜN : visible par tous les abonnés dès que les comptes en ligne seront ouverts."]].map(([k,t,s])=>`<label class="radio"><input type="radio" name="st" value="${k}" ${(v.st||"perso")===k?"checked":""}><span><b>${t}</b><small>${s}</small></span></label>`).join("")}`;
   VX.hero({vis:e?VX.pour(e.id):"ex_geste", sq:!!e, bas:true, lab:e?"Modifier un exercice":"Bibliothèque · exercices", titre:e?e.n:prop?"Proposer un exercice":"Créer un exercice"});
-  m.innerHTML = `${prop&&!e?`<div class="propst"><b>Proposé à la méthode</b><p class="msg" style="margin:4px 0 0">Remplis l'essentiel et la fiche ci-dessous, puis « Proposer ». Il reste à toi tant que le créateur de GRÜN ne l'a pas validé ; l'export se fait depuis l'onglet Propositions.</p></div>`:""}
+  m.innerHTML = `${prop&&!e?`<div class="propst"><b>Proposé à GRÜN</b><p class="msg" style="margin:4px 0 0">Remplis l'essentiel et la fiche ci-dessous, puis « Proposer ». Il reste à toi tant que le créateur de GRÜN ne l'a pas validé ; l'export se fait depuis l'onglet Propositions.</p></div>`:""}
   <p class="lead">${e ? (e.perso ? "Ton exercice : la modification est directe." : "Exercice d'origine : tes changements s'ajoutent par-dessus (badge « modifié ») ; « Remettre l'original » les efface.") : "Mêmes champs que la banque, plus vidéo, photo, dosage et usage en échauffement."}</p>
   <form class="form" id="fx" novalidate autocomplete="off">
    <div class="fs"><h2>L'essentiel</h2><div class="fg">
@@ -1494,7 +1526,7 @@ function showForm(id, q){
    </div>
    <div class="fs"><h2>Statut</h2><div class="radios">
     ${stRadios}
-    ${e&&!e.perso?'<p class="msg">Exercice d\'origine : il fait déjà partie de la méthode.</p>':""}</div></div>
+    ${e&&!e.perso?'<p class="msg">Exercice d\'origine : il fait déjà partie de GRÜN.</p>':""}</div></div>
    </div></details>
    <div class="formbar"><span class="msg" id="f_msg" role="status"></span></div>
    <div class="grun-actbar"><button class="btn" type="button" id="f_no">Annuler</button><button class="gs-btn main" type="submit" id="f_ok">${e?"Enregistrer":prop?"Proposer":"Créer"}</button></div>
@@ -1575,17 +1607,17 @@ function showProps(){
   document.documentElement.style.setProperty("--acc","var(--ink)");
   const mine = EX.filter(e=>e.perso && e.st==="propose"), val = EX.filter(e=>e.perso && e.st==="valide"), rec = P.recues||[];
   const pv = x => `<details><summary>Voir la fiche</summary><dl>${[["Famille",(FBY[x.f]||MOIFAM).t+(x.s?" · "+x.s:"")],["Lignes",(x.L||[]).join(", ")],["Âge",`${x.a||"?"} à ${x.ax||18} ans`],["Thème",TH[x.th]||""],["Objectif",x.ob],["Description",x.de],["Consignes",x.co],["Erreurs",x.er],["Matériel",x.ma],["Dosage",x.dos],["Échauffement",x.w?[ETN[x.w.et],...(x.w.ets||[]).filter(y=>y!==x.w.et).map(y=>ETN[y])].join(" + "):""],["Vidéo",x.vid]].filter(([,y])=>y).map(([k,y])=>`<dt>${k}</dt><dd>${esc(y)}</dd>`).join("")}${x.img?`<dd><img class="imgprev" src="${esc(x.img)}" alt=""></dd>`:""}</dl></details>`;
-  heroBq("Propositions", "Proposé par un coach, validé pour la méthode", "balles");
+  heroBq("Propositions", "Proposé par un coach, validé pour GRÜN", "balles");
   $("#main").innerHTML = `${tabs("/propositions")}
-   <p class="msg">Un coach propose un exercice → le créateur de GRÜN le relit et le valide → il devient un exercice de la méthode, visible par tous les abonnés (par fichier pour l'instant).</p>
-   <div class="sec"><h2>Mes exercices proposés · ${mine.length}</h2><p class="msg">Mets le statut « Proposé à la méthode » sur un de tes exercices (bouton Modifier), puis exporte le fichier et envoie-le au créateur de GRÜN. Les vidéos de l'appareil ne partent pas dans le fichier : mets plutôt un lien.</p>
+   <p class="msg">Un coach propose un exercice → le créateur de GRÜN le relit et le valide → il devient un exercice GRÜN, visible par tous les abonnés (par fichier pour l'instant).</p>
+   <div class="sec"><h2>Mes exercices proposés · ${mine.length}</h2><p class="msg">Mets le statut « Proposé à GRÜN » sur un de tes exercices (bouton Modifier), puis exporte le fichier et envoie-le au créateur de GRÜN. Les vidéos de l'appareil ne partent pas dans le fichier : mets plutôt un lien.</p>
     ${mine.length?rowsHTML(mine):'<div class="empty">Aucun exercice proposé pour l\'instant.</div>'}
     <div class="actbar" style="margin-top:10px"><a class="btn pri" href="#/nouveau?st=propose">+ Proposer un exercice</a><button class="btn" id="pexp" type="button" ${mine.length?"":"disabled"}>Exporter mes propositions (fichier)</button></div></div>
-   <div class="sec"><h2>Propositions reçues · ${rec.length}</h2><p class="msg">Importe un fichier GRUN_propositions_….json reçu d'un coach, relis chaque exercice, puis valide-le (il entre dans la banque avec le statut « Exercice de la méthode ») ou refuse-le.</p>
+   <div class="sec"><h2>Propositions reçues · ${rec.length}</h2><p class="msg">Importe un fichier GRUN_propositions_….json reçu d'un coach, relis chaque exercice, puis valide-le (il entre dans la banque avec le statut « Exercice GRÜN ») ou refuse-le.</p>
     <div class="actbar" style="margin:8px 0"><label class="btn" for="pimp">Importer un fichier de propositions</label><input id="pimp" type="file" accept=".json,application/json" hidden></div><div class="msg" id="pmsg" role="status"></div>
     ${rec.map(r=>`<div class="prop" data-r="${r.rid}"><div class="headrow"><div><b>${esc(r.ex.n)}</b><div class="msg">Proposé par ${esc(r.de||"un coach")} · ${esc(GRUN.frD(r.date))}${nameTaken(r.ex.n)?' · <span style="color:var(--warn)">nom déjà pris : il sera complété par le nom du coach</span>':""}</div></div>
       <div class="actbar"><button class="btn pri sm" type="button" data-ok="${r.rid}">Valider</button><button class="btn dan sm" type="button" data-no="${r.rid}">Refuser</button></div></div>${pv(r.ex)}</div>`).join("") || '<div class="empty">Aucune proposition en attente.</div>'}</div>
-   <div class="sec"><h2>Exercices de la méthode ajoutés · ${val.length}</h2>${val.length?rowsHTML(val):'<div class="empty">Aucun pour l\'instant.</div>'}</div>
+   <div class="sec"><h2>Exercices GRÜN ajoutés · ${val.length}</h2>${val.length?rowsHTML(val):'<div class="empty">Aucun pour l\'instant.</div>'}</div>
    ${(P.traitees||[]).length?`<div class="sec"><h2>Historique</h2><div class="list">${P.traitees.slice(0,30).map(t=>`<div class="row" style="--dc:${t.res==="validé"?"var(--ok)":"var(--bad)"}"><span class="bar"></span><span class="id">${esc(GRUN.frD(t.date))}</span><span class="nm"><b>${esc(t.n)}</b><small>${esc(t.de||"")} · ${t.res}${t.id?" · "+t.id:""}</small></span><span class="meta"></span></div>`).join("")}</div></div>`:""}`;
   $("#pexp").onclick=()=>{ const nom=(GRUN.load(GRUN.K.reglages,{})||{}).nomCoach||"";
     GRUN.telecharger({app:"GRUN", type:"propositions_banque", v:1, date:today(), de:nom, ex:mine.map(clean)}, `GRUN_propositions_${today()}.json`); $("#pmsg").textContent=""; };
@@ -1628,7 +1660,7 @@ function showFam(c){
   const m=$("#main"); m.style.setProperty("--dc",dc(f.dom));
   const ex0 = xs[0]; VX.hero({vis:ex0?VX.pour(ex0.id):"balles", sq:true, lab:`Familles · ${TH[f.th]||DOMC[f.dom]||""}${f.rub?" · "+f.rub:""}`, titre:f.t, num:String(xs.length), sous:"exercices"});
   m.innerHTML=`
-   <div class="intro"><details><summary>Mode d'emploi de la famille : à quoi elle sert, comment choisir, progression, repères d'âge</summary><div class="tw">${f.intro}</div></details></div>`+
+   <div class="intro"><details><summary>Mode d'emploi de la famille : à quoi elle sert, comment choisir, progression, repères d'âge</summary><div class="tw">${introClaire(f.intro)}</div></details></div>`+
    Object.entries(subs).map(([s,arr])=>{ const j = joueurTri(); return `<h3 class="subh">${esc(s)}</h3>${j ? rowsHTML(triPert(arr, j), false, j, false) : rowsHTML(arr)}`; }).join("");
 }
 
