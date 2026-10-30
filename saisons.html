@@ -34,6 +34,8 @@ body.grun-has-nav{padding-bottom:calc(var(--nav-h) + env(safe-area-inset-bottom,
 #grun-nav a span{letter-spacing:-.01em}#grun-nav a{padding-left:1px;padding-right:1px}
 #grun-nav svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 #grun-nav a.on{color:var(--gx-y);font-weight:600}
+/* audit 26 oct. : « Banque scientifique » (un seul nom par module) peut passer sur 2 lignes ; les icônes restent alignées */
+#grun-nav[data-mode=biblio] a:not(.nv-g){justify-content:flex-start;padding-top:8px;gap:3px}#grun-nav[data-mode=biblio] a:not(.nv-g) span{white-space:normal;text-align:center;line-height:1.02;max-height:2.1em}
 #grun-nav a:active{opacity:.7}
 /* « GRÜN » (deux balles du Ü) + « Accueil » : retour à la page de garde, toujours à gauche */
 #grun-nav a.nv-g{font:800 13px/1 var(--gx-cond);letter-spacing:.06em;gap:5px}
@@ -257,7 +259,7 @@ html.grun-mod #back::before{content:"";width:20px;height:20px;background:current
 <script src="schema.js?v=2.1"></script>
 <script src="grun.js?v=2.1"></script>
 <script src="assistant.js?v=2.1"></script>
-<meta name="grun-module" content="saisons"></head><body><title>Référentiel de programmation · GRÜN</title>
+<meta name="grun-module" content="saisons"></head><body><title>Saisons de référence · GRÜN</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=Barlow:wght@400;500;600;700&display=swap">
 <style>
 /* Layout : barre fixe (retour, recherche) ; accueil = recherche, accès direct, 4 portes, favoris ; document = fil d'Ariane, sommaire, L'essentiel ouvert, Le détail en sections dépliables */
@@ -642,6 +644,9 @@ ol.vx-nl>li::before,ul.vx-nl>li::before{content:counter(vxn,decimal-leading-zero
 .doc .ess>h2:first-child{font-size:13px;font-weight:700;letter-spacing:.22em;color:#E4FF3A;margin:0 0 10px}
 .doc table{font-size:15px}
 .doc th{font-family:var(--display);font-weight:700;letter-spacing:.06em;text-transform:uppercase;font-size:13px;color:#9AA59E}
+
+/* audit 26 oct. (0 débordement) : boutons longs de « Plus d'options » reviennent à la ligne */
+.grun-plusb .ib{max-width:100%;white-space:normal;text-align:center;height:auto;padding-block:6px}
 </style>
 
 <header class="top"><div class="topin">
@@ -705,7 +710,7 @@ ol.vx-nl>li::before,ul.vx-nl>li::before{content:counter(vxn,decimal-leading-zero
 const PORTES = {
   "1": {n:"Filles", c:"--p1", s:"Les saisons de référence filles de __A__, rangées par étape : frise, périodes, chaque semaine et le thème de chaque séance."},
   "2": {n:"Garçons", c:"--p2", s:"Les saisons de référence garçons de __A__, rangées par étape : frise, périodes, chaque semaine et le thème de chaque séance."},
-  "3": {n:"La méthode", c:"--p3", s:"Les six étapes, le calendrier de la saison type, les semaines types de chaque âge, les périodes et la dureté, les garde-fous."}
+  "3": {n:"Comprendre les saisons", c:"--p3", s:"Les six étapes, le calendrier de la saison type, les semaines types de chaque âge, les périodes et la dureté, les garde-fous."}
 };
 const GR = window.GRUN || null;
 const normCode = c => { const m=/^([FG])(\d{1,2})$/i.exec(c||""); return m ? m[1].toUpperCase()+String(+m[2]).padStart(2,"0") : c; };
@@ -726,7 +731,7 @@ function gCode(gid){ try{ const js = GR.groupes.joueurs(gid).filter(j=>jCode(j))
   const f = js.filter(j=>j.sexe==="F").length, sx = f*2 >= js.length ? (f*2===js.length ? js[0].sexe : "F") : "G";
   const as = js.map(jAge).sort((a,b)=>a-b); return normCode(sx + as[Math.floor(as.length/2)]); }catch(e){ return null; } }
 const gGet = id => { try{ return id&&GR&&GR.groupes ? GR.groupes.get(id) : null; }catch(e){ return null; } };
-function titre(t){ document.title = t ? t+" · Référentiel" : "Référentiel de programmation"; }
+function titre(t){ document.title = t ? t+" · Référentiel" : "Saisons de référence · Référentiel"; }
 function actbar(t, id, href){ return `<div class="grun-actbar">${href?`<a class="gs-btn main" id="${id}" href="${href}">${esc(t)}</a>`:`<button class="gs-btn main" id="${id}" type="button">${esc(t)}</button>`}</div>`; }
 let AGES = [], MESOC = {}, PREM = true;
 let CALW = [];
@@ -753,7 +758,7 @@ document.documentElement.style.setProperty("--fs", P.fs+"px");
 async function boot(){
   try{
     const r = await fetch("data-saisons.json"); const d = await r.json();
-    DOCS = d.docs; CALW = d.cal||[]; MESOC = d.meso||{}; DOCS.forEach((x,i)=>{ x.i=i; BY[x.c]=x; });
+    DOCS = d.docs; CALW = d.cal||[]; MESOC = d.meso||{}; DOCS.forEach((x,i)=>{ x.i=i; BY[x.c]=x; if(x.d==="La méthode") x.d = PORTES["3"].n; });   /* audit 26 oct. : « La méthode » → « Repères de la saison type » (≠ Fonctionnement de la méthode) */
     AGES = [...new Set(DOCS.filter(x=>x.age).map(x=>x.age))].sort((a,b)=>a-b);
     const rng = AGES.length ? AGES[0]+" à "+AGES[AGES.length-1]+" ans" : "";
     const gs = DOCS.filter(x=>/^Semaine type/.test(x.t)).map(x=>x.t.replace("Semaine type ","").replace(" ans",""));
@@ -800,9 +805,9 @@ function showHome(){
   const cw = curWeek(), cwk = CALW.find(x=>x.n===cw);
   titre(""); ecran("saisons");
   const c0 = cour(), cd0 = c0 ? (c0.t==="j" ? jCode(c0.joueur) : gCode(c0.id)) : null;
-  /* E1B : héros marches + RÉFÉRENTIEL ; choix des saisons en cartes illustrées */
+  /* E1B : héros marches ; choix des saisons en cartes illustrées. Audit 26 oct. : un seul « Référentiel » (veille.html#/ref) ; cette page en est le bloc « Saisons de référence » */
   const nS = DOCS.filter(x=>x.sx).length;
-  VX.hero({vis:"marches", lab:"Bibliothèque · méthode Eliot Gruner", titre:"Référentiel", sous:`<b>${nS}</b> saisons · ${AGES.length?AGES[0]+" à "+AGES[AGES.length-1]+" ans":""}`});
+  VX.hero({vis:"marches", lab:"Référentiel · saisons", titre:"Saisons de référence", sous:`<b>${nS}</b> saisons · ${AGES.length?AGES[0]+" à "+AGES[AGES.length-1]+" ans":""}`});
   let html = "";
   if(cd0 && BY[cd0]) html += `<a class="pj vpj" href="#/s/${cd0}/w${cw}"><small>${c0.t==="g"?"Groupe en cours":"Joueur en cours"}</small><b>${esc(c0.nom)} · ${esc(BY[cd0].t)}</b><small>Ouvrir à la semaine en cours (S${cw})${c0.t==="g"?" · âge médian du groupe":""}</small></a>`;
   html += `<div class="vx-cards c3 vdoors">${[["1","frise"],["2","frise_g"],["3","calendrier"]].map(([p,v],i)=>VX.carte({href:"#p/"+p, vis:v, n:VX.n2(i+1), t:PORTES[p].n, s:p==="3"?"Étapes, calendrier, semaines types":`${count(p)} saisons`, k:p==="3"?"row":""})).join("")}</div>`;
@@ -825,6 +830,8 @@ function showHome(){
   m.innerHTML = html;
   const qs=$("#qs"), qa=$("#qa"), qw=$("#qw"); qs.value=P.sx; qa.value=AGES.includes(+P.age)?P.age:String(AGES[AGES.length-1]||14); qw.value="0";
   if(cd0 && BY[cd0]){ qs.value = BY[cd0].sx; qa.value = String(BY[cd0].age); }   /* présélection : joueur ou groupe en cours */
+  else { /* audit 26 oct. : sinon, l'âge et le sexe choisis dans la Bibliothèque (pastille d'âge partagée) */
+    try{ const ab = GR && GR.ageBib ? GR.ageBib() : null; if(ab){ if(/^[FG]$/.test(ab.sexe||"")) qs.value = ab.sexe; const a = Math.max(AGES[0], Math.min(AGES[AGES.length-1], ab.age||0)); if(AGES.includes(a)) qa.value = String(a); } }catch(e){} }
   if(!(cd0 && BY[cd0])) $("#hgo").onclick = ()=>$("#qnow").click();
   const cd=()=>normCode(qs.value+qa.value);
   $("#qgo").onclick=()=>{ P.sx=qs.value; P.age=qa.value; save(); location.hash = `/s/${cd()}` + (+qw.value ? `/w${qw.value}` : ""); };
@@ -843,7 +850,7 @@ function showPorte(p){
   document.documentElement.style.setProperty("--acc", pc(p));
   const xs = DOCS.filter(x=>porteOf(x)===p), groups = {}; ecran("saisons/porte"); titre(PORTES[p].n);
   xs.forEach(x=>{ (groups[x.d] = groups[x.d] || []).push(x); });
-  VX.hero({vis:{"1":"frise","2":"frise_g","3":"calendrier"}[p], bas:true, lab:"Référentiel", titre:PORTES[p].n, sous:esc(PORTES[p].s)});
+  VX.hero({vis:{"1":"frise","2":"frise_g","3":"calendrier"}[p], bas:true, lab:"Référentiel · saisons de référence", titre:PORTES[p].n, sous:esc(PORTES[p].s)});
   const cw = curWeek();
   /* saisons : une carte par âge (le chiffre mis en scène), rangées par étape de formation */
   let html = Object.entries(groups).map(([d,arr])=>`<div class="fold" style="--pc:${pc(p)}"><h3>${esc(d)}</h3>${arr.every(x=>x.sx) ? `<div class="agecs">${arr.map(x=>`<a class="agec" href="#/s/${x.c}/w${cw}"><b>${x.age}</b><span>ans</span><small>${x.sx==="F"?"Fille":"Garçon"}</small></a>`).join("")}</div>` : listHTML(arr,false)}</div>`).join("");
@@ -1049,7 +1056,7 @@ async function importData(e){
 }
 
 if(GR){ try{ GR.nav("res"); if(GR.isJoueur()) document.body.classList.add("joueur"); }catch(e){}
-  [["saisons","Le référentiel : une saison de référence par âge (4 à 18 ans) et par sexe, construite sur la méthode : année type légère jusqu'à 8 ans, semaine type répétée ensuite, périodes à partir de 12 ans (fille) ou 13 ans (garçon). Il s'ouvre sur la saison de ton joueur en cours ; « Accès direct » ouvre n'importe quelle saison."],
+  [["saisons","Les saisons de référence (Référentiel) : une saison de référence par âge (4 à 18 ans) et par sexe, construite sur la méthode : année type légère jusqu'à 8 ans, semaine type répétée ensuite, périodes à partir de 12 ans (fille) ou 13 ans (garçon). Il s'ouvre sur la saison de ton joueur en cours ; « Accès direct » ouvre n'importe quelle saison."],
    ["saisons/saison","Une saison : la frise montre les périodes et les 52 semaines (couleur = type de semaine) ; touche une semaine pour voir son thème et celui de chaque séance : tennis, préparation physique, préparation mentale. Le bouton du bas l'applique à ton joueur ou ton groupe dans Create my prog."],
    ["saisons/doc","Un document de la méthode : étapes, calendrier, semaines types dessinées, périodes et dureté, garde-fous. « L'essentiel » d'abord, le détail en sections dépliables."],
    ["saisons/porte","Toutes les saisons d'une porte (filles, garçons) ou les documents de la méthode. Touche un titre pour l'ouvrir."],

@@ -34,6 +34,8 @@ body.grun-has-nav{padding-bottom:calc(var(--nav-h) + env(safe-area-inset-bottom,
 #grun-nav a span{letter-spacing:-.01em}#grun-nav a{padding-left:1px;padding-right:1px}
 #grun-nav svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 #grun-nav a.on{color:var(--gx-y);font-weight:600}
+/* audit 26 oct. : « Banque scientifique » (un seul nom par module) peut passer sur 2 lignes ; les icônes restent alignées */
+#grun-nav[data-mode=biblio] a:not(.nv-g){justify-content:flex-start;padding-top:8px;gap:3px}#grun-nav[data-mode=biblio] a:not(.nv-g) span{white-space:normal;text-align:center;line-height:1.02;max-height:2.1em}
 #grun-nav a:active{opacity:.7}
 /* « GRÜN » (deux balles du Ü) + « Accueil » : retour à la page de garde, toujours à gauche */
 #grun-nav a.nv-g{font:800 13px/1 var(--gx-cond);letter-spacing:.06em;gap:5px}
@@ -910,7 +912,7 @@ const COACH=()=>!GRUN.isJoueur();
 const MOI=()=>GRUN.isJoueur()?GRUN.mode().jid:null;
 
 /* ---------- référentiels ---------- */
-const TYPES={PPI:{n:"Préparation physique individuelle",c:"pp"},PPC:{n:"Préparation physique collective",c:"pp"},TI:{n:"Tennis individuel (biomécanique)",c:"tb"},TC:{n:"Tennis collectif",c:"ten"},PM:{n:"Préparation mentale",c:"pm"}};
+const TYPES={PPI:{n:"Préparation physique individuelle",c:"pp"},PPC:{n:"Préparation physique collective",c:"pp"},TI:{n:"Tennis individuel",c:"tb"},TC:{n:"Tennis collectif",c:"ten"},PM:{n:"Préparation mentale",c:"pm"}};
 const PHASES={R0:"Reprise",G:"Préparation générale",S:"Préparation spécifique",P:"Affûtage",C:"Compétition",R:"Récupération"};
 const LIEUX={court:"Court de tennis",gym:"Gymnase",salle:"Salle de préparation physique",ext:"Extérieur",maison:"À la maison"};
 /* lieux des réglages coach (G.LIEUX : court, salle, gymnase, exterieur, maison) → lieux de la séance */
@@ -953,7 +955,10 @@ function kOf(f){ const m=/^5\.(\d+)\.(\d+)/.exec(f||""); if(!m) return "jeu"; co
   if(a===1) return b<=3?"force":b===4?"halte":b<=7?"gain":b<=10?"puis":b===11?"vit":b<=13?"cod":b===14?"aero":b===15?"rsa":b<=18?"coord":b<=20?"equi":b<=22?"mob":b===23?"etd":"ets";
   if(a===2) return b===1?"ech":b<=4?"prev":b===5?"recup":b<=7?"jeuph":b===8?"visu":"routine";
   if(a===3) return "tech"; if(a===4) return "depl"; if(a===5) return b===6?"match":"jeu"; if(a===6) return "ech"; return "jeu"; }
-function normEx(e){ if(!Array.isArray(e.L)) e.L=e.L?[e.L]:[]; if(!Array.isArray(e.m)) e.m=[]; e.a=+e.a||4; e.v=+e.v||2; if(e.ax==null) e.ax=18; e.k||=kOf(e.f); e.n||="Exercice sans nom"; e.dom||=(e.L[0]||"PP").slice(0,2); e.ma??=""; return e; }
+/* cartes écrites directement en v4 (tâche 0.3, plan/moteur_v4.json injecté par build_banque.py) : famille du moteur fm, âge, niveau et dosage du moteur (mo).
+   Une carte « hm » (hors séance) n'a ni fm ni ligne : jamais proposée d'office, mais trouvable par la recherche du sélecteur. */
+function normV4(e){ if(!e.fm||e.f===e.fm) return; e.fv4=e.f; e.f=e.fm; const o=e.mo||{}; if(o.a!=null) e.a=o.a; if(o.ax!=null) e.ax=o.ax; if(o.v!=null) e.v=o.v; if(o.k) e.k=o.k; }
+function normEx(e){ normV4(e); if(!Array.isArray(e.L)) e.L=e.L?[e.L]:[]; if(!Array.isArray(e.m)) e.m=[]; e.a=+e.a||4; e.v=+e.v||2; if(e.ax==null) e.ax=18; e.k||=kOf(e.f); e.n||="Exercice sans nom"; e.dom||=(e.L[0]||"PP").slice(0,2); e.ma??=""; return e; }
 async function loadBanque(){
   const B=await GRUN.banque.load();
   HIDE=new Set(B.hide||[]); EX={}; for(const e of B.ex){ normEx(e); EX[e.id]=e; }
@@ -1101,7 +1106,7 @@ function deduceType(s,c){
   hits.sort((a,b)=>a.i-b.i);
   const L=(s.lignes||[]).filter(isLine), fromL=[]; for(const l of L){ const k=/^GE/.test(l)?"GES":/^DE/.test(l)?"DEP":LT[l]; if(k&&!fromL.includes(k)) fromL.push(k); }
   const tennis=s.type==="TI";
-  const fin=(k,why)=>{ if(tennis&&k!=="GES"&&k!=="DEP"){ const de=L.filter(l=>/^DE/.test(l)).length, ge=L.filter(l=>/^GE/.test(l)).length; k=de>ge||k==="COD"||k==="VIT"?"DEP":"GES"; why+=" (séance tennis : biomécanique)"; } return {k,why}; };
+  const fin=(k,why)=>{ if(tennis&&k!=="GES"&&k!=="DEP"){ const de=L.filter(l=>/^DE/.test(l)).length, ge=L.filter(l=>/^GE/.test(l)).length; k=de>ge||k==="COD"||k==="VIT"?"DEP":"GES"; why+=" (séance tennis)"; } return {k,why}; };
   if(hits.length){ const nm=[...new Set(hits.map(h=>h.k).filter(k=>NM.has(k)))];
     if(nm.length>=2) return fin("MIX","d'après le thème : "+nm.map(k=>TNOM[k].split(/[ ,(]/)[0].toLowerCase()).join(" + "));
     if(hits[0].k==="REC"||hits[0].k==="PRE") return fin(hits[0].k,"d'après le thème");
@@ -1110,7 +1115,7 @@ function deduceType(s,c){
     if(nm.length>=2) return fin("MIX","d'après les lignes "+L.join(", "));
     return fin(nm[0]||fromL[0],"d'après les lignes "+L.join(", ")); }
   if(s.phase==="R"&&(+s.charge||1)<=2) return {k:"REC",why:"semaine de récupération"};
-  if(tennis) return {k:"GES",why:"séance tennis : biomécanique du geste"};
+  if(tennis) return {k:"GES",why:"séance tennis : travail du geste"};
   return {k:c.tage<=10?"COO":"MIX",why:"aucun thème précis : séance "+(c.tage<=10?"de coordination":"mixte")};
 }
 function trameOf(s,c){
@@ -1325,7 +1330,7 @@ sheet.addEventListener("click",e=>{ if(e.target===sheet) closeSheet(); });
 
 /* ---------- relais (poupée russe) ---------- */
 function relaisActif(){ const h=GRUN.relais.lire(); if(h&&h.vers==="seances"&&!h.res&&ST.relais&&ST.relais.t===h.t&&getS(ST.relais.sid)) return {h,sid:ST.relais.sid}; return null; }
-const DE_N={prog:"la programmation",veille:"la veille",banque:"la banque",accueil:"l'accueil",hub:"l'accueil",joueurs:"le dossier",grilles:"les grilles",saisons:"le référentiel"};
+const DE_N={prog:"la programmation",veille:"la veille",banque:"la banque",accueil:"l'accueil",hub:"l'accueil",joueurs:"le dossier",grilles:"les grilles",saisons:"les saisons types"};
 function bandeau(){
   const el=$("#relais"); if(!el) return; const r=COACH()?relaisActif():null; if(!r){ el.innerHTML=""; return; }
   const s=getS(r.sid), nm=DE_N[r.h.de]||(r.h.de?"la page d'avant":"la programmation");

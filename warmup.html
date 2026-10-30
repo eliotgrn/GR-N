@@ -34,6 +34,8 @@ body.grun-has-nav{padding-bottom:calc(var(--nav-h) + env(safe-area-inset-bottom,
 #grun-nav a span{letter-spacing:-.01em}#grun-nav a{padding-left:1px;padding-right:1px}
 #grun-nav svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 #grun-nav a.on{color:var(--gx-y);font-weight:600}
+/* audit 26 oct. : « Banque scientifique » (un seul nom par module) peut passer sur 2 lignes ; les icônes restent alignées */
+#grun-nav[data-mode=biblio] a:not(.nv-g){justify-content:flex-start;padding-top:8px;gap:3px}#grun-nav[data-mode=biblio] a:not(.nv-g) span{white-space:normal;text-align:center;line-height:1.02;max-height:2.1em}
 #grun-nav a:active{opacity:.7}
 /* « GRÜN » (deux balles du Ü) + « Accueil » : retour à la page de garde, toujours à gauche */
 #grun-nav a.nv-g{font:800 13px/1 var(--gx-cond);letter-spacing:.06em;gap:5px}

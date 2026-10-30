@@ -56,12 +56,12 @@
   G.POLES = [
     { id: "ind", t: "Individualisation", s: "Le dossier complet de chaque joueur et de chaque groupe", c: "#0F766E" },
     { id: "create", t: "Create", s: "Programmation, séance, échauffement : construits pour le joueur", c: "#C2410C" },
-    { id: "res", t: "Ressources et savoirs", s: "Veille, banque d'exercices, référentiel de programmation", c: "#1D4ED8" },
+    { id: "res", t: "Ressources et savoirs", s: "Banque scientifique, exercices", c: "#1D4ED8" },
     { id: "tests", t: "Tests et profilage", s: "Grilles de compétences, tests, profil radar", c: "#6D3FC0" }
   ];
   /* GRÜN 2.0 : la page de garde (index.html#/) ouvre 4 portes ; les anciens pôles des modules y sont rattachés (G.PORTE_DE) */
   G.PORTES = [
-    { id: "biblio", t: "Bibliothèque", s: "Banque scientifique, exercices, référentiel", h: "#/biblio" },
+    { id: "biblio", t: "Bibliothèque", s: "Banque scientifique, exercices", h: "#/biblio" },
     { id: "outils", t: "Outils", s: "Create my session, Choose your warm-up, tests et profilage, Create my prog", h: "#/outils" },
     { id: "club", t: "Club", s: "Le mode Club (en construction)", h: "#/club" },
     { id: "perf", t: "Performance", s: "Tes joueurs, tes groupes, leurs dossiers, l'agenda", h: "#/perf" }
@@ -73,9 +73,9 @@
     prog: { f: "prog.html", t: "Create my prog", pole: "create", s: "Programmation adaptée au joueur : semaine, cycle ou saison" },
     seances: { f: "seances.html", t: "Create my session", pole: "create", s: "Structure automatique, exercices choisis dans la banque" },
     warmup: { f: "warmup.html", t: "Choose your warm-up", pole: "create", s: "30 échauffements performance prêts à lancer, modifiables" },
-    veille: { f: "veille.html", t: "Banque scientifique", pole: "res", s: "Les documents de la méthode en 8 thèmes, de 0 à 18 ans, et le référentiel de la méthode" },
-    banque: { f: "banque.html", t: "Banque d'exercices", pole: "res", s: "Tous les exercices, jeux et situations, plus les tiens" },
-    saisons: { f: "saisons.html", t: "Référentiel de programmation", pole: "res", s: "Les saisons de référence de la méthode, 4 à 18 ans" },
+    veille: { f: "veille.html", t: "Banque scientifique", pole: "res", s: "Les documents scientifiques en 8 thèmes, de 0 à 18 ans" },
+    banque: { f: "banque.html", t: "Exercices", pole: "res", s: "Tous les exercices, jeux et situations, plus les tiens" },
+    saisons: { f: "saisons.html", t: "Saisons types", pole: "res", s: "Les saisons types, 4 à 18 ans" },
     grilles: { f: "grilles.html", t: "Grilles et tests", pole: "tests", s: "Grilles de compétences 4-18 ans, tests, barèmes, bilans, profil radar" }
   };
   /* version « appli seule » d'un module (window.GRUN_SEUL = {mod, base}) : ses propres pages restent locales, les autres modules ouvrent GRÜN en ligne */
@@ -410,7 +410,7 @@
   };
   /* GRÜN 2.1 · BARRE DU BAS CONTEXTUELLE (décision d'Eliot, 20 oct. 18 h 52) : une fois un mode choisi sur la page de garde, la barre ne montre
      que ce mode ; on ne passe d'un mode à l'autre qu'en repassant par la page de garde (bouton « GRÜN · Accueil », toujours à gauche).
-       biblio : GRÜN · Savoirs · Exercices · Référentiel          (modules veille, banque, saisons ; index.html#/biblio)
+       biblio : GRÜN · Banque scientifique · Exercices (30 oct. : Référentiel retiré)         (modules veille, banque ; index.html#/biblio)
        outils : GRÜN · Séance · Warm-up · Tests · Programmation   (modules seances, warmup, grilles, prog ; index.html#/outils)
        club   : GRÜN                                              (index.html#/club)
        perf   : GRÜN · Aujourd'hui · Joueurs · « + » · Ma semaine (index.html#/perf, dossiers, groupes, Ma semaine, Réglages atteints depuis là)
@@ -431,10 +431,10 @@
     semaine: '<rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4M7.5 14h2M11 14h2M14.5 14h2M7.5 17.5h2M11 17.5h2"/>'
   });
   G.NAVS = {
-    biblio: [["veille", "Savoirs", "veille.html"], ["banque", "Exercices", "banque.html"], ["saisons", "Référentiel", "veille.html#/ref"]],
+    biblio: [["veille", "Banque scientifique", "veille.html"], ["banque", "Exercices", "banque.html"]],
     outils: [["seances", "Séance", "seances.html"], ["warmup", "Warm-up", "warmup.html"], ["grilles", "Tests", "grilles.html"], ["prog", "Programmation", "prog.html"]],
     club: [],
-    perf: [["auj", "Aujourd'hui", "index.html#/perf"], ["joueurs", "Joueurs", "index.html#/joueurs"], ["plus"], ["semaine", "Ma semaine", "index.html#/semaine"]]
+    perf: [["auj", "Projets", "index.html#/perf"], ["joueurs", "Joueurs", "index.html#/perf/joueurs"]]
   };
   G.MODE_DE = { veille: "biblio", banque: "biblio", saisons: "biblio", seances: "outils", warmup: "outils", grilles: "outils", prog: "outils", res: "biblio", create: "outils", tests: "outils", ind: "perf", acc: "perf", joueurs: "perf" };
   G.navCtx = () => { try { return sessionStorage.getItem("grun_mode_ctx") || null; } catch (e) { return null; } };
@@ -772,7 +772,7 @@
       ${gid ? `<button type="button" class="gs-it" data-k="bg"><b>Bilan du groupe ${esc(G.groupes.get(gid).nom)}</b><span>Tous les joueurs, les mêmes tests, saisie en mode terrain.</span></button>` : ""}
       ${!j && !gid ? `<p class="gs-m">Choisis d'abord un joueur (en haut) pour lui faire un bilan.</p>` : ""}
       <a class="gs-it" href="${G.href("grilles", "#/test-nouveau")}"><b>Créer un test personnel</b><span>Une nouvelle mesure, avec ses barèmes par âge et par sexe.</span></a>
-      <a class="gs-it" href="${G.href("grilles", "#p/3")}"><b>Voir tous les tests</b><span>Les fiches de tests de la méthode.</span></a></div>`, fermer: () => res(null) })
+      <a class="gs-it" href="${G.href("grilles", "#p/3")}"><b>Voir tous les tests</b><span>Toutes les fiches de tests.</span></a></div>`, fermer: () => res(null) })
       .el.addEventListener("click", e => { if (e.target.closest('[data-k="bg"]')) { G.ui.bilanGroupe(gid); } }); });
   /* BILAN DE GROUPE — format documenté pour Grilles :
      relais {de, vers:"grilles", type:"bilan-groupe", gid, jids:[jid…], date:"AAAA-MM-JJ", retour} + adresse grilles.html#/gbilan?g=<gid>&d=<date>
@@ -919,7 +919,7 @@
   /* textes d'aide par défaut des modules (chaque module peut les remplacer par G.aide(cle, texte)) */
   Object.entries({
     accueil: "La page de garde : 4 portes. Bibliothèque (le savoir), Outils (créer et lancer), Club (bientôt), Performance (tes joueurs et tes groupes). Le bouton rond en haut : les réglages (profil coach ou joueur, mode Simple ou Expert, sauvegarde).",
-    "accueil/biblio": "La Bibliothèque : la banque scientifique (les documents de la méthode en 8 thèmes, de 0 à 18 ans), les exercices et le référentiel (la méthode Eliot Gruner et les saisons de référence). La pastille jaune choisit l'âge et le sexe. « Plus d'options » : créer un exercice, familles, recherche, tous les modules.",
+    "accueil/biblio": "La Bibliothèque : la banque scientifique (les documents scientifiques en 8 thèmes, de 0 à 18 ans) et les exercices. La pastille jaune choisit l'âge et le sexe. « Plus d'options » : créer un exercice, familles, recherche, tous les modules.",
     "accueil/outils": "Les Outils : Create my session, Choose your warm-up, Tests et profilage, Create my prog. « Plus d'options » : lancer pour un joueur ou un groupe précis, bilans, profil radar.",
     "accueil/club": "Le mode Club arrive bientôt : pour l'instant, cette porte est en construction. « GRÜN » en bas ramène à la page de garde.",
     "accueil/perf": "Performance : l'agenda des prochains jours (touche une séance pour la lancer ou la construire), ton joueur en cours, tes joueurs et groupes, l'assistant. En bas : Aujourd'hui, Joueurs, « + » pour créer, Ma semaine ; « GRÜN » ramène à la page de garde.",
@@ -934,9 +934,9 @@
     prog: "Create my prog : la programmation d'un joueur ou d'un groupe, d'une semaine à une saison. Chaque séance prévue se construit ensuite dans Create my session.",
     seances: "Create my session : la séance se construit seule (structure, exercices de la banque, échauffement) ; tu touches un exercice pour le changer, puis tu lances le mode terrain.",
     warmup: "Choose your warm-up : choisis la durée, ce qui suit et le lieu, et lance. L'échauffement s'enchaîne seul, chrono et vidéos compris.",
-    veille: "La veille : les documents de la méthode (âge, physique, geste, entraîner). Commence par « L'essentiel », puis le détail.",
-    banque: "La banque d'exercices : tous les exercices rangés par qualité travaillée, filtrés pour l'âge. Ton exercice personnel s'ajoute avec « + ».",
-    saisons: "Le référentiel : une saison de référence par âge et par sexe, semaine par semaine. « Utiliser comme base » la transforme en programmation pour ton joueur.",
+    veille: "La banque scientifique : les documents scientifiques (âge, physique, geste, entraîner). Commence par « L'essentiel », puis le détail.",
+    banque: "Exercices : tous les exercices rangés par qualité travaillée, filtrés pour l'âge. Ton exercice personnel s'ajoute avec « + ».",
+    saisons: "Les saisons types : une saison par âge et par sexe, semaine par semaine. « Utiliser comme base » la transforme en programmation pour ton joueur.",
     grilles: "Grilles et tests : la grille de compétences de chaque âge, les tests (une mesure) et les bilans (une batterie de tests) qui donnent le profil radar."
   }).forEach(([k, t]) => G.aide(k, t));
 
@@ -951,10 +951,10 @@
     <rect x="104" y="93" width="112" height="28" rx="10" class="s-n"/><text x="160" y="113" class="s-w">GRÜN</text></svg>`;
   G.visite = () => {
     const E = [
-      ["Bienvenue dans GRÜN", "La méthode du joueur de tennis de 0 à 18 ans, dans une seule appli. La page de garde ouvre 4 portes ; tout reste sur ton appareil.", G.SCHEMA],
-      ["Bibliothèque", "Le savoir de la méthode : la banque scientifique (les documents), les exercices et le référentiel des saisons. Tout ce que les outils proposent vient de là.", ""],
+      ["Bienvenue dans GRÜN", "L'outil du staff de performance du joueur de tennis de 0 à 18 ans : les connaissances scientifiques au service de chacun, et le travail de tous relié autour du joueur. La page de garde ouvre 4 portes ; tout reste sur ton appareil.", G.SCHEMA],
+      ["Bibliothèque", "Le savoir scientifique : la banque scientifique (les documents) et les exercices. Les outils s'appuient dessus, et chacun garde sa façon de travailler.", ""],
       ["Outils : la poupée russe", "Create my session, Choose your warm-up, Tests et profilage, Create my prog. Chacun s'utilise seul, ou s'emboîte : la programmation contient les séances, la séance contient l'échauffement.", `<div class="grun-doll"><div>Programmation<div>Séance<div>Échauffement</div></div></div></div>`],
-      ["Club et Performance", "Performance : tes joueurs et tes groupes, leur dossier complet (fiche, croissance, tests, programmations, séances, journal) et l'agenda. Le mode Club arrive bientôt.", ""],
+      ["Club et Performance", "Performance : le projet de tes joueurs et de tes groupes, partagé par le staff : leur dossier complet (fiche, croissance, tests, programmations, séances, journal) et l'agenda. Le mode Club arrive bientôt.", ""],
       ["La barre du bas et le « + »", "Une fois une porte choisie, la barre du bas ne montre que ce mode ; « GRÜN » à gauche te ramène à la page de garde. Dans Performance, le « + » crée un joueur, un groupe, une séance, un bilan, un exercice, une note ou un échauffement. Choisis ton joueur une fois : chaque outil le reprend.", `<div class="grun-demo-bar"><span class="grun-chip demo"><span class="gc-av">L</span><span class="gc-nm">Léa</span></span><span class="grun-plus-demo">+</span></div>`],
       ["Réglages et « ? »", "Le bouton rond de la page de garde ouvre les Réglages : profil coach ou joueur, mode Simple (l'essentiel) ou Expert (tout : codes, barèmes, réglages fins), sauvegarde. Rien n'est jamais retiré. Le « ? » dit à quoi sert chaque écran.", ""]
     ];

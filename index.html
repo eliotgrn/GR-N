@@ -34,6 +34,8 @@ body.grun-has-nav{padding-bottom:calc(var(--nav-h) + env(safe-area-inset-bottom,
 #grun-nav a span{letter-spacing:-.01em}#grun-nav a{padding-left:1px;padding-right:1px}
 #grun-nav svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 #grun-nav a.on{color:var(--gx-y);font-weight:600}
+/* audit 26 oct. : « Banque scientifique » (un seul nom par module) peut passer sur 2 lignes ; les icônes restent alignées */
+#grun-nav[data-mode=biblio] a:not(.nv-g){justify-content:flex-start;padding-top:8px;gap:3px}#grun-nav[data-mode=biblio] a:not(.nv-g) span{white-space:normal;text-align:center;line-height:1.02;max-height:2.1em}
 #grun-nav a:active{opacity:.7}
 /* « GRÜN » (deux balles du Ü) + « Accueil » : retour à la page de garde, toujours à gauche */
 #grun-nav a.nv-g{font:800 13px/1 var(--gx-cond);letter-spacing:.06em;gap:5px}
@@ -894,7 +896,7 @@ p.hx-sub{color:var(--mute)}
 .cl-l{margin:4px 0 0;color:var(--mute);font-size:1.05rem}
 </style>
 
-<div id="splash" aria-hidden="true"><svg class="sp-u" viewBox="0 0 512 512" aria-hidden="true"><g transform="translate(0 16)"><path d="M180 158 V292 A76 76 0 0 0 332 292 V158" stroke="#3BE08A" stroke-width="78" fill="none"/><circle cx="180" cy="96" r="34" fill="#E4FF3A"/><path d="M158.9 69.5 Q178.3 96 158.9 122.5" stroke="#07090A" stroke-opacity=".35" stroke-width="4.4" fill="none" stroke-linecap="round"/><path d="M201.1 69.5 Q181.7 96 201.1 122.5" stroke="#07090A" stroke-opacity=".35" stroke-width="4.4" fill="none" stroke-linecap="round"/><circle cx="332" cy="96" r="34" fill="#E4FF3A"/><path d="M310.9 69.5 Q330.3 96 310.9 122.5" stroke="#07090A" stroke-opacity=".35" stroke-width="4.4" fill="none" stroke-linecap="round"/><path d="M353.1 69.5 Q333.7 96 353.1 122.5" stroke="#07090A" stroke-opacity=".35" stroke-width="4.4" fill="none" stroke-linecap="round"/></g></svg><div class="l"></div><div class="s">Méthode Eliot Gruner · 0-18 ans</div></div>
+<div id="splash" aria-hidden="true"><svg class="sp-u" viewBox="0 0 512 512" aria-hidden="true"><g transform="translate(0 16)"><path d="M180 158 V292 A76 76 0 0 0 332 292 V158" stroke="#3BE08A" stroke-width="78" fill="none"/><circle cx="180" cy="96" r="34" fill="#E4FF3A"/><path d="M158.9 69.5 Q178.3 96 158.9 122.5" stroke="#07090A" stroke-opacity=".35" stroke-width="4.4" fill="none" stroke-linecap="round"/><path d="M201.1 69.5 Q181.7 96 201.1 122.5" stroke="#07090A" stroke-opacity=".35" stroke-width="4.4" fill="none" stroke-linecap="round"/><circle cx="332" cy="96" r="34" fill="#E4FF3A"/><path d="M310.9 69.5 Q330.3 96 310.9 122.5" stroke="#07090A" stroke-opacity=".35" stroke-width="4.4" fill="none" stroke-linecap="round"/><path d="M353.1 69.5 Q333.7 96 353.1 122.5" stroke="#07090A" stroke-opacity=".35" stroke-width="4.4" fill="none" stroke-linecap="round"/></g></svg><div class="l"></div><div class="s">Performance tennis · 0-18 ans</div></div>
 <header class="top"><div class="topin">
   <button class="ib" id="back" type="button" aria-label="Retour"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button>
   <a class="brand" href="#/" aria-label="GRÜN : page de garde"><span class="grun-wm" aria-hidden="true">GR<span class="u">U<i></i><i></i></span>N</span></a>
@@ -1196,17 +1198,18 @@ function route() {
   if (a === "recherche") { G.navMode(modeNeutre() || "perf", ""); return auto() && !moi() ? vCreerMoi() : vRecherche(parts.slice(1).join("/")); }
   /* Performance (#/perf, joueurs, dossiers, groupes, Ma semaine) — plus de parcours de démarrage : une appli vide arrive sur la page de garde,
      puis Performance propose ses 3 premiers pas (le profil coach / joueur et le mode Simple / Expert se règlent dans les Réglages) */
-  G.navMode("perf", a === "joueurs" || a === "j" || a === "g" ? "joueurs" : a === "semaine" || a === "agenda" ? "semaine" : a === "perf" || !a ? "auj" : "");
+  G.navMode("perf", a === "perf" && /^(joueurs|joueur|groupe)$/.test(b || "") ? "joueurs" : a === "joueurs" || a === "j" || a === "g" ? "joueurs" : a === "perf" || !a ? "auj" : "");
   if (auto()) {
     const m = moi();
     if (!m) return vCreerMoi();
     return vDossier(m.id, a === "j" ? c : null);
   }
+  if (a === "perf") return vPerfRoute(parts.slice(1));   /* mode Performance v1 (perf.js) : projets, profils, programmation, séances */
   if (a === "joueurs") return vJoueurs(b);
   if (a === "semaine" || a === "agenda") return vSemaine(b);
   if (a === "j" && b) return vDossier(b, c);
   if (a === "g" && b) return vGroupe(b, c);
-  return vAccueil();
+  return vPerf();
 }
 function render(keep) { const y = scrollY; route(); if (keep) scrollTo(0, y); }
 addEventListener("hashchange", () => { TABJ = { jid: null, t: "resume" }; render(false); scrollTo(0, 0); });
@@ -1365,17 +1368,16 @@ function vSemaine(dsel) {
 
 /* ================= PAGE D'UN PÔLE ================= */
 const RACC = {
-  prog: [["Créer une programmation", "prog", "#/nouveau"], ["Saisons de référence", "saisons", null]],
+  prog: [["Créer une programmation", "prog", "#/nouveau"]],
   seances: [["Créer une séance", "seances", "#/nouvelle"]],
   warmup: [["Créer un échauffement", "warmup", "#/nouveau"]],
   veille: [["Ouvrir la veille", "veille", null]],
   banque: [["Créer un exercice", "banque", "#/nouveau"], ["Familles", "banque", "#familles"]],
-  saisons: [["Toutes les saisons", "saisons", null]],
   grilles: [["Tous les tests", "grilles", "#p/3"], ["Mode d'emploi", "grilles", "#p/4"]]
 };
 /* contenu des anciennes pages de pôle (raccourcis pour un joueur ou un groupe, bilans, modules) : rangé dans « Plus d'options » des portes */
 function poleCorps(id) {
-  const mods = Object.entries(G.MODS).filter(([k, m]) => (id === "outils" ? m.pole === "create" || m.pole === "tests" : m.pole === "res") && m.f !== "index.html");
+  const mods = Object.entries(G.MODS).filter(([k, m]) => (id === "outils" ? m.pole === "create" || m.pole === "tests" : m.pole === "res") && m.f !== "index.html" && k !== "saisons");   /* saisons de référence : plus proposées dans les menus */
   const js = auto() ? [moi()].filter(Boolean) : G.joueurs.all(), gs = auto() ? [] : G.groupes.all();
   const selJ = js.length ? `<select class="inp" id="pj" aria-label="Joueur"><option value="">Choisir un joueur…</option>${js.map(j => `<option value="${esc(j.id)}"${j.id === G.courant.jid() ? " selected" : ""}>${esc(j.nom)}</option>`).join("")}</select>` : "";
   const selG = gs.length ? `<select class="inp" id="pg" aria-label="Groupe"><option value="">Choisir un groupe…</option>${gs.map(g => `<option value="${esc(g.id)}"${g.id === G.courant.gid() ? " selected" : ""}>${esc(g.nom)}</option>`).join("")}</select>` : "";
@@ -1423,7 +1425,6 @@ function vGarde() {
     <svg class="gd-l" viewBox="0 0 366 768" aria-hidden="true" fill="none">
       <g stroke="#3BE08A" stroke-opacity=".4" stroke-width="1.5"><rect x="0" y="0" width="366" height="768" rx="2"/><path d="M22 0V768M344 0V768M22 122H344M22 646H344M183 122V309M183 459V646"/></g>
       <path d="M-12 384H378" stroke="#9AA59E" stroke-opacity=".55" stroke-width="2"/></svg>
-    <p class="gd-tit">Méthode Eliot Gruner</p>
     <p class="gd-meth"><span>Préparation physique, technique, tactique et mentale</span><span>de 0 à 18 ans</span></p>
     <a class="gd-cpt" href="#/reglages" aria-label="Mon compte et réglages">${ico("compte")}</a>
     ${P.map(([k, t, x, y]) => `<a class="gd-door" href="#/${k}" style="--dx:${x};--dy:${y}">${vis(VIS[k], { cls: "gd-v", par: "xMidYMid meet" })}<span>${t}</span></a>`).join("")}
@@ -1458,13 +1459,12 @@ function nbExercices() { const B = G.banque.cache(); if (B) return nf0(B.ex.leng
 function vBiblio() {
   document.title = "Bibliothèque · GRÜN";
   const carte = (href, t, sous, v) => `<a class="bc" href="${esc(href)}"><span class="tt"><b>${t}</b><small>${sous}</small></span>${vis(v, { cls: "bc-v", w: 120, h: 124, par: "xMaxYMid meet" })}</a>`;
-  const nd = arr(RD.docs).filter(d => !/^ME\./.test(d.c)).length;   /* banque scientifique seule (la Méthode ME.1-10 est au Référentiel) */
-  main.innerHTML = heros({ v: "heros_cordage", h: 270, retour: "#/", retourLab: "Retour à la page de garde", k: "Savoirs · exercices · méthode", t: "Bibliothèque" }) + `<div class="pg">
+  const nd = arr(RD.docs).filter(d => !/^ME\./.test(d.c)).length;   /* banque scientifique seule (les chapitres ME.1-10 ne sont plus proposés) */
+  main.innerHTML = heros({ v: "heros_cordage", h: 270, retour: "#/", retourLab: "Retour à la page de garde", k: "Banque scientifique · exercices", t: "Bibliothèque" }) + `<div class="pg">
     <button type="button" class="agep" data-a="agebib" aria-label="Âge et sexe de la bibliothèque : ${esc(G.ageBibTxt())}. Changer">${esc(G.ageBibTxt())}<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button>
     <nav class="bcs" aria-label="Bibliothèque">
-    ${carte(G.href("veille"), "Banque scientifique", nd ? `<em>${nd}</em> documents de la méthode` : "Les documents de la méthode", "anneaux")}
-    ${carte(G.href("banque"), "Exercices", `<em id="nbex">${nbExercices()}</em> fiches · vidéos`, "balles")}
-    ${carte(G.href("veille", "#/ref"), "Référentiel", "La méthode Eliot Gruner, de 0 à 18 ans", "marches")}</nav>
+    ${carte(G.href("veille"), "Banque scientifique", nd ? `<em>${nd}</em> documents` : "Les documents scientifiques", "anneaux")}
+    ${carte(G.href("banque"), "Exercices", `<em id="nbex">${nbExercices()}</em> exercices`, "balles")}</nav>
     <details class="grun-plus" data-sx="p-biblio"${OPEN.has("p-biblio") ? " open" : ""}><summary>Plus d'options</summary><div class="grun-plusb">${poleCorps("biblio")}</div></details></div>`;
 }
 function vOutils(sous) {
@@ -2117,10 +2117,10 @@ function coachHTML() {
 /* ================= COMMENT ÇA MARCHE ================= */
 function vComment() {
   setAcc("var(--ind)"); document.title = "Comment ça marche · GRÜN";
-  const P = [["biblio", "Bibliothèque", "La banque scientifique (les documents de la méthode), les exercices et le référentiel des saisons : tout ce que les outils proposent vient de là."],
+  const P = [["biblio", "Bibliothèque", "La banque scientifique (les documents scientifiques, en 8 thèmes) et les exercices : le savoir sur lequel s'appuient les outils."],
     ["outils", "Outils", "Create my session, Choose your warm-up, Tests et profilage, Create my prog : en deux secondes, avec ou sans joueur. Ils s'emboîtent en poupée russe."],
     ["club", "Club", "Le mode Club, pour les clubs et leurs joueurs : en construction."],
-    ["perf", "Performance", "Tes joueurs et tes groupes : dossier complet (fiche, croissance, tests, programmations, séances, journal, blessures, objectifs) et agenda."]];
+    ["perf", "Performance", "Les projets de tes joueurs et de tes groupes, partagés par tout le staff : dossier complet (fiche, croissance, tests, programmations, séances, journal, blessures, objectifs) et agenda."]];
   const VIS = { biblio: "cordage", outils: "trajectoires", club: "club", perf: "courbe" };
   main.innerHTML = heros({ bas: true, v: "trajectoires", vcls: "petit", k: "GRÜN", t: "Comment ça marche" }) + `<p class="lead hx-sub">GRÜN en une page : une page de garde, 4 portes et une poupée russe.</p>
     <section class="sec"><div class="card">${G.SCHEMA}</div></section>
@@ -2156,7 +2156,7 @@ function actionsRecherche(q) {
   const mG = /^(f|g|fille|filles|garcon|garcons)\s?-?\s?(\d{1,2})(\s?ans)?$/.exec(fq);
   if (mG && +mG[2] >= 4 && +mG[2] <= 18) { const sx = mG[1][0] === "f" ? "F" : "G", a = +mG[2], lab = (sx === "F" ? "filles " : "garçons ") + a + " ans";
     DOMS.forEach(d => act("Grille " + (d === "PP" ? "préparation physique" : d === "GE" ? "du geste" : "du déplacement") + " · " + lab, "Grille de compétences", "", G.href("grilles", "#d/" + sx + pad(a) + "_" + d)));
-    act("Saison de référence · " + lab, "Référentiel de programmation", "", G.href("saisons", "#/s/" + sx + pad(a))); }
+  }
   const mots = fq.split(" "), qui = js.filter(j => mots.some(m => m.length >= 2 && (fold(prenom(j)) === m || (m.length >= 3 && fold(prenom(j)).startsWith(m))))), j1 = qui[0];
   const V = (re) => re.test(fq);
   const nomJ = j => esc(prenom(j));
@@ -2209,8 +2209,6 @@ function chercher(q) {
     grp("Exercices", "var(--res)", top(ex, 15), ex.length); }
   const fa = RD.fams.filter(f => hit([f.c, f.t, f.d].join(" "), ts)).map(f => ({ h: G.href("banque", "#f/" + f.c), t: f.t, w: "famille de la banque" }));
   grp("Familles de la banque", "var(--res)", fa.slice(0, 10), fa.length);
-  const sa = RD.saisons.filter(s => hit([s.c, s.t, s.d, s.x].join(" "), ts)).map(s => ({ h: G.href("saisons", "#/s/" + s.c), t: s.t, w: s.d, x: s.x }));
-  grp("Saisons de référence", "var(--res)", sa.slice(0, 10), sa.length);
   return G2;
 }
 function vRecherche(q) {
@@ -2221,7 +2219,7 @@ function vRecherche(q) {
   if (!BQ && !BQload) BQload = G.banque.load().then(b => { BQ = b; if (location.hash.startsWith("#/recherche/")) render(true); }).catch(() => { BQ = { ex: [] }; });
   const R = chercher(q), n = R.reduce((a, g) => a + g.n, 0);
   let h = `<h1>Recherche</h1><p class="lead">${n ? n + " résultat" + (n > 1 ? "s" : "") + " pour « " + esc(q) + " »" : "Rien pour « " + esc(q) + " ». Essaie un mot plus court ou un synonyme."}${!BQ ? " · chargement de la banque…" : ""}</p>`;
-  h += `<button class="res ask" data-a="assistant" data-src="recherche" data-q="${esc(q)}"><div class="t">Demander à l'assistant : « ${esc(q)} »</div><div class="w">Il répond aux questions sur la méthode et sur l'appli, hors connexion.</div></button>`;
+  h += `<button class="res ask" data-a="assistant" data-src="recherche" data-q="${esc(q)}"><div class="t">Demander à l'assistant : « ${esc(q)} »</div><div class="w">Il répond aux questions sur le contenu scientifique et sur l'appli, hors connexion.</div></button>`;
   h += R.map(g => `<div class="rgrp" style="--rc:${g.col}"><h2>${esc(g.t)} <small>${g.n > g.items.length ? g.items.length + " sur " + g.n : g.n}</small></h2>${g.items.map(r => r.act ? `<a class="res act" href="${esc(r.h)}" ${r.attrs || ""}><div class="t">${r.t}</div><div class="w">${esc(r.w || "")}</div></a>` : `<a class="res" href="${esc(r.h)}"><div class="t">${marque(r.t, ts)}</div><div class="w">${esc(r.w || "")}</div>${r.x ? `<div class="s">${marque(r.x, ts)}</div>` : ""}</a>`).join("")}</div>`).join("");
   if (!auto()) h += `<div class="sec tools"><a class="ib" style="white-space:normal;text-align:center;padding:8px 14px;max-width:100%" href="${G.href("veille", "#s/" + encodeURIComponent(q))}">Chercher « ${esc(q)} » dans le texte complet de la banque scientifique ›</a></div>`;
   main.innerHTML = h;
@@ -2257,10 +2255,10 @@ function vReglages() {
   h += `<section class="sec"><h2>Sauvegarde</h2><div class="card"><p class="msg" style="margin-top:0">Tout reste sur cet appareil. Une seule sauvegarde contient toute l'appli : joueurs, groupes, journal, bilans, plans, séances, routines, exercices et tests personnels, favoris et notes de la veille, de la banque et du référentiel.</p>
     <div class="tools"><button class="go acc" data-a="export">Tout sauvegarder</button><label class="ib" for="fimp">Restaurer ou importer…</label><input id="fimp" type="file" accept=".json,application/json" multiple hidden></div>
     <p class="msg" id="impm"></p>
-    <p class="msg">La restauration fusionne avec ce qui est déjà là (rien n'est effacé). Elle reconnaît aussi les anciennes sauvegardes des applis séparées : Grilles et tests, Banque d'exercices, Programmation, Séances, Routines, Veille, Référentiel des saisons, Profil radar.</p></div></section>`;
+    <p class="msg">La restauration fusionne avec ce qui est déjà là (rien n'est effacé). Elle reconnaît aussi les anciennes sauvegardes des applis séparées : Grilles et tests, Banque d'exercices, Programmation, Séances, Routines, Veille, Saisons, Profil radar.</p></div></section>`;
   if (!auto()) h += demoSection();
-  h += `<section class="sec"><h2>À propos de GRÜN</h2><div class="card note"><p style="margin-top:0"><b>GRÜN</b> réunit en une seule appli la méthode Eliot Gruner : la science du joueur de tennis de 0 à 18 ans, préparation physique, technique, tactique et mentale, de la méthode de formation jusqu'à la séance. Notre modèle haute performance : le niveau 3, c'est être dans les temps du haut niveau de sa génération.</p>
-    <p>Quatre portes : <b>Bibliothèque</b> (banque scientifique, exercices, référentiel), <b>Outils</b> (Create my session, Choose your warm-up, tests et profilage, Create my prog), <b>Club</b> (en construction) et <b>Performance</b> (le dossier complet de chaque joueur et de chaque groupe, l'agenda).</p>
+  h += `<section class="sec"><h2>À propos de GRÜN</h2><div class="card note"><p style="margin-top:0"><b>GRÜN</b> est un outil professionnel pour le staff de performance du joueur de tennis de 0 à 18 ans : entraîneur, préparateur physique, préparateur mental… Il met les connaissances scientifiques actuelles au service de chacun et relie le travail de tous autour du même joueur, sans imposer de méthode : chacun garde sa façon de travailler. Repère commun : le niveau 3, c'est être dans les temps du haut niveau de sa génération.</p>
+    <p>Quatre portes : <b>Bibliothèque</b> (banque scientifique et exercices), <b>Outils</b> (Create my session, Choose your warm-up, tests et profilage, Create my prog), <b>Club</b> (bientôt) et <b>Performance</b> (le projet de chaque joueur et de chaque groupe, partagé par le staff : dossier complet, agenda).</p>
     <p class="msg" style="margin-bottom:0">Données sur l'appareil · fonctionne hors connexion.</p></div></section>`;
   main.innerHTML = h;
 }
@@ -2291,8 +2289,8 @@ function importer(d, nom) {
   if (d.app === "GRUN" && d.data) { const o = { ...d, data: { ...d.data } }; delete o.data[G.K.mode]; delete o.data[G.K.handoff]; G.importAll(o, true); return "Sauvegarde GRÜN du " + G.frD(d.date); }
   switch (d.format) {
     case "veille": fusionPrefs(G.K.veille, d, ["fav"], ["notes"]); return "Veille (favoris et notes)";
-    case "banque": { fusionPrefs(G.K.banqueDocs, d, ["fav"], ["notes", "links"]); const c = G.load(G.K.banqueDocs, {}) || {}; c.lists = parId(c.lists, d.lists); G.save(G.K.banqueDocs, c); return "Banque d'exercices (favoris, listes, notes)"; }
-    case "saisons": fusionPrefs(G.K.saisons, d, ["fav"], ["notes"]); return "Référentiel des saisons (favoris et notes)";
+    case "banque": { fusionPrefs(G.K.banqueDocs, d, ["fav"], ["notes", "links"]); const c = G.load(G.K.banqueDocs, {}) || {}; c.lists = parId(c.lists, d.lists); G.save(G.K.banqueDocs, c); return "Exercices (favoris, collections, notes)"; }
+    case "saisons": fusionPrefs(G.K.saisons, d, ["fav"], ["notes"]); return "Saisons (favoris et notes)";
     case "grilles-docs": fusionPrefs(G.K.grillesDocs, d, ["fav"], ["notes"]); { const n = fusionJoueurs(d.joueurs); return "Grilles (favoris, notes" + (n ? ", " + n + " joueur" + (n > 1 ? "s" : "") : "") + ")"; }
     case "profil-radar": { const n = fusionJoueurs(d.joueurs); return "Profil radar (" + n + " joueur" + (n > 1 ? "s" : "") + " et leurs bilans)"; }
     case "programmation": {
@@ -2789,6 +2787,672 @@ Promise.all([rdP, wuP]).then(() => {
     const sid = typeof r === "string" ? r : (r.id || r.seance || r.sid); if (rr.plan && (rr.cle || rr.key) && sid && !r.annule) quiet(() => { const Pg = G.load(G.K.prog, {}) || {}; const pp = arr(Pg.plans).find(x => x.id === rr.plan); if (pp) { pp.built ||= {}; pp.built[rr.cle || rr.key] = sid; G.save(G.K.prog, Pg); } });
     toast("De retour : " + (r.titre || r.nom || "c'est enregistré")); render(true); }
 });
+
+
+/* ================= MODE PERFORMANCE · v1 (30 oct. 2026) =================
+   L'outil commun d'un staff performance : un PROJET = un joueur (ou un groupe de profils déjà créés) + une session + un staff
+   + une programmation proposée (modifiable) + des séances au contenu vierge (chacun crée la sienne, GRÜN propose sur demande).
+   Tout est rangé par RUBRIQUES, fermées par défaut. Aucune méthode imposée, aucune séance « biomécanique ».
+   Adresses : #/perf · #/perf/nouveau · #/perf/joueurs · #/perf/joueur/<jid> · #/perf/p/<pid>[/prog|/seances|/tests|/projet|/joueurs]
+              #/perf/p/<pid>/w/<lundi> · #/perf/p/<pid>/se/<lundi>_<créneau>
+   Données : localStorage « grun_projets_v1 » {projets:[Projet]} ; le profil vit sur le joueur (partagé avec les outils). */
+const PK = "grun_projets_v1";
+const PJ = {
+  st() { const s = G.load(PK, { projets: [] }) || {}; if (!Array.isArray(s.projets)) s.projets = []; return s; },
+  all() { return PJ.st().projets.slice().sort((a, b) => (b.maj || "").localeCompare(a.maj || "")); },
+  get(id) { return PJ.st().projets.find(p => p.id === id) || null; },
+  save(p) { const s = PJ.st(), i = s.projets.findIndex(x => x.id === p.id); p.maj = new Date().toISOString(); if (i < 0) s.projets.push(p); else s.projets[i] = p; G.save(PK, s); },
+  remove(id) { const s = PJ.st(); s.projets = s.projets.filter(p => p.id !== id); G.save(PK, s); },
+  de(jid) { return PJ.all().filter(p => pfJids(p).includes(jid)); }
+};
+G.on(PK, refresh);
+const DISC = { tennis: "Tennis", pp: "Préparation physique", pm: "Préparation mentale" };
+const DISC_C = { tennis: "#3BE08A", pp: "#E4FF3A", pm: "#8FB8FF" };
+const ROLES = [["tennis", "Entraîneur tennis"], ["pp", "Préparateur physique"], ["pm", "Préparateur mental"], ["kine", "Kiné"], ["psy", "Psychologue"], ["med", "Médecin du sport"], ["autre", "Autre"]];
+const ROLE = Object.fromEntries(ROLES);
+const NATURES = [["saison", "Saison"], ["stage", "Stage"], ["tournee", "Tournée"], ["bloc", "Bloc de séances"]];
+const EDT_T = [["ecole", "École"], ["physique", "Activité physique"], ["culture", "Activité culturelle"], ["perso", "Moment perso"]];
+const J7 = ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"];
+const PRIO = [["A", "Objectif principal"], ["B", "Important"], ["C", "Préparation"]];
+const INT = [["basse", "Basse"], ["moderee", "Modérée"], ["elevee", "Élevée"]];
+const TH_LARGE = { tennis: ["Technique", "Tactique", "Situation de jeu"], pm: ["Concentration et attention", "Confiance, estime de soi et motivation", "Émotions, combativité, audace et lucidité", "Routines, objectifs, discours interne et ancrages", "Respiration, relaxation et imagerie", "Le match : avant, pendant, après"] };
+const PP_OBJ = ["Force", "Vitesse et appuis", "Puissance", "Endurance", "Vitesse et explosivité", "Activation", "Mobilité et prévention", "Coordination et motricité"];
+/* objectif (préparation physique) ou thème large (tennis) → rubriques de la banque d'exercices */
+const RUBS = {
+  "Force": ["Force du bas du corps", "Force du haut du corps", "Gainage et stabilité du tronc"],
+  "Vitesse et appuis": ["Vitesse et accélération", "Freinage, changements de direction et agilité"],
+  "Puissance": ["Puissance des jambes : sauts et pliométrie", "Puissance du haut du corps et rotation"],
+  "Endurance": ["Répétition d'efforts intenses", "Endurance aérobie"],
+  "Vitesse et explosivité": ["Vitesse et accélération", "Puissance des jambes : sauts et pliométrie", "Freinage, changements de direction et agilité"],
+  "Activation": ["Échauffement et retour au calme", "Vitesse et accélération"],
+  "Mobilité et prévention": ["Mobilité et souplesse", "Prévention, blessures et réathlétisation", "Équilibre et proprioception"],
+  "Coordination et motricité": ["Coordination, motricité fondamentale et rythme", "Jeux physiques", "Équilibre et proprioception"],
+  "Technique": ["Coup droit", "Revers", "Service", "Retour de service", "Volée", "Déplacements", "Smash", "Amortie et touché de balle"],
+  "Tactique": ["Jouer du fond de court", "Servir et jouer le premier coup", "Retourner et jouer le premier coup", "Monter au filet et jouer contre le joueur au filet", "Lire le jeu, anticiper, décider", "Le score et les moments clés"],
+  "Situation de jeu": ["Principes du jeu", "Le score et les moments clés", "Styles de jeu, identité et plan de jeu", "Servir et jouer le premier coup", "Retourner et jouer le premier coup"]
+};
+const TH_DISC = { tennis: [4, 5], pp: [3, 7], pm: [6] };
+
+/* ---------- dates ---------- */
+const pfMon = s => { const t = P(s), d = (new Date(t).getUTCDay() + 6) % 7; return I(t - d * DAY); };
+const pfDates = (a, b) => `${dCourt(a)} → ${dCourt(b)}${a.slice(0, 4) !== b.slice(0, 4) ? " " + b.slice(0, 4) : ""}`;
+const pfIn = (d, a, b) => isoOk(d) && isoOk(a) && d >= a && d <= (isoOk(b) ? b : a);
+const pfSaison = () => { const t = G.today(), y = +t.slice(0, 4) - (t.slice(5, 7) < "08" ? 1 : 0); return { debut: y + "-09-01", fin: (y + 1) + "-08-31", nom: "Saison " + String(y).slice(2) + "/" + String(y + 1).slice(2) }; };
+
+/* ---------- joueurs du projet, âge, niveau, âge biologique ---------- */
+function pfJids(p) { if (p.gid) { const g = G.groupes.get(p.gid); return g ? g.jids.slice() : arr(p.jids); } return [p.jid].filter(Boolean); }
+const pfJoueurs = p => pfJids(p).map(G.joueurs.get).filter(Boolean);
+const pfNom = p => { if (p.gid) { const g = G.groupes.get(p.gid); return g ? g.nom : "Groupe"; } const j = G.joueurs.get(p.jid); return j ? j.nom : "Joueur"; };
+function pfRef(p) { /* le plus jeune du projet fixe les garde-fous */
+  const L = pfJoueurs(p).map(j => ({ j, a: G.ageDec(j.naissance, p.debut && p.debut > G.today() ? p.debut : G.today()) })).filter(x => x.a != null).sort((x, y) => x.a - y.a);
+  return L[0] || { j: pfJoueurs(p)[0] || { sexe: "G" }, a: null };
+}
+const pfPerio = p => { const r = pfRef(p); return r.a != null && r.a >= (r.j.sexe === "F" ? 12 : 13); };
+const CLT_I = c => { const i = CLASSEMENTS.indexOf(c || "NC"); return i < 0 ? 99 : i; };
+function pfNiveau(j) {
+  const a = ageJ(j.naissance), c = CLT_I(j.classement); if (!c) return 3;   /* mode Performance : un joueur non renseigné est traité en haut niveau */
+  const T = a == null || a < 10 ? [4, 8] : a <= 11 ? [5, 8] : a <= 13 ? [7, 11] : a <= 15 ? [10, 16] : [12, 19];
+  return c >= T[1] ? 4 : c >= T[0] ? 3 : 2;
+}
+function pfBio(j) {
+  const a = G.ageDec(j.naissance); if (a == null) return null;
+  if (a < 10) return { t: "À partir de 10 ans", n: "info" };
+  const m = G.maturite(j); if (!m) return null;
+  const d = G.REF_APHV[j.sexe === "F" ? "F" : "G"] - m.aphv;   /* > 0 : pic plus tôt que la moyenne → en avance */
+  const t = Math.abs(d) < 1 ? "Dans son âge" : (d > 0 ? "En avance de " : "En retard de ") + (Math.abs(d) <= 2 ? "1-2 ans" : "plus de 2 ans");
+  return { t, n: Math.abs(d) < 1 ? "ok" : "attention", date: m.date };
+}
+
+/* ---------- la programmation proposée : semaines, types, séances, cadre ---------- */
+const WT = { dev: "Développement", allege: "Allègement", precomp: "Affûtage", comp: "Compétition", recup: "Récupération", coupure: "Coupure", reg: "Semaine normale" };
+const WT_S = { dev: "Charge qui progresse", allege: "Volume réduit pour assimiler", precomp: "Avant une compétition objectif : moins de volume, l'intensité reste", comp: "Compétition dans la semaine", recup: "Après une compétition objectif", coupure: "Indisponible au moins 4 jours", reg: "Avant 12 ans (fille) ou 13 ans (garçon) : semaines régulières, sans périodisation" };
+const WT_C = { dev: "ok", allege: "info", precomp: "attention", comp: "haute", recup: "info", coupure: "info", reg: "info" };
+function pfBloque(p, d) {   /* jour sans entraînement : indisponibilité ou jour de compétition */
+  if (arr(p.hors).some(h => h.t === "indispo" && pfIn(d, h.debut, h.fin))) return "indispo";
+  if (arr(p.comps).some(c => pfIn(d, c.debut, c.fin))) return "comp";
+  return null;
+}
+function pfSemaines(p) {
+  if (!isoOk(p.debut) || !isoOk(p.fin) || p.fin < p.debut) return [];
+  const W = [], perio = pfPerio(p); let d1 = pfMon(p.debut), n = 0, devRun = 0;
+  while (d1 <= p.fin && n < 60) {
+    const d7 = add(d1, 6), jours = [...Array(7)].map((_, i) => add(d1, i));
+    const comps = arr(p.comps).filter(c => isoOk(c.debut) && c.debut <= d7 && (c.fin || c.debut) >= d1);
+    const hors = arr(p.hors).filter(h => isoOk(h.debut) && h.debut <= d7 && (h.fin || h.debut) >= d1);
+    const nIndispo = jours.filter(d => arr(p.hors).some(h => h.t === "indispo" && pfIn(d, h.debut, h.fin))).length;
+    const nextA = arr(p.comps).some(c => c.prio === "A" && isoOk(c.debut) && c.debut > d7 && c.debut <= add(d7, 7));
+    const prevA = arr(p.comps).some(c => c.prio === "A" && isoOk(c.debut) && (c.fin || c.debut) >= add(d1, -7) && (c.fin || c.debut) < d1);
+    let t;
+    if (nIndispo >= 4) t = "coupure";
+    else if (comps.length) t = "comp";
+    else if (!perio) t = "reg";
+    else if (nextA) t = "precomp";
+    else if (prevA) t = "recup";
+    else { devRun++; t = devRun % 4 === 0 ? "allege" : "dev"; }
+    if (t !== "dev" && t !== "allege") devRun = t === "recup" || t === "coupure" ? 0 : devRun;
+    const tests = arr(p.tests).filter(x => pfIn(x.date, d1, d7));
+    W.push({ i: n, d1, d7, t, comps, hors, tests, seances: [] });
+    d1 = add(d1, 7); n++;
+  }
+  for (const w of W) w.seances = pfSeancesSemaine(p, w);
+  return W;
+}
+function pfSeancesSemaine(p, w) {
+  const mod = (p.wk || {})[w.d1] || {}, off = new Set(arr(mod.off)), L = [];
+  const slots = arr(p.sem).filter(s => !off.has(s.id)).concat(arr(mod.add));
+  for (const s of slots) {
+    const date = add(w.d1, s.j); if (date < p.debut || date > p.fin) continue;
+    if (!s.ajout && pfBloque(p, date)) continue;
+    L.push({ key: w.d1 + "_" + s.id, date, j: s.j, h: s.h || "", duree: +s.duree || 60, disc: s.disc, resp: s.resp || "", ajout: !!s.ajout, sid: s.id });
+  }
+  L.sort((a, b) => a.date.localeCompare(b.date) || (a.h || "").localeCompare(b.h || ""));
+  const k = { tennis: 0, pp: 0, pm: 0 };
+  for (const s of L) { s.n = k[s.disc] = (k[s.disc] || 0) + 1; Object.assign(s, pfCadre(p, w, s), (p.se || {})[s.key] && (p.se[s.key].cadre || {})); }
+  return L;
+}
+function pfCadre(p, w, s) {   /* cadre PROPOSÉ (tout reste modifiable) */
+  const r = pfRef(p), a = r.a == null ? 14 : r.a, petit = a < 12, idx = s.n - 1 + w.i;
+  const c = {};
+  if (s.disc === "pp") {
+    c.intens = petit ? "moderee" : { dev: s.n === 1 ? "elevee" : "moderee", allege: "moderee", precomp: "elevee", comp: "basse", recup: "basse", coupure: "basse", reg: "moderee" }[w.t];
+    c.obj = petit ? (idx % 2 ? "Vitesse et appuis" : "Coordination et motricité")
+      : { dev: ["Force", "Vitesse et appuis", "Puissance", "Endurance"][idx % 4], allege: "Mobilité et prévention", precomp: "Vitesse et explosivité", comp: "Activation", recup: "Mobilité et prévention", coupure: "Mobilité et prévention", reg: ["Force", "Vitesse et appuis", "Endurance"][idx % 3] }[w.t];
+    if (a < 12.5 && s.duree > 60) c.duree = 60;   /* séance de préparation physique : 1 h maximum jusqu'à 12 ans */
+  } else if (s.disc === "tennis") {
+    c.theme = { comp: "Situation de jeu", precomp: "Situation de jeu", recup: "Technique" }[w.t] || ["Technique", "Tactique", "Situation de jeu"][idx % 3];
+  } else if (s.disc === "pm") {
+    c.theme = w.t === "comp" || w.t === "precomp" ? "Le match : avant, pendant, après" : TH_LARGE.pm[idx % 5];
+  }
+  return c;
+}
+const pfSe = (p, key) => ((p.se || (p.se = {}))[key] || (p.se[key] = { ex: [] }));
+/* charge prévue (ou faite) : minutes × dureté estimée (ou ressentie) */
+const DUR = { basse: 3, moderee: 5, elevee: 7 };
+function pfCharge(p, w) { return w.seances.reduce((t, s) => { const x = (p.se || {})[s.key] || {}; const r = x.rpe != null ? +x.rpe : s.disc === "pp" ? DUR[s.intens] || 5 : s.disc === "pm" ? 2 : s.theme === "Situation de jeu" ? 6 : 5; return t + (x.dureeR || s.duree) * r; }, 0); }
+function pfMinutes(w) { return w.seances.reduce((t, s) => t + (+s.duree || 0), 0); }
+/* POINTS D'ATTENTION : ce que GRÜN signale au staff pour harmoniser le travail de chacun (il n'impose rien) */
+function pfAlertes(p, w, prev) {
+  const A = [], r = pfRef(p), a = r.a;
+  const pp = w.seances.filter(s => s.disc === "pp");
+  for (const s of pp) {
+    if (s.intens === "elevee" && pfBloque(p, add(s.date, 1)) === "comp") A.push(`Préparation physique intense la veille d'une compétition (${J7[s.j].toLowerCase()}) : à alléger.`);
+    if (a != null && a < 12.5 && s.duree > 60) A.push(`Séance de préparation physique de ${s.duree} min : 1 h maximum jusqu'à 12 ans.`);
+  }
+  const fortes = w.seances.filter(s => s.disc === "pp" && s.intens === "elevee").map(s => s.date).sort();
+  for (let i = 1; i < fortes.length; i++) if (ecart(fortes[i], fortes[i - 1]) < 2) { A.push("Deux séances intenses de préparation physique à moins de 48 h : à espacer."); break; }
+  const parJour = {}; w.seances.forEach(s => parJour[s.date] = (parJour[s.date] || 0) + s.duree);
+  for (const [d, m] of Object.entries(parJour)) if (m > 240) A.push(`${dCourt(d)} : ${Math.round(m / 6) / 10} h d'entraînement prévues dans la journée.`);
+  for (const h of w.hors.filter(h => h.t === "activite")) A.push(`Activité hors programme : ${h.titre || "activité"} (${dCourt(h.debut)}). À prendre en compte dans la charge de la semaine.`);
+  if (a != null && a >= 13 && prev && prev.seances.length) { const c1 = pfCharge(p, w), c0 = pfCharge(p, prev); if (c0 && c1 > c0 * 1.3) A.push(`Charge en hausse de ${Math.round((c1 / c0 - 1) * 100)} % par rapport à la semaine précédente (au-delà de 30 % : risque de blessure).`); }
+  for (const j of pfJoueurs(p)) if (arr(j.blessures).some(b => b.statut === "encours")) A.push(`${prenom(j)} a une blessure en cours : séances à adapter avec le kiné ou le médecin.`);
+  return [...new Set(A)];
+}
+
+/* ---------- banque : thème précis, exercice automatique, séance proposée ---------- */
+let PFB = null;
+const pfBanque = () => PFB ? Promise.resolve(PFB) : G.banque.load().then(B => { const R = {}; arr(B.fams4).forEach(f => R[f.c] = f.rub); PFB = { B, R }; return PFB; });
+function pfUtilises(p, avantKey, jours = 28) {   /* exercices et thèmes précis déjà faits dans le projet (4 semaines) : on ne répète pas, on incrémente */
+  const d0 = avantKey.slice(0, 10), ids = new Set(), th = {};
+  for (const [k, x] of Object.entries(p.se || {})) { if (k === avantKey || k.slice(0, 10) > d0 || ecart(d0, k.slice(0, 10)) > jours) continue; arr(x.ex).forEach(e => e.id && ids.add(e.id)); if (x.themeP) th[x.themeP] = (th[x.themeP] || 0) + 1; }
+  return { ids, th };
+}
+function pfThemeP(p, s) {
+  const base = s.disc === "pp" ? s.obj : s.theme, L = RUBS[base] || (s.disc === "pm" ? [base] : []);
+  if (!L.length) return null; const U = pfUtilises(p, s.key).th;
+  return L.slice().sort((a, b) => (U[a] || 0) - (U[b] || 0) || L.indexOf(a) - L.indexOf(b))[0];
+}
+const pfHash = s => { let h = 2166136261; for (const c of s) { h ^= c.charCodeAt(0); h = Math.imul(h, 16777619); } return h >>> 0; };
+function pfCandidats(p, s, rubs, exclure) {
+  const { B, R } = PFB, r = pfRef(p), a = r.a == null ? 14 : Math.floor(r.a), lv = pfNiveau(r.j), U = pfUtilises(p, s.key).ids, TH = TH_DISC[s.disc];
+  return B.ex.filter(e => TH.includes(e.th) && (s.disc !== "pp" || e.th === 3 || e.dom === "PP") && (!rubs || rubs.includes(R[e.f4]))
+      && (e.ta || e.a || 0) <= a && a <= (e.tb || e.ax || 18) && !exclure.has(e.id))
+    .map(e => ({ e, sc: Math.abs((e.tn || 2) - lv) * 2 + (U.has(e.id) ? 5 : 0) + (pfHash(s.key + e.id) % 100) / 100 }))
+    .sort((x, y) => x.sc - y.sc).map(x => x.e);
+}
+function pfDosage(e, a) {
+  const t = String(e.dos || ""); if (!t) return "";
+  const re = /(\d{1,2})(?:\s*-\s*(\d{1,2}))?\s*ans\s*:\s*([^;]+)/g; let m;
+  while ((m = re.exec(t))) { const lo = +m[1], hi = m[2] ? +m[2] : lo; if (a >= lo && a <= hi) return m[3].trim().replace(/\.$/, ""); }
+  return t.length > 160 ? t.slice(0, 157) + "…" : t;
+}
+const pfExo = (p, e) => ({ id: e.id, n: e.n, dz: pfDosage(e, Math.floor(pfRef(p).a || 14)) });
+function pfAuto(p, s, x, n) {
+  const rubs = x.themeP ? [x.themeP] : RUBS[s.disc === "pp" ? s.obj : s.theme] || null, deja = new Set(arr(x.ex).map(e => e.id).filter(Boolean));
+  let L = pfCandidats(p, s, rubs, deja); if (!L.length) L = pfCandidats(p, s, null, deja);
+  return L.slice(0, n).map(e => pfExo(p, e));
+}
+function pfCreerSeance(p, s, x) {
+  if (!x.themeP) x.themeP = pfThemeP(p, s) || undefined;
+  const out = [];
+  if (s.disc === "pp") {
+    const ech = pfCandidats(p, s, ["Échauffement et retour au calme"], new Set())[0]; if (ech) out.push(pfExo(p, ech));
+    out.push(...pfAuto(p, s, { ...x, ex: out }, s.duree >= 60 ? 4 : 3));
+    const prev = pfCandidats(p, s, ["Prévention, blessures et réathlétisation", "Mobilité et souplesse"], new Set(out.map(e => e.id)))[0]; if (prev) out.push(pfExo(p, prev));
+  } else out.push(...pfAuto(p, s, x, s.disc === "pm" ? 2 : s.duree >= 75 ? 5 : 4));
+  x.ex = out;
+}
+
+/* ---------- petits morceaux d'interface ---------- */
+const pfB = (n, t) => `<span class="badge b-${n}">${esc(t)}</span>`;
+const pfDot = d => `<i class="pf-dot" style="background:${DISC_C[d] || "#888"}"></i>`;
+const pfSel = (attrs, opts, v, vide) => `<select ${attrs}>${vide != null ? `<option value="">${esc(vide)}</option>` : ""}${opts.map(([k, t]) => `<option value="${esc(k)}"${String(v ?? "") === String(k) ? " selected" : ""}>${esc(t)}</option>`).join("")}</select>`;
+const pfChips = (attr, opts, v) => `<div class="chips">${opts.map(([k, t]) => `<button type="button" class="tg" ${attr} data-v="${esc(k)}" aria-pressed="${String(v) === String(k)}">${esc(t)}</button>`).join("")}</div>`;
+const pfCarte = (href, n, t, s, end) => `<a class="step pf-step" href="${esc(href)}"><span class="n">${n}</span><span class="tt"><b>${t}</b><small>${s}</small></span><span class="end" aria-hidden="true">${end || "›"}</span></a>`;
+const pfHx = (t, k, retour) => heros({ bas: true, cls: "pf-hx", v: "courbe", vcls: "petit", droite: rondsPerf(), retour, k, t });
+const pfRub = (id, titre, resume, body) => sx("pf-" + id, titre, resume, body, "var(--ind)");
+const pfResp = (p, id) => { const m = arr(p.staff).find(x => x.id === id); return m ? (m.nom || ROLE[m.role]) : ""; };
+const pfStaffDe = (p, disc) => arr(p.staff).find(m => m.role === disc);
+(function () { const st = document.createElement("style"); st.textContent = `
+.pf-dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:7px;vertical-align:middle;flex:0 0 auto}
+.pf-step,.pf-step *{text-decoration:none!important}.pf-step .n{font-family:inherit}.pf-wiz{display:flex;gap:6px;margin:4px 0 14px}.pf-wiz i{flex:1;height:4px;border-radius:2px;background:var(--line)}.pf-wiz i.on{background:var(--acc)}
+.pf-al{border:1px solid var(--warn);border-radius:14px;padding:10px 14px;margin:10px 0}.pf-al b{display:block;margin-bottom:4px;color:var(--warn)}.pf-al p{margin:4px 0;font-size:.92rem}
+.pf-row{display:flex;gap:8px;flex-wrap:wrap;align-items:flex-end}.pf-row .f{flex:1;min-width:120px}
+.pf-ex{display:flex;gap:10px;align-items:flex-start;padding:10px 0;border-bottom:1px solid var(--line)}.pf-ex:last-child{border-bottom:0}.pf-ex .tt{flex:1;min-width:0}.pf-ex input{width:100%;margin-top:6px}
+.pf-day{margin:14px 0 4px;font-weight:700;font-size:.82rem;letter-spacing:.06em;text-transform:uppercase;color:var(--mute)}
+.pf-hx h1{font-size:clamp(1.5rem,7vw,3rem)!important;word-break:normal!important;overflow-wrap:normal!important;hyphens:none!important}
+.pf-k{font-size:.85rem;color:var(--mute)}.pf-sel{border-color:var(--acc)!important}`; document.head.appendChild(st); })();
+
+/* ================= ROUTEUR ================= */
+function vPerfRoute(parts) {
+  const [b, c, d, e] = parts;
+  if (!b) return vPerf();
+  if (b === "nouveau") return vPNouveau();
+  if (b === "joueurs") return vPJoueurs();
+  if (b === "joueur" && c) return vPProfil(c);
+  if (b === "groupe" && c) return vPGroupe(c);
+  if (b === "p" && c) {
+    const p = PJ.get(c); if (!p) { main.innerHTML = pfHx("Projet", `<a href="#/perf">Performance</a>`, "#/perf") + empty("Ce projet n'existe pas (ou plus) sur cet appareil."); return; }
+    if (!d) return vPProjet(p);
+    if (d === "prog") return vPProg(p);
+    if (d === "seances") return vPSeances(p);
+    if (d === "tests") return vPTests(p);
+    if (d === "projet") return vPInfos(p);
+    if (d === "joueurs") return vPMembres(p);
+    if (d === "w" && e) return vPSemaine(p, e);
+    if (d === "se" && e) return vPSeance(p, e);
+    return vPProjet(p);
+  }
+  return vPerf();
+}
+
+/* ================= ACCUEIL PERFORMANCE : 2 rubriques ================= */
+function vPerf() {
+  document.title = "Performance · GRÜN";
+  const P0 = PJ.all(), js = G.joueurs.all(), gs = G.groupes.all();
+  let h = heros({ v: "heros_courbe", h: 230, retour: "#/", retourLab: "Retour à la page de garde", droite: rondsPerf(), k: "Le projet commun du staff", t: "Performance" }) + `<div class="pg">`;
+  h += `<section class="sec"><h2>Projets</h2>${P0.length ? `<div class="list">${P0.map(p => { const w = pfSemaines(p).find(x => x.d1 <= G.today() && x.d7 >= G.today());
+      return li("#/perf/p/" + p.id, null, esc(pfNom(p)) + (p.gid ? " <small style='display:inline'>· groupe</small>" : ""), esc([p.nom, isoOk(p.debut) && isoOk(p.fin) ? pfDates(p.debut, p.fin) : "", arr(p.staff).length ? arr(p.staff).length + " au staff" : ""].filter(Boolean).join(" · ")), w ? pfB(WT_C[w.t], WT[w.t]) : "›"); }).join("")}</div>`
+    : empty("Aucun projet. Un projet réunit le joueur, son staff, sa programmation et ses séances.")}
+    <div class="tools" style="margin-top:10px"><a class="go acc big" href="#/perf/nouveau">+ Nouveau projet</a></div></section>`;
+  h += `<section class="sec"><h2>Joueurs et groupes</h2><div class="steps" style="margin-top:0">${pfCarte("#/perf/joueurs", "J", "Profils joueurs", `${js.length} profil${js.length > 1 ? "s" : ""}${gs.length ? " · " + gs.length + " groupe" + (gs.length > 1 ? "s" : "") : ""} · jeu, croissance, santé, vie`)}</div></section></div>`;
+  main.innerHTML = h;
+}
+
+/* ================= PROFILS JOUEURS ET GROUPES ================= */
+function vPJoueurs() {
+  document.title = "Profils joueurs · GRÜN";
+  const js = G.joueurs.all(), gs = G.groupes.all();
+  let h = pfHx("Profils joueurs", `<a href="#/perf">Performance</a>`, "#/perf") + `<div class="pg">`;
+  h += `<section class="sec"><h2>Joueurs</h2>${js.length ? `<div class="list">${js.map(j => { const b = pfBio(j); return li("#/perf/joueur/" + j.id, null, esc(j.nom), esc([j.sexe === "F" ? "Fille" : "Garçon", ageTxt(j), j.classement && j.classement !== "NC" ? j.classement : "", b && b.date ? b.t.toLowerCase() : ""].filter(Boolean).join(" · ")), "›"); }).join("")}</div>` : empty("Aucun profil. Prénom, nom, date de naissance et sexe suffisent pour commencer.")}
+    <div class="tools" style="margin-top:10px"><button class="go acc big" data-pf="nouveauJ">+ Nouveau profil joueur</button></div></section>`;
+  h += `<section class="sec"><h2>Groupes</h2><p class="msg" style="margin-top:0">Un groupe se forme uniquement avec des profils déjà créés.</p>${gs.length ? `<div class="list">${gs.map(g => li("#/perf/groupe/" + g.id, null, esc(g.nom), esc(G.groupes.joueurs(g.id).map(prenom).join(", ")) || "aucun membre", "›")).join("")}</div>` : ""}
+    <div class="tools" style="margin-top:10px"><button class="ib" data-pf="nouveauG"${js.length < 2 ? " disabled" : ""}>+ Nouveau groupe</button></div>${js.length < 2 ? `<p class="msg">Crée d'abord au moins deux profils joueurs.</p>` : ""}</section></div>`;
+  main.innerHTML = h;
+}
+function vPGroupe(gid) {
+  const g = G.groupes.get(gid); if (!g) { location.replace("#/perf/joueurs"); return; }
+  document.title = g.nom + " · GRÜN";
+  const js = G.joueurs.all(), M = new Set(g.jids);
+  main.innerHTML = pfHx(esc(g.nom), `<a href="#/perf">Performance</a> · <a href="#/perf/joueurs">Profils</a>`, "#/perf/joueurs") + `<div class="pg">
+    <section class="sec"><h2>Membres</h2><p class="msg" style="margin-top:0">Touche un profil pour l'ajouter ou le retirer du groupe.</p>${pfChips('data-pf="gmembre" data-g="' + esc(g.id) + '"', js.map(j => [j.id, j.nom]), "")}</section>
+    <section class="sec"><h2>Profils du groupe</h2><div class="list">${G.groupes.joueurs(g.id).map(j => li("#/perf/joueur/" + j.id, null, esc(j.nom), esc(ageTxt(j)), "›")).join("") || empty("Aucun membre.")}</div></section>
+    <details class="grun-plus"><summary>Plus d'options</summary><div class="grun-plusb"><div class="tools"><button class="ib dang" data-pf="gsuppr" data-g="${esc(g.id)}">Supprimer le groupe</button></div></div></details></div>`;
+  $$('[data-pf="gmembre"]').forEach(b => b.setAttribute("aria-pressed", M.has(b.dataset.v)));
+}
+/* les 4 rubriques du profil (fermées par défaut) : Jeu · Croissance · Santé · Vie. Tout s'enregistre tout de suite, sur le joueur. */
+function pfProfilRubs(j) {
+  const id = esc(j.id), M = arr(j.mesures).filter(m => m && m.taille && isoOk(m.date)).sort((a, b) => a.date < b.date ? 1 : -1), bio = pfBio(j);
+  const bl = arr(j.blessures).filter(b => b.statut === "encours");
+  const jeu = `<div class="form"><div class="f"><label>Main</label>${pfChips(`data-pf="jset" data-jid="${id}" data-k="main"`, [["D", "Droitier"], ["G", "Gaucher"]], j.main)}</div>
+    <div class="f"><label>Revers</label>${pfChips(`data-pf="jset" data-jid="${id}" data-k="revers"`, [["2", "2 mains"], ["1", "1 main"]], j.revers)}</div>
+    <div class="f"><label for="pf-cl-${id}">Classement actuel</label>${pfSel(`id="pf-cl-${id}" data-pfj="classement" data-jid="${id}"`, CLASSEMENTS.map(c => [c, c]), j.classement || "NC")}</div>
+    <div class="f w"><label for="pf-tu-${id}">Lien Ten'Up</label><input id="pf-tu-${id}" type="url" inputmode="url" data-pfj="tenup" data-jid="${id}" value="${esc(j.tenup || "")}" placeholder="https://tenup.fft.fr/…"></div>
+    ${j.tenup ? `<a class="ib sm" href="${esc(j.tenup)}" target="_blank" rel="noopener">Ouvrir Ten'Up</a>` : ""}</div>`;
+  const cro = `${bio ? `<p class="msg" style="margin-top:0">Âge biologique : ${pfB(bio.n, bio.t)}${bio.date ? ` <span class="pf-k">mesures du ${G.frD(bio.date)}</span>` : ""}</p>` : `<p class="msg" style="margin-top:0">Taille debout, taille assise et poids, tous les 3 mois : l'âge biologique se calcule tout seul (à partir de 10 ans).</p>`}
+    ${M.length ? `<div class="list">${M.slice(0, 6).map(m => li(null, null, G.frD(m.date), [m.taille ? nf(+m.taille) + " cm" : "", m.assise ? "assise " + nf(+m.assise) + " cm" : "", m.poids ? nf(+m.poids) + " kg" : ""].filter(Boolean).join(" · "), `<button class="ib sm" data-pf="mesdel" data-jid="${id}" data-d="${esc(m.date)}" aria-label="Supprimer la mesure">×</button>`)).join("")}</div>` : ""}
+    <div class="pf-row" style="margin-top:10px"><div class="f"><label for="pf-md-${id}">Date</label><input id="pf-md-${id}" type="date" value="${G.today()}"></div>
+    <div class="f"><label for="pf-mt-${id}">Taille debout (cm)</label><input id="pf-mt-${id}" type="number" inputmode="decimal" step="0.1" min="60" max="230"></div>
+    <div class="f"><label for="pf-ma-${id}">Taille assise (cm)</label><input id="pf-ma-${id}" type="number" inputmode="decimal" step="0.1" min="30" max="130"></div>
+    <div class="f"><label for="pf-mp-${id}">Poids (kg)</label><input id="pf-mp-${id}" type="number" inputmode="decimal" step="0.1" min="10" max="150"></div>
+    <button class="go acc" data-pf="mesadd" data-jid="${id}">Enregistrer</button></div>`;
+  const san = `<div class="f"><span class="lab">Blessure en cours</span>${bl.length ? `<div class="list">${bl.map(b => li(null, null, esc(G.ZONES[b.zone] || b.desc || "Blessure"), esc([b.desc && G.ZONES[b.zone] ? b.desc : "", b.debut ? "depuis le " + G.frD(b.debut) : ""].filter(Boolean).join(" · ")), `<button class="ib sm" data-pf="gueri" data-jid="${id}" data-b="${esc(b.id)}">Guérie</button>`)).join("")}</div>` : `<p class="msg" style="margin:4px 0">Aucune.</p>`}
+      <div class="pf-row"><div class="f"><label for="pf-bz-${id}">Zone</label>${pfSel(`id="pf-bz-${id}"`, Object.entries(G.ZONES), "", "—")}</div><div class="f"><label for="pf-bd-${id}">Précision</label><input id="pf-bd-${id}" placeholder="Ex. tendinite rotulienne"></div><div class="f"><label for="pf-bb-${id}">Depuis</label><input id="pf-bb-${id}" type="date" value="${G.today()}"></div><button class="ib" data-pf="blessadd" data-jid="${id}">+ Blessure en cours</button></div></div>
+    <div class="f" style="margin-top:14px"><span class="lab">Zones fragiles actuelles</span>${`<div class="chips">${Object.entries(G.ZONES).map(([k, t]) => `<button type="button" class="tg" data-pf="zone" data-jid="${id}" data-v="${k}" aria-pressed="${arr(j.zones).includes(k)}">${t}</button>`).join("")}</div>`}</div>
+    <div class="f" style="margin-top:14px"><span class="lab">Antécédents · blessures majeures passées</span>${arr(j.antecedents).length ? `<div class="list">${arr(j.antecedents).map(a => li(null, null, esc(a.txt), esc(a.date ? G.frD(a.date) : ""), `<button class="ib sm" data-pf="antdel" data-jid="${id}" data-a2="${esc(a.id)}" aria-label="Supprimer">×</button>`)).join("")}</div>` : `<p class="msg" style="margin:4px 0">Aucun.</p>`}
+      <div class="pf-row"><div class="f"><label for="pf-at-${id}">Blessure</label><input id="pf-at-${id}" placeholder="Ex. entorse de la cheville gauche"></div><div class="f"><label for="pf-ad-${id}">Date</label><input id="pf-ad-${id}" type="date"></div><button class="ib" data-pf="antadd" data-jid="${id}">+ Antécédent</button></div></div>`;
+  const E = arr(j.edt).slice().sort((a, b) => a.j - b.j || (a.de || "").localeCompare(b.de || ""));
+  const vie = `<p class="msg" style="margin-top:0">L'emploi du temps hors tennis : école, activités physiques, activités culturelles, moments perso.</p>
+    ${E.length ? J7.map((d, i) => { const L = E.filter(x => x.j === i); return L.length ? `<div class="pf-day">${d}</div><div class="list">${L.map(x => li(null, null, `${esc(x.de || "")}${x.a ? "–" + esc(x.a) : ""} · ${esc((EDT_T.find(t => t[0] === x.t) || [, ""])[1])}`, esc(x.txt || ""), `<button class="ib sm" data-pf="edtdel" data-jid="${id}" data-e="${esc(x.id)}" aria-label="Supprimer">×</button>`)).join("")}</div>` : ""; }).join("") : ""}
+    <div class="pf-row" style="margin-top:10px"><div class="f"><label for="pf-ej-${id}">Jour</label>${pfSel(`id="pf-ej-${id}"`, J7.map((d, i) => [i, d]), 0)}</div><div class="f"><label for="pf-ed-${id}">De</label><input id="pf-ed-${id}" type="time" value="08:00"></div><div class="f"><label for="pf-ea-${id}">À</label><input id="pf-ea-${id}" type="time" value="12:00"></div>
+    <div class="f"><label for="pf-et-${id}">Type</label>${pfSel(`id="pf-et-${id}"`, EDT_T, "ecole")}</div><div class="f"><label for="pf-ex-${id}">Précision</label><input id="pf-ex-${id}" placeholder="Ex. collège, conservatoire…"></div><button class="ib" data-pf="edtadd" data-jid="${id}">+ Ajouter</button></div>`;
+  return pfRub("jeu-" + j.id, "Jeu", esc([j.main === "G" ? "gaucher" : "droitier", "revers " + (j.revers === "1" ? "1 main" : "2 mains"), j.classement || "NC"].join(" · ")), jeu)
+    + pfRub("cro-" + j.id, "Croissance", bio ? esc(bio.t) : "taille, taille assise, poids", cro)
+    + pfRub("san-" + j.id, "Santé", bl.length ? "blessure en cours" : arr(j.zones).length ? arr(j.zones).length + " zone" + (arr(j.zones).length > 1 ? "s" : "") + " fragile" + (arr(j.zones).length > 1 ? "s" : "") : "aucune blessure en cours", san)
+    + pfRub("vie-" + j.id, "Vie", E.length ? E.length + " créneau" + (E.length > 1 ? "x" : "") + " hors tennis" : "emploi du temps hors tennis", vie);
+}
+function vPProfil(jid) {
+  const j = G.joueurs.get(jid); if (!j) { main.innerHTML = pfHx("Profil", `<a href="#/perf">Performance</a>`, "#/perf/joueurs") + empty("Ce profil n'existe pas (ou plus)."); return; }
+  document.title = j.nom + " · GRÜN";
+  const pr = PJ.de(j.id);
+  main.innerHTML = pfHx(esc(j.nom), `<a href="#/perf">Performance</a> · <a href="#/perf/joueurs">Profils</a>`, "#/perf/joueurs") + `<div class="pg">
+    <div class="head hx-sub"><p class="lead">${j.sexe === "F" ? "Fille" : "Garçon"}${ageTxt(j) ? " · " + ageTxt(j) : ""}${j.naissance ? " · né" + (j.sexe === "F" ? "e" : "") + " le " + G.frD(j.naissance) : ""}</p><button class="ib sm" data-pf="identite" data-jid="${esc(j.id)}">Modifier</button></div>
+    <section class="sec">${pfProfilRubs(j)}</section>
+    <section class="sec"><h2>Projets</h2>${pr.length ? `<div class="list">${pr.map(p => li("#/perf/p/" + p.id, null, esc(p.nom || "Projet"), esc(isoOk(p.debut) ? pfDates(p.debut, p.fin) : ""), "›")).join("")}</div>` : empty("Aucun projet pour ce joueur.")}</section>
+    <details class="grun-plus"><summary>Plus d'options</summary><div class="grun-plusb"><div class="tools"><button class="ib dang" data-pf="jsuppr" data-jid="${esc(j.id)}">Supprimer ce profil</button></div></div></details></div>`;
+}
+function pfFicheJoueur(o) {   /* prénom, nom, date de naissance, sexe : l'étape 1, et rien d'autre */
+  const j = o || {}; const [pn, ...nn] = String(j.nom || "").split(" ");
+  return `<form class="gs-form"><label class="gs-l">Prénom<input class="gs-inp" name="prenom" value="${esc(o ? pn : "")}" autocomplete="off" required></label>
+    <label class="gs-l">Nom<input class="gs-inp" name="nom" value="${esc(o ? nn.join(" ") : "")}" autocomplete="off"></label>
+    <label class="gs-l">Date de naissance<input class="gs-inp" type="date" name="naissance" value="${esc(j.naissance || "")}" required></label>
+    <div class="gs-l">Sexe<div class="chips">${[["F", "Fille"], ["G", "Garçon"]].map(([k, t]) => `<button type="button" class="tg" data-sx="${k}" aria-pressed="${(j.sexe || "") === k}">${t}</button>`).join("")}</div></div><p class="gs-m" id="pf-err"></p></form>`;
+}
+function pfSheetJoueur(j, fn) {
+  let sexe = j ? j.sexe : "";
+  const sh = G.ui.sheet({ titre: j ? "Modifier · " + j.nom : "Nouveau profil joueur", html: pfFicheJoueur(j), principal: { t: j ? "Enregistrer" : "Créer le profil", fn: s => {
+    const F = new FormData(s.$("form")), pn = String(F.get("prenom") || "").trim(), nn = String(F.get("nom") || "").trim(), na = F.get("naissance");
+    if (!pn || !na || !sexe) { s.$("#pf-err").textContent = "Prénom, date de naissance et sexe sont obligatoires."; return false; }
+    fn({ nom: (pn + " " + nn).trim(), naissance: na, sexe }); } } });
+  sh.el.addEventListener("click", e => { const b = e.target.closest("[data-sx]"); if (!b) return; sexe = b.dataset.sx; sh.$$("[data-sx]").forEach(x => x.setAttribute("aria-pressed", x === b)); });
+}
+
+/* ================= CRÉER UN PROJET : 5 étapes ================= */
+let WZ = null;
+try { WZ = JSON.parse(sessionStorage.getItem("pf_wz") || "null"); } catch (e) {}
+const wzSave = () => { try { sessionStorage.setItem("pf_wz", JSON.stringify(WZ)); } catch (e) {} };
+const wzNeuf = () => { const S = pfSaison(); const r = REG(); return { step: 1, qui: "j", jid: "", gid: "", nature: "saison", nom: S.nom, debut: S.debut, fin: S.fin, nb: "", staff: r.nomCoach ? [{ id: G.uid(), role: "", nom: r.nomCoach, mail: "" }] : [], ref: "", obj: {} }; };
+const WZ_T = ["Le joueur", "La session", "Le staff", "Le profil", "Les objectifs"];
+function vPNouveau() {
+  if (!WZ) { WZ = wzNeuf(); wzSave(); }
+  document.title = "Nouveau projet · GRÜN";
+  const W = WZ, js = G.joueurs.all(), gs = G.groupes.all();
+  let body = "";
+  if (W.step === 1) {
+    body = `<p class="msg" style="margin-top:0">Obligatoire. Un joueur, ou un groupe formé de profils déjà créés.</p>${pfChips('data-pf="wqui"', [["j", "Un joueur"], ["g", "Un groupe"]], W.qui)}`;
+    if (W.qui === "j") body += `<div class="f" style="margin-top:12px"><span class="lab">Choisir un profil</span>${js.length ? pfChips('data-pf="wjid"', js.map(j => [j.id, j.nom + (ageTxt(j) ? " · " + ageTxt(j) : "")]), W.jid) : `<p class="msg">Aucun profil pour l'instant.</p>`}</div>
+      <div class="tools" style="margin-top:10px"><button class="ib" data-pf="wnouvJ">+ Nouveau joueur</button></div>`;
+    else body += js.length < 2 ? `<p class="msg" style="margin-top:12px">Un groupe se forme avec des profils déjà créés : crée d'abord au moins deux profils joueurs.</p><div class="tools"><button class="ib" data-pf="wnouvJ">+ Nouveau joueur</button></div>`
+      : `<div class="f" style="margin-top:12px"><span class="lab">Choisir un groupe</span>${gs.length ? pfChips('data-pf="wgid"', gs.map(g => [g.id, g.nom + " · " + G.groupes.joueurs(g.id).length]), W.gid) : `<p class="msg">Aucun groupe.</p>`}</div><div class="tools" style="margin-top:10px"><button class="ib" data-pf="nouveauG">+ Nouveau groupe (à partir des profils)</button></div>`;
+  }
+  if (W.step === 2) body = `<div class="f"><span class="lab">Nature</span>${pfChips('data-pf="wnat"', NATURES, W.nature)}</div>
+    <div class="form" style="margin-top:10px"><div class="f w"><label for="wz-nom">Nom</label><input id="wz-nom" data-wz="nom" value="${esc(W.nom)}" placeholder="Ex. Saison 26/27, Stage de Toussaint"></div>
+    <div class="f"><label for="wz-d1">Début</label><input id="wz-d1" type="date" data-wz="debut" value="${esc(W.debut)}"></div><div class="f"><label for="wz-d2">Fin</label><input id="wz-d2" type="date" data-wz="fin" value="${esc(W.fin)}"></div>
+    ${W.nature === "bloc" ? `<div class="f"><label for="wz-nb">Nombre de séances</label><input id="wz-nb" type="number" min="1" max="200" data-wz="nb" value="${esc(W.nb)}"></div>` : ""}</div>`;
+  if (W.step === 3) body = `<p class="msg" style="margin-top:0">Chaque membre gère les séances de sa discipline. L'invitation à relier son compte GRÜN arrivera avec la mise en ligne : pour l'instant, le projet vit sur cet appareil.</p>${pfStaffForm(W.staff, W.ref, "w")}`;
+  if (W.step === 4) {
+    if (W.qui === "j") { const j = G.joueurs.get(W.jid); body = j ? `<p class="msg" style="margin-top:0">Facultatif. Ouvre une rubrique pour la remplir ; tout reste modifiable dans le profil.</p>${pfProfilRubs(j)}` : empty("Choisis d'abord le joueur (étape 1)."); }
+    else { const M = G.groupes.joueurs(W.gid); body = `<p class="msg" style="margin-top:0">Chaque profil se complète joueur par joueur.</p><div class="list">${M.map(j => li("#/perf/joueur/" + j.id, null, esc(j.nom), esc(ageTxt(j)), "›")).join("")}</div>`; }
+  }
+  if (W.step === 5) body = W.qui === "g" ? `<p class="msg" style="margin-top:0">Les objectifs de classement se fixent joueur par joueur : rien à remplir pour un groupe.</p>`
+    : `<p class="msg" style="margin-top:0">Facultatif. Objectifs de classement uniquement.</p><div class="form">${[["court", "Court terme · la saison"], ["moyen", "Moyen terme · 3 saisons"], ["long", "Long terme · fin du projet"]].map(([k, t]) => `<div class="f"><label for="wz-o${k}">${t}</label>${pfSel(`id="wz-o${k}" data-wzo="${k}"`, CLASSEMENTS.map(c => [c, c]), W.obj[k] || "", "—")}</div>`).join("")}</div>`;
+  const ok1 = W.qui === "j" ? !!G.joueurs.get(W.jid) : !!G.groupes.get(W.gid) && G.groupes.joueurs(W.gid).length > 0;
+  main.innerHTML = pfHx("Nouveau projet", `<a href="#/perf">Performance</a> · étape ${W.step} sur 5`, "#/perf") + `<div class="pg">
+    <div class="pf-wiz" aria-hidden="true">${[1, 2, 3, 4, 5].map(i => `<i class="${i <= W.step ? "on" : ""}"></i>`).join("")}</div>
+    <h2 class="h2" style="margin-top:0">${W.step} · ${WZ_T[W.step - 1]}</h2>${body}
+    <div class="grun-actbar">${W.step > 1 ? `<button class="gs-btn sec" data-pf="wprec">Précédent</button>` : `<button class="gs-btn sec" data-pf="wabandon">Abandonner</button>`}
+    ${W.step < 5 ? `<button class="gs-btn main" data-pf="wsuiv"${W.step === 1 && !ok1 ? " disabled" : ""}>${W.step === 1 ? "Suivant" : "Suivant"}</button>` : `<button class="gs-btn main" data-pf="wcreer">Créer le projet</button>`}</div></div>`;
+}
+function pfStaffForm(L, ref, pre) {
+  return `${L.length ? L.map(m => `<div class="card" style="margin:8px 0;padding:10px 12px"><div class="pf-row">
+      <div class="f"><label for="${pre}r-${esc(m.id)}">Rôle</label>${pfSel(`id="${pre}r-${esc(m.id)}" data-st="${pre}" data-m="${esc(m.id)}" data-k="role"`, ROLES, m.role, "—")}</div>
+      <div class="f"><label for="${pre}n-${esc(m.id)}">Prénom et nom</label><input id="${pre}n-${esc(m.id)}" data-st="${pre}" data-m="${esc(m.id)}" data-k="nom" value="${esc(m.nom || "")}" autocomplete="off"></div>
+      <div class="f"><label for="${pre}m-${esc(m.id)}">E-mail (invitation)</label><input id="${pre}m-${esc(m.id)}" type="email" data-st="${pre}" data-m="${esc(m.id)}" data-k="mail" value="${esc(m.mail || "")}" autocomplete="off"></div></div>
+      <div class="tools" style="margin-top:6px"><button type="button" class="tg sm" data-pf="stref" data-st="${pre}" data-m="${esc(m.id)}" aria-pressed="${ref === m.id}">Référent du projet</button><button type="button" class="ib sm" data-pf="stdel" data-st="${pre}" data-m="${esc(m.id)}">Retirer</button></div></div>`).join("") : empty("Personne pour l'instant.")}
+    <div class="tools" style="margin-top:8px"><button class="ib" data-pf="stadd" data-st="${pre}">+ Ajouter un membre</button></div>`;
+}
+
+/* ================= PAGE D'UN PROJET : les rubriques ================= */
+function vPProjet(p) {
+  document.title = pfNom(p) + " · GRÜN";
+  const W = pfSemaines(p), t = G.today(), w = W.find(x => x.d1 <= t && x.d7 >= t) || W.find(x => x.d1 > t), wi = w ? W.indexOf(w) : -1;
+  const al = w ? pfAlertes(p, w, W[wi - 1]) : [], js = pfJoueurs(p), j = js[0];
+  const nat = (NATURES.find(n => n[0] === p.nature) || [, ""])[1];
+  let h = pfHx(esc(pfNom(p)), `<a href="#/perf">Performance</a> · ${esc(p.nom || nat)}`, "#/perf") + `<div class="pg">
+    <p class="lead hx-sub">${esc([String(p.nom || "").toLowerCase().startsWith(nat.toLowerCase()) ? "" : nat, isoOk(p.debut) ? pfDates(p.debut, p.fin) : "", arr(p.staff).length ? arr(p.staff).map(m => m.nom || ROLE[m.role]).filter(Boolean).join(", ") : "staff à compléter"].filter(Boolean).join(" · "))}</p>`;
+  if (w) h += `<a class="card" href="#/perf/p/${esc(p.id)}/w/${w.d1}" style="display:block;text-decoration:none;color:inherit;margin-top:12px"><span class="pf-k">${w.d1 <= t ? "Cette semaine" : "Prochaine semaine"} · ${pfDates(w.d1, w.d7)}</span>
+      <div style="display:flex;gap:8px;align-items:center;margin-top:6px;flex-wrap:wrap">${pfB(WT_C[w.t], WT[w.t])}<b>${w.seances.length} séance${w.seances.length > 1 ? "s" : ""}</b>${al.length ? pfB("attention", al.length + " point" + (al.length > 1 ? "s" : "") + " d'attention") : ""}</div></a>`;
+  h += `<div class="steps">
+    ${pfCarte(`#/perf/p/${p.id}/prog`, 1, "Périodisation et programmation", "Semaine type, compétitions, hors programme, semaines proposées")}
+    ${pfCarte(`#/perf/p/${p.id}/seances`, 2, "Séances", "Semaine par semaine : chaque membre crée les séances de sa discipline")}
+    ${pfCarte(`#/perf/p/${p.id}/tests`, 3, "Préparation physique · tests · profilage", "Dates des tests, bilans, profilage")}
+    ${p.gid ? pfCarte(`#/perf/p/${p.id}/joueurs`, 4, "Profils des joueurs", js.length + " joueurs · jeu, croissance, santé, vie") : pfCarte(`#/perf/joueur/${j ? j.id : ""}`, 4, "Profil du joueur", "Jeu, croissance, santé, vie")}
+    ${pfCarte(`#/perf/p/${p.id}/projet`, 5, "Projet", "Session, staff, objectifs de classement")}</div></div>`;
+  main.innerHTML = h;
+}
+function vPMembres(p) {
+  main.innerHTML = pfHx("Profils des joueurs", `<a href="#/perf/p/${esc(p.id)}">${esc(pfNom(p))}</a>`, "#/perf/p/" + p.id) + `<div class="pg"><div class="list">${pfJoueurs(p).map(j => { const b = pfBio(j); return li("#/perf/joueur/" + j.id, null, esc(j.nom), esc([ageTxt(j), j.classement, b && b.date ? b.t.toLowerCase() : ""].filter(Boolean).join(" · ")), "›"); }).join("")}</div>
+    <p class="msg">Les membres se changent dans Performance › Profils joueurs › le groupe.</p></div>`;
+}
+
+/* ---------- 1 · Périodisation et programmation ---------- */
+function vPProg(p) {
+  document.title = "Programmation · " + pfNom(p);
+  const W = pfSemaines(p), id = esc(p.id), perio = pfPerio(p), S = arr(p.sem).slice().sort((a, b) => a.j - b.j || (a.h || "").localeCompare(b.h || ""));
+  const sem = `<p class="msg" style="margin-top:0">Les séances d'une semaine habituelle. Chaque semaine du calendrier part de là, puis s'ajuste à l'avance.</p>
+    ${S.length ? J7.map((d, i) => { const L = S.filter(s => s.j === i); return L.length ? `<div class="pf-day">${d}</div><div class="list">${L.map(s => li(null, null, `${pfDot(s.disc)}${esc(DISC[s.disc])}`, esc([s.h, s.duree + " min", pfResp(p, s.resp)].filter(Boolean).join(" · ")), `<button class="ib sm" data-pf="semedit" data-p="${id}" data-s="${esc(s.id)}">Modifier</button>`)).join("")}</div>` : ""; }).join("") : empty("Aucune séance dans la semaine type.")}
+    <div class="tools" style="margin-top:10px"><button class="go acc" data-pf="semadd" data-p="${id}">+ Séance dans la semaine type</button></div>`;
+  const C = arr(p.comps).slice().sort((a, b) => (a.debut || "").localeCompare(b.debut || ""));
+  const comp = `${C.length ? `<div class="list">${C.map(c => li(null, null, esc(c.nom || "Compétition"), esc([isoOk(c.debut) ? (c.fin && c.fin !== c.debut ? pfDates(c.debut, c.fin) : G.frD(c.debut)) : "", (PRIO.find(x => x[0] === c.prio) || [, ""])[1]].filter(Boolean).join(" · ")), `<button class="ib sm" data-pf="compedit" data-p="${id}" data-c="${esc(c.id)}">Modifier</button>`)).join("")}</div>` : empty("Aucune compétition prévue.")}
+    <div class="tools" style="margin-top:10px"><button class="ib" data-pf="compadd" data-p="${id}">+ Compétition</button></div>`;
+  const H = arr(p.hors).slice().sort((a, b) => (a.debut || "").localeCompare(b.debut || ""));
+  const hors = `<p class="msg" style="margin-top:0">Indisponibilités (examens, vacances, blessure : pas d'entraînement ces jours-là) et activités en dehors du programme (cross, triathlon, stage extérieur : comptées dans la charge).</p>
+    ${H.length ? `<div class="list">${H.map(x => li(null, null, esc(x.titre || (x.t === "indispo" ? "Indisponible" : "Activité")), esc([x.t === "indispo" ? "indisponible" : "activité hors programme", x.fin && x.fin !== x.debut ? pfDates(x.debut, x.fin) : G.frD(x.debut)].join(" · ")), `<button class="ib sm" data-pf="horsdel" data-p="${id}" data-h="${esc(x.id)}" aria-label="Supprimer">×</button>`)).join("")}</div>` : ""}
+    <div class="tools" style="margin-top:10px"><button class="ib" data-pf="horsadd" data-p="${id}" data-t="indispo">+ Indisponibilité</button><button class="ib" data-pf="horsadd" data-p="${id}" data-t="activite">+ Activité hors programme</button></div>`;
+  const cal = W.length ? `<p class="msg" style="margin-top:0">${perio ? "Proposé à partir de la semaine type, des compétitions et des indisponibilités : 3 semaines de développement puis 1 d'allègement, affûtage avant une compétition objectif, récupération après. Tout se modifie semaine par semaine." : "Avant 12 ans (fille) ou 13 ans (garçon), pas de périodisation : les semaines restent régulières."}</p>
+    ${(() => { const wl = (w, i) => li(`#/perf/p/${p.id}/w/${w.d1}`, "S" + (i + 1), esc(pfDates(w.d1, w.d7)), esc([w.seances.length + " séance" + (w.seances.length > 1 ? "s" : ""), w.comps.map(c => c.nom).filter(Boolean).join(", "), w.tests.length ? "tests" : ""].filter(Boolean).join(" · ")), pfB(WT_C[w.t], WT[w.t]));
+      const k0 = Math.max(0, W.findIndex(w => w.d7 >= G.today())), av = W.slice(0, k0);
+      return (av.length ? `<details class="grun-plus" style="margin:0 0 10px"><summary>Semaines passées (${av.length})</summary><div class="grun-plusb"><div class="list">${av.map(wl).join("")}</div></div></details>` : "") + `<div class="list">${W.slice(k0).map((w, j) => wl(w, j + k0)).join("")}</div>`; })()}`
+    : empty("Indique les dates de la session (rubrique Projet).");
+  main.innerHTML = pfHx("Programmation", `<a href="#/perf/p/${id}">${esc(pfNom(p))}</a> · périodisation`, "#/perf/p/" + p.id) + `<div class="pg"><section class="sec">
+    ${pfRub("sem-" + p.id, "Semaine type", S.length + " séance" + (S.length > 1 ? "s" : "") + " · " + Math.round(S.reduce((t, s) => t + (+s.duree || 0), 0) / 6) / 10 + " h", sem)}
+    ${pfRub("comp-" + p.id, "Compétitions prévues", C.length ? C.length + " prévue" + (C.length > 1 ? "s" : "") : "aucune", comp)}
+    ${pfRub("hors-" + p.id, "Hors programme et indisponibilités", H.length ? H.length + " au calendrier" : "rien", hors)}
+    ${pfRub("cal-" + p.id, "Semaines proposées", W.length ? W.length + " semaines" : "", cal)}</section></div>`;
+}
+
+/* ---------- 2 · Séances (par semaine, filtrées par discipline) ---------- */
+let PF_DISC = "";
+function vPSeances(p) {
+  document.title = "Séances · " + pfNom(p);
+  const W = pfSemaines(p), t = G.today(), k0 = Math.max(0, W.findIndex(w => w.d7 >= t)), id = esc(p.id);
+  const row = s => { const x = (p.se || {})[s.key] || {}, n = arr(x.ex).length;
+    return li(`#/perf/p/${p.id}/se/${s.key}`, null, `${pfDot(s.disc)}${esc(J7[s.j])} ${esc(dCourt(s.date))}${s.h ? " · " + esc(s.h) : ""}`, esc([DISC[s.disc], s.duree + " min", s.disc === "pp" ? (INT.find(i => i[0] === s.intens) || [, ""])[1].toLowerCase() + " · " + (s.obj || "") : s.theme, x.themeP && x.themeP !== s.theme ? x.themeP : ""].filter(Boolean).join(" · ")), x.fait ? pfB("ok", "faite") : n ? pfB("info", n + " exercice" + (n > 1 ? "s" : "")) : pfB("attention", "vierge")); };
+  const L = W.slice(k0, k0 + 6);
+  main.innerHTML = pfHx("Séances", `<a href="#/perf/p/${id}">${esc(pfNom(p))}</a>`, "#/perf/p/" + p.id) + `<div class="pg">
+    <p class="msg" style="margin-top:0">Chaque séance part vierge : le membre du staff de la discipline la crée, avec ses exercices ou les siens. GRÜN propose seulement sur demande.</p>
+    ${pfChips('data-pf="fdisc"', [["", "Toutes"], ["tennis", "Tennis"], ["pp", "Préparation physique"], ["pm", "Préparation mentale"]], PF_DISC)}
+    ${L.length ? L.map(w => { const S = w.seances.filter(s => !PF_DISC || s.disc === PF_DISC); return `<section class="sec"><h2 style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><a href="#/perf/p/${id}/w/${w.d1}" style="color:inherit;text-decoration:none">S${w.i + 1} · ${esc(pfDates(w.d1, w.d7))}</a> ${pfB(WT_C[w.t], WT[w.t])}</h2>${S.length ? `<div class="list">${S.map(row).join("")}</div>` : empty("Aucune séance.")}</section>`; }).join("")
+      : empty("Aucune semaine à venir : vérifie les dates de la session et la semaine type.")}
+    ${W.length > k0 + 6 ? `<p class="msg">Les semaines suivantes : rubrique Périodisation et programmation › Semaines proposées.</p>` : ""}</div>`;
+}
+
+/* ---------- une semaine : ajustée à l'avance, points d'attention ---------- */
+function vPSemaine(p, d1) {
+  const W = pfSemaines(p), i = W.findIndex(w => w.d1 === d1); if (i < 0) { location.replace("#/perf/p/" + p.id + "/prog"); return; }
+  const w = W[i], al = pfAlertes(p, w, W[i - 1]), id = esc(p.id), r = pfRef(p);
+  document.title = "S" + (i + 1) + " · " + pfNom(p);
+  const c0 = W[i - 1] && W[i - 1].seances.length ? pfCharge(p, W[i - 1]) : 0, c1 = pfCharge(p, w), dv = c0 ? Math.round((c1 / c0 - 1) * 100) : null;
+  const charge = r.a != null && r.a >= 13 && dv != null ? ` · charge ${Math.abs(dv) < 5 ? "stable" : (dv > 0 ? "en hausse de " : "en baisse de ") + Math.abs(dv) + " %"} par rapport à la semaine précédente` : "";
+  let h = pfHx(`S${i + 1} · ${esc(pfDates(w.d1, w.d7))}`, `<a href="#/perf/p/${id}">${esc(pfNom(p))}</a> · <a href="#/perf/p/${id}/seances">Séances</a>`, "#/perf/p/" + p.id + "/seances") + `<div class="pg">
+    <p class="lead hx-sub">${pfB(WT_C[w.t], WT[w.t])} <span class="pf-k">${esc(WT_S[w.t])}</span></p>
+    <p class="msg">${w.seances.length} séance${w.seances.length > 1 ? "s" : ""} · ${Math.round(pfMinutes(w) / 6) / 10} h${charge}</p>
+    ${al.length ? `<div class="pf-al"><b>Points d'attention pour le staff</b>${al.map(a => `<p>${esc(a)}</p>`).join("")}</div>` : ""}
+    <div class="tools" style="margin:6px 0 4px">${i > 0 ? `<a class="ib sm" href="#/perf/p/${id}/w/${W[i - 1].d1}">‹ S${i}</a>` : ""}${W[i + 1] ? `<a class="ib sm" href="#/perf/p/${id}/w/${W[i + 1].d1}">S${i + 2} ›</a>` : ""}</div>`;
+  for (let k = 0; k < 7; k++) {
+    const d = add(w.d1, k), S = w.seances.filter(s => s.date === d), C = w.comps.filter(c => pfIn(d, c.debut, c.fin)), H = w.hors.filter(x => pfIn(d, x.debut, x.fin)), T = w.tests.filter(x => x.date === d);
+    if (d < p.debut || d > p.fin) continue;
+    h += `<div class="pf-day">${J7[k]} ${dCourt(d)}</div>`;
+    const info = [...C.map(c => "Compétition · " + (c.nom || "")), ...H.map(x => (x.t === "indispo" ? "Indisponible · " : "Hors programme · ") + (x.titre || "")), ...T.map(() => "Tests")];
+    if (info.length) h += `<p class="msg" style="margin:2px 0 6px">${info.map(esc).join(" · ")}</p>`;
+    h += S.length ? `<div class="list">${S.map(s => li(`#/perf/p/${p.id}/se/${s.key}`, null, `${pfDot(s.disc)}${esc(DISC[s.disc])}`, esc([s.h, s.duree + " min", s.disc === "pp" ? (INT.find(x => x[0] === s.intens) || [, ""])[1].toLowerCase() + " · " + s.obj : s.theme, pfResp(p, s.resp)].filter(Boolean).join(" · ")), `<button class="ib sm" data-pf="seoff" data-p="${id}" data-w="${w.d1}" data-s="${esc(s.sid)}" data-aj="${s.ajout ? 1 : ""}" aria-label="Retirer cette séance de la semaine">×</button>`)).join("")}</div>` : (info.length ? "" : `<p class="msg" style="margin:2px 0">Repos.</p>`);
+  }
+  const off = arr(((p.wk || {})[w.d1] || {}).off);
+  h += `<div class="tools" style="margin-top:14px"><button class="go acc" data-pf="weekadd" data-p="${id}" data-w="${w.d1}">+ Séance cette semaine</button>${off.length ? `<button class="ib" data-pf="weekreset" data-p="${id}" data-w="${w.d1}">Remettre la semaine type</button>` : ""}</div></div>`;
+  main.innerHTML = h;
+}
+
+/* ---------- une séance : cadre + contenu vierge ---------- */
+function vPSeance(p, key) {
+  const d1 = key.slice(0, 10), W = pfSemaines(p), w = W.find(x => x.d1 === d1), s = w && w.seances.find(x => x.key === key);
+  if (!s) { main.innerHTML = pfHx("Séance", `<a href="#/perf/p/${esc(p.id)}">${esc(pfNom(p))}</a>`, "#/perf/p/" + p.id + "/seances") + empty("Cette séance n'est plus dans la programmation."); return; }
+  const x = (p.se || {})[key] || { ex: [] }, id = esc(p.id), k = esc(key);
+  document.title = DISC[s.disc] + " · " + pfNom(p);
+  const cadre = `<div class="facts" style="margin-top:0">${[["Responsable", esc(pfResp(p, s.resp) || "—")], ["Horaire", esc(s.h || "—")], ["Durée", s.duree + " min"], ...(s.disc === "pp" ? [["Intensité", esc((INT.find(i => i[0] === s.intens) || [, "—"])[1])], ["Ce qu'on travaille", esc(s.obj || "—")]] : [["Thème", esc(s.theme || "—")]]), ["Thème précis", esc(x.themeP || "—")]].map(([l, v]) => `<div class="fact"><span class="lab">${l}</span><b>${v}</b></div>`).join("")}</div>
+    <div class="tools" style="margin-top:10px"><button class="ib" data-pf="cadre" data-p="${id}" data-k="${k}">Modifier le cadre</button>${!x.themeP ? `<button class="ib" data-pf="themeP" data-p="${id}" data-k="${k}">Proposer un thème précis</button>` : ""}</div>`;
+  const ex = arr(x.ex);
+  const contenu = `${ex.length ? ex.map((e, i) => `<div class="pf-ex"><span class="tt"><b>${e.id ? `<a href="${G.href("banque", "#/ex/" + e.id)}">${esc(e.n)}</a>` : esc(e.n)}</b><input aria-label="Dosage" data-pfdz="${i}" data-p="${id}" data-k="${k}" value="${esc(e.dz || "")}" placeholder="Dosage : séries, répétitions, temps…"></span>
+      <span style="display:flex;flex-direction:column;gap:4px">${i ? `<button class="ib sm" data-pf="exup" data-p="${id}" data-k="${k}" data-i="${i}" aria-label="Monter">↑</button>` : ""}<button class="ib sm" data-pf="exdel" data-p="${id}" data-k="${k}" data-i="${i}" aria-label="Retirer">×</button></span></div>`).join("")
+    : `<p class="msg" style="margin-top:0">Séance vierge. Ajoute tes exercices (de la banque ou les tiens), ou laisse GRÜN proposer : il tient compte du profil, de la semaine et de ce qui a déjà été fait dans le projet.</p>`}
+    <div class="tools" style="margin-top:12px"><button class="go acc" data-pf="exadd" data-p="${id}" data-k="${k}">+ Ajouter un exercice</button><button class="ib" data-pf="exauto" data-p="${id}" data-k="${k}">Exercice automatique</button>${ex.length ? "" : `<button class="ib" data-pf="secreer" data-p="${id}" data-k="${k}">Créer la séance pour moi</button>`}${ex.length ? `<button class="ib" data-pf="exvider" data-p="${id}" data-k="${k}">Vider</button>` : ""}</div>`;
+  const fait = `<div class="pf-row"><div class="f"><label for="pf-rpe">Dureté ressentie (0-10)</label>${pfSel(`id="pf-rpe" data-pfse="rpe" data-p="${id}" data-k="${k}"`, [...Array(11)].map((_, i) => [i, String(i)]), x.rpe ?? "", "—")}</div>
+    <div class="f"><label for="pf-dr">Durée réelle (min)</label><input id="pf-dr" type="number" min="0" max="300" data-pfse="dureeR" data-p="${id}" data-k="${k}" value="${esc(x.dureeR || "")}" placeholder="${s.duree}"></div>
+    <button class="${x.fait ? "ib" : "go acc"}" data-pf="sefait" data-p="${id}" data-k="${k}">${x.fait ? "Faite ✓ (annuler)" : "Marquer faite"}</button></div>`;
+  main.innerHTML = pfHx(`${esc(J7[s.j])} ${esc(dCourt(s.date))}`, `<a href="#/perf/p/${id}">${esc(pfNom(p))}</a> · <a href="#/perf/p/${id}/w/${w.d1}">S${w.i + 1}</a> · ${esc(DISC[s.disc])}`, "#/perf/p/" + p.id + "/w/" + w.d1) + `<div class="pg">
+    <section class="sec"><h2>Cadre</h2>${cadre}</section>
+    <section class="sec"><h2>Contenu</h2>${contenu}</section>
+    <section class="sec">${pfRub("fait-" + key, "Après la séance", x.fait ? "faite" + (x.rpe != null ? " · dureté " + x.rpe + "/10" : "") : "dureté ressentie, durée réelle", fait)}</section></div>`;
+}
+
+/* ---------- 3 · Préparation physique, tests, profilage ---------- */
+function vPTests(p) {
+  const id = esc(p.id), T = arr(p.tests).slice().sort((a, b) => (a.date || "").localeCompare(b.date || ""));
+  main.innerHTML = pfHx("Tests", `<a href="#/perf/p/${id}">${esc(pfNom(p))}</a>`, "#/perf/p/" + p.id) + `<div class="pg">
+    <div class="card" style="margin-top:4px"><span class="pf-k">Repère de fin de saison</span><b style="display:block;margin-top:4px">Niveau 3 aux tests de profilage</b></div>
+    <section class="sec">${pfRub("tdates-" + p.id, "Dates des tests", T.length ? T.length + " prévue" + (T.length > 1 ? "s" : "") : "aucune", `${T.length ? `<div class="list">${T.map(x => li(null, null, G.frD(x.date), esc(x.date < G.today() ? "passée" : "à venir"), `<button class="ib sm" data-pf="testdel" data-p="${id}" data-t="${esc(x.id)}" aria-label="Supprimer">×</button>`)).join("")}</div>` : ""}
+      <div class="pf-row" style="margin-top:8px"><div class="f"><label for="pf-td">Date</label><input id="pf-td" type="date"></div><button class="ib" data-pf="testadd" data-p="${id}">+ Date de tests</button></div><p class="msg">La semaine apparaît « tests » dans la programmation.</p>`)}
+    ${pfJoueurs(p).map(j => { const B = arr(j.bilans).filter(b => b && b.date && (b.res && Object.keys(b.res).length || ["PP", "GE", "DE"].some(d => ((b.v || {})[d] || []).some(v => v != null && v !== "")))).sort((a, b) => a.date < b.date ? 1 : -1);
+      return pfRub("tj-" + j.id, esc(j.nom), B.length ? "dernier bilan le " + G.frD(B[0].date) : "aucun bilan", `<div class="tools"><a class="go acc" href="${G.href("grilles", "#/joueur/" + j.id + "/bilan/nouveau")}">Faire un bilan</a><a class="ib" href="${G.href("grilles", "#/joueur/" + j.id + "/radar")}">Voir le profilage</a></div>${B.length ? `<p class="msg">${B.length} bilan${B.length > 1 ? "s" : ""} enregistré${B.length > 1 ? "s" : ""}.</p>` : ""}`); }).join("")}</section></div>`;
+}
+
+/* ---------- 5 · Projet : session, staff, objectifs ---------- */
+function vPInfos(p) {
+  const id = esc(p.id), nat = (NATURES.find(n => n[0] === p.nature) || [, ""])[1];
+  const ses = `<div class="f"><span class="lab">Nature</span>${pfChips(`data-pf="pnat" data-p="${id}"`, NATURES, p.nature)}</div>
+    <div class="form" style="margin-top:10px"><div class="f w"><label for="pi-nom">Nom</label><input id="pi-nom" data-pfp="nom" data-p="${id}" value="${esc(p.nom || "")}"></div>
+    <div class="f"><label for="pi-d1">Début</label><input id="pi-d1" type="date" data-pfp="debut" data-p="${id}" value="${esc(p.debut || "")}"></div><div class="f"><label for="pi-d2">Fin</label><input id="pi-d2" type="date" data-pfp="fin" data-p="${id}" value="${esc(p.fin || "")}"></div>
+    ${p.nature === "bloc" ? `<div class="f"><label for="pi-nb">Nombre de séances</label><input id="pi-nb" type="number" min="1" data-pfp="nb" data-p="${id}" value="${esc(p.nb || "")}"></div>` : ""}</div>`;
+  const obj = p.gid ? `<p class="msg" style="margin-top:0">Les objectifs de classement se fixent joueur par joueur.</p>` : `<p class="msg" style="margin-top:0">Facultatif.</p><div class="form">${[["court", "Court terme · la saison"], ["moyen", "Moyen terme · 3 saisons"], ["long", "Long terme · fin du projet"]].map(([k, t]) => `<div class="f"><label for="pi-o${k}">${t}</label>${pfSel(`id="pi-o${k}" data-pfo="${k}" data-p="${id}"`, CLASSEMENTS.map(c => [c, c]), (p.obj || {})[k] || "", "—")}</div>`).join("")}</div>`;
+  const O = p.obj || {};
+  main.innerHTML = pfHx("Projet", `<a href="#/perf/p/${id}">${esc(pfNom(p))}</a>`, "#/perf/p/" + p.id) + `<div class="pg"><section class="sec">
+    ${pfRub("ses-" + p.id, "Session", esc([p.nom || nat, isoOk(p.debut) ? pfDates(p.debut, p.fin) : ""].filter(Boolean).join(" · ")), ses)}
+    ${pfRub("staff-" + p.id, "Staff", arr(p.staff).length ? arr(p.staff).length + " membre" + (arr(p.staff).length > 1 ? "s" : "") : "à compléter", `<p class="msg" style="margin-top:0">L'invitation à relier son compte GRÜN arrivera avec la mise en ligne.</p>${pfStaffForm(arr(p.staff), p.ref, "p")}`)}
+    ${pfRub("obj-" + p.id, "Objectifs de classement", p.gid ? "par joueur" : [O.court, O.moyen, O.long].some(Boolean) ? esc([O.court, O.moyen, O.long].map(x => x || "—").join(" · ")) : "facultatif", obj)}</section>
+    <details class="grun-plus"><summary>Plus d'options</summary><div class="grun-plusb"><div class="tools"><button class="ib dang" data-pf="psuppr" data-p="${id}">Supprimer ce projet</button></div></div></details></div>`;
+}
+
+/* ================= FEUILLES (ajouter / modifier) ================= */
+function pfSheetSlot(p, s, fn, titre, avecJour = true) {
+  const st = arr(p.staff);
+  const html = `<form class="gs-form">${avecJour ? `<label class="gs-l">Jour${pfSel('class="gs-inp" name="j"', J7.map((d, i) => [i, d]), s.j ?? 0)}</label>` : ""}
+    <div class="gs-l">Discipline<div class="chips">${Object.entries(DISC).map(([k, t]) => `<button type="button" class="tg" data-dsc="${k}" aria-pressed="${s.disc === k}">${t}</button>`).join("")}</div></div>
+    <div class="gs-grid"><label class="gs-l">Heure<input class="gs-inp" type="time" name="h" value="${esc(s.h || "")}"></label><label class="gs-l">Durée (min)<input class="gs-inp" type="number" name="duree" min="10" max="300" step="5" value="${esc(s.duree || 60)}"></label></div>
+    <label class="gs-l">Responsable${pfSel('class="gs-inp" name="resp"', st.map(m => [m.id, (m.nom || "Sans nom") + (m.role ? " · " + ROLE[m.role] : "")]), s.resp || "", "—")}</label><p class="gs-m" id="pf-err"></p></form>`;
+  let disc = s.disc || "";
+  const sh = G.ui.sheet({ titre, html, secondaire: s.id && s.supprimable ? [{ t: "Supprimer", fn: () => { fn(null); } }] : [], principal: { t: "Enregistrer", fn: x => {
+    if (!disc) { x.$("#pf-err").textContent = "Choisis la discipline."; return false; }
+    const F = new FormData(x.$("form")); fn({ j: avecJour ? +F.get("j") : s.j, disc, h: F.get("h") || "", duree: Math.max(10, +F.get("duree") || 60), resp: F.get("resp") || (pfStaffDe(p, disc) || {}).id || "" }); } } });
+  sh.el.addEventListener("click", e => { const b = e.target.closest("[data-dsc]"); if (!b) return; disc = b.dataset.dsc; sh.$$("[data-dsc]").forEach(y => y.setAttribute("aria-pressed", y === b));
+    const sel = sh.$('[name="resp"]'), m = pfStaffDe(p, disc); if (sel && !sel.value && m) sel.value = m.id; });
+}
+function pfSheetPeriode(titre, champs, o, fn, suppr) {
+  const html = `<form class="gs-form">${champs.nom ? `<label class="gs-l">${champs.nom}<input class="gs-inp" name="nom" value="${esc(o.nom || o.titre || "")}" autocomplete="off"></label>` : ""}
+    <div class="gs-grid"><label class="gs-l">Du<input class="gs-inp" type="date" name="debut" value="${esc(o.debut || "")}" required></label><label class="gs-l">Au<input class="gs-inp" type="date" name="fin" value="${esc(o.fin || "")}"></label></div>
+    ${champs.prio ? `<div class="gs-l">Priorité<div class="chips">${PRIO.map(([k, t]) => `<button type="button" class="tg" data-pr="${k}" aria-pressed="${(o.prio || "B") === k}">${t}</button>`).join("")}</div></div>` : ""}<p class="gs-m" id="pf-err"></p></form>`;
+  let prio = o.prio || "B";
+  const sh = G.ui.sheet({ titre, html, secondaire: suppr ? [{ t: "Supprimer", fn: () => { fn(null); } }] : [], principal: { t: "Enregistrer", fn: x => {
+    const F = new FormData(x.$("form")), d = F.get("debut"), f2 = F.get("fin") || d; if (!d) { x.$("#pf-err").textContent = "La date de début est obligatoire."; return false; }
+    fn({ nom: String(F.get("nom") || "").trim(), debut: d, fin: f2 < d ? d : f2, prio }); } } });
+  sh.el.addEventListener("click", e => { const b = e.target.closest("[data-pr]"); if (!b) return; prio = b.dataset.pr; sh.$$("[data-pr]").forEach(y => y.setAttribute("aria-pressed", y === b)); });
+}
+function pfSheetCadre(p, s, x, fn) {
+  const html = `<form class="gs-form"><div class="gs-grid"><label class="gs-l">Heure<input class="gs-inp" type="time" name="h" value="${esc(s.h || "")}"></label><label class="gs-l">Durée (min)<input class="gs-inp" type="number" name="duree" min="10" max="300" step="5" value="${esc(s.duree)}"></label></div>
+    <label class="gs-l">Responsable${pfSel('class="gs-inp" name="resp"', arr(p.staff).map(m => [m.id, (m.nom || "Sans nom") + (m.role ? " · " + ROLE[m.role] : "")]), s.resp || "", "—")}</label>
+    ${s.disc === "pp" ? `<label class="gs-l">Intensité${pfSel('class="gs-inp" name="intens"', INT, s.intens)}</label><label class="gs-l">Ce qu'on travaille${pfSel('class="gs-inp" name="obj"', PP_OBJ.map(o => [o, o]), s.obj)}</label>`
+      : `<label class="gs-l">Thème${pfSel('class="gs-inp" name="theme"', (TH_LARGE[s.disc] || []).map(o => [o, o]), s.theme)}</label>`}
+    <label class="gs-l">Thème précis (facultatif)<input class="gs-inp" name="themeP" value="${esc(x.themeP || "")}" placeholder="Ex. Service : la poussée des jambes"></label></form>`;
+  G.ui.sheet({ titre: "Cadre de la séance", html, principal: { t: "Enregistrer", fn: sh => { const F = new FormData(sh.$("form")); const c = { h: F.get("h") || "", duree: Math.max(10, +F.get("duree") || s.duree), resp: F.get("resp") || "" };
+    if (s.disc === "pp") { c.intens = F.get("intens"); c.obj = F.get("obj"); } else c.theme = F.get("theme"); fn(c, String(F.get("themeP") || "").trim()); } } });
+}
+function pfSheetExo(p, s, x, fn) {
+  const sh = G.ui.sheet({ titre: "Ajouter un exercice", large: true, html: `<div class="gs-form"><label class="gs-l">Chercher dans les exercices (${esc(DISC[s.disc])})<input class="gs-inp" id="pf-q" placeholder="Nom, mot-clé…" autocomplete="off"></label>
+      <div id="pf-res" class="list" style="max-height:46vh;overflow:auto"><p class="msg">Chargement…</p></div>
+      <details style="margin-top:12px"><summary><b>Mon exercice</b> (le tien, écrit en une ligne)</summary><label class="gs-l">Nom<input class="gs-inp" id="pf-mn"></label><label class="gs-l">Dosage<input class="gs-inp" id="pf-md" placeholder="Ex. 4 × 6, récupération 2 min"></label><button type="button" class="gs-btn main" id="pf-mok" style="margin-top:8px">Ajouter mon exercice</button></details></div>` });
+  pfBanque().then(() => {
+    const base = pfCandidats(p, s, x.themeP ? [x.themeP] : null, new Set());
+    const draw = () => { const q = fold(sh.$("#pf-q").value || ""), ts = q.split(/\s+/).filter(Boolean);
+      const L = (ts.length ? base.filter(e => ts.every(t => fold([e.n, e.s, e.ob, PFB.R[e.f4]].join(" ")).includes(t))) : base).slice(0, 40);
+      sh.$("#pf-res").innerHTML = L.length ? L.map(e => `<button type="button" class="li n2c" data-ex="${esc(e.id)}" style="width:100%;text-align:left;background:none;border:0;border-bottom:1px solid var(--line);color:inherit;font:inherit;cursor:pointer"><span class="tt">${esc(e.n)}<small>${esc(PFB.R[e.f4] || e.s || "")}</small></span><span class="end">+</span></button>`).join("") : `<p class="msg">Aucun exercice trouvé.</p>`; };
+    draw(); sh.$("#pf-q").addEventListener("input", draw);
+    sh.el.addEventListener("click", e => { const b = e.target.closest("[data-ex]"); if (b) { const ex = PFB.B.ex.find(z => z.id === b.dataset.ex); if (ex) { fn(pfExo(p, ex)); sh.fermer(true); } } });
+  }).catch(() => { sh.$("#pf-res").innerHTML = `<p class="msg">Banque indisponible hors connexion : ajoute ton exercice.</p>`; });
+  sh.$("#pf-mok").onclick = () => { const n = sh.$("#pf-mn").value.trim(); if (!n) return; fn({ id: null, n, dz: sh.$("#pf-md").value.trim() }); sh.fermer(true); };
+}
+
+/* ================= ACTIONS ================= */
+const pfJ = (b) => G.joueurs.get(b.dataset.jid);
+const pfP = (b) => PJ.get(b.dataset.p);
+const pfVal = s => { const e = $(s); return e ? e.value : ""; };
+const PFA = {
+  nouveauJ() { pfSheetJoueur(null, f => { const j = G.joueurs.create(f); location.hash = "#/perf/joueur/" + j.id; }); },
+  identite(b) { const j = pfJ(b); pfSheetJoueur(j, f => { G.joueurs.update(j.id, f); render(true); }); },
+  nouveauG() {
+    const js = G.joueurs.all(); if (js.length < 2) return; const sel = new Set();
+    const sh = G.ui.sheet({ titre: "Nouveau groupe", html: `<form class="gs-form"><label class="gs-l">Nom du groupe<input class="gs-inp" name="nom" autocomplete="off" required></label><div class="gs-l">Profils (au moins 2)<div class="chips">${js.map(j => `<button type="button" class="tg" data-gj="${esc(j.id)}" aria-pressed="false">${esc(j.nom)}</button>`).join("")}</div></div><p class="gs-m" id="pf-err"></p></form>`,
+      principal: { t: "Créer le groupe", fn: s => { const n = String(new FormData(s.$("form")).get("nom") || "").trim(); if (!n || sel.size < 2) { s.$("#pf-err").textContent = "Un nom et au moins 2 profils."; return false; }
+        const g = G.groupes.create({ nom: n, jids: [...sel] }); if (WZ && location.hash.startsWith("#/perf/nouveau")) { WZ.gid = g.id; wzSave(); render(true); } else location.hash = "#/perf/groupe/" + g.id; } } });
+    sh.el.addEventListener("click", e => { const b = e.target.closest("[data-gj]"); if (!b) return; const k = b.dataset.gj; sel.has(k) ? sel.delete(k) : sel.add(k); b.setAttribute("aria-pressed", sel.has(k)); });
+  },
+  gmembre(b) { const g = G.groupes.get(b.dataset.g), k = b.dataset.v; g.jids = g.jids.includes(k) ? g.jids.filter(x => x !== k) : [...g.jids, k]; G.groupes.save(g); },
+  gsuppr(b) { if (!confirmer(b)) return; G.groupes.remove(b.dataset.g); location.hash = "#/perf/joueurs"; },
+  jsuppr(b) { if (!confirmer(b, "Toucher encore : tout son dossier sera effacé")) return; G.joueurs.remove(b.dataset.jid); location.hash = "#/perf/joueurs"; },
+  jset(b) { G.joueurs.update(b.dataset.jid, { [b.dataset.k]: b.dataset.v }); },
+  zone(b) { const j = pfJ(b), k = b.dataset.v; j.zones = arr(j.zones).includes(k) ? j.zones.filter(x => x !== k) : [...arr(j.zones), k]; G.joueurs.save(j); },
+  mesadd(b) { const j = pfJ(b), id = j.id, d = pfVal("#pf-md-" + id) || G.today(), n = k => { const v = String(pfVal("#pf-" + k + "-" + id)).replace(",", "."); return v === "" ? null : +v; };
+    const m = { date: d }; [["taille", "mt"], ["assise", "ma"], ["poids", "mp"]].forEach(([k, s]) => { const v = n(s); if (v != null && !isNaN(v)) m[k] = v; });
+    if (!m.taille) { toast("La taille debout est nécessaire."); return; }
+    j.mesures = arr(j.mesures).filter(x => x.date !== d).concat([m]); G.joueurs.save(j); toast("Mesure enregistrée"); },
+  mesdel(b) { const j = pfJ(b); j.mesures = arr(j.mesures).filter(x => x.date !== b.dataset.d); G.joueurs.save(j); },
+  blessadd(b) { const j = pfJ(b), id = j.id, z = pfVal("#pf-bz-" + id), d = pfVal("#pf-bd-" + id).trim(); if (!z && !d) { toast("Indique la zone ou la blessure."); return; }
+    j.blessures = [...arr(j.blessures), { id: G.uid(), zone: z || "autre", desc: d, debut: pfVal("#pf-bb-" + id) || G.today(), statut: "encours" }]; G.joueurs.save(j); },
+  gueri(b) { const j = pfJ(b); j.blessures = arr(j.blessures).map(x => x.id === b.dataset.b ? { ...x, statut: "guerie", fin: G.today() } : x); G.joueurs.save(j); },
+  antadd(b) { const j = pfJ(b), t = pfVal("#pf-at-" + j.id).trim(); if (!t) return; j.antecedents = [...arr(j.antecedents), { id: G.uid(), txt: t, date: pfVal("#pf-ad-" + j.id) || "" }]; G.joueurs.save(j); },
+  antdel(b) { const j = pfJ(b); j.antecedents = arr(j.antecedents).filter(a => a.id !== b.dataset.a2); G.joueurs.save(j); },
+  edtadd(b) { const j = pfJ(b), id = j.id; j.edt = [...arr(j.edt), { id: G.uid(), j: +pfVal("#pf-ej-" + id), de: pfVal("#pf-ed-" + id), a: pfVal("#pf-ea-" + id), t: pfVal("#pf-et-" + id), txt: pfVal("#pf-ex-" + id).trim() }]; G.joueurs.save(j); },
+  edtdel(b) { const j = pfJ(b); j.edt = arr(j.edt).filter(x => x.id !== b.dataset.e); G.joueurs.save(j); },
+  /* assistant de création */
+  wqui(b) { WZ.qui = b.dataset.v; wzSave(); render(true); },
+  wjid(b) { WZ.jid = b.dataset.v; wzSave(); render(true); },
+  wgid(b) { WZ.gid = b.dataset.v; wzSave(); render(true); },
+  wnouvJ() { pfSheetJoueur(null, f => { const j = G.joueurs.create(f); if (WZ.qui === "j") WZ.jid = j.id; wzSave(); render(true); }); },
+  wnat(b) { WZ.nature = b.dataset.v; const S = pfSaison(); if (WZ.nature === "saison" && !WZ.nom) Object.assign(WZ, S); wzSave(); render(true); },
+  wprec() { WZ.step = Math.max(1, WZ.step - 1); wzSave(); render(false); scrollTo(0, 0); },
+  wsuiv() { if (WZ.step === 2 && (!isoOk(WZ.debut) || !isoOk(WZ.fin) || WZ.fin < WZ.debut)) { toast("Indique un début et une fin (la fin après le début)."); return; } WZ.step = Math.min(5, WZ.step + 1); wzSave(); render(false); scrollTo(0, 0); },
+  wabandon() { WZ = null; try { sessionStorage.removeItem("pf_wz"); } catch (e) {} location.hash = "#/perf"; },
+  wcreer() {
+    const W = WZ, slots = [];
+    const p = { id: G.uid(), jid: W.qui === "j" ? W.jid : "", gid: W.qui === "g" ? W.gid : "", nature: W.nature, nom: W.nom, debut: W.debut, fin: W.fin, nb: W.nb || "", staff: W.staff.filter(m => m.role || m.nom), ref: W.ref, obj: W.qui === "j" ? W.obj : {}, sem: slots, comps: [], hors: [], tests: [], wk: {}, se: {}, cree: G.today() };
+    PJ.save(p); WZ = null; try { sessionStorage.removeItem("pf_wz"); } catch (e) {} location.hash = "#/perf/p/" + p.id; toast("Projet créé · commence par la semaine type");
+  },
+  /* staff (assistant « w » ou projet « p ») */
+  stadd(b) { const L = b.dataset.st === "w" ? WZ.staff : null; if (L) { L.push({ id: G.uid(), role: "", nom: "", mail: "" }); wzSave(); render(true); return; } const p = PJ.get(location.hash.split("/")[3]); p.staff = [...arr(p.staff), { id: G.uid(), role: "", nom: "", mail: "" }]; PJ.save(p); },
+  stdel(b) { if (b.dataset.st === "w") { WZ.staff = WZ.staff.filter(m => m.id !== b.dataset.m); wzSave(); render(true); return; } const p = PJ.get(location.hash.split("/")[3]); p.staff = arr(p.staff).filter(m => m.id !== b.dataset.m); PJ.save(p); },
+  stref(b) { if (b.dataset.st === "w") { WZ.ref = b.dataset.m; wzSave(); render(true); return; } const p = PJ.get(location.hash.split("/")[3]); p.ref = b.dataset.m; PJ.save(p); },
+  /* programmation */
+  semadd(b) { const p = pfP(b); pfSheetSlot(p, { duree: 60 }, s => { if (!s) return; p.sem = [...arr(p.sem), { id: G.uid(), ...s }]; PJ.save(p); }, "Séance dans la semaine type"); },
+  semedit(b) { const p = pfP(b), s0 = arr(p.sem).find(x => x.id === b.dataset.s); pfSheetSlot(p, { ...s0, supprimable: true }, s => { p.sem = s ? arr(p.sem).map(x => x.id === s0.id ? { ...x, ...s } : x) : arr(p.sem).filter(x => x.id !== s0.id); PJ.save(p); }, "Modifier la séance"); },
+  compadd(b) { const p = pfP(b); pfSheetPeriode("Compétition", { nom: "Nom du tournoi", prio: true }, {}, c => { if (!c) return; p.comps = [...arr(p.comps), { id: G.uid(), ...c }]; PJ.save(p); }); },
+  compedit(b) { const p = pfP(b), c0 = arr(p.comps).find(x => x.id === b.dataset.c); pfSheetPeriode("Compétition", { nom: "Nom du tournoi", prio: true }, c0, c => { p.comps = c ? arr(p.comps).map(x => x.id === c0.id ? { ...x, ...c } : x) : arr(p.comps).filter(x => x.id !== c0.id); PJ.save(p); }, true); },
+  horsadd(b) { const p = pfP(b), t = b.dataset.t; pfSheetPeriode(t === "indispo" ? "Indisponibilité" : "Activité hors programme", { nom: t === "indispo" ? "Motif (examens, vacances…)" : "Activité (cross, triathlon, stage extérieur…)" }, {}, h => { if (!h) return; p.hors = [...arr(p.hors), { id: G.uid(), t, titre: h.nom, debut: h.debut, fin: h.fin }]; PJ.save(p); }); },
+  horsdel(b) { const p = pfP(b); p.hors = arr(p.hors).filter(x => x.id !== b.dataset.h); PJ.save(p); },
+  seoff(b) { const p = pfP(b), w = b.dataset.w; p.wk = p.wk || {}; const m = p.wk[w] = p.wk[w] || {};
+    if (b.dataset.aj) m.add = arr(m.add).filter(x => x.id !== b.dataset.s); else m.off = [...new Set([...arr(m.off), b.dataset.s])]; PJ.save(p); },
+  weekadd(b) { const p = pfP(b), w = b.dataset.w; pfSheetSlot(p, { duree: 60 }, s => { if (!s) return; p.wk = p.wk || {}; const m = p.wk[w] = p.wk[w] || {}; m.add = [...arr(m.add), { id: G.uid(), ajout: true, ...s }]; PJ.save(p); }, "Séance cette semaine"); },
+  weekreset(b) { const p = pfP(b); if (p.wk && p.wk[b.dataset.w]) { p.wk[b.dataset.w].off = []; PJ.save(p); } },
+  fdisc(b) { PF_DISC = b.dataset.v; render(true); },
+  /* séance */
+  cadre(b) { const p = pfP(b), k = b.dataset.k, s = pfFind(p, k), x = pfSe(p, k); pfSheetCadre(p, s, x, (c, tp) => { x.cadre = { ...(x.cadre || {}), ...c }; x.themeP = tp || undefined; PJ.save(p); }); },
+  themeP(b) { const p = pfP(b), k = b.dataset.k, s = pfFind(p, k), x = pfSe(p, k), t = pfThemeP(p, s); if (!t) { toast("Pas de thème précis à proposer pour ce thème."); return; } x.themeP = t; PJ.save(p); toast("Thème précis : " + t); },
+  exadd(b) { const p = pfP(b), k = b.dataset.k, s = pfFind(p, k), x = pfSe(p, k); pfSheetExo(p, s, x, e => { const p2 = PJ.get(p.id), x2 = pfSe(p2, k); x2.ex = [...arr(x2.ex), e]; PJ.save(p2); }); },
+  exauto(b) { const p = pfP(b), k = b.dataset.k; pfBanque().then(() => { const s = pfFind(p, k), x = pfSe(p, k), e = pfAuto(p, s, x, 1)[0]; if (!e) { toast("Aucun exercice adapté trouvé."); return; } x.ex = [...arr(x.ex), e]; PJ.save(p); }).catch(() => toast("Banque indisponible hors connexion.")); },
+  secreer(b) { const p = pfP(b), k = b.dataset.k; pfBanque().then(() => { const s = pfFind(p, k), x = pfSe(p, k); pfCreerSeance(p, s, x); PJ.save(p); toast("Séance proposée : tout reste modifiable"); }).catch(() => toast("Banque indisponible hors connexion.")); },
+  exdel(b) { const p = pfP(b), x = pfSe(p, b.dataset.k), i = +b.dataset.i, av = arr(x.ex).slice(); x.ex = av.filter((_, n) => n !== i); PJ.save(p); G.ui.annuler("Exercice retiré", () => { const p2 = PJ.get(p.id); pfSe(p2, b.dataset.k).ex = av; PJ.save(p2); }); },
+  exup(b) { const p = pfP(b), x = pfSe(p, b.dataset.k), i = +b.dataset.i, L = arr(x.ex).slice(); [L[i - 1], L[i]] = [L[i], L[i - 1]]; x.ex = L; PJ.save(p); },
+  exvider(b) { const p = pfP(b), x = pfSe(p, b.dataset.k), av = arr(x.ex).slice(); x.ex = []; PJ.save(p); G.ui.annuler("Séance vidée", () => { const p2 = PJ.get(p.id); pfSe(p2, b.dataset.k).ex = av; PJ.save(p2); }); },
+  sefait(b) { const p = pfP(b), x = pfSe(p, b.dataset.k); x.fait = !x.fait; PJ.save(p); },
+  /* tests, projet */
+  testadd(b) { const p = pfP(b), d = pfVal("#pf-td"); if (!isoOk(d)) { toast("Choisis une date."); return; } p.tests = [...arr(p.tests), { id: G.uid(), date: d }]; PJ.save(p); },
+  testdel(b) { const p = pfP(b); p.tests = arr(p.tests).filter(x => x.id !== b.dataset.t); PJ.save(p); },
+  pnat(b) { const p = pfP(b); p.nature = b.dataset.v; PJ.save(p); },
+  psuppr(b) { if (!confirmer(b, "Toucher encore : le projet sera effacé")) return; PJ.remove(b.dataset.p); location.hash = "#/perf"; }
+};
+function pfFind(p, key) { const w = pfSemaines(p).find(x => x.d1 === key.slice(0, 10)); return w && w.seances.find(s => s.key === key); }
+main.addEventListener("click", e => {
+  const b = e.target.closest("[data-pf]"); if (!b || b.disabled) return;
+  if (b.tagName === "BUTTON") e.preventDefault();
+  const f = PFA[b.dataset.pf]; if (f) { try { f(b, e); } catch (x) { console.error(x); } }
+});
+main.addEventListener("change", e => {
+  const t = e.target, d = t.dataset || {};
+  if (d.pfj) { G.joueurs.update(d.jid, { [d.pfj]: t.value.trim() }); return; }
+  if (d.wz) { WZ[d.wz] = t.value; wzSave(); return; }
+  if (d.wzo) { WZ.obj[d.wzo] = t.value; wzSave(); return; }
+  if (d.st) { const p = d.st === "w" ? null : PJ.get(location.hash.split("/")[3]); const L = p ? arr(p.staff) : WZ.staff, m = L.find(x => x.id === d.m); if (!m) return; m[d.k] = t.value.trim(); if (p) { p.staff = L; PJ.save(p); } else wzSave(); return; }
+  if (d.pfp) { const p = PJ.get(d.p); p[d.pfp] = t.value; PJ.save(p); return; }
+  if (d.pfo) { const p = PJ.get(d.p); p.obj = { ...(p.obj || {}), [d.pfo]: t.value }; PJ.save(p); return; }
+  if (d.pfse) { const p = PJ.get(d.p), x = pfSe(p, d.k); x[d.pfse] = t.value === "" ? undefined : +t.value; PJ.save(p); return; }
+  if (d.pfdz != null) { const p = PJ.get(d.p), x = pfSe(p, d.k), e2 = arr(x.ex)[+d.pfdz]; if (e2) { e2.dz = t.value; PJ.save(p); } }
+});
+
 })();
 
 </script>

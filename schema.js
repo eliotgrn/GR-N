@@ -16,8 +16,11 @@
     const demi = s.terrain === "demi";
     const g = geo(demi);
     // y du schéma (0-1) → y en pixels ; en demi-terrain, 0 = filet (un peu au-delà), 1 = fond du bas
-    const X = x => M + x * W;
-    const Y = demi ? (y => M + y * g.H) : (y => M + y * g.H);
+    // coordonnées bornées : un joueur ou un point placé hors du court reste visible dans la marge
+    const cl = (v, a, b) => Math.min(b, Math.max(a, +v || 0));
+    const mx = (M - 11) / W, my = (M - 11) / g.H;
+    const X = x => M + cl(x, -mx, 1 + mx) * W;
+    const Y = y => M + cl(y, -my, 1 + my) * g.H;
     const m = W / 10.97; // pixels par mètre
     const sx = 1.37 * m; // couloir
     let h = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${g.vbW} ${g.vbH}"${o.w ? ` width="${o.w}"` : ""} class="${o.cls || "gs"}" role="img" aria-label="${esc(s.titre || "Schéma de l'exercice")}">`;
@@ -43,10 +46,14 @@
       h += `<rect x="${x0}" y="${y0}" width="${z.w * W}" height="${z.h * g.H}" rx="4" fill="${C.ball}" fill-opacity=".14" stroke="${C.ball}" stroke-opacity=".7" stroke-dasharray="4 3"/>`;
       if (!z.label) return;
       const lw = 6.5 * String(z.label).length, coins = [[x0 + 7, y0 + 15, "start"], [x1 - 7, y0 + 15, "end"], [x0 + 7, y1 - 5, "start"], [x1 - 7, y1 - 5, "end"]];
+      for (let yy = y0 + 35; yy < y1 - 15; yy += 20) coins.push([x0 + 7, yy, "start"], [x1 - 7, yy, "end"]);   // coins cachés : on descend le long des bords
+      coins.push([x0, y0 - 4, "start"], [x1, y1 + 13, "end"], [x1 + 4, y0 + 12, "start"], [x0 - 4, y0 + 12, "end"]);   // petite zone encombrée : juste à côté
       const boite = ([x, y, a]) => a === "start" ? [x, y - 11, x + lw, y + 1] : [x - lw, y - 11, x, y + 1];
-      const cache = b => (s.joueurs || []).some(j => { const px = X(j.x), py = Y(j.y); return px > b[0] - 12 && px < b[2] + 12 && py > b[1] - 12 && py < b[3] + 12; });
+      const cache = b => (s.joueurs || []).some(j => { const px = X(j.x), py = Y(j.y); return px > b[0] - 12 && px < b[2] + 12 && py > b[1] - 12 && py < b[3] + 12; })
+        || etiq.some(e => b[0] < e[5] + 4 && b[2] > e[3] - 4 && b[1] < e[6] + 3 && b[3] > e[4] - 3)   // ni sous un joueur, ni sur une autre étiquette
+        || b[0] < 2 || b[2] > g.vbW - 2 || b[1] < 2 || b[3] > g.vbH - 2;   // ni hors du dessin
       const c = coins.find(k => !cache(boite(k))) || coins[0], bx = boite(c);
-      etiq.push([(bx[0] + bx[2]) / 2, (bx[1] + bx[3]) / 2, Math.max(6, lw / 2)]);
+      etiq.push([(bx[0] + bx[2]) / 2, (bx[1] + bx[3]) / 2, Math.max(6, lw / 2), bx[0], bx[1], bx[2], bx[3]]);
       h += `<text x="${c[0]}" y="${c[1]}" text-anchor="${c[2]}" font-family="Barlow Condensed,Arial Narrow,sans-serif" font-weight="700" font-size="14" fill="${C.ball}">${esc(z.label)}</text>`;
     });
     // plots
@@ -54,16 +61,16 @@
     const pos = {}; (s.joueurs || []).forEach(j => { pos[j.id] = [j.x, j.y]; });
     // le déroulé suit les numéros : un joueur qui s'est déplacé (déplacement de numéro plus petit) frappe ou repart de sa nouvelle place
     const acts = [...(s.frappes || []).map(a => ({ k: "f", a })), ...(s.deplacements || []).map(a => ({ k: "d", a }))];
-    const ici = (v, n) => {   // position de v (joueur ou point) au moment de l'action numéro n
+    const ici = (v, n, frappe) => {   // position de v (joueur ou point) au moment de l'action numéro n ; une frappe suit le déplacement de même numéro (« se déplace et frappe »)
       if (Array.isArray(v)) return v;
       let p = pos[v] || [.5, .5], best = 0;
-      if (n) acts.forEach(({ k, a }) => { if (k === "d" && a.de === v && Array.isArray(a.vers) && +a.ordre && +a.ordre < n && +a.ordre >= best) { best = +a.ordre; p = a.vers; } });
+      if (n) acts.forEach(({ k, a }) => { const o = +a.ordre; if (k === "d" && a.de === v && Array.isArray(a.vers) && o && (o < n || (frappe && o === n)) && o >= best) { best = o; p = a.vers; } });
       return p;
     };
     const badge = (x, y, n, col) => `<circle cx="${x}" cy="${y}" r="8" fill="${C.bg}" stroke="${col}" stroke-width="1.6"/><text x="${x}" y="${y + 4}" text-anchor="middle" font-family="Barlow,Arial,sans-serif" font-weight="700" font-size="10.5" fill="${col}">${n}</text>`;
     // géométrie de tous les trajets : at(t) → [x, y, dx, dy] (point et tangente)
     const T = acts.map(({ k, a }) => {
-      const p1 = ici(a.de, +a.ordre), p2 = ici(a.vers, +a.ordre);
+      const p1 = ici(a.de, +a.ordre, k === "f"), p2 = ici(a.vers, +a.ordre, k === "f");
       const x1 = X(p1[0]), y1 = Y(p1[1]), x2 = X(p2[0]), y2 = Y(p2[1]);
       if (k === "d") return { k, a, x1, y1, x2, y2, at: t => [x1 + (x2 - x1) * t, y1 + (y2 - y1) * t, x2 - x1, y2 - y1] };
       const cx = (x1 + x2) / 2 + (a.effet === "slice" ? -14 : 14) * (x2 >= x1 ? 1 : -1), cy = (y1 + y2) / 2;
@@ -79,7 +86,7 @@
     const dur = (s.joueurs || []).map(j => [X(j.x), Y(j.y), 13]);
     T.forEach(p => dur.push([p.x2, p.y2, 5]));
     (s.plots || []).forEach(q => dur.push([X(q.x), Y(q.y), 7]));
-    etiq.forEach(e => dur.push(e));
+    etiq.forEach(e => dur.push(e.slice(0, 3)));
     const echant = T.map(p => { const r = []; for (let i = 0; i <= 24; i++) r.push(p.at(i / 24)); return r; });
     const dansCadre = (x, y) => x > 9 && x < g.vbW - 9 && y > 9 && y < g.vbH - 9;
     const cout = (x, y, moi) => {
@@ -106,9 +113,16 @@
       h += badge(best[0], best[1], p.a.ordre, p.k === "f" ? C.ball : C.line);
     });
     // joueurs
-    (s.joueurs || []).forEach(j => {
+    // deux joueurs trop proches (données ou bornage) : on les écarte légèrement pour qu'ils restent lisibles
+    const posJ = (s.joueurs || []).map(j => [X(j.x), Y(j.y)]);
+    for (let i = 0; i < posJ.length; i++) for (let k = 0; k < i; k++) {
+      const dx = posJ[i][0] - posJ[k][0], dy = posJ[i][1] - posJ[k][1], d = Math.hypot(dx, dy);
+      if (d < 21) { const ux = d ? dx / d : 1, uy = d ? dy / d : 0, push = (21 - d); posJ[i][0] += ux * push; posJ[i][1] += uy * push; if (Math.abs(ux) < .5) posJ[i][0] += 12; }
+    }
+    (s.joueurs || []).forEach((j, ji) => {
+      const jx = posJ[ji][0], jy = posJ[ji][1];
       const col = j.role === "adversaire" ? C.opp : j.role === "entraineur" ? C.coach : C.ink;
-      h += `<circle cx="${X(j.x)}" cy="${Y(j.y)}" r="10" fill="${col}"/><text x="${X(j.x)}" y="${Y(j.y) + 4.5}" text-anchor="middle" font-family="Barlow Condensed,Arial Narrow,sans-serif" font-weight="800" font-size="13" fill="${C.bg}">${esc(j.id)}</text>`;
+      h += `<circle cx="${jx}" cy="${jy}" r="10" fill="${col}"/><text x="${jx}" y="${jy + 4.5}" text-anchor="middle" font-family="Barlow Condensed,Arial Narrow,sans-serif" font-weight="800" font-size="13" fill="${C.bg}">${esc(j.id)}</text>`;
     });
     return h + `</svg>`;
   }

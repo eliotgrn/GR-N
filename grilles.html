@@ -34,6 +34,8 @@ body.grun-has-nav{padding-bottom:calc(var(--nav-h) + env(safe-area-inset-bottom,
 #grun-nav a span{letter-spacing:-.01em}#grun-nav a{padding-left:1px;padding-right:1px}
 #grun-nav svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 #grun-nav a.on{color:var(--gx-y);font-weight:600}
+/* audit 26 oct. : « Banque scientifique » (un seul nom par module) peut passer sur 2 lignes ; les icônes restent alignées */
+#grun-nav[data-mode=biblio] a:not(.nv-g){justify-content:flex-start;padding-top:8px;gap:3px}#grun-nav[data-mode=biblio] a:not(.nv-g) span{white-space:normal;text-align:center;line-height:1.02;max-height:2.1em}
 #grun-nav a:active{opacity:.7}
 /* « GRÜN » (deux balles du Ü) + « Accueil » : retour à la page de garde, toujours à gauche */
 #grun-nav a.nv-g{font:800 13px/1 var(--gx-cond);letter-spacing:.06em;gap:5px}
@@ -1568,7 +1570,7 @@ function croissanceHTML(j){
   const M = [...(j.mesures||[])].sort((a,b)=>a.date<b.date?1:-1), mt = GR.maturite(j), vc = GR.vitesseCroissance(j), ac = GR.ageDec(j.naissance);
   let h = `<div class="sec"><h2>Âge biologique</h2>`;
   if(mt) h += `<div class="mat"><div><small>Âge civil</small><b>${f1(mt.age)} ans</b></div><div><small>Âge biologique</small><b>${f1(mt.bio)} ans</b></div><div><small>Pic de croissance (âge estimé)</small><b>${f1(mt.aphv)} ans</b></div><div><small>Distance au pic</small><b>${mt.decalage>0?"+":""}${f1(mt.decalage)} an</b></div><div><small>Statut</small><b>${esc(mt.statut)}</b></div><div><small>Maturation</small><b class="${mt.avance==="précoce"?"n4c":mt.avance==="tardif"?"n2c":""}">${esc(mt.avance)}</b></div><div><small>Grille conseillée</small><b>${mt.grille} ans</b></div>${vc!=null?`<div><small>Vitesse de croissance</small><b>${f1(vc)} cm/an</b></div>`:""}</div>
-    <p class="msg">Calcul : ${esc(mt.methode)}, mesures du ${frD(mt.date)}. Référence de la méthode : pic vers ${GR.REF_APHV[j.sexe]} ans chez les ${j.sexe==="F"?"filles":"garçons"}.${/autour/.test(mt.statut)?" <b>Zone sensible</b> : prudence sur les charges, la pliométrie et les volumes ; surveille genoux, talons et dos.":""}${vc!=null&&vc>=7?" <b>Croissance rapide</b> (≥ 7 cm/an) : allège les impacts.":""}</p>`;
+    <p class="msg">Calcul : ${esc(mt.methode)}, mesures du ${frD(mt.date)}. Référence : pic vers ${GR.REF_APHV[j.sexe]} ans chez les ${j.sexe==="F"?"filles":"garçons"}.${/autour/.test(mt.statut)?" <b>Zone sensible</b> : prudence sur les charges, la pliométrie et les volumes ; surveille genoux, talons et dos.":""}${vc!=null&&vc>=7?" <b>Croissance rapide</b> (≥ 7 cm/an) : allège les impacts.":""}</p>`;
   else h += `<p class="msg">${j.naissance?"Ajoute une mesure avec la taille, la taille assise et le poids pour calculer l'âge biologique (pic de croissance estimé).":"Ajoute la date de naissance dans la fiche, puis une mesure (taille, taille assise, poids)."}</p>`;
   h += `</div><div class="sec"><h2>Mesures</h2>${RO()?"":`<div class="quick">
     <div class="f"><label for="mdat">Date</label><input id="mdat" class="inp" type="date" value="${today()}"></div>

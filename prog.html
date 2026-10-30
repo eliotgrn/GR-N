@@ -34,6 +34,8 @@ body.grun-has-nav{padding-bottom:calc(var(--nav-h) + env(safe-area-inset-bottom,
 #grun-nav a span{letter-spacing:-.01em}#grun-nav a{padding-left:1px;padding-right:1px}
 #grun-nav svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 #grun-nav a.on{color:var(--gx-y);font-weight:600}
+/* audit 26 oct. : « Banque scientifique » (un seul nom par module) peut passer sur 2 lignes ; les icônes restent alignées */
+#grun-nav[data-mode=biblio] a:not(.nv-g){justify-content:flex-start;padding-top:8px;gap:3px}#grun-nav[data-mode=biblio] a:not(.nv-g) span{white-space:normal;text-align:center;line-height:1.02;max-height:2.1em}
 #grun-nav a:active{opacity:.7}
 /* « GRÜN » (deux balles du Ü) + « Accueil » : retour à la page de garde, toujours à gauche */
 #grun-nav a.nv-g{font:800 13px/1 var(--gx-cond);letter-spacing:.06em;gap:5px}
@@ -725,7 +727,7 @@ a.li:hover{background:#141A17}
 const KINDS = {
   PPI:{n:"Préparation physique individuelle", c:"pp", fam:["LUN_PP","JEU_PP","SAM_PP","ETE_PP","SAM_PPC"]},
   PPC:{n:"Préparation physique collective", c:"pp", fam:["SAM_PPC","LUN_PP","JEU_PP","SAM_PP","ETE_PP"]},
-  TI: {n:"Tennis individuel (biomécanique)", c:"tb", fam:["MAR_TB","JEU_TB","SAM_TB","ETE_TB"]},
+  TI: {n:"Tennis individuel", c:"tb", fam:["MAR_TB","JEU_TB","SAM_TB","ETE_TB"]},
   TC: {n:"Tennis collectif", c:"ten", fam:["LUN_TEN","MER_TEN","VEN_TEN","SAM_TENC","ETE_TEN"]},
   PM: {n:"Préparation mentale", c:"pm", fam:["MAR_PM"]}
 };
@@ -1160,9 +1162,8 @@ function showHome(){
    ${Gs.length?`<div class="list">${Gs.map(g=>{const n=ST.plans.filter(p=>p.gid===g.id).length;return `<a class="li${cg&&cg.id===g.id?" cur":""}" href="#/groupe/${g.id}"><span class="code">${g.jids.length}&nbsp;joueur${g.jids.length>1?"s":""}</span><span class="tt">${esc(g.nom)}${cg&&cg.id===g.id?' <span class="gbdg">en cours</span>':""}<small>${n} plan${n>1?"s":""} de groupe</small></span></a>`}).join("")}</div>`:`<div class="empty">Aucun groupe pour l'instant : crée-le ici, puis fais-lui une programmation commune.</div>`}
    <div class="tools" style="margin-top:10px"><button class="ib" id="ng" type="button">+ Nouveau groupe</button></div>
   </section>
-  <section class="sec"><h2>Partir d'une saison de référence</h2>${VX.carte({href:G.href("saisons"), vis:"marches", t:"Référentiel", s:"30 saisons de 4 à 18 ans : choisis-en une puis « Utiliser comme base dans Create my prog »", k:"row"})}</section>
   <details class="grun-plus"><summary>Plus d'options</summary><div class="grun-plusb">
-   <a class="li solo" href="#m"><span class="code">Règles</span><span class="tt">Les règles de la méthode<small>Découpe, phases, charges, choix des thèmes</small></span></a>
+   <a class="li solo" href="#m"><span class="code">Règles</span><span class="tt">Les règles de calcul<small>Découpe, phases, charges, choix des thèmes</small></span></a>
    <div class="tools"><button class="ib" type="button" data-grun="sauver">${esc((G.TXT||{}).sauver||"Tout sauvegarder")}</button><label class="ib">${esc((G.TXT||{}).restaurer||"Restaurer une sauvegarde")}<input type="file" id="imp" accept=".json,application/json" hidden></label></div><p class="msg" id="smsg">Tout reste sur cet appareil. Une seule sauvegarde pour toute l'appli GRÜN (les anciens fichiers de l'appli Programmation sont aussi acceptés).</p></div></details>
   ${actbar(qui?`<button class="gs-btn main" id="cmain" type="button">Créer la programmation ${qui.t==="g"?"du groupe "+esc(qui.nom):"de "+esc(qui.nom)}</button><button class="gs-btn sec" id="cqui" type="button" aria-label="Pour quelqu'un d'autre">Autre</button>`:`<button class="gs-btn main" id="cmain" type="button">Créer une programmation</button>`)}`;
   $("#nj").onclick=()=>G.ui.nouveauJoueur().then(j=>{ if(j) go("#/joueur/"+j.id); });
@@ -1212,7 +1213,7 @@ function showJoueur(id){
    ${ro?"":`<div class="acts"><a class="ib" href="${G.href("accueil","#/j/"+id)}">Dossier complet</a><button class="ib" type="button" data-grun="completer" data-jid="${esc(id)}" data-focus="classement">Compléter le profil</button></div>`}</div>
   <section class="sec"><h2>${ro?"Mes plans":"Plans"}</h2>
    ${own.length?`<div class="list">${own.map(planLi).join("")}</div>`:`<div class="empty">Pas encore de plan${ro?".":" individuel."}</div>`}
-   ${ro?"":`<div class="tools" style="margin-top:10px"><a class="ib" href="${G.href("saisons")}">Partir d'une saison de référence</a></div>`}</section>
+</section>
   ${gp.length?`<section class="sec"><h2>Plans de ${ro?"mes":"ses"} groupes</h2><div class="list">${gp.map(planLi).join("")}</div></section>`:""}
   ${ro?`<section class="sec"><h2>Mon profil</h2><div class="card"><p class="msg">Classement ${esc(P.classement)} · ${NIVN[nv]}${P.croissance?" · pic de croissance en cours":""}${P.zones.length?" · zones fragiles : "+P.zones.map(z=>ZONES[z]?.n||z).join(", "):""}</p>${P.prio.length||fa.length?`<p class="msg">Lignes prioritaires : ${[...new Set([...P.prio,...fa])].map(chip).join(" ")}</p>`:""}</div></section>`:`
   <section class="sec"><h2>Profil pour la programmation</h2><div class="card">
@@ -1416,7 +1417,7 @@ function showEdit(pid){
   main.innerHTML = `
   ${hx({titre:br?"Nouveau plan":"Données du plan", lab:"Create my prog · "+j.nom})}<p class="lead">${br?"Tout est déjà rempli d'après "+(X.groupe?"le groupe":"sa fiche")+" : vérifie les 5 étapes puis touche « Créer le plan » en bas. Le brouillon est gardé tant que tu ne l'as pas créé.":"Chaque changement est enregistré tout de suite : le plan se recalcule et garde tes thèmes retouchés."}</p>
   ${p.objectif?`<p class="msg basebd">Objectif : <b>${esc(p.objectif)}</b>${(p.prio||[]).length?" · lignes ajoutées : "+p.prio.map(chip).join(" "):""}</p>`:""}
-  ${p.base?`<p class="msg basebd">Démarré de la saison de référence <a href="${G.href("saisons","#/s/"+p.base)}">${esc(baseNom(p.base))}</a>${p.refW?" · semaine S"+p.refW:""}.</p>`:""}
+  ${p.base?`<p class="msg basebd">Démarré de la saison type <b>${esc(baseNom(p.base))}</b>${p.refW?" · semaine S"+p.refW:""}.</p>`:""}
   <section class="sec step"><h2><b>1</b> Période${X.groupe?" et groupe":""}</h2><div class="card">
     <div class="row"><div class="f grow"><label for="pn">Nom du plan</label><input id="pn" value="${esc(p.nom)}"></div></div>
     <div class="row"><div class="f"><label for="pd1">Début</label><input type="date" id="pd1" value="${p.debut}"></div><div class="f"><label for="pd2">Fin</label><input type="date" id="pd2" value="${p.fin}"></div>
@@ -1466,7 +1467,7 @@ function showEdit(pid){
     $("#pd1").value=p.debut; $("#pd2").value=p.fin; upd(); });
   // semaine type
   const drawW=()=>{
-    $("#wkg").innerHTML = JOURS.map((d,ji)=>`<div class="wkd"><b>${JC[ji]}</b>${p.sem.map((s,si)=>s.j===ji?`<button type="button" class="stb ${KINDS[s.k].c}" data-si="${si}" title="Retirer">${KINDS[s.k].n.replace(" (biomécanique)","")}<i>×</i></button>`:"").join("")}
+    $("#wkg").innerHTML = JOURS.map((d,ji)=>`<div class="wkd"><b>${JC[ji]}</b>${p.sem.map((s,si)=>s.j===ji?`<button type="button" class="stb ${KINDS[s.k].c}" data-si="${si}" title="Retirer">${KINDS[s.k].n}<i>×</i></button>`:"").join("")}
       <div class="addw"><button type="button" class="ib sm" data-add="${ji}" aria-label="Ajouter une séance le ${d}">+</button><div class="menu" hidden>${KORD.map(k=>`<button type="button" data-k="${k}" class="stb ${KINDS[k].c}">${KINDS[k].n}</button>`).join("")}</div></div></div>`).join("");
     const c={}; p.sem.forEach(s=>c[s.k]=(c[s.k]||0)+1);
     $("#wsum").textContent = p.sem.length ? `${p.sem.length} séances : `+KORD.filter(k=>c[k]).map(k=>c[k]+" "+KINDS[k].n.toLowerCase()).join(", ") : "Aucune séance.";
@@ -1532,7 +1533,7 @@ function showPlan(pid, hint){
   const comps=p.compets.length+p.objs.length;
   main.innerHTML = `
   <div class="crumb">${ro?`<a href="#/joueur/${MOI()}">Mes plans</a> › Plan`:`<a href="#">Create my prog</a> › <a href="${ownerHref(p)}">${esc(j.nom)}</a> › Plan`}</div>
-  <div class="dochead"><div>${hx({titre:p.nom||"Plan", lab:"Create my prog · "+(X.groupe?"groupe":"plan")})}<p class="lead">${esc(j.nom)}${X.groupe?` (groupe, ${X.M.length} joueur${X.M.length>1?"s":""})`:""} · ${sxn(R.sexe)} ${ageLab(R.age)} · ${esc(P.classement)} (${NIVN[R.niv].toLowerCase()}) · ${fdy(pd(p.debut))} → ${fdy(pd(p.fin))}${p.base?` · <a href="${G.href("saisons","#/s/"+p.base)}">saison de référence</a>`:""}</p></div>
+  <div class="dochead"><div>${hx({titre:p.nom||"Plan", lab:"Create my prog · "+(X.groupe?"groupe":"plan")})}<p class="lead">${esc(j.nom)}${X.groupe?` (groupe, ${X.M.length} joueur${X.M.length>1?"s":""})`:""} · ${sxn(R.sexe)} ${ageLab(R.age)} · ${esc(P.classement)} (${NIVN[R.niv].toLowerCase()}) · ${fdy(pd(p.debut))} → ${fdy(pd(p.fin))}${p.base?" · d'après une saison type":""}</p></div>
    <div class="acts noprint">${ro?"":`<a class="ib" href="#e/${p.id}">Modifier</a>${pdfBtn("prt","Plan PDF")}${X.groupe?"":`<button class="ib" id="snd" type="button">${IC.envoi} Envoyer au joueur</button>`}`}</div></div>
   <div class="doc">
   <div class="ess"><h2>L'essentiel</h2>
@@ -1575,7 +1576,7 @@ function drawCal(wi){
   el.innerHTML=`<div class="calh"><button type="button" class="ib sm" data-cw="${wi-1}" aria-label="Semaine précédente"${wi?"":" disabled"}>‹</button><b>S${w.i+1} · ${fd(w.d1)} → ${fd(w.d7)}</b> <span class="mic" style="--c:${PHE[w.ph]}">${esc(w.mi)}</span><button type="button" class="ib sm" data-cw="${wi+1}" aria-label="Semaine suivante"${wi<R.W.length-1?"":" disabled"}>›</button>${!now&&CUR.ci>=0?`<button type="button" class="lnk" data-cw="${CUR.ci}">Cette semaine</button>`:now?`<span class="bdg nowb">Cette semaine</span>`:""}</div>
    ${fl?`<p class="wf">${fl}</p>`:""}${now?reagHtml(w):""}
    ${w.off?`<p class="off">Semaine sans entraînement : repos et activités libres.</p>`:`<div class="calg">${JOURS.map((d,ji)=>{ const dt=w.d1+ji*DAY, S=w.ses.map((s,si)=>({s,si})).filter(x=>x.s.j===ji);
-     return `<div class="cald${dt===t?" today":""}"><div class="caldh"><b>${JC[ji]}</b> <small>${fd(dt)}</small></div>${S.map(({s,si})=>`<button type="button" class="calse ${KINDS[s.k].c}${BUILT.has(s.key)?" ok":""}" data-cs="${si}"${ro?" disabled":""}><b>${esc(KINDS[s.k].n.replace(" (biomécanique)",""))}${BUILT.has(s.key)?" ✓":""}</b><span>${esc(nomC(s.t))}</span></button>`).join("")||`<span class="calv">—</span>`}</div>`; }).join("")}</div>
+     return `<div class="cald${dt===t?" today":""}"><div class="caldh"><b>${JC[ji]}</b> <small>${fd(dt)}</small></div>${S.map(({s,si})=>`<button type="button" class="calse ${KINDS[s.k].c}${BUILT.has(s.key)?" ok":""}" data-cs="${si}"${ro?" disabled":""}><b>${esc(KINDS[s.k].n)}${BUILT.has(s.key)?" ✓":""}</b><span>${esc(nomC(s.t))}</span></button>`).join("")||`<span class="calv">—</span>`}</div>`; }).join("")}</div>
    ${ro?"":`<p class="msg noprint">Touche une séance pour la créer, réécrire son thème ou la déplacer à un autre jour ou dans une autre semaine.</p>`}`}`;
   $$("[data-cw]",el).forEach(b=>b.onclick=()=>drawCal(+b.dataset.cw));
   $$("[data-cs]",el).forEach(b=>b.onclick=()=>seanceMenu(wi, +b.dataset.cs));
@@ -1667,7 +1668,7 @@ async function pdfPlan(){
     if(fl) d.text(M+W-6-MiniPDF.width(fl,8.5,true),d.y+4,fl,{size:8.5,bold:true,color:"#B91C1C"});
     d.y+=20;
     if(w.off){ d.para("Semaine sans entraînement : repos et activités libres.",{size:9,color:"#5D6675",x:M+8}); }
-    for(const s of w.ses){ const lab=JC[s.j]+" · "+KINDS[s.k].n.replace("Tennis individuel (biomécanique)","Tennis individuel"); const lw=118;
+    for(const s of w.ses){ const lab=JC[s.j]+" · "+KINDS[s.k].n; const lw=118;
       const lines=d.wrap(s.t+(s.l?.length?"  ["+s.l.join(" ")+"]":""),9,W-lw-8);
       d.need(lines.length*11.5+2); d.text(M+8,d.y,lab,{size:8.5,bold:true,color:KC[KINDS[s.k].c]});
       lines.forEach((l,i)=>d.text(M+lw,d.y+i*11.5,l,{size:9})); d.y+=lines.length*11.5+2.5; }
@@ -1689,7 +1690,7 @@ function weekHtml(w){
   return `<h4 id="w${w.i}"${now?' class="wnow"':""}>S${w.i+1} · ${fd(w.d1)} → ${fd(w.d7)} <span class="mic" style="--c:${PHE[w.ph]}">${w.mi}</span>${ch}${now?` <span class="bdg nowb">Cette semaine</span>`:""}</h4>
   ${fl?`<p class="wf">${fl}</p>`:""}${now?reagHtml(w):""}
   ${w.off?`<p class="off">Semaine sans entraînement : repos et activités libres.</p>`:
-    w.ses.length?`<div class="tw"><table class="wk">${w.ses.map((s,si)=>`<tr class="${KINDS[s.k].c}"><td class="sl">${JC[s.j]}<br><small>${KINDS[s.k].n.replace("Tennis individuel (biomécanique)","Tennis individuel · biomécanique")}</small></td><td>${theme(s,si)}${s.l?.length?`<div>${s.l.map(chip).join("")}</div>`:""}${BUILT.has(s.key)?`<div><a class="bdg noprint" href="${seanceHref(BUILT.get(s.key))}">✓ séance construite</a></div>`:""}</td></tr>`).join("")}</table></div>`:`<p class="off">Aucune séance cette semaine.</p>`}
+    w.ses.length?`<div class="tw"><table class="wk">${w.ses.map((s,si)=>`<tr class="${KINDS[s.k].c}"><td class="sl">${JC[s.j]}<br><small>${KINDS[s.k].n}</small></td><td>${theme(s,si)}${s.l?.length?`<div>${s.l.map(chip).join("")}</div>`:""}${BUILT.has(s.key)?`<div><a class="bdg noprint" href="${seanceHref(BUILT.get(s.key))}">✓ séance construite</a></div>`:""}</td></tr>`).join("")}</table></div>`:`<p class="off">Aucune séance cette semaine.</p>`}
   ${ro?"":`<p class="noprint wa"><button type="button" class="lnk" data-wed="${w.i}">Modifier cette semaine${ov?" (modifiée)":""}</button></p>`}`;
 }
 /* ---------- PROGRAMMATION QUI RÉAGIT : le journal (charge, forme, douleur, blessure) et les derniers tests proposent un ajustement de la semaine en cours ----------
@@ -1719,11 +1720,11 @@ function propositionDe(w, S){
   const rest=w.ses.map((s,si)=>({s,si})).filter(({s})=>s.j>=tj && !s.tour && !BUILT.has(s.key));
   const pp=rest.filter(({s})=>PPK(s.k)), haut=S.filter(x=>x.k==="douleur"||x.k==="blessure").sort((a,b)=>b.g-a.g)[0];
   if(haut && (pp[0]||rest[0])){ const c=pp[0]||rest[0], z=ZONEN[haut.zone]||"";
-    return {type:"remplacer", si:c.si, key:c.s.key, txt:`Remplacer la séance du ${JOURS[c.s.j].toLowerCase()} (${KINDS[c.s.k].n.replace(" (biomécanique)","")}) par une séance de protection${z?" du "+z:""} : mobilité, gainage, renforcement sans douleur, ni sauts ni sprints.`,
+    return {type:"remplacer", si:c.si, key:c.s.key, txt:`Remplacer la séance du ${JOURS[c.s.j].toLowerCase()} (${KINDS[c.s.k].n}) par une séance de protection${z?" du "+z:""} : mobilité, gainage, renforcement sans douleur, ni sauts ni sprints.`,
       t:`Séance de protection${z?" ("+z+")":""} : mobilité, gainage et renforcement sans douleur ; ni sauts, ni sprints, ni changements de direction brusques`, l:["PP12","PP3","PP11"]}; }
   const ch=S.filter(x=>x.k==="charge"||x.k==="fatigue");
   if(ch.length && rest.length>1){ const c=(pp.length?pp:rest)[(pp.length?pp:rest).length-1];
-    return {type:"alleger", si:c.si, key:c.s.key, j:c.s.j, kk:c.s.k, txt:`Alléger la semaine : retirer la séance du ${JOURS[c.s.j].toLowerCase()} (${KINDS[c.s.k].n.replace(" (biomécanique)","")}).`}; }
+    return {type:"alleger", si:c.si, key:c.s.key, j:c.s.j, kk:c.s.k, txt:`Alléger la semaine : retirer la séance du ${JOURS[c.s.j].toLowerCase()} (${KINDS[c.s.k].n}).`}; }
   const ts=S.find(x=>x.k==="tests");
   let ppT=pp, wT=w, quand="";
   if(ts && !pp.length){ const w2=CUR.R.W[w.i+1]; if(w2&&!w2.off){ ppT=w2.ses.map((s,si)=>({s,si})).filter(({s})=>PPK(s.k)&&!s.tour&&!BUILT.has(s.key)); wT=w2; quand=" de la semaine prochaine"; } }
@@ -1852,7 +1853,7 @@ function themeSheet(wi, si){
   openSheet(`<div class="shh"><b>${JOURS[s.j]} · ${KINDS[s.k].n}</b><button class="ib" data-close type="button" aria-label="Fermer">×</button></div>
    <p class="msg">S${w.i+1} · ${w.mi} · ${PHN[w.ph]}</p>
    <div class="f"><label for="tt">Thème de la séance</label><textarea id="tt" rows="3">${esc(s.t)}</textarea></div>
-   <div class="tools"><button class="go" id="tok" type="button">Enregistrer</button>${s.edit?`<button class="ib" id="tre" type="button">Revenir au thème de la méthode</button>`:""}<button class="ib" id="tcr" type="button">Créer cette séance →</button></div>
+   <div class="tools"><button class="go" id="tok" type="button">Enregistrer</button>${s.edit?`<button class="ib" id="tre" type="button">Revenir au thème proposé</button>`:""}<button class="ib" id="tcr" type="button">Créer cette séance →</button></div>
    <h3 class="alt">Autres thèmes qui conviennent</h3>
    <div class="alts">${pool.map((x,i)=>`<button type="button" class="altb${usedT.has(x.t)?" used":""}" data-a="${i}">${esc(x.t)}<span>${x.l.map(chip).join("")}${usedT.has(x.t)?" <em>déjà dans le plan</em>":""}${x.age?` <em>repris des ${x.age} ans</em>`:""}</span></button>`).join("")}</div>`);
   const setEdit=(t,l)=>{ p.edits ||= {}; p.edits[s.key]={t,l}; p.maj=todayIso(); saveNow(); closeSheet(); showPlan(p.id,"w"+w.i); };
@@ -1868,7 +1869,7 @@ function weekSheet(wi){
     const off=cur==="off";
     openSheet(`<div class="shh"><b>S${w.i+1} · ${fd(w.d1)} → ${fd(w.d7)}</b><button class="ib" data-close type="button" aria-label="Fermer">×</button></div>
      <label class="chk"><input type="checkbox" id="woff"${off?" checked":""}> Semaine sans entraînement</label>
-     ${off?"":`<div class="wkg">${JOURS.map((d,ji)=>`<div class="wkd"><b>${JC[ji]}</b>${cur.map((s,si)=>s.j===ji?`<button type="button" class="stb ${KINDS[s.k].c}" data-si="${si}">${KINDS[s.k].n.replace(" (biomécanique)","")}<i>×</i></button>`:"").join("")}<div class="addw"><button type="button" class="ib sm" data-add="${ji}" aria-label="Ajouter">+</button><div class="menu" hidden>${KORD.map(k=>`<button type="button" data-k="${k}" class="stb ${KINDS[k].c}">${KINDS[k].n}</button>`).join("")}</div></div></div>`).join("")}</div>`}
+     ${off?"":`<div class="wkg">${JOURS.map((d,ji)=>`<div class="wkd"><b>${JC[ji]}</b>${cur.map((s,si)=>s.j===ji?`<button type="button" class="stb ${KINDS[s.k].c}" data-si="${si}">${KINDS[s.k].n}<i>×</i></button>`:"").join("")}<div class="addw"><button type="button" class="ib sm" data-add="${ji}" aria-label="Ajouter">+</button><div class="menu" hidden>${KORD.map(k=>`<button type="button" data-k="${k}" class="stb ${KINDS[k].c}">${KINDS[k].n}</button>`).join("")}</div></div></div>`).join("")}</div>`}
      <div class="tools"><button class="go" id="wok" type="button">Enregistrer</button><button class="ib" id="wre" type="button">Revenir à la semaine type</button></div>`);
     $("#woff").onchange=e=>{ cur = e.target.checked ? "off" : p.sem.map(x=>({...x})); draw(); };
     $$("[data-si]",sheet).forEach(b=>b.onclick=()=>{ cur.splice(+b.dataset.si,1); draw(); });
@@ -1883,7 +1884,7 @@ function weekSheet(wi){
 /* ---------- RÈGLES ---------- */
 function showMethode(){
   aide("m");
-  main.innerHTML=`${hx({titre:"Les règles de la méthode", lab:"Create my prog", vis:"marches"})}
+  main.innerHTML=`${hx({titre:"Les règles de calcul", lab:"Create my prog", vis:"marches"})}
   <div class="doc"><div class="ess"><h2>L'essentiel</h2><p>Le plan part toujours de la saison de référence de l'âge et du sexe du joueur (4 à 18 ans), puis l'adapte à sa situation réelle. Mêmes données = même plan : rien n'est tiré au hasard. Un plan de groupe part de l'âge et du sexe dominants du groupe et de ses lignes faibles communes.</p></div>
   <h2>Découpe selon la durée</h2><ul><li>Plus de 12 semaines : macrocycles, mésocycles, microcycles et séances.</li><li>3 à 12 semaines : mésocycles, microcycles et séances.</li><li>1 ou 2 semaines : microcycles et séances.</li></ul>
   <h2>Phases</h2><ul><li>Semaine qui touche une période de tournois ou un objectif : <b>Compétition</b> (week-end = tournoi).</li><li>Avant un objectif : <b>Pré-compétition</b> (affûtage), 2 semaines au niveau national et international à partir de 13 ans, 1 semaine sinon. Une semaine avant chaque période de tournois.</li><li>Après un bloc de tournois de 2 semaines ou plus, ou après un objectif : 1 semaine de <b>Récupération</b>.</li><li>Entre deux : <b>Préparation générale</b> puis <b>Préparation spécifique</b> (jusqu'à 4 semaines avant les tournois), en mésocycles de 3 à 5 semaines.</li><li>Coupure de 4 jours ou plus : semaine de <b>Repos</b> ; la suivante est une reprise.</li></ul>
@@ -1943,7 +1944,7 @@ async function boot(){
     "prog/e":"Données du plan : chaque changement est enregistré tout de suite et le plan se recalcule en gardant tes thèmes retouchés.",
     "prog/p":"Le plan : l'essentiel, la frise, les cycles et les semaines. Touche le thème d'une séance pour la créer dans Create my session, le réécrire ou la déplacer. « Calendrier » montre la semaine jour par jour.",
     "prog/calendrier":"Le calendrier : la semaine jour par jour. Touche une séance pour la créer, réécrire son thème ou la déplacer à un autre jour ou dans une autre semaine (« Annuler » pendant 10 s).",
-    "prog/m":"Les règles de la méthode : découpe, phases, charges, niveau d'après le classement et choix des thèmes."
+    "prog/m":"Les règles de calcul : découpe, phases, charges, niveau d'après le classement et choix des thèmes."
   }).forEach(([k,t])=>{ try{ G.aide(k,t); }catch(e){} });
   route();
 }
